@@ -391,6 +391,13 @@
 			path = "../../JuceLibraryCode/include_juce_audio_basics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		5FE782DD0419B2444BB900DE = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "soundtouch_config.h";
+			path = "../../Source/soundtouch_config.h";
+			sourceTree = "SOURCE_ROOT";
+		};
 		60A2A4585B994180A8BF8826 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -403,6 +410,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MainComponent.cpp;
 			path = ../../Source/MainComponent.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		627BAFF18D9DD9C9C042A071 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SoundTouch.h;
+			path = ../../../Submodule/soundtouch/include/SoundTouch.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		6478446902A6858772074F68 = {
@@ -489,6 +503,13 @@
 			path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateShannon.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		86D8AA891D4D6C0F8064FDFC = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaUtility.h;
+			path = ../../Source/MelissaUtility.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		86DA9AF689B44802D795386E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -544,6 +565,13 @@
 			name = "juce_opengl";
 			path = "~/Develop/JUCE/modules/juce_opengl";
 			sourceTree = "<absolute>";
+		};
+		A8829F6FF3C288A26FFF8417 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaDebugComponent.h;
+			path = ../../Source/MelissaDebugComponent.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		AD522DAD3DD590148A75B036 = {
 			isa = PBXFileReference;
@@ -688,29 +716,30 @@
 		D536BBCAD7491E5DA45157C3 = {
 			isa = PBXGroup;
 			children = (
-				D8B06E81A1DA792D512EFEDE,
-				7C964B9C5A1891F513C24DDB,
-				8E83D53866603C30C2D69D52,
-				38353AE11D756395A483467C,
-				69E84B1CACC8085461C20161,
-				831A3D0101D4B87A7C05E677,
-				28E8E84CA9D73E8B24CE4D70,
-				245A4CF8ED1E345F7AE902D6,
-				07EA4A763E4D2EFE0028FD00,
 				60A2A4585B994180A8BF8826,
+				D8B06E81A1DA792D512EFEDE,
 				F11E91959943E5359F3A894E,
+				7C964B9C5A1891F513C24DDB,
 				72E3FC203E75498C2F3A15E2,
 				CCEA002821986E086B42D0A8,
 				C1730ABBBB9288D6C5620526,
+				8E83D53866603C30C2D69D52,
 				9A88D1287C54AE10DB0BB16E,
+				38353AE11D756395A483467C,
 				6478446902A6858772074F68,
+				69E84B1CACC8085461C20161,
 				85198D9BE8D259C3B08E6F41,
+				831A3D0101D4B87A7C05E677,
 				FC5A0100EA9DD6B8E0128888,
 				3DF199B34319CEB21151492F,
+				28E8E84CA9D73E8B24CE4D70,
 				9429DBFDAAD83A8B59788937,
+				245A4CF8ED1E345F7AE902D6,
 				30E5CCE63416FBEACD809A8C,
+				627BAFF18D9DD9C9C042A071,
 				56FA578BA2C442FAC89F615E,
 				AD522DAD3DD590148A75B036,
+				07EA4A763E4D2EFE0028FD00,
 			);
 			name = soundtouch;
 			sourceTree = "<group>";
@@ -733,6 +762,9 @@
 				FC1173E317E8B10780375208,
 				73ADFAD99BF06543B7DBB3C6,
 				9B5EF7E06FF4F7DC589785BA,
+				A8829F6FF3C288A26FFF8417,
+				86D8AA891D4D6C0F8064FDFC,
+				5FE782DD0419B2444BB900DE,
 			);
 			name = Source;
 			sourceTree = "<group>";
