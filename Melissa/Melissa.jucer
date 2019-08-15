@@ -2,15 +2,69 @@
 
 <JUCERPROJECT id="w9w56p" name="Melissa" projectType="guiapp" jucerVersion="5.4.3">
   <MAINGROUP id="tXhvRt" name="Melissa">
+    <GROUP id="{1D9E1059-B38B-DC63-0F4C-024306ABC331}" name="soundtouch">
+      <FILE id="J4hqGy" name="AAFilter.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/AAFilter.cpp"/>
+      <FILE id="MLZocB" name="AAFilter.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/AAFilter.h"/>
+      <FILE id="h8IFua" name="BPMDetect.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/BPMDetect.cpp"/>
+      <FILE id="EaIkq0" name="BPMDetect.h" compile="0" resource="0" file="../Submodule/soundtouch/include/BPMDetect.h"/>
+      <FILE id="JCSEIG" name="cpu_detect.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/cpu_detect.h"/>
+      <FILE id="oOn4sy" name="cpu_detect_x86.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/cpu_detect_x86.cpp"/>
+      <FILE id="r104zT" name="FIFOSampleBuffer.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp"/>
+      <FILE id="mlOrNe" name="FIFOSampleBuffer.h" compile="0" resource="0"
+            file="../Submodule/soundtouch/include/FIFOSampleBuffer.h"/>
+      <FILE id="DYPwfo" name="FIFOSamplePipe.h" compile="0" resource="0"
+            file="../Submodule/soundtouch/include/FIFOSamplePipe.h"/>
+      <FILE id="zNyrRS" name="FIRFilter.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/FIRFilter.cpp"/>
+      <FILE id="uJpfzb" name="FIRFilter.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/FIRFilter.h"/>
+      <FILE id="m5O4rh" name="InterpolateCubic.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/InterpolateCubic.cpp"/>
+      <FILE id="ZtwaE5" name="InterpolateCubic.h" compile="0" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/InterpolateCubic.h"/>
+      <FILE id="jxncwd" name="InterpolateLinear.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/InterpolateLinear.cpp"/>
+      <FILE id="jG2M1p" name="InterpolateLinear.h" compile="0" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/InterpolateLinear.h"/>
+      <FILE id="MzmEzl" name="InterpolateShannon.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/InterpolateShannon.cpp"/>
+      <FILE id="hd49Jv" name="InterpolateShannon.h" compile="0" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/InterpolateShannon.h"/>
+      <FILE id="h3r9ic" name="mmx_optimized.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/mmx_optimized.cpp"/>
+      <FILE id="rk5JIS" name="PeakFinder.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/PeakFinder.cpp"/>
+      <FILE id="PgcvoK" name="PeakFinder.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/PeakFinder.h"/>
+      <FILE id="FAAptP" name="RateTransposer.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/RateTransposer.cpp"/>
+      <FILE id="KEhmmC" name="RateTransposer.h" compile="0" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/RateTransposer.h"/>
+      <FILE id="xIWP76" name="SoundTouch.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/SoundTouch.cpp"/>
+      <FILE id="yeUD4r" name="SoundTouch.h" compile="0" resource="0" file="../Submodule/soundtouch/include/SoundTouch.h"/>
+      <FILE id="u2jAAi" name="sse_optimized.cpp" compile="1" resource="0"
+            file="../Submodule/soundtouch/source/SoundTouch/sse_optimized.cpp"/>
+      <FILE id="IO19kk" name="STTypes.h" compile="0" resource="0" file="../Submodule/soundtouch/include/STTypes.h"/>
+      <FILE id="vfQfAx" name="TDStretch.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/TDStretch.cpp"/>
+      <FILE id="hesJa8" name="TDStretch.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/TDStretch.h"/>
+    </GROUP>
     <GROUP id="{485E43E7-9331-278D-4060-5D53BA07D394}" name="Source">
-      <FILE id="alAtls" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <GROUP id="{46B666F4-1F2F-4D0D-5E93-0B4B890E37D1}" name="AudioLib">
+        <FILE id="DmlF9V" name="Melissa.cpp" compile="1" resource="0" file="Source/AudioLib/Melissa.cpp"/>
+        <FILE id="gW9kVH" name="Melissa.h" compile="0" resource="0" file="Source/AudioLib/Melissa.h"/>
+      </GROUP>
+      <FILE id="SEGZEt" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="jhWiTO" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
-      <FILE id="SEGZEt" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="alAtls" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="rKTm5F" name="MelissaControlComponent.cpp" compile="1" resource="0"
+            file="Source/MelissaControlComponent.cpp"/>
+      <FILE id="nRaVl8" name="MelissaControlComponent.h" compile="0" resource="0"
+            file="Source/MelissaControlComponent.h"/>
+      <FILE id="q0nWpO" name="soundtouch_config.h" compile="0" resource="0"
+            file="Source/soundtouch_config.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" microphonePermissionNeeded="0" useHeaderMap="1">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
