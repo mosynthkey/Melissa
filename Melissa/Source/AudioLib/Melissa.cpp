@@ -15,7 +15,7 @@ using std::make_unique;
 
 Melissa::Melissa() :
 soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), playingIndex_(0), readIndex_(0), writeIndex_(0),  speed_(1.f), semitone_(0), progress_(0.f), isProcessDone_(false),
+aIndex_(0), bIndex_(0), playingIndex_(0), readIndex_(0), writeIndex_(0),  speed_(1.f), semitone_(0), volume_(1.f), progress_(0.f), isProcessDone_(false),
 isProcessedBufferPrepared_(false), totalReceivedSampleSize_(0)
 {
     for (int iCh = 0; iCh < 2; ++iCh)
@@ -114,6 +114,15 @@ void Melissa::setPitch(int32_t semitone)
     isProcessDone_ = isProcessedBufferPrepared_ = false;
 }
 
+float Melissa::setVolume(float volume)
+{
+    if (volume < 0.f) volume = 0.f;
+    if (2.f < volume) volume = 2.f;
+    
+    volume_ = volume;
+    
+    return volume_;
+}
 
 void Melissa::render(float* bufferToRender[], size_t bufferLength)
 {
@@ -125,7 +134,7 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
         if (++playingIndex_ > processedBuffer_[0].size()) playingIndex_ = 0; // loop
         for (int iCh = 0; iCh < 2; ++iCh)
         {
-            bufferToRender[iCh][iSample] = processedBuffer_[iCh][playingIndex_];
+            bufferToRender[iCh][iSample] = processedBuffer_[iCh][playingIndex_] * volume_;
         }
     }
     
@@ -216,7 +225,7 @@ std::string Melissa::getStatusString() const
     
     std::stringstream ss;
     
-    constexpr size_t numOfBlocks = 40;
+    constexpr size_t numOfBlocks = 60;
     
     // read
     {

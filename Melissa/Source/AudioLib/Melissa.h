@@ -28,6 +28,7 @@ public:
     
     void setSpeed(float speed);
     void setPitch(int32_t semitone);
+    float setVolume(float volume);
     
     void render(float* bufferToRender[], size_t bufferLength);
     
@@ -55,6 +56,7 @@ private:
     
     float   speed_;
     int32_t semitone_;
+    float   volume_;
     
     float   progress_;
     bool    isProcessDone_;

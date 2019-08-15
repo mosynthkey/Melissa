@@ -75,7 +75,7 @@ debugComponent_(make_unique<MelissaDebugComponent>())
     
     addAndMakeVisible(playButton_.get());
     
-    debugComponent_->setBounds(0, 500, 840, 360);
+    debugComponent_->setBounds(0, 500, getWidth(), 360);
     debugComponent_->fileBrowserComponent_->addListener(this);
     debugComponent_->playButton_->onClick  = [this]() { play(); };
     debugComponent_->pauseButton_->onClick = [this]() { pause(); };
@@ -85,24 +85,31 @@ debugComponent_(make_unique<MelissaDebugComponent>())
         const float playPointMSec = debugComponent_->posSlider_->getValue() / 100.f * melissa_->getTotalLengthMSec();
         melissa_->setPlayingPosMSec(playPointMSec);
     };
-    debugComponent_->aSlider_->onDragEnd   = [this]()
+    debugComponent_->aSlider_->onDragEnd = [this]()
     {
         const auto value = debugComponent_->aSlider_->getValue();
         const float pointMSec = value / 100.f * melissa_->getTotalLengthMSec();
         melissa_->setAPosMSec(pointMSec);
         debugComponent_->aLabel_->setText("A:" + MelissaUtility::getFormattedTime(pointMSec), dontSendNotification);
     };
-    debugComponent_->bSlider_->onDragEnd   = [this]()
+    debugComponent_->bSlider_->onDragEnd = [this]()
     {
         const auto value = debugComponent_->bSlider_->getValue();
         const float pointMSec = value / 100.f * melissa_->getTotalLengthMSec();
         melissa_->setBPosMSec(pointMSec);
         debugComponent_->bLabel_->setText("B:" + MelissaUtility::getFormattedTime(pointMSec), dontSendNotification);
     };
-    debugComponent_->rateSlider_->onDragEnd   = [this]()
+    debugComponent_->rateSlider_->onDragEnd = [this]()
     {
-        const auto rateValue = debugComponent_->rateSlider_->getValue() / 1000.f;
-        melissa_->setSpeed(rateValue);
+        melissa_->setSpeed(debugComponent_->rateSlider_->getValue() / 1000.f);
+    };
+    debugComponent_->pitchSlider_->onDragEnd = [this]()
+    {
+        melissa_->setPitch(debugComponent_->pitchSlider_->getValue());
+    };
+    debugComponent_->volumeSlider_->onDragEnd = [this]()
+    {
+        melissa_->setVolume(debugComponent_->volumeSlider_->getValue());
     };
     addAndMakeVisible(debugComponent_.get());
 
@@ -120,7 +127,7 @@ debugComponent_(make_unique<MelissaDebugComponent>())
     }
     
     startThread();
-    startTimer(1000);
+    startTimer(100);
 }
 
 MainComponent::~MainComponent()
