@@ -1,4 +1,6 @@
+#include <sstream>
 #include "MainComponent.h"
+#include "MelissaUtility.h"
 
 using std::make_unique;
 
@@ -51,11 +53,18 @@ private:
     }
 };
 
-MainComponent::MainComponent() :
+MainComponent::MainComponent() : Thread("MelissaProcessThread"),
+status_(kStatus_Stop),
+melissa_(make_unique<Melissa>()),
 controlComponent_(make_unique<MelissaControlComponent>()),
 button_(make_unique<MelissaRoundButton>("testButton")),
-playButton_(make_unique<MelissaPlayButton>("playButton"))
+playButton_(make_unique<MelissaPlayButton>("playButton")),
+debugComponent_(make_unique<MelissaDebugComponent>())
 {
+#if JUCE_MAC || JUCE_WINDOWS
+    getLookAndFeel().setDefaultSansSerifTypefaceName("Arial Unicode MS");
+#endif
+    
     setSize (1400, 860);
     
     controlComponent_->setBounds(0, 240, getWidth(), 240);
@@ -65,6 +74,37 @@ playButton_(make_unique<MelissaPlayButton>("playButton"))
     addAndMakeVisible(button_.get());
     
     addAndMakeVisible(playButton_.get());
+    
+    debugComponent_->setBounds(0, 500, 840, 360);
+    debugComponent_->fileBrowserComponent_->addListener(this);
+    debugComponent_->playButton_->onClick  = [this]() { play(); };
+    debugComponent_->pauseButton_->onClick = [this]() { pause(); };
+    debugComponent_->stopButton_->onClick  = [this]() { stop(); };
+    debugComponent_->posSlider_->onDragEnd = [this]()
+    {
+        const float playPointMSec = debugComponent_->posSlider_->getValue() / 100.f * melissa_->getTotalLengthMSec();
+        melissa_->setPlayingPosMSec(playPointMSec);
+    };
+    debugComponent_->aSlider_->onDragEnd   = [this]()
+    {
+        const auto value = debugComponent_->aSlider_->getValue();
+        const float pointMSec = value / 100.f * melissa_->getTotalLengthMSec();
+        melissa_->setAPosMSec(pointMSec);
+        debugComponent_->aLabel_->setText("A:" + MelissaUtility::getFormattedTime(pointMSec), dontSendNotification);
+    };
+    debugComponent_->bSlider_->onDragEnd   = [this]()
+    {
+        const auto value = debugComponent_->bSlider_->getValue();
+        const float pointMSec = value / 100.f * melissa_->getTotalLengthMSec();
+        melissa_->setBPosMSec(pointMSec);
+        debugComponent_->bLabel_->setText("B:" + MelissaUtility::getFormattedTime(pointMSec), dontSendNotification);
+    };
+    debugComponent_->rateSlider_->onDragEnd   = [this]()
+    {
+        const auto rateValue = debugComponent_->rateSlider_->getValue() / 1000.f;
+        melissa_->setSpeed(rateValue);
+    };
+    addAndMakeVisible(debugComponent_.get());
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -78,6 +118,9 @@ playButton_(make_unique<MelissaPlayButton>("playButton"))
         // Specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
     }
+    
+    startThread();
+    startTimer(1000);
 }
 
 MainComponent::~MainComponent()
@@ -86,27 +129,18 @@ MainComponent::~MainComponent()
     shutdownAudio();
 }
 
-//==============================================================================
-void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    // This function will be called when the audio device is started, or when
-    // its settings (i.e. sample rate, block size, etc) are changed.
-
-    // You can use this function to initialise any resources you might need,
-    // but be careful - it will be called on the audio thread, not the GUI thread.
-
-    // For more details, see the help for AudioProcessor::prepareToPlay()
+    melissa_->setOutputSampleRate(sampleRate);
 }
 
-void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
 {
-    // Your audio-processing code goes here!
-
-    // For more details, see the help for AudioProcessor::getNextAudioBlock()
-
-    // Right now we are not producing any data, in which case we need to clear the buffer
-    // (to prevent the output of random noise)
     bufferToFill.clearActiveBufferRegion();
+    
+    if (melissa_ == nullptr || status_ != kStatus_Playing) return;
+    float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
+    melissa_->render(buffer, bufferToFill.numSamples);
 }
 
 void MainComponent::releaseResources()
@@ -117,7 +151,7 @@ void MainComponent::releaseResources()
     // For more details, see the help for AudioProcessor::releaseResources()
 }
 
-void MainComponent::paint (Graphics& g)
+void MainComponent::paint(Graphics& g)
 {
     g.setGradientFill(ColourGradient(Colour(0xff019cdf), 0.f, 0.f, Colour(0xffc82788), getWidth(), getHeight(), true));
     g.fillAll();
@@ -127,3 +161,76 @@ void MainComponent::resized()
 {
     playButton_->setBounds((getWidth() - 100) / 2, 300, 100, 100);
 }
+
+void MainComponent::fileDoubleClicked(const File& file)
+{
+    openFile(file);
+}
+
+void MainComponent::run()
+{
+    while (true)
+    {
+        if (melissa_ != nullptr && melissa_->needToProcess())
+        {
+            melissa_->process();
+        }
+        else
+        {
+            wait(100);
+        }
+    }
+}
+
+void MainComponent::timerCallback()
+{
+    if (melissa_ == nullptr) return;
+    
+    debugComponent_->posLabel_->setText(MelissaUtility::getFormattedTime(melissa_->getPlayingPosMSec()) , dontSendNotification);
+    
+    std::stringstream ss;
+    ss << "Prosessing : " << static_cast<uint32_t>(melissa_->getProgress() * 100) << "%";
+    
+    debugComponent_->statusLabel_->setText(melissa_->needToProcess() ? ss.str() : "Process done", NotificationType::dontSendNotification);
+    debugComponent_->debugLabel_->setText(melissa_->getStatusString(), dontSendNotification);
+}
+
+bool MainComponent::openFile(const File& file)
+{
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+    
+    auto* reader = formatManager.createReaderFor(file);
+    if (reader == nullptr) return false;
+    
+    // read audio data from reader
+    const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
+    audioSampleBuf_ = make_unique<AudioSampleBuffer>(2, lengthInSamples);
+    reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
+    
+    melissa_->reset();
+    const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
+    melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    
+    return true;
+}
+
+void MainComponent::play()
+{
+    if (melissa_ == nullptr) return;
+    status_ = kStatus_Playing;
+}
+
+void MainComponent::pause()
+{
+    if (melissa_ == nullptr) return;
+    status_ = kStatus_Pause;
+}
+
+void MainComponent::stop()
+{
+    if (melissa_ == nullptr) return;
+    status_ = kStatus_Stop;
+    melissa_->setPlayingPosMSec(0);
+}
+
