@@ -223,6 +223,13 @@
 			path = Melissa.app;
 			sourceTree = "BUILT_PRODUCTS_DIR";
 		};
+		1300344A9A074EE943B6BA04 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = STTypes.h;
+			path = ../../../Submodule/soundtouch/include/STTypes.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		1559E91B539F055F16BB2F48 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -334,6 +341,13 @@
 			name = "juce_data_structures";
 			path = "~/Develop/JUCE/modules/juce_data_structures";
 			sourceTree = "<absolute>";
+		};
+		46D862DD24FC58245A34BA06 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BPMDetect.h;
+			path = ../../../Submodule/soundtouch/include/BPMDetect.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		4B20DEAEA406997D0C706D9D = {
 			isa = PBXFileReference;
@@ -524,6 +538,13 @@
 			path = System/Library/Frameworks/WebKit.framework;
 			sourceTree = SDKROOT;
 		};
+		8AF477A83D8A10002923569F = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FIFOSampleBuffer.h;
+			path = ../../../Submodule/soundtouch/include/FIFOSampleBuffer.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		8E83D53866603C30C2D69D52 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -657,6 +678,13 @@
 			path = "../../JuceLibraryCode/include_juce_gui_extra.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		DFC060CD1A30E9ED0A1860E5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FIFOSamplePipe.h;
+			path = ../../../Submodule/soundtouch/include/FIFOSamplePipe.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		EAB41B4457844BF5B7AFA491 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -719,9 +747,12 @@
 				60A2A4585B994180A8BF8826,
 				D8B06E81A1DA792D512EFEDE,
 				F11E91959943E5359F3A894E,
+				46D862DD24FC58245A34BA06,
 				7C964B9C5A1891F513C24DDB,
 				72E3FC203E75498C2F3A15E2,
 				CCEA002821986E086B42D0A8,
+				8AF477A83D8A10002923569F,
+				DFC060CD1A30E9ED0A1860E5,
 				C1730ABBBB9288D6C5620526,
 				8E83D53866603C30C2D69D52,
 				9A88D1287C54AE10DB0BB16E,
@@ -738,6 +769,7 @@
 				30E5CCE63416FBEACD809A8C,
 				627BAFF18D9DD9C9C042A071,
 				56FA578BA2C442FAC89F615E,
+				1300344A9A074EE943B6BA04,
 				AD522DAD3DD590148A75B036,
 				07EA4A763E4D2EFE0028FD00,
 			);
@@ -871,7 +903,7 @@
 		9EC503FB843014E7D842E837 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -913,7 +945,7 @@
 		B572681B2FC3CF0EA18839D4 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
