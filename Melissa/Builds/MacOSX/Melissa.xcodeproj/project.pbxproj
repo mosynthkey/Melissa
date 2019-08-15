@@ -129,6 +129,10 @@
 			isa = PBXBuildFile;
 			fileRef = 73ADFAD99BF06543B7DBB3C6;
 		};
+		6BC5CD797691B2DB07AB1B6C = {
+			isa = PBXBuildFile;
+			fileRef = AA30FA5E18873B4EA1B39D47;
+		};
 		50361DE208C85E532BB64F9B = {
 			isa = PBXBuildFile;
 			fileRef = 585E88C00A05D8F0036FE91C;
@@ -349,6 +353,13 @@
 			path = ../../../Submodule/soundtouch/include/BPMDetect.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		49BD21EE3E719D12B0E101E7 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaLabel.h;
+			path = ../../Source/MelissaLabel.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		4B20DEAEA406997D0C706D9D = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -559,6 +570,13 @@
 			path = ../../../Submodule/soundtouch/source/SoundTouch/RateTransposer.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		9891683CAA48465681E875FB = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaWaveformControlComponent.h;
+			path = ../../Source/MelissaWaveformControlComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		9A88D1287C54AE10DB0BB16E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -592,6 +610,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = MelissaDebugComponent.h;
 			path = ../../Source/MelissaDebugComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		AA30FA5E18873B4EA1B39D47 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MelissaWaveformControlComponent.cpp;
+			path = ../../Source/MelissaWaveformControlComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		AD522DAD3DD590148A75B036 = {
@@ -795,7 +820,10 @@
 				73ADFAD99BF06543B7DBB3C6,
 				9B5EF7E06FF4F7DC589785BA,
 				A8829F6FF3C288A26FFF8417,
+				49BD21EE3E719D12B0E101E7,
 				86D8AA891D4D6C0F8064FDFC,
+				AA30FA5E18873B4EA1B39D47,
+				9891683CAA48465681E875FB,
 				5FE782DD0419B2444BB900DE,
 			);
 			name = Source;
@@ -1128,6 +1156,7 @@
 				5515F4E5A1F0D1A9A7A21DA3,
 				9F51584DC3C4A6028EFBF0B0,
 				43F767D1C8AAD3285A2D6F3A,
+				6BC5CD797691B2DB07AB1B6C,
 				50361DE208C85E532BB64F9B,
 				E415B2B4C6F536769AB00B93,
 				59017FB25AC3FD9FD315F4FE,
