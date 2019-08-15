@@ -23,6 +23,9 @@ public:
     void setAPosMSec(float aPosMSec);
     void setBPosMSec(float bPosMSec);
     void setPlayingPosMSec(float playingPosMSec);
+    void setAPosRatio(float ratio);
+    void setBPosRatio(float ratio);
+    void setPlayingPosRatio(float ratio);
     int32_t getTotalLengthMSec() const;
     int32_t getPlayingPosMSec() const;
     

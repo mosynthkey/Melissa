@@ -87,6 +87,26 @@ void Melissa::setPlayingPosMSec(float playingPosMSec)
     playingIndex_ = (playingPosIndex - aIndex_) * soundTouch_->getInputOutputSampleRatio();
 }
 
+void Melissa::setAPosRatio(float ratio)
+{
+    // todo : chech range
+    aIndex_ = originalBuffer_[0].size() * ratio;
+    isProcessDone_ = isProcessedBufferPrepared_ = false;
+}
+
+void Melissa::setBPosRatio(float ratio)
+{
+    // todo : chech range
+    bIndex_ = originalBuffer_[0].size() * ratio;
+    isProcessDone_ = isProcessedBufferPrepared_ = false;
+}
+
+void Melissa::setPlayingPosRatio(float ratio)
+{
+    // todo : chech range
+    playingIndex_ = (originalBuffer_[0].size() * ratio - aIndex_) * soundTouch_->getInputOutputSampleRatio();
+}
+
 int32_t Melissa::getTotalLengthMSec() const
 {
     return static_cast<float>(originalBuffer_[0].size()) / originalSampleRate_ * 1000.f;

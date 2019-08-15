@@ -56,16 +56,21 @@ private:
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop),
 melissa_(make_unique<Melissa>()),
+waveformComponent_(make_unique<MelissaWaveformControlComponent>()),
 controlComponent_(make_unique<MelissaControlComponent>()),
 button_(make_unique<MelissaRoundButton>("testButton")),
 playButton_(make_unique<MelissaPlayButton>("playButton")),
 debugComponent_(make_unique<MelissaDebugComponent>())
 {
 #if JUCE_MAC || JUCE_WINDOWS
-    getLookAndFeel().setDefaultSansSerifTypefaceName("Arial Unicode MS");
+    getLookAndFeel().setDefaultSansSerifTypefaceName("Helvetica Neue");
 #endif
     
     setSize (1400, 860);
+    
+    waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
+    waveformComponent_->setListener(this);
+    addAndMakeVisible(waveformComponent_.get());
     
     controlComponent_->setBounds(0, 240, getWidth(), 240);
     addAndMakeVisible(controlComponent_.get());
@@ -90,14 +95,14 @@ debugComponent_(make_unique<MelissaDebugComponent>())
         const auto value = debugComponent_->aSlider_->getValue();
         const float pointMSec = value / 100.f * melissa_->getTotalLengthMSec();
         melissa_->setAPosMSec(pointMSec);
-        debugComponent_->aLabel_->setText("A:" + MelissaUtility::getFormattedTime(pointMSec), dontSendNotification);
+        debugComponent_->aLabel_->setText("A:" + MelissaUtility::getFormattedTimeMSec(pointMSec), dontSendNotification);
     };
     debugComponent_->bSlider_->onDragEnd = [this]()
     {
         const auto value = debugComponent_->bSlider_->getValue();
         const float pointMSec = value / 100.f * melissa_->getTotalLengthMSec();
         melissa_->setBPosMSec(pointMSec);
-        debugComponent_->bLabel_->setText("B:" + MelissaUtility::getFormattedTime(pointMSec), dontSendNotification);
+        debugComponent_->bLabel_->setText("B:" + MelissaUtility::getFormattedTimeMSec(pointMSec), dontSendNotification);
     };
     debugComponent_->rateSlider_->onDragEnd = [this]()
     {
@@ -174,6 +179,30 @@ void MainComponent::fileDoubleClicked(const File& file)
     openFile(file);
 }
 
+void MainComponent::setPlayPosition(MelissaWaveformControlComponent* sender, float ratio)
+{
+    std::cout << "setPlayPosition " << ratio << std::endl;
+    if (melissa_ == nullptr) return;
+    
+    melissa_->setPlayingPosRatio(ratio);
+}
+
+void MainComponent::setAPosition(MelissaWaveformControlComponent* sender, float ratio)
+{
+    std::cout << "setAPosition " << ratio << std::endl;
+    if (melissa_ == nullptr) return;
+    
+    melissa_->setAPosRatio(ratio);
+}
+
+void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float ratio)
+{
+    std::cout << "setBPosition " << ratio << std::endl;
+    if (melissa_ == nullptr) return;
+    
+    melissa_->setBPosRatio(ratio);
+}
+
 void MainComponent::run()
 {
     while (true)
@@ -193,7 +222,7 @@ void MainComponent::timerCallback()
 {
     if (melissa_ == nullptr) return;
     
-    debugComponent_->posLabel_->setText(MelissaUtility::getFormattedTime(melissa_->getPlayingPosMSec()) , dontSendNotification);
+    debugComponent_->posLabel_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getPlayingPosMSec()) , dontSendNotification);
     
     std::stringstream ss;
     ss << "Prosessing : " << static_cast<uint32_t>(melissa_->getProgress() * 100) << "%";
@@ -218,6 +247,8 @@ bool MainComponent::openFile(const File& file)
     melissa_->reset();
     const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
     melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    waveformComponent_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    
     
     return true;
 }
