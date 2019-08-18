@@ -13,9 +13,10 @@ public:
         fileBrowserComponent_ = make_shared<FileBrowserComponent>(
             FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
             File::getSpecialLocation(File::userHomeDirectory),
-            new WildcardFileFilter("*.mp3;*.wav", "*", "Music Files"),
+                                                                  new WildcardFileFilter("*.mp3;*.wav;*.m4a", "*", "Music Files"),
             nullptr);
         fileBrowserComponent_->setBounds(0, 0, 300, 360);
+        fileBrowserComponent_->setFilenameBoxLabel("");
         addAndMakeVisible(fileBrowserComponent_.get());
         
         auto makeLabelAndSlider = [this](int x, int y)
@@ -34,18 +35,23 @@ public:
         
         playButton_ = make_shared<TextButton>();
         playButton_->setButtonText("Play");
-        playButton_->setBounds(340, 40, 100, 24);
+        playButton_->setBounds(340, 40, 80, 34);
         addAndMakeVisible(playButton_.get());
         
         stopButton_ = make_shared<TextButton>();
         stopButton_->setButtonText("Stop");
-        stopButton_->setBounds(460, 40, 100, 24);
+        stopButton_->setBounds(440, 40, 80, 34);
         addAndMakeVisible(stopButton_.get());
         
         pauseButton_ = make_shared<TextButton>();
         pauseButton_->setButtonText("Pause");
-        pauseButton_->setBounds(580, 40, 100, 24);
+        pauseButton_->setBounds(540, 40, 80, 34);
         addAndMakeVisible(pauseButton_.get());
+        
+        resetLoopButton_ = make_shared<TextButton>();
+        resetLoopButton_->setButtonText("Reset Loop");
+        resetLoopButton_->setBounds(640, 40, 80, 34);
+        addAndMakeVisible(resetLoopButton_.get());
         
         posLabel_ = make_shared<Label>();
         posLabel_->setText("Position", dontSendNotification);
@@ -133,6 +139,7 @@ public:
     std::shared_ptr<TextButton> playButton_;
     std::shared_ptr<TextButton> stopButton_;
     std::shared_ptr<TextButton> pauseButton_;
+    std::shared_ptr<TextButton> resetLoopButton_;
     
     std::shared_ptr<Label>      posLabel_;
     std::shared_ptr<Slider>     posSlider_;

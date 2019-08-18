@@ -24,7 +24,7 @@ public:
     parent_(parent),
     numOfStrip_(1),
     isMouseDown_(false),
-    clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
+    clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1), playingPosRatio_(-1.f),
     listener_(nullptr)
     {
         current_ = std::make_unique<Label>();
@@ -47,17 +47,33 @@ public:
             const int32_t height = previewBuffer_[iStrip] * getHeight();
             const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
             
-            auto color = Colour(0x40ffffff);
-            if (loopAStripIndex_ != -1 && loopAStripIndex_ <= iStrip && iStrip <= loopBStripIndex_)
+            if (iStrip == static_cast<size_t>(playingPosRatio_ * numOfStrip_))
             {
-                color = Colour(0xbb50E3C2);
+                g.setColour(Colour(0xddffffff));
             }
-            g.setColour(color);
+            else if (loopAStripIndex_ != -1 && loopAStripIndex_ <= iStrip && iStrip <= loopBStripIndex_)
+            {
+                g.setColour(Colour(0x88ffffff));
+            }
+            else
+            {
+                g.setColour(Colour(0x33ffffff));
+            }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }
+        
+        /*
+        if (playingPosRatio_ >= 0.f)
+        {
+            g.setColour(Colour(0xffff0000));
+            const int32_t height = previewBuffer_[playingPosRatio_ * numOfStrip_] * getHeight();
+            int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
+            g.fillRect(static_cast<int32_t>(playingPosRatio_ * getWidth()), getHeight() - height, 1, height);
+        }
+         */
     }
     
-    void mouseMoveOrDrag(const MouseEvent &event)
+    void mouseMoveOrDrag(const MouseEvent& event)
     {
         auto pos = event.getPosition();
         parent_->showTimeTooltip(static_cast<float>(pos.getX()) / getWidth());
@@ -71,23 +87,23 @@ public:
         repaint();
     }
     
-    void mouseMove(const MouseEvent &event) override
+    void mouseMove(const MouseEvent& event) override
     {
         mouseMoveOrDrag(event);
     }
     
-    void mouseDrag(const MouseEvent &event) override
+    void mouseDrag(const MouseEvent& event) override
     {
         mouseMoveOrDrag(event);
     }
     
-    void mouseDown(const MouseEvent &event) override
+    void mouseDown(const MouseEvent& event) override
     {
         isMouseDown_ = true;
         clickedStripIndex_ = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
     }
     
-    void mouseUp(const MouseEvent &event) override
+    void mouseUp(const MouseEvent& event) override
     {
         auto distX = abs(event.getMouseDownX() - event.x);
         auto distY = abs(event.getMouseDownY() - event.y);
@@ -95,15 +111,16 @@ public:
         {
             if (distX < 4 && distY < 4)
             {
-                std::cout << "Click" << std::endl;
+                // Click
                 clickedStripIndex_ = -1;
                 if (listener_ != nullptr) listener_->setPlayPosition(parent_, static_cast<float>(event.getPosition().getX()) / getWidth());
             }
             else
             {
-                std::cout << "Drag" << std::endl;
+                // Drag
                 loopAStripIndex_ = clickedStripIndex_;
                 auto stripIndex = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
+                if (stripIndex < 0) stripIndex = 0;
                 if (stripIndex < loopAStripIndex_)
                 {
                     loopBStripIndex_ = loopAStripIndex_;
@@ -115,12 +132,21 @@ public:
                 }
                 if (listener_ != nullptr)
                 {
-                    listener_->setAPosition(parent_, static_cast<float>(loopAStripIndex_) / numOfStrip_);
-                    listener_->setBPosition(parent_, static_cast<float>(loopBStripIndex_) / numOfStrip_);
+                    float aRatio = static_cast<float>(loopAStripIndex_) / numOfStrip_;
+                    if (1.f < aRatio) aRatio = 1.f;
+                    float bRatio = static_cast<float>(loopBStripIndex_) / numOfStrip_;
+                    if (1.f < bRatio) bRatio = 1.f;
+                    listener_->setAPosition(parent_, aRatio);
+                    listener_->setBPosition(parent_, bRatio);
                 }
             }
         }
         isMouseDown_ = false;
+    }
+    
+    void mouseExit(const MouseEvent& event) override
+    {
+        current_->setVisible(false);
     }
     
     void setBuffer(const float* buffer[], size_t bufferLength)
@@ -135,7 +161,8 @@ public:
             {
                 const size_t bufIndex = iStrip * (bufferLength / numOfStrip_) + iBuffer;
                 if (bufIndex >= bufferLength) break;
-                preview += (abs(buffer[0][bufIndex]) + abs(buffer[1][bufIndex])) / 2.f;
+                //preview += (abs(buffer[0][bufIndex]) + abs(buffer[1][bufIndex])) / 2.f;
+                preview += ((buffer[0][bufIndex] * buffer[0][bufIndex]) + (buffer[1][bufIndex] * buffer[1][bufIndex])) / 2.f;
             }
             preview /= (bufferLength / numOfStrip_);
             if (preview >= 1.f) preview = 1.f;
@@ -148,8 +175,25 @@ public:
         {
             previewBuffer_[iPreviewBuffer] /= previewMax;
         }
-        loopAStripIndex_ = -1;
         
+        loopAStripIndex_ = 0;
+        loopBStripIndex_ = static_cast<int32_t>(numOfStrip_ - 1);
+        
+        playingPosRatio_ = -0.f;
+        
+        repaint();
+    }
+    
+    void setPlayPosition(float ratio)
+    {
+        playingPosRatio_ = ratio;
+        repaint();
+    }
+    
+    void setABPosition(float aRatio, float bRatio)
+    {
+        loopAStripIndex_ = aRatio * numOfStrip_;
+        loopBStripIndex_ = bRatio * numOfStrip_;
         repaint();
     }
     
@@ -170,6 +214,7 @@ private:
     size_t numOfStrip_;
     bool isMouseDown_;
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
+    float playingPosRatio_;
     MelissaWaveformControlListener* listener_;
     std::vector<float> previewBuffer_;
 };
@@ -187,7 +232,7 @@ timeSec_(0)
     aLabel_->setSize(60, 20);
     aLabel_->setText("0:00", dontSendNotification);
     aLabel_->setJustificationType(Justification::centredLeft);
-    aLabel_->setFont(Font(18));
+    aLabel_->setFont(Font(14));
     aLabel_->setColour(Label::textColourId, Colour(0x80ffffff));
     addAndMakeVisible(aLabel_.get());
     
@@ -195,13 +240,12 @@ timeSec_(0)
     bLabel_->setSize(60, 18);
     bLabel_->setText("-:--", dontSendNotification);
     bLabel_->setJustificationType(Justification::centredRight);
-    bLabel_->setFont(Font(18));
+    bLabel_->setFont(Font(14));
     bLabel_->setColour(Label::textColourId, Colour(0x80ffffff));
     addAndMakeVisible(bLabel_.get());
     
     posTooltip_ = std::make_unique<MelissaLabel>();
     posTooltip_->setSize(100, 28);
-    posTooltip_->setText("2:48");
     addAndMakeVisible(posTooltip_.get());
     
     startTimer(100);
@@ -239,6 +283,16 @@ void MelissaWaveformControlComponent::setBuffer(const float* buffer[], size_t bu
     
     timeSec_ = static_cast<float>(bufferLength) / sampleRate;
     bLabel_->setText(MelissaUtility::getFormattedTimeSec(timeSec_), dontSendNotification);
+}
+
+void MelissaWaveformControlComponent::setPlayPosition(float ratio)
+{
+    waveformView_->setPlayPosition(ratio);
+}
+
+void MelissaWaveformControlComponent::setABPosition(float aRatio, float bRatio)
+{
+    waveformView_->setABPosition(aRatio, bRatio);
 }
 
 void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)

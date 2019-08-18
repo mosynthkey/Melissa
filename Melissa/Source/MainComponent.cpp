@@ -4,30 +4,25 @@
 
 using std::make_unique;
 
-class MelissaRoundButton : public Button
+class MelissaPlayPauseButton : public Button
 {
 public:
-    MelissaRoundButton(const String& name) : Button(name)
+    MelissaPlayPauseButton(const String& name) :
+    Button(name), mode_(kMode_Play)
     {
         setOpaque(false);
     }
     
-private:
-    void paintButton (Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    enum Mode
     {
-        const auto& b = getLocalBounds();
-        constexpr int t = 2; // thickness
-        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(t / 2, t / 2, b.getWidth() - t - 1, b.getHeight() - t - 1, (b.getHeight() - t) / 2, t);
-    }
-};
-
-class MelissaPlayButton : public Button
-{
-public:
-    MelissaPlayButton(const String& name) : Button(name)
+        kMode_Play,
+        kMode_Pause
+    } mode_;
+    
+    void setMode(Mode mode)
     {
-        setOpaque(false);
+        mode_ = mode;
+        repaint();
     }
     
 private:
@@ -41,15 +36,27 @@ private:
         const int triW = w * 9.f / 23.f;
         const int triH = h * 3.f / 7.f;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
+        const bool on = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, on ? 0.6f : 0.4f));
         g.drawEllipse(t / 2, t / 2, w - t - 1, h - t - 1, t);
         
-        const int x0 = (w - triW) * 4.f / 7.f;
-        const int y0 = (h - triH) / 2;
-        
-        Path path;
-        path.addTriangle (x0, y0, x0, y0 + triH, x0 + triW, h / 2);
-        g.fillPath(path);
+        if (mode_ == kMode_Play)
+        {
+            const int x0 = (w - triW) * 4.f / 7.f;
+            const int y0 = (h - triH) / 2;
+            
+            Path path;
+            path.addTriangle (x0, y0, x0, y0 + triH, x0 + triW, h / 2);
+            g.fillPath(path);
+        }
+        else
+        {
+            const int w0 = w / 10;
+            const int l0 = h * 2 / 5;
+            
+            g.fillRect(w / 2 - w0 * 1.5, (h - l0) / 2, w0, l0);
+            g.fillRect(w / 2 + w0 * 0.5, (h - l0) / 2, w0, l0);
+        }
     }
 };
 
@@ -58,12 +65,11 @@ status_(kStatus_Stop),
 melissa_(make_unique<Melissa>()),
 waveformComponent_(make_unique<MelissaWaveformControlComponent>()),
 controlComponent_(make_unique<MelissaControlComponent>()),
-button_(make_unique<MelissaRoundButton>("testButton")),
-playButton_(make_unique<MelissaPlayButton>("playButton")),
+playPauseButton_(make_unique<MelissaPlayPauseButton>("playButton")),
 debugComponent_(make_unique<MelissaDebugComponent>())
 {
 #if JUCE_MAC || JUCE_WINDOWS
-    getLookAndFeel().setDefaultSansSerifTypefaceName("Helvetica Neue");
+    getLookAndFeel().setDefaultSansSerifTypefaceName("Hiragino Kaku Gothic ProN");
 #endif
     
     setSize (1400, 860);
@@ -75,16 +81,26 @@ debugComponent_(make_unique<MelissaDebugComponent>())
     controlComponent_->setBounds(0, 240, getWidth(), 240);
     addAndMakeVisible(controlComponent_.get());
     
-    button_->setBounds(0, 240, 140, 40);
-    addAndMakeVisible(button_.get());
+    playPauseButton_->onClick = [this]()
+    {
+        if (status_ == kStatus_Playing)
+        {
+            pause();
+        }
+        else
+        {
+            play();
+        }
+    };
+    addAndMakeVisible(playPauseButton_.get());
     
-    addAndMakeVisible(playButton_.get());
-    
+    debugComponent_->setLookAndFeel(&lookAndFeel_);
     debugComponent_->setBounds(0, 500, getWidth(), 360);
     debugComponent_->fileBrowserComponent_->addListener(this);
     debugComponent_->playButton_->onClick  = [this]() { play(); };
     debugComponent_->pauseButton_->onClick = [this]() { pause(); };
     debugComponent_->stopButton_->onClick  = [this]() { stop(); };
+    debugComponent_->resetLoopButton_->onClick  = [this]() { resetLoop(); };
     debugComponent_->posSlider_->onDragEnd = [this]()
     {
         const float playPointMSec = debugComponent_->posSlider_->getValue() / 100.f * melissa_->getTotalLengthMSec();
@@ -117,6 +133,11 @@ debugComponent_(make_unique<MelissaDebugComponent>())
         melissa_->setVolume(debugComponent_->volumeSlider_->getValue());
     };
     addAndMakeVisible(debugComponent_.get());
+    
+    testButton_ = make_unique<MelissaIncDecButton>();
+    testButton_->setBounds(0, 240, 140, 34);
+    testButton_->setText("240 ms");
+    addAndMakeVisible(testButton_.get());
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -132,7 +153,9 @@ debugComponent_(make_unique<MelissaDebugComponent>())
     }
     
     startThread();
-    startTimer(100);
+    startTimer(1000 / 10);
+    
+    addKeyListener(this);
 }
 
 MainComponent::~MainComponent()
@@ -171,7 +194,41 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
-    playButton_->setBounds((getWidth() - 100) / 2, 300, 100, 100);
+    playPauseButton_->setBounds((getWidth() - 100) / 2, 300, 100, 100);
+}
+
+bool MainComponent::keyPressed(const KeyPress &key, Component* originatingComponent)
+{
+    const auto keyCode = key.getKeyCode();
+    
+    if (keyCode == 32) // space
+    {
+        if (status_ == kStatus_Playing)
+        {
+            pause();
+        }
+        else
+        {
+            play();
+        }
+        return true;
+    }
+    else if (keyCode == 63234)
+    {
+        auto currentMSec = melissa_->getPlayingPosMSec();
+        melissa_->setPlayingPosMSec(currentMSec - 1000);
+        return true;
+    }
+    else if (keyCode == 63235)
+    {
+        auto currentMSec = melissa_->getPlayingPosMSec();
+        melissa_->setPlayingPosMSec(currentMSec + 1000);
+        return true;
+    }
+    
+    std::cout << keyCode << std::endl;
+        
+    return false;
 }
 
 void MainComponent::fileDoubleClicked(const File& file)
@@ -181,7 +238,6 @@ void MainComponent::fileDoubleClicked(const File& file)
 
 void MainComponent::setPlayPosition(MelissaWaveformControlComponent* sender, float ratio)
 {
-    std::cout << "setPlayPosition " << ratio << std::endl;
     if (melissa_ == nullptr) return;
     
     melissa_->setPlayingPosRatio(ratio);
@@ -189,7 +245,6 @@ void MainComponent::setPlayPosition(MelissaWaveformControlComponent* sender, flo
 
 void MainComponent::setAPosition(MelissaWaveformControlComponent* sender, float ratio)
 {
-    std::cout << "setAPosition " << ratio << std::endl;
     if (melissa_ == nullptr) return;
     
     melissa_->setAPosRatio(ratio);
@@ -197,7 +252,6 @@ void MainComponent::setAPosition(MelissaWaveformControlComponent* sender, float 
 
 void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float ratio)
 {
-    std::cout << "setBPosition " << ratio << std::endl;
     if (melissa_ == nullptr) return;
     
     melissa_->setBPosRatio(ratio);
@@ -207,7 +261,7 @@ void MainComponent::run()
 {
     while (true)
     {
-        if (melissa_ != nullptr && melissa_->needToProcess())
+        if (melissa_ != nullptr && melissa_->isBufferSet() && melissa_->needToProcess())
         {
             melissa_->process();
         }
@@ -229,6 +283,8 @@ void MainComponent::timerCallback()
     
     debugComponent_->statusLabel_->setText(melissa_->needToProcess() ? ss.str() : "Process done", NotificationType::dontSendNotification);
     debugComponent_->debugLabel_->setText(melissa_->getStatusString(), dontSendNotification);
+    
+    waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
 }
 
 bool MainComponent::openFile(const File& file)
@@ -257,12 +313,14 @@ void MainComponent::play()
 {
     if (melissa_ == nullptr) return;
     status_ = kStatus_Playing;
+    playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Pause);
 }
 
 void MainComponent::pause()
 {
     if (melissa_ == nullptr) return;
     status_ = kStatus_Pause;
+    playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Play);
 }
 
 void MainComponent::stop()
@@ -270,5 +328,12 @@ void MainComponent::stop()
     if (melissa_ == nullptr) return;
     status_ = kStatus_Stop;
     melissa_->setPlayingPosMSec(0);
+    playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Play);
 }
 
+void MainComponent::resetLoop()
+{
+    melissa_->setAPosRatio(0.f);
+    melissa_->setBPosRatio(1.f);
+    waveformComponent_->setABPosition(0.f, 1.f);
+}
