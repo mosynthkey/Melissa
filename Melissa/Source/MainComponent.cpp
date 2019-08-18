@@ -279,9 +279,9 @@ void MainComponent::timerCallback()
     debugComponent_->posLabel_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getPlayingPosMSec()) , dontSendNotification);
     
     std::stringstream ss;
-    ss << "Prosessing : " << static_cast<uint32_t>(melissa_->getProgress() * 100) << "%";
+    //ss << "Prosessing : " << static_cast<uint32_t>(melissa_->getProgress() * 100) << "%";
     
-    debugComponent_->statusLabel_->setText(melissa_->needToProcess() ? ss.str() : "Process done", NotificationType::dontSendNotification);
+    debugComponent_->statusLabel_->setText(melissa_->needToProcess() ? "Processing" : "Process done", NotificationType::dontSendNotification);
     debugComponent_->debugLabel_->setText(melissa_->getStatusString(), dontSendNotification);
     
     waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
