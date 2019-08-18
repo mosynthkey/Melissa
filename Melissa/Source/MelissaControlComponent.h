@@ -9,7 +9,9 @@ public:
     {
         setOpaque(false);
     }
+    
     ~MelissaControlComponent() {}
+    
     void paint(Graphics& g) override
     {
         g.fillAll(Colour(0x30ffffff));

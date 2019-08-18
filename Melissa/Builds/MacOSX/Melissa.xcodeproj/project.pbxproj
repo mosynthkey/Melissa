@@ -416,6 +416,13 @@
 			path = "../../JuceLibraryCode/include_juce_audio_basics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		5F343E441F7F27A2E3F88724 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaLookAndFeel.h;
+			path = ../../Source/MelissaLookAndFeel.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		5FE782DD0419B2444BB900DE = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -626,6 +633,13 @@
 			path = ../../../Submodule/soundtouch/source/SoundTouch/TDStretch.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		AE3882F2BF307AE1F9B79D9F = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaIncDecButton.h;
+			path = ../../Source/MelissaIncDecButton.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		B4F08E6E135F001714E03CF1 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -820,7 +834,9 @@
 				73ADFAD99BF06543B7DBB3C6,
 				9B5EF7E06FF4F7DC589785BA,
 				A8829F6FF3C288A26FFF8417,
+				AE3882F2BF307AE1F9B79D9F,
 				49BD21EE3E719D12B0E101E7,
+				5F343E441F7F27A2E3F88724,
 				86D8AA891D4D6C0F8064FDFC,
 				AA30FA5E18873B4EA1B39D47,
 				9891683CAA48465681E875FB,

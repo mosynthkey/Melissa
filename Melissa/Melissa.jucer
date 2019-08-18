@@ -62,7 +62,11 @@
             file="Source/MelissaControlComponent.h"/>
       <FILE id="s3KDME" name="MelissaDebugComponent.h" compile="0" resource="0"
             file="Source/MelissaDebugComponent.h"/>
+      <FILE id="eJrVsF" name="MelissaIncDecButton.h" compile="0" resource="0"
+            file="Source/MelissaIncDecButton.h"/>
       <FILE id="oVx3Fa" name="MelissaLabel.h" compile="0" resource="0" file="Source/MelissaLabel.h"/>
+      <FILE id="ikpfYi" name="MelissaLookAndFeel.h" compile="0" resource="0"
+            file="Source/MelissaLookAndFeel.h"/>
       <FILE id="dpnjGP" name="MelissaUtility.h" compile="0" resource="0"
             file="Source/MelissaUtility.h"/>
       <FILE id="MLWaqo" name="MelissaWaveformControlComponent.cpp" compile="1"

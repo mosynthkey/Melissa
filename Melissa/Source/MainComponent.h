@@ -4,13 +4,15 @@
 #include "Melissa.h"
 #include "MelissaControlComponent.h"
 #include "MelissaDebugComponent.h"
+#include "MelissaIncDecButton.h"
+#include "MelissaLookAndFeel.h"
 #include "MelissaWaveformControlComponent.h"
 
-class MelissaRoundButton;
-class MelissaPlayButton;
+class MelissaPlayPauseButton;
 
 class MainComponent   : public AudioAppComponent,
                         public FileBrowserListener,
+                        public KeyListener,
                         public MelissaWaveformControlListener,
                         public Timer,
                         public Thread
@@ -31,6 +33,9 @@ public:
     void fileClicked(const File& file, const MouseEvent& e) override {}
     void fileDoubleClicked(const File& file) override;
     void browserRootChanged(const File& newRoot) override {};
+    
+    // KeyListener
+    bool keyPressed(const KeyPress &key, Component* originatingComponent) override;
     
     // MelissaWaveformControlListener
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
@@ -53,6 +58,7 @@ public:
     void    play();
     void    pause();
     void    stop();
+    void    resetLoop();
 
 private:
     std::unique_ptr<Melissa> melissa_;
@@ -60,10 +66,12 @@ private:
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaControlComponent> controlComponent_;
-    std::unique_ptr<MelissaRoundButton> button_;
-    std::unique_ptr<MelissaPlayButton> playButton_;
+    std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
+    std::unique_ptr<MelissaIncDecButton> testButton_;
     
     std::unique_ptr<MelissaDebugComponent> debugComponent_;
+    
+    MelissaLookAndFeel lookAndFeel_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

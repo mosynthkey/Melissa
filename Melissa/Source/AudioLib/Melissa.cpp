@@ -118,6 +118,11 @@ int32_t Melissa::getPlayingPosMSec() const
     return (aPosSec + static_cast<float>(playingIndex_) / outputSampleRate_ * speed_) * 1000;
 }
 
+float Melissa::getPlayingPosRatio() const
+{
+    return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBuffer_[0].size()) / originalSampleRate_);
+}
+
 void Melissa::setSpeed(float speed)
 {
     if (speed_ == speed) return;
@@ -216,6 +221,11 @@ bool Melissa::needToProcess()
 float Melissa::getProgress() const
 {
     return progress_;
+}
+
+bool Melissa::isBufferSet() const
+{
+    return originalBuffer_[0].size() != 0;
 }
 
 void Melissa::reset()

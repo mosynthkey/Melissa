@@ -28,6 +28,7 @@ public:
     void setPlayingPosRatio(float ratio);
     int32_t getTotalLengthMSec() const;
     int32_t getPlayingPosMSec() const;
+    float getPlayingPosRatio() const;
     
     void setSpeed(float speed);
     void setPitch(int32_t semitone);
@@ -38,6 +39,7 @@ public:
     void process();
     bool needToProcess();
     float getProgress() const;
+    bool isBufferSet() const;
     
     void reset();
     
