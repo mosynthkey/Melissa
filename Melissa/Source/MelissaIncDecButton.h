@@ -3,7 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaLabel.h"
 
-class IncDecButton : public Component
+class IncDecButton : public Button
 {
 public:
     enum Type
@@ -12,24 +12,32 @@ public:
         kType_DecButton
     } type_;
     
-    IncDecButton(Type type) :
-    type_(type)
-    {
-        
-    }
+    IncDecButton(Type type, std::function<void(bool)> onClick) :
+    Button(""), type_(type), onClick_(onClick) { }
     
-    void paint(Graphics& g) override
+    void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const int32_t lineLength = 8, lineWidth = 2;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
+        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlighted ? 0.8f : 0.4f));
         g.drawRect((getWidth() - lineLength) / 2, (getHeight() - lineWidth) / 2, lineLength, lineWidth);
         if (type_ == kType_IncButton)
         {
-            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-            g.drawRect((getWidth() - lineWidth) / 2, (getHeight() - lineLength) / 2, lineWidth, lineLength);
+            const int32_t halfLength = (lineLength - lineWidth) / 2;
+            const int32_t y = (getHeight() - lineLength) / 2;
+            g.drawRect((getWidth() - lineWidth) / 2, y, lineWidth, halfLength);
+            g.drawRect((getWidth() - lineWidth) / 2, y + halfLength + lineWidth, lineWidth, halfLength);
         }
     }
+    
+    void clicked(const ModifierKeys& modifiers) override
+    {
+        if (onClick_ != nullptr) onClick_(modifiers.isShiftDown());
+    }
+    
+    std::function<void(bool)> onClick_;
 };
 
 class MelissaIncDecButton : public Component
@@ -40,10 +48,10 @@ public:
         label_ = std::make_unique<MelissaLabel>();
         addAndMakeVisible(label_.get());
         
-        decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton);
+        decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClickDecButton_ != nullptr) onClickDecButton_(b); });
         addAndMakeVisible(decButton_.get());
         
-        incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton);
+        incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton, [this](bool b) { if (onClickIncButton_ != nullptr) onClickIncButton_(b); });
         addAndMakeVisible(incButton_.get());
     }
     
@@ -60,6 +68,9 @@ public:
     {
         label_->setText(str);
     }
+    
+    std::function<void(bool)> onClickIncButton_;
+    std::function<void(bool)> onClickDecButton_;
     
 private:
     std::unique_ptr<MelissaLabel> label_;

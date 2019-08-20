@@ -6,9 +6,8 @@
 #include "MelissaDebugComponent.h"
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
+#include "MelissaPlayPauseButton.h"
 #include "MelissaWaveformControlComponent.h"
-
-class MelissaPlayPauseButton;
 
 class MainComponent   : public AudioAppComponent,
                         public FileBrowserListener,
@@ -59,6 +58,12 @@ public:
     void    pause();
     void    stop();
     void    resetLoop();
+    
+    void updateAll();
+    void updateAButtonLabel();
+    void updateBButtonLabel();
+    void updateSpeedButtonLabel();
+    void updatePitchButtonLabel();
 
 private:
     std::unique_ptr<Melissa> melissa_;
@@ -67,7 +72,16 @@ private:
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaControlComponent> controlComponent_;
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
-    std::unique_ptr<MelissaIncDecButton> testButton_;
+    
+    std::unique_ptr<TextButton> aSetButton_;
+    std::unique_ptr<MelissaIncDecButton> aButton_;
+    std::unique_ptr<TextButton> bSetButton_;
+    std::unique_ptr<MelissaIncDecButton> bButton_;
+    
+    std::unique_ptr<Label> speedLabel_;
+    std::unique_ptr<MelissaIncDecButton> speedButton_;
+    std::unique_ptr<Label> pitchLabel_;
+    std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
     std::unique_ptr<MelissaDebugComponent> debugComponent_;
     

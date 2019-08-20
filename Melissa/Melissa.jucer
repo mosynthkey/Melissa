@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.3"
+<JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.4"
               cppLanguageStandard="17">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{7861AF46-3FAB-B002-909F-38D9C3534B17}" name="soundtouch">
@@ -67,6 +67,8 @@
       <FILE id="oVx3Fa" name="MelissaLabel.h" compile="0" resource="0" file="Source/MelissaLabel.h"/>
       <FILE id="ikpfYi" name="MelissaLookAndFeel.h" compile="0" resource="0"
             file="Source/MelissaLookAndFeel.h"/>
+      <FILE id="unM38y" name="MelissaPlayPauseButton.h" compile="0" resource="0"
+            file="Source/MelissaPlayPauseButton.h"/>
       <FILE id="dpnjGP" name="MelissaUtility.h" compile="0" resource="0"
             file="Source/MelissaUtility.h"/>
       <FILE id="MLWaqo" name="MelissaWaveformControlComponent.cpp" compile="1"
