@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 class MelissaUtility
 {
@@ -15,7 +17,7 @@ public:
         msec -= sec * 1000;
         
         std::stringstream ss;
-        ss << minute << ":" << sec << "." << std::setw(4) << std::setfill('0') << static_cast<int32_t>(msec);
+        ss << minute << ":" << sec << "." << static_cast<int32_t>(msec) ;
         
         return ss.str();
     }

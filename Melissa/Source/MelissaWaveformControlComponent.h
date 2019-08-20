@@ -27,7 +27,8 @@ public:
     
     void setListener(MelissaWaveformControlListener* listener);
     void setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate);
-    void setABPosition(float aRatio, float bRatio);
+    void setAPosition(float ratio);
+    void setBPosition(float ratio);
     void setPlayPosition(float ratio);
     void showTimeTooltip(float posRatio);
     

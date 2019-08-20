@@ -10,8 +10,24 @@ public:
     void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const auto& c = b.getLocalBounds();
-        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, shouldDrawButtonAsHighlighted ? 0.6f : 0.4f));
+        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
         g.drawRoundedRectangle(lineThickNess_ / 2, lineThickNess_ / 2, c.getWidth() - lineThickNess_ - 1, c.getHeight() - lineThickNess_ - 1, (c.getHeight() - lineThickNess_) / 2, lineThickNess_);
+    }
+    
+    void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+    }
+    
+    Font getTextButtonFont(TextButton& tb, int buttonHeight) override
+    {
+        return Font(14);
+    }
+    
+    Font getLabelFont(Label& l) override
+    {
+        return Font(14);
     }
     
     void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override

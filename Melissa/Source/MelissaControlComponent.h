@@ -14,7 +14,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.fillAll(Colour(0x30ffffff));
+        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.15f));
     }
     
 private:

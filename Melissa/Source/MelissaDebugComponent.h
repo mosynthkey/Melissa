@@ -124,14 +124,14 @@ public:
         addAndMakeVisible(statusLabel_.get());
         
         debugLabel_ = make_shared<Label>();
-        debugLabel_->setBounds(840, 60, 360, 80);
+        debugLabel_->setBounds(840, 60, 360, 320);
         debugLabel_->setFont(Font(Font::getDefaultMonospacedFontName(), 10, 10));
         addAndMakeVisible(debugLabel_.get());
     }
     
     void paint(Graphics& g) override
     {
-        g.fillAll(Colour::fromRGBA(0, 0, 0, 255 * 0.4f));
+        g.fillAll(Colour::fromRGBA(0, 0, 0, 255 * 0.1f));
     }
     
     std::shared_ptr<FileBrowserComponent> fileBrowserComponent_;

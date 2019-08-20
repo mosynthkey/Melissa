@@ -29,6 +29,10 @@
 			isa = PBXBuildFile;
 			fileRef = BD37A49C825CB5103005AEF1;
 		};
+		5D1DF84453CFA8888971F708 = {
+			isa = PBXBuildFile;
+			fileRef = B4AF79B084D6BF3A94CD9732;
+		};
 		68A622DCB0FD454652820FBD = {
 			isa = PBXBuildFile;
 			fileRef = 7766662467CEACDB8C3BEC90;
@@ -640,6 +644,13 @@
 			path = ../../Source/MelissaIncDecButton.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		B4AF79B084D6BF3A94CD9732 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = CoreAudioKit.framework;
+			path = System/Library/Frameworks/CoreAudioKit.framework;
+			sourceTree = SDKROOT;
+		};
 		B4F08E6E135F001714E03CF1 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -730,6 +741,13 @@
 			name = DiscRecording.framework;
 			path = System/Library/Frameworks/DiscRecording.framework;
 			sourceTree = SDKROOT;
+		};
+		ED8BBFA3CB0ACA5F1208777C = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaPlayPauseButton.h;
+			path = ../../Source/MelissaPlayPauseButton.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		EEE2A8215A773AA21AD890B7 = {
 			isa = PBXFileReference;
@@ -837,6 +855,7 @@
 				AE3882F2BF307AE1F9B79D9F,
 				49BD21EE3E719D12B0E101E7,
 				5F343E441F7F27A2E3F88724,
+				ED8BBFA3CB0ACA5F1208777C,
 				86D8AA891D4D6C0F8064FDFC,
 				AA30FA5E18873B4EA1B39D47,
 				9891683CAA48465681E875FB,
@@ -913,6 +932,7 @@
 				4D689FFEC63813C9733B5123,
 				DCF7B019C6836D63B4CF889B,
 				BD37A49C825CB5103005AEF1,
+				B4AF79B084D6BF3A94CD9732,
 				7766662467CEACDB8C3BEC90,
 				EAB41B4457844BF5B7AFA491,
 				02DCB9D0F489C159AC88DE26,
@@ -1198,6 +1218,7 @@
 				0A21EC1E036CB21276662565,
 				16A7C7B850440B7F5FC712B8,
 				56AA9E80A9B73CCC862F6148,
+				5D1DF84453CFA8888971F708,
 				68A622DCB0FD454652820FBD,
 				26F9517DE57D4DA981C38D18,
 				CEFE968253F80411D0A54C55,
@@ -1225,7 +1246,7 @@
 		7B6AAFAA6062749FBB12FE1E = {
 			isa = PBXProject;
 			buildConfigurationList = 28BFF5D5269E332022533CCA;
-			attributes = { LastUpgradeCheck = 1010; ORGANIZATIONNAME = ""; TargetAttributes = { B20050DB0486B13C02459057 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = ""; TargetAttributes = { B20050DB0486B13C02459057 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = 454B512F8D7421B1A06E0813;

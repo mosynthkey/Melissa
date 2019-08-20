@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <sstream>
 #include "Melissa.h"
+#include "MelissaUtility.h"
 
 using std::make_unique;
 
@@ -25,6 +26,8 @@ aIndex_(0), bIndex_(0), startIndex_(0), readIndex_(0), speed_(1.f), semitone_(0)
 
 void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
+    reset();
+    
     originalSampleRate_ = sampleRate;
     
     for (int iCh = 0; iCh < 2; ++iCh)
@@ -36,11 +39,18 @@ void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t samp
         }
     }
     
+    originalBufferLength_ = bufferLength;
+    analyzeBpm();
+    
     aIndex_ = 0;
     bIndex_ =  bufferLength - 1;
-    originalBufferLength_ = bufferLength;
+    startIndex_ = 0;
+    setPitch(0);
+    setSpeed(1.f);
+   
     
     isOriginalBufferPrepared_ = true;
+    needToReset_ = true;
 }
 
 void Melissa::setOutputSampleRate(int32_t sampleRate)
@@ -57,6 +67,7 @@ void Melissa::setAPosMSec(float aPosMSec)
     aIndex_ = static_cast<size_t>(aPosMSec / 1000.f * originalSampleRate_);
     if (originalBufferLength_ < aIndex_) aIndex_ = 0;
     
+    startIndex_ = aIndex_;
     needToReset_ = true;
 }
 
@@ -105,6 +116,16 @@ void Melissa::setPlayingPosRatio(float ratio)
     setPlayingPosMSec((originalBufferLength_ - 1) * ratio / originalSampleRate_ * 1000.f);
 }
 
+float Melissa::getAPosMSec() const
+{
+    return static_cast<float>(aIndex_) / originalSampleRate_ * 1000.f;
+}
+
+float Melissa::getBPosMSec() const
+{
+    return static_cast<float>(bIndex_) / originalSampleRate_ * 1000.f;
+}
+
 int32_t Melissa::getTotalLengthMSec() const
 {
     return static_cast<float>(originalBufferLength_) / originalSampleRate_ * 1000.f;
@@ -131,6 +152,16 @@ int32_t Melissa::getPlayingPosMSec() const
     }
 }
 
+float Melissa::getAPosRatio() const
+{
+    return static_cast<float>(getAPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
+}
+
+float Melissa::getBPosRatio() const
+{
+    return static_cast<float>(getBPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
+}
+
 float Melissa::getPlayingPosRatio() const
 {
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
@@ -140,6 +171,9 @@ void Melissa::setSpeed(float speed)
 {
     if (speed_ == speed) return;
     
+    if (speed > 2.f) speed = 2.f;
+    if (speed < 0.2f) speed = 0.2f;
+    
     speed_ = speed;
     needToReset_ = true;
 }
@@ -148,34 +182,65 @@ void Melissa::setPitch(int32_t semitone)
 {
     if (semitone_ == semitone) return;
     
+    if (semitone > 24) semitone = 24;
+    if (semitone < -24) semitone = -24;
+    
     semitone_ = semitone;
     needToReset_ = true;
 }
 
-float Melissa::setVolume(float volume)
+void Melissa::setVolume(float volume)
 {
     if (volume < 0.f) volume = 0.f;
     if (2.f < volume) volume = 2.f;
     
     volume_ = volume;
-    
-    return volume_;
 }
 
 void Melissa::render(float* bufferToRender[], size_t bufferLength)
 {
     if (!isOriginalBufferPrepared_) return;
     
+    bool triggerMetronome = false;
+
+    
     for (int iSample = 0; iSample < bufferLength; ++iSample)
     {
+        metronome_.osc_ += 2.f / (outputSampleRate_ / 880.f);
+        if (metronome_.osc_ > 1.f) metronome_.osc_ = -1.f;
+        
         mutex_.lock();
         if (processedBufferQue_.size() > 0)
         {
-            bufferToRender[0][iSample] = processedBufferQue_[0];
-            bufferToRender[1][iSample] = processedBufferQue_[1];
+            bufferToRender[0][iSample] = processedBufferQue_[0] + metronome_.osc_ * metronome_.amp_;
+            bufferToRender[1][iSample] = processedBufferQue_[1] + metronome_.osc_ * metronome_.amp_;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
         }
         mutex_.unlock();
+        
+        if (--metronome_.count_ < 0)
+        {
+            metronome_.count_ += 1.f / (static_cast<float>(metronome_.bpm_) / 60.f) * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
+            metronome_.amp_ = 1.f;
+        }
+        
+        if (metronome_.amp_ > 0.f)
+        {
+            metronome_.amp_ -= 1.f / static_cast<float>(outputSampleRate_) * 10;
+        }
+        else if (metronome_.amp_ < 0.f)
+        {
+            metronome_.amp_ = 0.f;
+        }
+    }
+    
+    if (triggerMetronome)
+    {
+        metronome_.amp_ = 1.f;
+    }
+    else if (metronome_.amp_ > 0.f)
+    {
+        metronome_.amp_ -= 1.f / static_cast<float>(outputSampleRate_) * bufferLength * 10;
     }
     
     sampleTime_ += bufferLength;
@@ -241,13 +306,16 @@ void Melissa::resetProcessedBuffer()
     soundTouch_->setTempo(fsConvPitch * speed_);
     soundTouch_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
     
+    std::cout << "ratio = " << soundTouch_->getInputOutputSampleRatio() << std::endl;
+    
     mutex_.lock();
     processedBufferQue_.clear();
     mutex_.unlock();
     
     sampleTime_ = 0;
-    readIndex_ = startIndex_ = aIndex_; // tentative
+    readIndex_ = startIndex_;
     needToReset_ = false;
+    metronome_.count_ = -1.f * metronome_.offsetSec_ * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
 }
 
 std::string Melissa::getStatusString() const
@@ -274,4 +342,75 @@ std::string Melissa::getStatusString() const
     ss << "S";
     
     return ss.str();
+}
+
+void Melissa::analyzeBpm()
+{
+    //if (!isOriginalBufferPrepared_) return;
+    
+    constexpr size_t frameLength = 32;
+    const size_t numOfFrames = originalBufferLength_ / frameLength;
+    
+    std::vector<float> frameAmp(numOfFrames);
+    for (size_t iFrame = 0; iFrame < numOfFrames; ++iFrame)
+    {
+        float amp = 0.f;
+        for (size_t iSample = 0; iSample < frameLength; ++iSample)
+        {
+            // stereo -> monoral
+            size_t sampleIndex = iFrame * frameLength + iSample;
+            if (sampleIndex > originalBufferLength_) break;
+            const float sig = (originalBuffer_[0][sampleIndex] + originalBuffer_[1][sampleIndex]);
+            amp += sig * sig;
+        }
+        frameAmp[iFrame] =  sqrt(amp / frameLength);
+    }
+    
+    std::vector<float> frameAmpDiff(numOfFrames);
+    for (size_t iFrame = 0; iFrame < numOfFrames - 1; ++iFrame)
+    {
+        frameAmpDiff[iFrame] = frameAmp[iFrame + 1] - frameAmp[iFrame];
+        if (frameAmpDiff[iFrame] < 0.f) frameAmpDiff[iFrame] = 0.f;
+    }
+    frameAmpDiff[numOfFrames - 1] = 0.f;
+    
+    auto getBpmCorrelation = [&](uint32_t bpm, float* a, float* b)
+    {
+        *a = 0.f;
+        *b = 0.f;
+        for (size_t iFrame = 0; iFrame < numOfFrames - 1; ++iFrame)
+        {
+            const double rad = 2 * M_PI * (bpm / 60.f) * iFrame / (originalSampleRate_ / frameLength);
+            const double win = 0.5f * (1.f - cos(2.0 * M_PI * static_cast<float>(iFrame) / numOfFrames));
+            *a += frameAmpDiff[iFrame] * cos(rad) * win;
+            *b += frameAmpDiff[iFrame] * sin(rad) * win;
+        }
+        *a /= numOfFrames;
+        *b /= numOfFrames;
+        
+        return sqrt(*a * *a + *b * *b);
+    };
+    
+    constexpr uint32_t bpmMax = 240, bpmMin = 60;
+    uint32_t estimatedBpm = 0;
+    std::vector<float> correlations(bpmMax - bpmMin + 1);
+    float correlationMax = 0.f, aMax = 0.f, bMax = 0.f;
+    for (uint32_t iBpm = bpmMin; iBpm <= bpmMax; ++iBpm)
+    {
+        auto c = correlations[iBpm - bpmMin] = getBpmCorrelation(iBpm, &aMax, &bMax);
+        if (c > correlationMax)
+        {
+            correlationMax = c;
+            estimatedBpm = iBpm;
+            std::cout << "estimatedBpm might be " << estimatedBpm << " (" << correlationMax << ")" << std::endl;
+        }
+    }
+    metronome_.bpm_ = estimatedBpm;
+    
+    float theta = atan2(bMax, aMax);
+    if (theta < 0) theta += 2.f * M_PI;
+    metronome_.offsetSec_ = theta / (2 * M_PI * (estimatedBpm / 60.f));
+    
+    std::cout << "BPM = " << metronome_.bpm_ << std::endl;
+    std::cout << metronome_.offsetSec_ << " sec" << std::endl;
 }

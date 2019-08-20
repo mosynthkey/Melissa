@@ -190,10 +190,15 @@ public:
         repaint();
     }
     
-    void setABPosition(float aRatio, float bRatio)
+    void setAPosition(float ratio)
     {
-        loopAStripIndex_ = aRatio * numOfStrip_;
-        loopBStripIndex_ = bRatio * numOfStrip_;
+        loopAStripIndex_ = ratio * numOfStrip_;
+        repaint();
+    }
+    
+    void setBPosition(float ratio)
+    {
+        loopBStripIndex_ = ratio * numOfStrip_;
         repaint();
     }
     
@@ -259,7 +264,7 @@ MelissaWaveformControlComponent::~MelissaWaveformControlComponent()
 void MelissaWaveformControlComponent::resized()
 {
     timeLineBar_->setBounds(50, getHeight() - 18, getWidth() - 50 * 2, 2);
-    waveformView_->setBounds(50, 20, getWidth() - 50 * 2, getHeight() - 20 - 30);
+    waveformView_->setBounds(70, 20, getWidth() - 70 * 2, getHeight() - 20 - 30);
     aLabel_->setTopLeftPosition(0, getHeight() - 20);
     bLabel_->setTopRightPosition(getWidth(), getHeight() - 20);
     
@@ -290,9 +295,14 @@ void MelissaWaveformControlComponent::setPlayPosition(float ratio)
     waveformView_->setPlayPosition(ratio);
 }
 
-void MelissaWaveformControlComponent::setABPosition(float aRatio, float bRatio)
+void MelissaWaveformControlComponent::setAPosition(float ratio)
 {
-    waveformView_->setABPosition(aRatio, bRatio);
+    waveformView_->setAPosition(ratio);
+}
+
+void MelissaWaveformControlComponent::setBPosition(float ratio)
+{
+    waveformView_->setBPosition(ratio);
 }
 
 void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)

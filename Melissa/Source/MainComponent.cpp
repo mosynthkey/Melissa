@@ -4,98 +4,30 @@
 
 using std::make_unique;
 
-class MelissaPlayPauseButton : public Button
-{
-public:
-    MelissaPlayPauseButton(const String& name) :
-    Button(name), mode_(kMode_Play)
-    {
-        setOpaque(false);
-    }
-    
-    enum Mode
-    {
-        kMode_Play,
-        kMode_Pause
-    } mode_;
-    
-    void setMode(Mode mode)
-    {
-        mode_ = mode;
-        repaint();
-    }
-    
-private:
-    void paintButton (Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
-    {
-        const auto& b = getLocalBounds();
-        
-        constexpr int t = 2; // thickness
-        const int w = b.getWidth();
-        const int h = b.getHeight();
-        const int triW = w * 9.f / 23.f;
-        const int triH = h * 3.f / 7.f;
-        
-        const bool on = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, on ? 0.6f : 0.4f));
-        g.drawEllipse(t / 2, t / 2, w - t - 1, h - t - 1, t);
-        
-        if (mode_ == kMode_Play)
-        {
-            const int x0 = (w - triW) * 4.f / 7.f;
-            const int y0 = (h - triH) / 2;
-            
-            Path path;
-            path.addTriangle (x0, y0, x0, y0 + triH, x0 + triW, h / 2);
-            g.fillPath(path);
-        }
-        else
-        {
-            const int w0 = w / 10;
-            const int l0 = h * 2 / 5;
-            
-            g.fillRect(w / 2 - w0 * 1.5, (h - l0) / 2, w0, l0);
-            g.fillRect(w / 2 + w0 * 0.5, (h - l0) / 2, w0, l0);
-        }
-    }
-};
-
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
-status_(kStatus_Stop),
-melissa_(make_unique<Melissa>()),
-waveformComponent_(make_unique<MelissaWaveformControlComponent>()),
-controlComponent_(make_unique<MelissaControlComponent>()),
-playPauseButton_(make_unique<MelissaPlayPauseButton>("playButton")),
-debugComponent_(make_unique<MelissaDebugComponent>())
+status_(kStatus_Stop)
 {
 #if JUCE_MAC || JUCE_WINDOWS
     getLookAndFeel().setDefaultSansSerifTypefaceName("Hiragino Kaku Gothic ProN");
 #endif
     
-    setSize (1400, 860);
+    melissa_ = make_unique<Melissa>();
     
-    waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
+    setLookAndFeel(&lookAndFeel_);
+    
+    waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     waveformComponent_->setListener(this);
     addAndMakeVisible(waveformComponent_.get());
     
-    controlComponent_->setBounds(0, 240, getWidth(), 240);
+    controlComponent_ = make_unique<MelissaControlComponent>();
     addAndMakeVisible(controlComponent_.get());
     
-    playPauseButton_->onClick = [this]()
-    {
-        if (status_ == kStatus_Playing)
-        {
-            pause();
-        }
-        else
-        {
-            play();
-        }
-    };
+    playPauseButton_ = make_unique<MelissaPlayPauseButton>("playButton");
+    playPauseButton_->onClick = [this]() { if (status_ == kStatus_Playing) { pause(); } else { play(); } };
     addAndMakeVisible(playPauseButton_.get());
     
+    debugComponent_ = make_unique<MelissaDebugComponent>();
     debugComponent_->setLookAndFeel(&lookAndFeel_);
-    debugComponent_->setBounds(0, 500, getWidth(), 360);
     debugComponent_->fileBrowserComponent_->addListener(this);
     debugComponent_->playButton_->onClick  = [this]() { play(); };
     debugComponent_->pauseButton_->onClick = [this]() { pause(); };
@@ -134,10 +66,108 @@ debugComponent_(make_unique<MelissaDebugComponent>())
     };
     addAndMakeVisible(debugComponent_.get());
     
-    testButton_ = make_unique<MelissaIncDecButton>();
-    testButton_->setBounds(0, 240, 140, 34);
-    testButton_->setText("240 ms");
-    addAndMakeVisible(testButton_.get());
+    {
+        aButton_ = make_unique<MelissaIncDecButton>();
+        aButton_->setText("-:--");
+        aButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setAPosMSec(melissa_->getAPosMSec() - (b ? 100 : 1000));
+            updateAButtonLabel();
+        };
+        aButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setAPosMSec(melissa_->getAPosMSec() + (b ? 100 : 1000));
+            updateAButtonLabel();
+        };
+        addAndMakeVisible(aButton_.get());
+    }
+    
+    {
+        aSetButton_ = make_unique<TextButton>();
+        aSetButton_->setButtonText("A");
+        aSetButton_->onClick = [this]()
+        {
+            melissa_->setAPosMSec(melissa_->getPlayingPosMSec());
+            updateAButtonLabel();
+        };
+        addAndMakeVisible(aSetButton_.get());
+    }
+    
+    {
+        bButton_ = make_unique<MelissaIncDecButton>();
+        bButton_->setText("-:--");
+        bButton_->setBounds(0, 240, 140, 34);
+        bButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setBPosMSec(melissa_->getBPosMSec() - (b ? 100 : 1000));
+            updateBButtonLabel();
+        };
+        bButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setBPosMSec(melissa_->getBPosMSec() + (b ? 100 : 1000));
+            updateBButtonLabel();
+        };
+        addAndMakeVisible(bButton_.get());
+    }
+    
+    {
+        bSetButton_ = make_unique<TextButton>();
+        bSetButton_->setButtonText("B");
+        bSetButton_->onClick = [this]()
+        {
+            melissa_->setBPosMSec(melissa_->getPlayingPosMSec());
+            updateBButtonLabel();
+        };
+        addAndMakeVisible(bSetButton_.get());
+    }
+    
+    {
+        speedLabel_ = make_unique<Label>();
+        speedLabel_->setText("Speed", dontSendNotification);
+        speedLabel_->setJustificationType(Justification::centred);
+        addAndMakeVisible(speedLabel_.get());
+    }
+    
+    {
+        speedButton_ = make_unique<MelissaIncDecButton>();
+        speedButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setSpeed(melissa_->getSpeed() - (b ? 0.01 : 0.1));
+            updateSpeedButtonLabel();
+        };
+        speedButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setSpeed(melissa_->getSpeed() + (b ? 0.01 : 0.1));
+            updateSpeedButtonLabel();
+        };
+        speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        addAndMakeVisible(speedButton_.get());
+    }
+    
+    {
+        pitchLabel_ = make_unique<Label>();
+        pitchLabel_->setText("Pitch", dontSendNotification);
+        pitchLabel_->setJustificationType(Justification::centred);
+        addAndMakeVisible(pitchLabel_.get());
+    }
+    
+    {
+        pitchButton_ = make_unique<MelissaIncDecButton>();
+        pitchButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setPitch(melissa_->getPitch() - 1);
+            updatePitchButtonLabel();
+        };
+        pitchButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setPitch(melissa_->getPitch() + 1);
+            updatePitchButtonLabel();
+        };
+        pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        addAndMakeVisible(pitchButton_.get());
+    }
+    
+    setSize (1400, 860);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -194,7 +224,28 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
+    controlComponent_->setBounds(0, 240, getWidth(), 240);
     playPauseButton_->setBounds((getWidth() - 100) / 2, 300, 100, 100);
+    waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
+    debugComponent_->setBounds(0, 500, getWidth(), 360);
+    
+    {
+        const int32_t y = 300;
+        aSetButton_->setBounds(820, y,  60, 30);
+        aButton_->setBounds(900, y, 140, 30);
+        
+        bSetButton_->setBounds(1080, y,  60, 30);
+        bButton_->setBounds(1160, y, 140, 30);
+    }
+    
+    {
+        const int32_t y = 390;
+        speedLabel_->setBounds(820, y, 60, 30);
+        speedButton_->setBounds(900, y, 140, 30);
+        
+        pitchLabel_->setBounds(1080, y, 60, 30);
+        pitchButton_->setBounds(1160, y, 140, 30);
+    }
 }
 
 bool MainComponent::keyPressed(const KeyPress &key, Component* originatingComponent)
@@ -248,6 +299,7 @@ void MainComponent::setAPosition(MelissaWaveformControlComponent* sender, float 
     if (melissa_ == nullptr) return;
     
     melissa_->setAPosRatio(ratio);
+    updateAButtonLabel();
 }
 
 void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float ratio)
@@ -255,6 +307,7 @@ void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float 
     if (melissa_ == nullptr) return;
     
     melissa_->setBPosRatio(ratio);
+    updateBButtonLabel();
 }
 
 void MainComponent::run()
@@ -278,10 +331,7 @@ void MainComponent::timerCallback()
     
     debugComponent_->posLabel_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getPlayingPosMSec()) , dontSendNotification);
     
-    std::stringstream ss;
-    //ss << "Prosessing : " << static_cast<uint32_t>(melissa_->getProgress() * 100) << "%";
-    
-    debugComponent_->statusLabel_->setText(melissa_->needToProcess() ? "Processing" : "Process done", NotificationType::dontSendNotification);
+    debugComponent_->statusLabel_->setText(melissa_->needToProcess() ? "Processing" : "", NotificationType::dontSendNotification);
     debugComponent_->debugLabel_->setText(melissa_->getStatusString(), dontSendNotification);
     
     waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
@@ -304,7 +354,9 @@ bool MainComponent::openFile(const File& file)
     const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
     melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
     waveformComponent_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    audioSampleBuf_ = nullptr;
     
+    updateAll();
     
     return true;
 }
@@ -335,5 +387,43 @@ void MainComponent::resetLoop()
 {
     melissa_->setAPosRatio(0.f);
     melissa_->setBPosRatio(1.f);
-    waveformComponent_->setABPosition(0.f, 1.f);
+    waveformComponent_->setAPosition(0.f);
+    waveformComponent_->setBPosition(1.f);
+    
+    updateAButtonLabel();
+    updateBButtonLabel();
+}
+
+void MainComponent::updateAll()
+{
+    updateAButtonLabel();
+    updateBButtonLabel();
+    updateSpeedButtonLabel();
+    updatePitchButtonLabel();
+}
+
+void MainComponent::updateAButtonLabel()
+{
+    const auto aPosMSec = melissa_->getAPosMSec();
+    aButton_->setText(MelissaUtility::getFormattedTimeMSec(aPosMSec));
+    waveformComponent_->setAPosition(melissa_->getAPosRatio());
+}
+
+void MainComponent::updateBButtonLabel()
+{
+    const auto bPosMSec = melissa_->getBPosMSec();
+    bButton_->setText(MelissaUtility::getFormattedTimeMSec(bPosMSec));
+    waveformComponent_->setBPosition(melissa_->getBPosRatio());
+}
+
+void MainComponent::updateSpeedButtonLabel()
+{
+    int32_t speed = melissa_->getSpeed() * 100;
+    speedButton_->setText(String(speed) + "%");
+}
+
+void MainComponent::updatePitchButtonLabel()
+{
+    int32_t pitch = melissa_->getPitch();
+    pitchButton_->setText(((pitch > 0) ? String("+") : String("")) + String(pitch));
 }
