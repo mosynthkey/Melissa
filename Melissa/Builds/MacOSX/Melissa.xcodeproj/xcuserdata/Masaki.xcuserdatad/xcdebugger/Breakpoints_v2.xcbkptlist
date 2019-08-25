@@ -9,29 +9,45 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../Source/MainComponent.cpp"
-            timestampString = "587702483.409644"
+            filePath = "../../Source/AudioLib/Melissa.cpp"
+            timestampString = "588438736.347911"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
-            landmarkName = "MainComponent::openFile(const File&amp; file)"
+            startingLineNumber = "285"
+            endingLineNumber = "285"
+            landmarkName = "Melissa::isBufferSet()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../../JUCE/modules/juce_audio_formats/codecs/juce_CoreAudioFormat.cpp"
-            timestampString = "587702483.41291"
+            filePath = "../../Source/AudioLib/Melissa.cpp"
+            timestampString = "588438736.347973"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
-            landmarkName = "CoreAudioReader (InputStream* inp)"
+            startingLineNumber = "302"
+            endingLineNumber = "302"
+            landmarkName = "Melissa::resetProcessedBuffer()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../Source/AudioLib/Melissa.cpp"
+            timestampString = "588438736.348013"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
+            landmarkName = "Melissa::setSpeed(float speed)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

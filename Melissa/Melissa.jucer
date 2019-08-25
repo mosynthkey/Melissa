@@ -56,12 +56,8 @@
       <FILE id="cDu0P4" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="A4qeKp" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="QfPwcE" name="MelissaControlComponent.cpp" compile="1" resource="0"
-            file="Source/MelissaControlComponent.cpp"/>
       <FILE id="DMzl73" name="MelissaControlComponent.h" compile="0" resource="0"
             file="Source/MelissaControlComponent.h"/>
-      <FILE id="s3KDME" name="MelissaDebugComponent.h" compile="0" resource="0"
-            file="Source/MelissaDebugComponent.h"/>
       <FILE id="eJrVsF" name="MelissaIncDecButton.h" compile="0" resource="0"
             file="Source/MelissaIncDecButton.h"/>
       <FILE id="oVx3Fa" name="MelissaLabel.h" compile="0" resource="0" file="Source/MelissaLabel.h"/>
@@ -69,6 +65,8 @@
             file="Source/MelissaLookAndFeel.h"/>
       <FILE id="unM38y" name="MelissaPlayPauseButton.h" compile="0" resource="0"
             file="Source/MelissaPlayPauseButton.h"/>
+      <FILE id="EVz2Vf" name="MelissaToHeadButton.h" compile="0" resource="0"
+            file="Source/MelissaToHeadButton.h"/>
       <FILE id="dpnjGP" name="MelissaUtility.h" compile="0" resource="0"
             file="Source/MelissaUtility.h"/>
       <FILE id="MLWaqo" name="MelissaWaveformControlComponent.cpp" compile="1"

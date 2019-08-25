@@ -40,7 +40,6 @@ void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t samp
     }
     
     originalBufferLength_ = bufferLength;
-    analyzeBpm();
     
     aIndex_ = 0;
     bIndex_ =  bufferLength - 1;
@@ -67,7 +66,8 @@ void Melissa::setAPosMSec(float aPosMSec)
     aIndex_ = static_cast<size_t>(aPosMSec / 1000.f * originalSampleRate_);
     if (originalBufferLength_ < aIndex_) aIndex_ = 0;
     
-    startIndex_ = aIndex_;
+    readIndex_ = startIndex_ = aIndex_;
+    
     needToReset_ = true;
 }
 
@@ -212,8 +212,8 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
         mutex_.lock();
         if (processedBufferQue_.size() > 0)
         {
-            bufferToRender[0][iSample] = processedBufferQue_[0] + metronome_.osc_ * metronome_.amp_;
-            bufferToRender[1][iSample] = processedBufferQue_[1] + metronome_.osc_ * metronome_.amp_;
+            bufferToRender[0][iSample] = processedBufferQue_[0] + metronome_.osc_ * metronome_.amp_ * metronome_.volume_;
+            bufferToRender[1][iSample] = processedBufferQue_[1] + metronome_.osc_ * metronome_.amp_ * metronome_.volume_;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
         }
         mutex_.unlock();
@@ -315,7 +315,7 @@ void Melissa::resetProcessedBuffer()
     sampleTime_ = 0;
     readIndex_ = startIndex_;
     needToReset_ = false;
-    metronome_.count_ = -1.f * metronome_.offsetSec_ * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
+    metronome_.count_ = metronome_.offsetSec_ * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
 }
 
 std::string Melissa::getStatusString() const

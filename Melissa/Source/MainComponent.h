@@ -3,28 +3,150 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
 #include "MelissaControlComponent.h"
-#include "MelissaDebugComponent.h"
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaPlayPauseButton.h"
+#include "MelissaToHeadButton.h"
+#include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
+
+class MelissaHost
+{
+public:
+    virtual ~MelissaHost() {};
+    virtual void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) = 0;
+};
+
+class MelissaPracticeTableListBox : public TableListBox,
+                                    public TableListBoxModel
+{
+public:
+    enum Column
+    {
+        kColumn_Name,
+        kColumn_A,
+        kColumn_B,
+        kColumn_Speed,
+        kColumn_Pitch,
+        kColumn_Count,
+        kNumOfColumn
+    };
+    
+    MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
+    TableListBox(componentName, this), host_(host)
+    {
+        
+        std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed", "Pitch", "Count" };
+        for (int i = 0; i < kNumOfColumn; ++i)
+        {
+            getHeader().addColumn(headerTitles[i], i + 1, 50);
+        }
+        
+        autoSizeAllColumns();
+    }
+    
+    int getNumRows() override
+    {
+        return list_.size();
+    }
+    
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override
+    {
+        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.2f : 0.f));
+    }
+    
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override
+    {
+        String text = "";
+        if (rowNumber < list_.size())
+        {
+            auto prac = list_[rowNumber];
+            switch (columnId)
+            {
+                case kColumn_Name + 1:
+                    text = prac.getProperty("name", "").toString();
+                    break;
+                case kColumn_A + 1:
+                {
+                    float ratio = prac.getProperty("a", 0);
+                    text = MelissaUtility::getFormattedTimeMSec(ratio * totalLengthMSec_);
+                    break;
+                }
+                case kColumn_B + 1:
+                {
+                    float ratio = prac.getProperty("b", 1);
+                    text = MelissaUtility::getFormattedTimeMSec(ratio * totalLengthMSec_);
+                    break;
+                }
+                case kColumn_Speed + 1:
+                    text = String(static_cast<int32_t>(static_cast<float>(prac.getProperty("speed", 0)) * 100)) + "%";
+                    break;
+                case kColumn_Pitch + 1:
+                    text = MelissaUtility::getFormattedPitch(prac.getProperty("pitch", 0));
+                    break;
+                case kColumn_Count + 1:
+                    text = prac.getProperty("count", "").toString();
+                    break;
+            }
+        }
+        
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.drawText(text, 0, 0, width, height, Justification::left);
+    }
+    
+    Component* refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate) override
+    {
+        return nullptr;
+    }
+    
+    int getColumnAutoSizeWidth(int columnId) override
+    {
+        return 140;
+    }
+    
+    void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override
+    {
+        auto prac = list_[rowNumber];
+        float a = prac.getProperty("a", 0);
+        float b = prac.getProperty("b", 1);
+        float speed = prac.getProperty("speed", 1.f);
+        float pitch = prac.getProperty("pitch", 1.f);
+        
+        host_->setMelissaParameters(a, b, speed, pitch);
+    }
+    
+    void setList(const Array<var>& list, float totalLengthMSec)
+    {
+        list_ = list;
+        totalLengthMSec_ = totalLengthMSec;
+        
+        updateContent();
+    }
+    
+private:
+    Array<var> list_;
+    float totalLengthMSec_;
+    MelissaHost* host_;
+};
 
 class MainComponent   : public AudioAppComponent,
                         public FileBrowserListener,
                         public KeyListener,
+                        public MelissaHost,
                         public MelissaWaveformControlListener,
                         public Timer,
-                        public Thread
+                        public Thread,
+                        public Thread::Listener
 {
 public:
     MainComponent();
     ~MainComponent();
     
     // AudioAppComponent
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
-    void paint (Graphics& g) override;
+    void paint(Graphics& g) override;
     void resized() override;
     
     // FileBrowserListener
@@ -34,7 +156,10 @@ public:
     void browserRootChanged(const File& newRoot) override {};
     
     // KeyListener
-    bool keyPressed(const KeyPress &key, Component* originatingComponent) override;
+    bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
+    
+    // Melissa
+    void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) override;
     
     // MelissaWaveformControlListener
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
@@ -44,8 +169,11 @@ public:
     // Thread
     void run() override;
     
+    // Thread
+    void exitSignalSent() override;
+    
     // Timer
-    void    timerCallback() override;
+    void timerCallback() override;
     
     enum Status
     {
@@ -53,17 +181,24 @@ public:
         kStatus_Pause,
         kStatus_Stop
     } status_;
-    bool    openFile(const File& file);
-    void    play();
-    void    pause();
-    void    stop();
-    void    resetLoop();
+    bool openFile(const File& file);
+    void play();
+    void pause();
+    void stop();
+    void toHead();
+    void resetLoop();
+    void addToPracticeList(String name);
     
     void updateAll();
     void updateAButtonLabel();
     void updateBButtonLabel();
     void updateSpeedButtonLabel();
     void updatePitchButtonLabel();
+    
+    void createSettingsFile();
+    void saveSettings();
+    
+    var getSongSetting(String fileName);
 
 private:
     std::unique_ptr<Melissa> melissa_;
@@ -71,21 +206,42 @@ private:
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaControlComponent> controlComponent_;
+    
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
+    std::unique_ptr<MelissaToHeadButton> toHeadButton_;
+    
+    std::unique_ptr<Label> timeLabel_;
+    std::unique_ptr<Label> fileNameLabel_;
     
     std::unique_ptr<TextButton> aSetButton_;
     std::unique_ptr<MelissaIncDecButton> aButton_;
     std::unique_ptr<TextButton> bSetButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
+    std::unique_ptr<TextButton> resetButton_;
     
     std::unique_ptr<Label> speedLabel_;
     std::unique_ptr<MelissaIncDecButton> speedButton_;
     std::unique_ptr<Label> pitchLabel_;
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
-    std::unique_ptr<MelissaDebugComponent> debugComponent_;
+    std::unique_ptr<TextButton> browseToggleButton_;
+    std::unique_ptr<TextButton> recentToggleButton_;
+    std::unique_ptr<WildcardFileFilter> wildCardFilter_;
+    std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
+    
+    std::unique_ptr<TextEditor> pracListNameTextEditor_;
+    std::unique_ptr<TextButton> addToListButton_;
+    std::unique_ptr<Label> practiceListLabel_;
+    std::unique_ptr<MelissaPracticeTableListBox> table_;
     
     MelissaLookAndFeel lookAndFeel_;
+    
+    String fileName_, fileFullPath_;
+    
+    File settingsDir_, settingsFile_;
+    var setting_;
+    
+    bool shouldExit_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
