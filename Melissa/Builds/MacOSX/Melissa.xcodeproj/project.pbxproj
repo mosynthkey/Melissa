@@ -129,10 +129,6 @@
 			isa = PBXBuildFile;
 			fileRef = 60DF4381463E71A52EDB877C;
 		};
-		43F767D1C8AAD3285A2D6F3A = {
-			isa = PBXBuildFile;
-			fileRef = 73ADFAD99BF06543B7DBB3C6;
-		};
 		6BC5CD797691B2DB07AB1B6C = {
 			isa = PBXBuildFile;
 			fileRef = AA30FA5E18873B4EA1B39D47;
@@ -476,18 +472,18 @@
 			path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateLinear.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		6F97C8A2FBCB9F6B538D6B46 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MelissaToHeadButton.h;
+			path = ../../Source/MelissaToHeadButton.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		72E3FC203E75498C2F3A15E2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = "cpu_detect_x86.cpp";
 			path = "../../../Submodule/soundtouch/source/SoundTouch/cpu_detect_x86.cpp";
-			sourceTree = "SOURCE_ROOT";
-		};
-		73ADFAD99BF06543B7DBB3C6 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = MelissaControlComponent.cpp;
-			path = ../../Source/MelissaControlComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7766662467CEACDB8C3BEC90 = {
@@ -615,13 +611,6 @@
 			name = "juce_opengl";
 			path = "~/Develop/JUCE/modules/juce_opengl";
 			sourceTree = "<absolute>";
-		};
-		A8829F6FF3C288A26FFF8417 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = MelissaDebugComponent.h;
-			path = ../../Source/MelissaDebugComponent.h;
-			sourceTree = "SOURCE_ROOT";
 		};
 		AA30FA5E18873B4EA1B39D47 = {
 			isa = PBXFileReference;
@@ -849,13 +838,12 @@
 				C2B37E56F5BDB4B28009BD00,
 				60DF4381463E71A52EDB877C,
 				FC1173E317E8B10780375208,
-				73ADFAD99BF06543B7DBB3C6,
 				9B5EF7E06FF4F7DC589785BA,
-				A8829F6FF3C288A26FFF8417,
 				AE3882F2BF307AE1F9B79D9F,
 				49BD21EE3E719D12B0E101E7,
 				5F343E441F7F27A2E3F88724,
 				ED8BBFA3CB0ACA5F1208777C,
+				6F97C8A2FBCB9F6B538D6B46,
 				86D8AA891D4D6C0F8064FDFC,
 				AA30FA5E18873B4EA1B39D47,
 				9891683CAA48465681E875FB,
@@ -1191,7 +1179,6 @@
 				E5F7F371CCED3F7673A735FA,
 				5515F4E5A1F0D1A9A7A21DA3,
 				9F51584DC3C4A6028EFBF0B0,
-				43F767D1C8AAD3285A2D6F3A,
 				6BC5CD797691B2DB07AB1B6C,
 				50361DE208C85E532BB64F9B,
 				E415B2B4C6F536769AB00B93,

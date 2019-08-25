@@ -32,4 +32,20 @@ public:
         
         return ss.str();
     }
+    
+    static std::string getFormattedPitch(int32_t pitch)
+    {
+        if (pitch > 0)
+        {
+            return "# " + std::to_string(pitch);
+        }
+        else if (pitch == 0)
+        {
+            return "Original";
+        }
+        else
+        {
+            return "b " + std::to_string(pitch * -1);
+        }
+    }
 };
