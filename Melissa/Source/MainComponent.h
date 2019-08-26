@@ -194,6 +194,8 @@ public:
     void updateBButtonLabel();
     void updateSpeedButtonLabel();
     void updatePitchButtonLabel();
+    void updateBpm();
+    void updateMetronomeOffset();
     
     void createSettingsFile();
     void saveSettings();
@@ -212,6 +214,13 @@ private:
     
     std::unique_ptr<Label> timeLabel_;
     std::unique_ptr<Label> fileNameLabel_;
+    
+    std::unique_ptr<ToggleButton> metronomeOnOffButton_;
+    std::unique_ptr<MelissaIncDecButton> bpmButton_;
+    std::unique_ptr<MelissaIncDecButton> metronomeOffsetButton_;
+    std::unique_ptr<TextButton> analyzeButton_;
+    
+    std::unique_ptr<Slider> volumeSlider_;
     
     std::unique_ptr<TextButton> aSetButton_;
     std::unique_ptr<MelissaIncDecButton> aButton_;

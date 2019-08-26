@@ -20,6 +20,24 @@ public:
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
     
+     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const bool b = tb.getToggleState() || shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        const auto& c = tb.getLocalBounds();
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
+        g.drawText(tb.getToggleState() ? "On" : "Off", 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        g.drawRoundedRectangle(lineThickNess_ / 2, lineThickNess_ / 2, c.getWidth() - lineThickNess_ - 1, c.getHeight() - lineThickNess_ - 1, (c.getHeight() - lineThickNess_) / 2, lineThickNess_);
+    }
+    
+    void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
+    {
+        if (style != Slider::LinearHorizontal) return;
+        
+        constexpr int32_t lineSize = 10;
+        
+        
+    }
+    
     Font getTextButtonFont(TextButton& tb, int buttonHeight) override
     {
         return Font(14);
@@ -71,13 +89,12 @@ public:
     {
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
         g.fillAll();
-        //g.fillRoundedRectangle(c.getBounds().toFloat(), c.getHeight() / 2);
     }
     
     void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
         g.setColour(Colours::white);
-        g.drawText(columnName, 0, 0, width - 1, height, Justification::left);
+        g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
     
 private:
