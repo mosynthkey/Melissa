@@ -209,11 +209,12 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
         metronome_.osc_ += 2.f / (outputSampleRate_ / 880.f);
         if (metronome_.osc_ > 1.f) metronome_.osc_ = -1.f;
         
+        const auto metronomeOsc = metronome_.osc_ * metronome_.amp_ * metronome_.volume_ * (metronome_.on_ ? 1.f : 0.f);
         mutex_.lock();
         if (processedBufferQue_.size() > 0)
         {
-            bufferToRender[0][iSample] = processedBufferQue_[0] + metronome_.osc_ * metronome_.amp_ * metronome_.volume_;
-            bufferToRender[1][iSample] = processedBufferQue_[1] + metronome_.osc_ * metronome_.amp_ * metronome_.volume_;
+            bufferToRender[0][iSample] = processedBufferQue_[0] + metronomeOsc;
+            bufferToRender[1][iSample] = processedBufferQue_[1] + metronomeOsc;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
         }
         mutex_.unlock();

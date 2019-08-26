@@ -19,6 +19,7 @@ status_(kStatus_Stop), shouldExit_(false)
     lookAndFeel_.setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
     lookAndFeel_.setColour(ListBox::outlineColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
     lookAndFeel_.setColour(ListBox::backgroundColourId, Colours::transparentWhite);
+    lookAndFeel_.setColour(DirectoryContentsDisplayComponent::highlightColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
     setLookAndFeel(&lookAndFeel_);
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
@@ -45,6 +46,66 @@ status_(kStatus_Stop), shouldExit_(false)
     fileNameLabel_->setJustificationType(Justification::centred);
     fileNameLabel_->setText("Not loaded...", dontSendNotification);
     addAndMakeVisible(fileNameLabel_.get());
+    
+    {
+        metronomeOnOffButton_ = make_unique<ToggleButton>();
+        metronomeOnOffButton_->setClickingTogglesState(true);
+        metronomeOnOffButton_->onClick = [this]()
+        {
+            melissa_->setMetoronome(metronomeOnOffButton_->getToggleState());
+        };
+        metronomeOnOffButton_->setButtonText("On");
+        addAndMakeVisible(metronomeOnOffButton_.get());
+    }
+    
+    {
+        bpmButton_ = make_unique<MelissaIncDecButton>();
+        bpmButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setBpm(melissa_->getBpm() - (b ? 10 : 1));
+            updateBpm();
+        };
+        bpmButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setBpm(melissa_->getBpm() + (b ? 10 : 1));
+            updateBpm();
+        };
+        addAndMakeVisible(bpmButton_.get());
+    }
+    
+    {
+        metronomeOffsetButton_ = make_unique<MelissaIncDecButton>();
+        metronomeOffsetButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setMetronomeOffsetSec(melissa_->getMetronomeOffsetSec() - 1);
+            updateMetronomeOffset();
+        };
+        metronomeOffsetButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setMetronomeOffsetSec(melissa_->getMetronomeOffsetSec() + 1);
+            updateMetronomeOffset();
+        };
+        addAndMakeVisible(metronomeOffsetButton_.get());
+    }
+    
+    {
+        analyzeButton_ = make_unique<TextButton>();
+        analyzeButton_->setButtonText("Analyze");
+        analyzeButton_->onClick = [this]()
+        {
+            melissa_->analyzeBpm();
+            updateBpm();
+            updateMetronomeOffset();
+        };
+        addAndMakeVisible(analyzeButton_.get());
+    }
+    
+    {
+        volumeSlider_ = make_unique<Slider>();
+        volumeSlider_->setRange(0.1f, 4.0f);
+        volumeSlider_->setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+        addAndMakeVisible(volumeSlider_.get());
+    }
     
     {
         aButton_ = make_unique<MelissaIncDecButton>();
@@ -260,6 +321,9 @@ status_(kStatus_Stop), shouldExit_(false)
                 melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 1.f)));
                 melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
                 updateAll();
+                
+                auto global = setting_["global"];
+                fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
             }
         }
         else
@@ -336,17 +400,35 @@ void MainComponent::resized()
         practiceListLabel_->setBounds(table_->getX(), browseToggleButton_->getY(), 100, 30);
     }
     
+    int32_t marginX = 50;
+    
     {
         int32_t y = 300;
-        int32_t x = 860;
+        metronomeOnOffButton_->setBounds(marginX, y, 80, 30);
+        bpmButton_->setBounds(metronomeOnOffButton_->getRight() + 10, y, 140, 30);
+        metronomeOffsetButton_->setBounds(bpmButton_->getRight() + 10, y, 140, 30);
+        analyzeButton_->setBounds(metronomeOffsetButton_->getRight() + 10, y, 80, 30);
+    }
+    
+    {
+        int32_t y = 390;
+        volumeSlider_->setBounds(metronomeOnOffButton_->getX(), y, 200, 30);
+    }
+    
+    {
+        int32_t y = 300;
+        int32_t x = getWidth() - 60 - marginX;
+        resetButton_->setBounds(x, y, 60, 30);
+        
+        x = resetButton_->getX() - 140 - 10;
+        bButton_->setBounds(x, y, 140, 30);
+        x = bButton_->getX() - 60 - 10;
+        bSetButton_->setBounds(x, y,  60, 30);
+        
+        x = bSetButton_->getX() - 140 - 10;
+        aButton_->setBounds(x, y, 140, 30);
+        x = aButton_->getX() - 60 - 10;
         aSetButton_->setBounds(x, y,  60, 30);
-        aButton_->setBounds(aSetButton_->getRight() + 10, y, 140, 30);
-        
-        bSetButton_->setBounds(aButton_->getRight() + 20, y,  60, 30);
-        bButton_->setBounds(bSetButton_->getRight() + 10, y, 140, 30);
-        
-        resetButton_->setBounds(bButton_->getRight() + 20, y, 60, 30);
-        
         
         y = 390;
         speedLabel_->setBounds(aSetButton_->getBounds().withY(y));
@@ -578,6 +660,8 @@ void MainComponent::updateAll()
     updateBButtonLabel();
     updateSpeedButtonLabel();
     updatePitchButtonLabel();
+    updateBpm();
+    updateMetronomeOffset();
 }
 
 void MainComponent::updateAButtonLabel()
@@ -603,6 +687,16 @@ void MainComponent::updateSpeedButtonLabel()
 void MainComponent::updatePitchButtonLabel()
 {
     pitchButton_->setText(MelissaUtility::getFormattedPitch(melissa_->getPitch()));
+}
+
+void MainComponent::updateBpm()
+{
+    bpmButton_->setText(String(static_cast<uint32_t>(melissa_->getBpm())));
+}
+
+void MainComponent::updateMetronomeOffset()
+{
+    metronomeOffsetButton_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getMetronomeOffsetSec() * 1000.f));
 }
 
 void MainComponent::createSettingsFile()
@@ -634,7 +728,8 @@ void MainComponent::createSettingsFile()
 void MainComponent::saveSettings()
 {
     auto global = setting_["global"].getDynamicObject();
-    global->setProperty("version", 2);
+    global->setProperty("version", 1);
+    global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
     
     auto current = setting_["current"].getDynamicObject();
     current->setProperty("file", fileFullPath_);

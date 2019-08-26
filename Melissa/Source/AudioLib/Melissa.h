@@ -44,11 +44,14 @@ public:
     int32_t getPitch() const { return semitone_; }
     float getVolume() const { return volume_; }
     
+    bool isMetoronomeOn() const { return metronome_.on_ ;};
     uint32_t getBpm() const { return metronome_.bpm_; }
     float getMetronomeOffsetSec() const { return metronome_.offsetSec_; }
     
+    void setMetoronome(bool on) { metronome_.on_ = on; };
     void setBpm(uint32_t bpm) { metronome_.bpm_ = bpm; }
     void setMetronomeOffsetSec(float offsetSec) { metronome_.offsetSec_ = offsetSec; }
+    void analyzeBpm();
     
     void render(float* bufferToRender[], size_t bufferLength);
     
@@ -91,7 +94,7 @@ private:
     // metronome
     struct Metronome
     {
-        Metronome() : on_(true), volume_(0.f), offsetSec_(0.f), bpm_(20), count_(0),
+        Metronome() : on_(true), volume_(1.f), offsetSec_(0.f), bpm_(20), count_(0),
         amp_(0.f), osc_(-1.f) { }
         bool on_;
         float volume_;
@@ -102,6 +105,4 @@ private:
         float amp_;
         float osc_;
     } metronome_;
-    
-    void analyzeBpm();
 };
