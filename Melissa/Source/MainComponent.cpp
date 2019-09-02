@@ -482,6 +482,24 @@ void MainComponent::setMelissaParameters(float aRatio, float bRatio, float speed
     updateAll();
 }
 
+void MainComponent::getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count)
+{
+    *aRatio = melissa_->getAPosRatio();
+    *bRatio = melissa_->getBPosRatio();
+    *speed  = melissa_->getSpeed();
+    *pitch  = melissa_->getPitch();
+    *count  = 0;
+}
+
+void MainComponent::updatePracticeList(const Array<var>& list)
+{
+    if (auto songs = setting_["songs"].getArray())
+    {
+        auto song = getSongSetting(fileFullPath_);
+        song.getDynamicObject()->setProperty("list", list);
+    }
+}
+
 void MainComponent::fileDoubleClicked(const File& file)
 {
     openFile(file);
@@ -728,7 +746,7 @@ void MainComponent::createSettingsFile()
 void MainComponent::saveSettings()
 {
     auto global = setting_["global"].getDynamicObject();
-    global->setProperty("version", 1);
+    global->setProperty("version", "unko}");
     global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
     
     auto current = setting_["current"].getDynamicObject();

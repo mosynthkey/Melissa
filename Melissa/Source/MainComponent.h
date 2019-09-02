@@ -15,6 +15,8 @@ class MelissaHost
 public:
     virtual ~MelissaHost() {};
     virtual void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) = 0;
+    virtual void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) = 0;
+    virtual void updatePracticeList(const Array<var>& list) = 0;
 };
 
 class MelissaPracticeTableListBox : public TableListBox,
@@ -35,7 +37,6 @@ public:
     MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
     TableListBox(componentName, this), host_(host)
     {
-        
         std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed", "Pitch", "Count" };
         for (int i = 0; i < kNumOfColumn; ++i)
         {
@@ -43,6 +44,8 @@ public:
         }
         
         autoSizeAllColumns();
+        
+        popupMenu_ = std::make_shared<PopupMenu>();
     }
     
     int getNumRows() override
@@ -106,6 +109,45 @@ public:
     
     void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override
     {
+        bool shouldRefresh = false;
+        if (e.mods.isRightButtonDown())
+        {
+            enum
+            {
+                kMenuId_Erase = 1,
+                kMenuId_Overwrite,
+            };
+            popupMenu_->clear();
+            popupMenu_->addItem(kMenuId_Erase, "Erase", true);
+            popupMenu_->addItem(kMenuId_Overwrite, "Overwrite", true);
+            auto result = popupMenu_->show();
+            if (result == kMenuId_Erase)
+            {
+                list_.remove(rowNumber);
+                shouldRefresh = true;
+            }
+            else if (result == kMenuId_Overwrite)
+            {
+                float a, b, speed;
+                int32_t pitch, count;
+                host_->getMelissaParameters(&a, &b, &speed, &pitch, &count);
+                list_[rowNumber].getDynamicObject()->setProperty("a", a);
+                list_[rowNumber].getDynamicObject()->setProperty("b", b);
+                list_[rowNumber].getDynamicObject()->setProperty("speed", speed);
+                list_[rowNumber].getDynamicObject()->setProperty("pitch", pitch);
+                shouldRefresh = true;
+            }
+        }
+        
+        if (shouldRefresh)
+        {
+            host_->updatePracticeList(list_);
+            updateContent();
+        }
+    }
+    
+    void cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& e) override
+    {
         auto prac = list_[rowNumber];
         float a = prac.getProperty("a", 0);
         float b = prac.getProperty("b", 1);
@@ -127,6 +169,7 @@ private:
     Array<var> list_;
     float totalLengthMSec_;
     MelissaHost* host_;
+    std::shared_ptr<PopupMenu> popupMenu_;
 };
 
 class MainComponent   : public AudioAppComponent,
@@ -160,6 +203,8 @@ public:
     
     // Melissa
     void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) override;
+    void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) override;
+    void updatePracticeList(const Array<var>& list) override;
     
     // MelissaWaveformControlListener
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;

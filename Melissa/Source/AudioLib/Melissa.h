@@ -94,7 +94,7 @@ private:
     // metronome
     struct Metronome
     {
-        Metronome() : on_(true), volume_(1.f), offsetSec_(0.f), bpm_(20), count_(0),
+        Metronome() : on_(false), volume_(1.f), offsetSec_(0.f), bpm_(20), count_(0),
         amp_(0.f), osc_(-1.f) { }
         bool on_;
         float volume_;
