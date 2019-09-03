@@ -7,6 +7,7 @@ using std::make_unique;
 enum
 {
     kBrowseRecentTabGroup = 1001,
+    kPracticeMemoTabGroup = 1002,
     
     kMaxSizeOfRecentList = 10,
 };
@@ -228,15 +229,14 @@ status_(kStatus_Stop), shouldExit_(false)
         browseToggleButton_->setButtonText("Browse");
         browseToggleButton_->setLookAndFeel(&lookAndFeelTab_);
         browseToggleButton_->setRadioGroupId(kBrowseRecentTabGroup);
-        browseToggleButton_->setToggleState(true, dontSendNotification);
-        browseToggleButton_->onClick = [&]() { updateToggleState(kTab_Browse); };
+        browseToggleButton_->onClick = [&]() { updateBrowseRecent(kBrowseRecentTab_Browse); };
         addAndMakeVisible(browseToggleButton_.get());
         
         recentToggleButton_ = make_unique<ToggleButton>();
         recentToggleButton_->setButtonText("Recent");
         recentToggleButton_->setLookAndFeel(&lookAndFeelTab_);
         recentToggleButton_->setRadioGroupId(kBrowseRecentTabGroup);
-        recentToggleButton_->onClick = [&]() { updateToggleState(kTab_Recent); };
+        recentToggleButton_->onClick = [&]() { updateBrowseRecent(kBrowseRecentTab_Recent); };
         addAndMakeVisible(recentToggleButton_.get());
     }
     
@@ -247,10 +247,39 @@ status_(kStatus_Stop), shouldExit_(false)
     }
     
     {
-        practiceListLabel_ = make_unique<Label>();
-        practiceListLabel_->setText("Practice List", dontSendNotification);
-        practiceListLabel_->setJustificationType(Justification::left);
-        addAndMakeVisible(practiceListLabel_.get());
+        practiceTable_ = make_unique<MelissaPracticeTableListBox>(this);
+        addAndMakeVisible(practiceTable_.get());
+    }
+    
+    {
+        memoTextEditor_ = make_unique<TextEditor>();
+        memoTextEditor_->setLookAndFeel(nullptr);
+        memoTextEditor_->setMultiLine(true, false);
+        memoTextEditor_->onFocusLost = [&]()
+        {
+            saveMemo();
+        };
+        addAndMakeVisible(memoTextEditor_.get());
+    }
+    
+    {
+        practiceListToggleButton_ = make_unique<ToggleButton>();
+        practiceListToggleButton_ = make_unique<ToggleButton>();
+        practiceListToggleButton_->setButtonText("Practice List");
+        practiceListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+        practiceListToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
+        practiceListToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Practice); };
+        addAndMakeVisible(practiceListToggleButton_.get());
+        
+        memoToggleButton_ = make_unique<ToggleButton>();
+        memoToggleButton_->setButtonText("Memo");
+        memoToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+        memoToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
+        memoToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Memo); };
+        addAndMakeVisible(memoToggleButton_.get());
+        
+        practiceListToggleButton_->setToggleState(true, dontSendNotification);
+        updatePracticeMemo(kPracticeMemoTab_Practice);
     }
     
     {
@@ -272,7 +301,7 @@ status_(kStatus_Stop), shouldExit_(false)
             if (auto songs = setting_["songs"].getArray())
             {
                 auto song = getSongSetting(fileFullPath_);
-                table_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
+                practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
             }
         };
         addAndMakeVisible(addToListButton_.get());
@@ -290,12 +319,6 @@ status_(kStatus_Stop), shouldExit_(false)
         addAndMakeVisible(fileBrowserComponent_.get());
     }
     
-    {
-        table_ = make_unique<MelissaPracticeTableListBox>(this);
-        addAndMakeVisible(table_.get());
-    }
-    
-    updateToggleState(kTab_Browse);
     setSize (1400, 860);
     
     // Some platforms require permissions to open input channels so request that here
@@ -344,6 +367,12 @@ status_(kStatus_Stop), shouldExit_(false)
                 
                 auto global = setting_["global"];
                 fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
+                
+                const bool isBrowse = global.getProperty("browse_recent", "browse") == "browse";
+                browseToggleButton_->setToggleState(isBrowse, dontSendNotification);
+                recentToggleButton_->setToggleState(!isBrowse, dontSendNotification);
+                updateBrowseRecent(isBrowse ? kBrowseRecentTab_Browse : kBrowseRecentTab_Recent);
+                
             }
             
             recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
@@ -363,9 +392,13 @@ MainComponent::~MainComponent()
     
     saveSettings();
     
+    setLookAndFeel(nullptr);
+    recentTable_->setLookAndFeel(nullptr);
     browseToggleButton_->setLookAndFeel(nullptr);
     recentToggleButton_->setLookAndFeel(nullptr);
-    setLookAndFeel(nullptr);
+    practiceListToggleButton_->setLookAndFeel(nullptr);
+    memoToggleButton_->setLookAndFeel(nullptr);
+    
     stopThread(4000.f);
     stopTimer();
 }
@@ -420,8 +453,10 @@ void MainComponent::resized()
         y += 40;
         fileBrowserComponent_->setBounds(20, y, browserWidth, getHeight() - y - 20);
         recentTable_->setBounds(fileBrowserComponent_->getX() + 20, y, fileBrowserComponent_->getWidth() - 40, getHeight() - y - 20);
-        table_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, getHeight() - y - 20);
-        practiceListLabel_->setBounds(table_->getX(), browseToggleButton_->getY(), 100, 30);
+        practiceTable_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, getHeight() - y - 20);
+        memoTextEditor_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, getHeight() - y - 20);
+        practiceListToggleButton_->setBounds(practiceTable_->getX(), browseToggleButton_->getY(), w, 30);
+        memoToggleButton_->setBounds(practiceListToggleButton_->getRight() + 2, browseToggleButton_->getY(), w, 30);
     }
     
     int32_t marginX = 50;
@@ -585,10 +620,17 @@ void MainComponent::timerCallback()
     waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
 }
 
-void MainComponent::updateToggleState(Tab tab)
+void MainComponent::updateBrowseRecent(BrowseRecentTab tab)
 {
-    fileBrowserComponent_->setVisible(tab == kTab_Browse);
-    recentTable_->setVisible(tab == kTab_Recent);
+    fileBrowserComponent_->setVisible(tab == kBrowseRecentTab_Browse);
+    recentTable_->setVisible(tab == kBrowseRecentTab_Recent);
+}
+
+void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
+{
+    practiceTable_->setVisible(tab == kPracticeMemoTab_Practice);
+    memoTextEditor_->setVisible(tab == kPracticeMemoTab_Memo);
+    
 }
 
 bool MainComponent::openFile(const File& file)
@@ -620,13 +662,14 @@ bool MainComponent::openFile(const File& file)
     if (auto songs = setting_["songs"].getArray())
     {
         auto song = getSongSetting(fileFullPath_);
-        table_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
+        practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
+        memoTextEditor_->setText(song.getProperty("memo", "").toString());
     }
-    
-    delete reader;
     
     addToRecent(fileFullPath_);
     recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
+    
+    delete reader;
     
     return true;
 }
@@ -695,7 +738,28 @@ void MainComponent::addToPracticeList(String name)
         }
     }
     
-    std::cout << "not found." << std::endl;
+    auto song = new DynamicObject();
+    song->setProperty("file", fileFullPath_);
+    song->setProperty("volume", melissa_->getVolume());
+    song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
+    song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+    song->setProperty("list", Array<var>());
+    song->setProperty("memo", memoTextEditor_->getText());
+    addToList(song->getProperty("list").getArray());
+    songs->addIfNotAlreadyThere(song);
+}
+
+void MainComponent::saveMemo()
+{
+    auto songs = setting_.getProperty("songs", Array<var>()).getArray();
+    for (auto& song : *songs)
+    {
+        if (song.getProperty("file", "").toString() == fileFullPath_)
+        {
+            song.getDynamicObject()->setProperty("memo", memoTextEditor_->getText());
+            return;
+        }
+    }
     
     auto song = new DynamicObject();
     song->setProperty("file", fileFullPath_);
@@ -703,11 +767,8 @@ void MainComponent::addToPracticeList(String name)
     song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
     song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
     song->setProperty("list", Array<var>());
-    addToList(song->getProperty("list").getArray());
+    song->setProperty("memo", memoTextEditor_->getText());
     songs->addIfNotAlreadyThere(song);
-    
-    std::cout << "-----" << std::endl;
-    std::cout << JSON::toString(setting_) << std::endl;
 }
 
 void MainComponent::addToRecent(String filePath)
@@ -794,9 +855,12 @@ void MainComponent::createSettingsFile()
 
 void MainComponent::saveSettings()
 {
+    saveMemo();
+    
     auto global = setting_["global"].getDynamicObject();
     global->setProperty("version", "1.0");
     global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
+    global->setProperty("browse_recent", fileBrowserComponent_->isVisible() ? "browse" : "recent");
     
     auto current = setting_["current"].getDynamicObject();
     current->setProperty("file", fileFullPath_);

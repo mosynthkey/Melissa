@@ -34,8 +34,7 @@ public:
         if (style != Slider::LinearHorizontal) return;
         
         constexpr int32_t lineSize = 10;
-        
-        
+
     }
     
     Font getTextButtonFont(TextButton& tb, int buttonHeight) override
@@ -52,14 +51,14 @@ public:
     {
         // no background
     }
-    
+    /*
     void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
     {
         const auto& c = te.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
         g.drawRoundedRectangle(lineThickNess_ / 2, lineThickNess_ / 2, c.getWidth() - lineThickNess_ - 1, c.getHeight() - lineThickNess_ - 1, (c.getHeight() - lineThickNess_) / 2, lineThickNess_);
     }
-    
+    */
     void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
     {
         const auto& c = cb.getLocalBounds();

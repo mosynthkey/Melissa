@@ -10,10 +10,16 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
-enum Tab
+enum BrowseRecentTab
 {
-    kTab_Browse,
-    kTab_Recent
+    kBrowseRecentTab_Browse,
+    kBrowseRecentTab_Recent
+};
+
+enum PracticeMemoTab
+{
+    kPracticeMemoTab_Practice,
+    kPracticeMemoTab_Memo
 };
 
 class MelissaHost
@@ -275,7 +281,8 @@ public:
     // Timer
     void timerCallback() override;
     
-    void updateToggleState(Tab tab);
+    void updateBrowseRecent(BrowseRecentTab tab);
+    void updatePracticeMemo(PracticeMemoTab tab);
     
     enum Status
     {
@@ -291,6 +298,7 @@ public:
     void resetLoop();
     void addToPracticeList(String name);
     void addToRecent(String filePath);
+    void saveMemo();
     
     void updateAll();
     void updateAButtonLabel();
@@ -342,10 +350,12 @@ private:
     std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
     std::unique_ptr<MelissaRecentListBox> recentTable_;
     
+    std::unique_ptr<ToggleButton> practiceListToggleButton_;
+    std::unique_ptr<ToggleButton> memoToggleButton_;
     std::unique_ptr<TextEditor> pracListNameTextEditor_;
+    std::unique_ptr<TextEditor> memoTextEditor_;
     std::unique_ptr<TextButton> addToListButton_;
-    std::unique_ptr<Label> practiceListLabel_;
-    std::unique_ptr<MelissaPracticeTableListBox> table_;
+    std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
     MelissaLookAndFeel lookAndFeel_;
     MelissaLookAndFeel_Tab lookAndFeelTab_;
