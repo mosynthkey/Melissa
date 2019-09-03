@@ -10,13 +10,20 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
+enum Tab
+{
+    kTab_Browse,
+    kTab_Recent
+};
+
 class MelissaHost
 {
 public:
     virtual ~MelissaHost() {};
     virtual void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) = 0;
     virtual void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) = 0;
-    virtual void updatePracticeList(const Array<var>& list) = 0;
+    virtual void updatePracticeList(const Array<var>& list) = 0;    
+    virtual void loadFile(const String& filePath) = 0;
 };
 
 class MelissaPracticeTableListBox : public TableListBox,
@@ -172,6 +179,53 @@ private:
     std::shared_ptr<PopupMenu> popupMenu_;
 };
 
+class MelissaRecentListBox : public ListBox,
+                             public ListBoxModel
+{
+public:
+    MelissaRecentListBox(MelissaHost* host, const String& componentName = String()) :
+    ListBox(componentName, this), host_(host)
+    {
+    }
+    
+    void paint(Graphics& g) override
+    {
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
+        g.drawRect(0, 0, getWidth(), getHeight());
+    }
+    
+    int getNumRows() override
+    {
+        return list_.size();
+    }
+    
+    void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
+    {
+        host_->loadFile(list_[row].toString());
+    }
+    
+    void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override
+    {
+        const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber].toString() : "";
+        const String fileName = File(fullPath).getFileName();
+        
+        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.2f : 0.f));
+        
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
+    }
+    
+    void setList(const Array<var>& list)
+    {
+        list_ = list;
+        updateContent();
+    }
+    
+private:
+    Array<var> list_;
+    MelissaHost* host_;
+};
+
 class MainComponent   : public AudioAppComponent,
                         public FileBrowserListener,
                         public KeyListener,
@@ -205,6 +259,7 @@ public:
     void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) override;
     void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) override;
     void updatePracticeList(const Array<var>& list) override;
+    void loadFile(const String& filePath) override;
     
     // MelissaWaveformControlListener
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
@@ -220,6 +275,8 @@ public:
     // Timer
     void timerCallback() override;
     
+    void updateToggleState(Tab tab);
+    
     enum Status
     {
         kStatus_Playing,
@@ -233,6 +290,7 @@ public:
     void toHead();
     void resetLoop();
     void addToPracticeList(String name);
+    void addToRecent(String filePath);
     
     void updateAll();
     void updateAButtonLabel();
@@ -278,10 +336,11 @@ private:
     std::unique_ptr<Label> pitchLabel_;
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
-    std::unique_ptr<TextButton> browseToggleButton_;
-    std::unique_ptr<TextButton> recentToggleButton_;
+    std::unique_ptr<ToggleButton> browseToggleButton_;
+    std::unique_ptr<ToggleButton> recentToggleButton_;
     std::unique_ptr<WildcardFileFilter> wildCardFilter_;
     std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
+    std::unique_ptr<MelissaRecentListBox> recentTable_;
     
     std::unique_ptr<TextEditor> pracListNameTextEditor_;
     std::unique_ptr<TextButton> addToListButton_;
@@ -289,6 +348,7 @@ private:
     std::unique_ptr<MelissaPracticeTableListBox> table_;
     
     MelissaLookAndFeel lookAndFeel_;
+    MelissaLookAndFeel_Tab lookAndFeelTab_;
     
     String fileName_, fileFullPath_;
     

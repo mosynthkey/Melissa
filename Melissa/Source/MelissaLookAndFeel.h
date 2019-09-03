@@ -50,7 +50,7 @@ public:
     
     void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
     {
-
+        // no background
     }
     
     void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
@@ -99,4 +99,18 @@ public:
     
 private:
     const float lineThickNess_ = 1.4;
+};
+
+class MelissaLookAndFeel_Tab : public LookAndFeel_V4
+{
+public:
+    virtual ~MelissaLookAndFeel_Tab() {};
+    
+    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const bool b = tb.getToggleState() || shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
+    }
 };
