@@ -4,6 +4,14 @@
 
 using std::make_unique;
 
+enum
+{
+    kBrowseRecentTabGroup = 1001,
+    
+    kMaxSizeOfRecentList = 10,
+};
+
+
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop), shouldExit_(false)
 {
@@ -216,15 +224,26 @@ status_(kStatus_Stop), shouldExit_(false)
     }
     
     {
-        browseToggleButton_ = make_unique<TextButton>();
+        browseToggleButton_ = make_unique<ToggleButton>();
         browseToggleButton_->setButtonText("Browse");
+        browseToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+        browseToggleButton_->setRadioGroupId(kBrowseRecentTabGroup);
+        browseToggleButton_->setToggleState(true, dontSendNotification);
+        browseToggleButton_->onClick = [&]() { updateToggleState(kTab_Browse); };
         addAndMakeVisible(browseToggleButton_.get());
+        
+        recentToggleButton_ = make_unique<ToggleButton>();
+        recentToggleButton_->setButtonText("Recent");
+        recentToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+        recentToggleButton_->setRadioGroupId(kBrowseRecentTabGroup);
+        recentToggleButton_->onClick = [&]() { updateToggleState(kTab_Recent); };
+        addAndMakeVisible(recentToggleButton_.get());
     }
     
     {
-        recentToggleButton_ = make_unique<TextButton>();
-        recentToggleButton_->setButtonText("Recent");
-        addAndMakeVisible(recentToggleButton_.get());
+        recentTable_ = make_unique<MelissaRecentListBox>(this);
+        recentTable_->setLookAndFeel(&lookAndFeel_);
+        addAndMakeVisible(recentTable_.get());
     }
     
     {
@@ -276,6 +295,7 @@ status_(kStatus_Stop), shouldExit_(false)
         addAndMakeVisible(table_.get());
     }
     
+    updateToggleState(kTab_Browse);
     setSize (1400, 860);
     
     // Some platforms require permissions to open input channels so request that here
@@ -325,6 +345,8 @@ status_(kStatus_Stop), shouldExit_(false)
                 auto global = setting_["global"];
                 fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
             }
+            
+            recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
         }
         else
         {
@@ -341,6 +363,8 @@ MainComponent::~MainComponent()
     
     saveSettings();
     
+    browseToggleButton_->setLookAndFeel(nullptr);
+    recentToggleButton_->setLookAndFeel(nullptr);
     setLookAndFeel(nullptr);
     stopThread(4000.f);
     stopTimer();
@@ -383,19 +407,19 @@ void MainComponent::resized()
     fileNameLabel_->setBounds(getWidth() / 2 - 100, playPauseButton_->getBottom() + 10, 200, 30);
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 30);
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
-    //debugComponent_->setBounds(0, 240, getWidth(), 240);
     
     {
-        int32_t y = 490 + 10, w = 100;
         int32_t browserWidth = getWidth() / 4;
+        int32_t y = 490 + 10, w = browserWidth / 2 - 10;
         
-        browseToggleButton_->setBounds(20 + browserWidth / 2 - 10 - w, y, w, 30);
-        recentToggleButton_->setBounds(browseToggleButton_->getRight() + 20, y, w, 30);
+        browseToggleButton_->setBounds(20 + browserWidth / 2 - 1 - w, y, w, 30);
+        recentToggleButton_->setBounds(browseToggleButton_->getRight() + 2, y, w, 30);
         pracListNameTextEditor_->setBounds(getWidth() - 60 - 20 - 220, y, 200, 30);
         addToListButton_->setBounds(getWidth() - 60 - 20, y, 60, 30);
         
         y += 40;
         fileBrowserComponent_->setBounds(20, y, browserWidth, getHeight() - y - 20);
+        recentTable_->setBounds(fileBrowserComponent_->getX() + 20, y, fileBrowserComponent_->getWidth() - 40, getHeight() - y - 20);
         table_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, getHeight() - y - 20);
         practiceListLabel_->setBounds(table_->getX(), browseToggleButton_->getY(), 100, 30);
     }
@@ -500,6 +524,11 @@ void MainComponent::updatePracticeList(const Array<var>& list)
     }
 }
 
+void MainComponent::loadFile(const String& filePath)
+{
+    openFile(File(filePath));
+}
+
 void MainComponent::fileDoubleClicked(const File& file)
 {
     openFile(file);
@@ -556,6 +585,12 @@ void MainComponent::timerCallback()
     waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
 }
 
+void MainComponent::updateToggleState(Tab tab)
+{
+    fileBrowserComponent_->setVisible(tab == kTab_Browse);
+    recentTable_->setVisible(tab == kTab_Recent);
+}
+
 bool MainComponent::openFile(const File& file)
 {
     AudioFormatManager formatManager;
@@ -589,6 +624,9 @@ bool MainComponent::openFile(const File& file)
     }
     
     delete reader;
+    
+    addToRecent(fileFullPath_);
+    recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
     
     return true;
 }
@@ -672,6 +710,17 @@ void MainComponent::addToPracticeList(String name)
     std::cout << JSON::toString(setting_) << std::endl;
 }
 
+void MainComponent::addToRecent(String filePath)
+{
+    auto recent = setting_["recent"].getArray();
+    recent->removeFirstMatchingValue(filePath);
+    recent->insert(0, filePath);
+    if (recent->size() >= kMaxSizeOfRecentList)
+    {
+        recent->resize(kMaxSizeOfRecentList);
+    }
+}
+
 void MainComponent::updateAll()
 {
     updateAButtonLabel();
@@ -735,7 +784,7 @@ void MainComponent::createSettingsFile()
     current->setProperty("speed", melissa_->getSpeed());
     current->setProperty("pitch", melissa_->getPitch());
     all->setProperty("current", var(current));
-    
+    all->setProperty("recent", Array<var>());
     all->setProperty("songs", Array<var>());
     
     settingsFile_.replaceWithText(JSON::toString(all));
@@ -746,7 +795,7 @@ void MainComponent::createSettingsFile()
 void MainComponent::saveSettings()
 {
     auto global = setting_["global"].getDynamicObject();
-    global->setProperty("version", "unko}");
+    global->setProperty("version", "1.0");
     global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
     
     auto current = setting_["current"].getDynamicObject();
