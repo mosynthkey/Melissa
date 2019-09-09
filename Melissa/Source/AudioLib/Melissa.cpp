@@ -5,6 +5,8 @@
 //  Created by Masaki on 2019/07/29.
 //
 
+#define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <iostream>
 #include <limits.h>
