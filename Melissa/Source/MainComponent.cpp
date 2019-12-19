@@ -366,6 +366,16 @@ status_(kStatus_Stop), shouldExit_(false)
         addAndMakeVisible(fileBrowserComponent_.get());
     }
     
+    {
+        for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
+        {
+            const std::string titles_[] = { "A-B Loop", "Speed" };
+            auto sectionTitle = std::make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 200);
+            addAndMakeVisible(sectionTitle.get());
+            sectionTitles_.emplace_back(std::move(sectionTitle));
+        }
+    }
+    
     setSize (1400, 860);
     
     // Some platforms require permissions to open input channels so request that here
@@ -537,7 +547,9 @@ void MainComponent::resized()
         x = aButton_->getX() - 60 - 10;
         aSetButton_->setBounds(x, y,  60, 30);
         
-        y += 60;
+        sectionTitles_[kSectionTitle_Loop]->setBounds(aSetButton_->getX(), y - 30 - 10, resetButton_->getRight() - aSetButton_->getX(), 30);
+        
+        y += 110;
         speedLabel_->setBounds(aSetButton_->getBounds().withY(y));
         speedButton_->setBounds(aButton_->getBounds().withY(y));
         
@@ -545,6 +557,8 @@ void MainComponent::resized()
         speedIncValueButton_->setBounds(x, y - 20, 140, 30);
         speedIncPerButton_->setBounds(x, y + 20, 140, 30);
         speedIncMaxButton_->setBounds(x + 150, y, 140, 30);
+        
+        sectionTitles_[kSectionTitle_Speed]->setBounds(aSetButton_->getX(), y - 50 - 10, resetButton_->getRight() - aSetButton_->getX(), 30);
     }
 }
 

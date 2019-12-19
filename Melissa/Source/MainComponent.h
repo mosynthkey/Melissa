@@ -232,18 +232,39 @@ private:
     MelissaHost* host_;
 };
 
-class MelissaBlackGradationView : public Component
+class MelissaSectionTitleComponent : public Component
 {
 public:
-    MelissaBlackGradationView(bool isUpper)
+    MelissaSectionTitleComponent(const std::string& title, int lineWidth) :
+    lineWidth_(lineWidth)
     {
+        label_ = std::make_unique<Label>();
+        label_->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
+        label_->setText(title, dontSendNotification);
+        label_->setJustificationType(Justification::centred);
+        addAndMakeVisible(label_.get());
         
+        labelWidth_ = label_->getFont().getStringWidth(title);
     }
     
-    void paint(Graphics& g)
+    void resized() override
     {
-        
+        label_->setBounds(getLocalBounds());
     }
+    
+    void paint(Graphics& g) override
+    {
+        labelWidth_ = label_->getFont().getStringWidth(label_->getText());
+        constexpr int lineHeight = 1;
+        g.setColour(Colours::white.withAlpha(0.4f));
+        g.fillRect(0, (getHeight() - lineHeight) / 2, lineWidth_, lineHeight);
+        g.fillRect(getWidth() - lineWidth_, (getHeight() - lineHeight) / 2, lineWidth_, lineHeight);
+    }
+
+private:
+    std::unique_ptr<Label> label_;
+    int labelWidth_;
+    int lineWidth_;
 };
 
 class MainComponent   : public AudioAppComponent,
@@ -374,6 +395,14 @@ private:
     std::unique_ptr<TextEditor> memoTextEditor_;
     std::unique_ptr<TextButton> addToListButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
+    
+    enum
+    {
+        kSectionTitle_Loop,
+        kSectionTitle_Speed,
+        kNumOfSectionTitles
+    };
+    std::vector<std::unique_ptr<MelissaSectionTitleComponent>> sectionTitles_;
     
     MelissaLookAndFeel lookAndFeel_;
     MelissaLookAndFeel_Tab lookAndFeelTab_;

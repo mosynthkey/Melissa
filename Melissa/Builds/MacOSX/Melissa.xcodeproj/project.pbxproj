@@ -61,6 +61,10 @@
 			isa = PBXBuildFile;
 			fileRef = 4B36CCBCA98C384089FF41D5;
 		};
+		412D6B54F5EA5EACD92E7889 = {
+			isa = PBXBuildFile;
+			fileRef = 5AD5CF8D800B5B0E27F0B1E7;
+		};
 		E83E52C21959AB217DA00237 = {
 			isa = PBXBuildFile;
 			fileRef = 60A2A4585B994180A8BF8826;
@@ -132,6 +136,10 @@
 		6BC5CD797691B2DB07AB1B6C = {
 			isa = PBXBuildFile;
 			fileRef = AA30FA5E18873B4EA1B39D47;
+		};
+		EE48BA0FD6F2B7B1BEF6F3A7 = {
+			isa = PBXBuildFile;
+			fileRef = 2E5FB9CDCF4DEDE2FE0EF5EA;
 		};
 		50361DE208C85E532BB64F9B = {
 			isa = PBXBuildFile;
@@ -262,6 +270,13 @@
 			path = "~/Develop/JUCE/modules/juce_core";
 			sourceTree = "<absolute>";
 		};
+		1F69D3ED50D3F24DE03A66CB = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			name = Melissa.entitlements;
+			path = Melissa.entitlements;
+			sourceTree = "SOURCE_ROOT";
+		};
 		245A4CF8ED1E345F7AE902D6 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -281,6 +296,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PeakFinder.h;
 			path = ../../../Submodule/soundtouch/source/SoundTouch/PeakFinder.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		2E5FB9CDCF4DEDE2FE0EF5EA = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BinaryData.cpp;
+			path = ../../JuceLibraryCode/BinaryData.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		302B49BF08310F333E4D473B = {
@@ -416,6 +438,13 @@
 			path = "../../JuceLibraryCode/include_juce_audio_basics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		5AD5CF8D800B5B0E27F0B1E7 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.icns;
+			name = Icon.icns;
+			path = Icon.icns;
+			sourceTree = "SOURCE_ROOT";
+		};
 		5F343E441F7F27A2E3F88724 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -506,6 +535,13 @@
 			name = QuartzCore.framework;
 			path = System/Library/Frameworks/QuartzCore.framework;
 			sourceTree = SDKROOT;
+		};
+		7D6214DFBA1C5C0DBBA9AAE6 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BinaryData.h;
+			path = ../../JuceLibraryCode/BinaryData.h;
+			sourceTree = "SOURCE_ROOT";
 		};
 		808CCCECF8CDCF7E0000E874 = {
 			isa = PBXFileReference;
@@ -689,6 +725,13 @@
 			path = ../../../Submodule/soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		D1268EE971FF919201D93ED9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			name = icon.png;
+			path = ../../icon.png;
+			sourceTree = "SOURCE_ROOT";
+		};
 		D8B06E81A1DA792D512EFEDE = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -787,6 +830,14 @@
 			path = "../../JuceLibraryCode/include_juce_cryptography.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		CE9148CF9223383D004C947D = {
+			isa = PBXGroup;
+			children = (
+				D1268EE971FF919201D93ED9,
+			);
+			name = Resource;
+			sourceTree = "<group>";
+		};
 		D536BBCAD7491E5DA45157C3 = {
 			isa = PBXGroup;
 			children = (
@@ -855,6 +906,7 @@
 		2F90F2269188A738FDC576CA = {
 			isa = PBXGroup;
 			children = (
+				CE9148CF9223383D004C947D,
 				D536BBCAD7491E5DA45157C3,
 				E9F1721F868F6EDA77B7EEF1,
 			);
@@ -885,6 +937,8 @@
 			isa = PBXGroup;
 			children = (
 				57263FFC7A54AE9AC748C674,
+				2E5FB9CDCF4DEDE2FE0EF5EA,
+				7D6214DFBA1C5C0DBBA9AAE6,
 				585E88C00A05D8F0036FE91C,
 				24CD5607342BAAF5E1E1E463,
 				38CED1020F382397B5FC45AA,
@@ -908,6 +962,7 @@
 			children = (
 				EEE2A8215A773AA21AD890B7,
 				4B36CCBCA98C384089FF41D5,
+				5AD5CF8D800B5B0E27F0B1E7,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -958,6 +1013,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -982,6 +1038,9 @@
 				HEADER_SEARCH_PATHS = (
 					"../../JuceLibraryCode",
 					"$(HOME)/Develop/JUCE/modules",
+					"..\..\..\Submodule\soundtouch\include",
+					"..\..\..\Melissa\Source",
+					"..\..\..\Melissa\Source\AudioLib",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -1000,6 +1059,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				DEAD_CODE_STRIPPING = YES;
@@ -1025,6 +1085,9 @@
 				HEADER_SEARCH_PATHS = (
 					"../../JuceLibraryCode",
 					"$(HOME)/Develop/JUCE/modules",
+					"..\..\..\Submodule\soundtouch\include",
+					"..\..\..\Melissa\Source",
+					"..\..\..\Melissa\Source\AudioLib",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -1060,6 +1123,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1106,6 +1170,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -1155,6 +1220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B60DCDCDF448C33EEA2A19C,
+				412D6B54F5EA5EACD92E7889,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1180,6 +1246,7 @@
 				5515F4E5A1F0D1A9A7A21DA3,
 				9F51584DC3C4A6028EFBF0B0,
 				6BC5CD797691B2DB07AB1B6C,
+				EE48BA0FD6F2B7B1BEF6F3A7,
 				50361DE208C85E532BB64F9B,
 				E415B2B4C6F536769AB00B93,
 				59017FB25AC3FD9FD315F4FE,
