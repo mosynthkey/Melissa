@@ -18,7 +18,7 @@ using std::make_unique;
 
 Melissa::Melissa() :
 soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), startIndex_(0), readIndex_(0), speed_(1.f), semitone_(0), volume_(1.f), needToReset_(false), sampleTime_(0)
+aIndex_(0), bIndex_(0), startIndex_(0), readIndex_(0), speed_(100), semitone_(0), volume_(1.f), needToReset_(false), sampleTime_(0), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
 {
     for (int iCh = 0; iCh < 2; ++iCh)
     {
@@ -47,9 +47,8 @@ void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t samp
     bIndex_ =  bufferLength - 1;
     startIndex_ = 0;
     setPitch(0);
-    setSpeed(1.f);
+    setSpeed(100);
    
-    
     isOriginalBufferPrepared_ = true;
     needToReset_ = true;
 }
@@ -135,8 +134,7 @@ int32_t Melissa::getTotalLengthMSec() const
 
 int32_t Melissa::getPlayingPosMSec() const
 {
-    const float ratio = soundTouch_->getInputOutputSampleRatio();
-    const float elapsedTimeMSec = static_cast<float>(sampleTime_ / ratio) / outputSampleRate_ * 1000.f;
+    const float elapsedTimeMSec = static_cast<float>(sampleTime_ * speed_ / 100.f) / outputSampleRate_ * 1000.f;
     const float loopTimeMSec    = static_cast<float>(bIndex_ - aIndex_) / originalSampleRate_ * 1000.f;
     const float startTimeMSec   = static_cast<float>(startIndex_) / originalSampleRate_ * 1000.f;
     const float aTimeMSec       = static_cast<float>(aIndex_) / originalSampleRate_ * 1000.f;
@@ -169,15 +167,40 @@ float Melissa::getPlayingPosRatio() const
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
-void Melissa::setSpeed(float speed)
+void Melissa::setSpeed(int32_t speed)
 {
     if (speed_ == speed) return;
     
-    if (speed > 2.f) speed = 2.f;
-    if (speed < 0.2f) speed = 0.2f;
+    if (speed > 200) speed = 200;
+    if (speed < 20) speed = 20;
     
     speed_ = speed;
+    currentSpeed_ = speed;
+    
     needToReset_ = true;
+}
+
+void Melissa::setSpeedIncPer(int32_t speedIncPer)
+{
+    if (speedIncPer < 0) speedIncPer = 0;
+    if (speedIncPer > 100) speedIncPer = 100;
+    speedIncPer_ = speedIncPer;
+    count_ = 0;
+}
+
+void Melissa::setSpeedIncValue(int32_t speedIncValue)
+{
+    if (speedIncValue < 0) speedIncValue = 0;
+    if (speedIncValue > 10) speedIncValue = 10;
+    speedIncValue_ = speedIncValue;
+    count_ = 0;
+}
+
+void Melissa::setSpeedIncMax(int32_t speedIncMax)
+{
+    if (speedIncMax > 200) speedIncMax = 200;
+    if (speedIncMax < speed_) speed_ = speedIncMax;
+    speedIncMax_ = speedIncMax;
 }
 
 void Melissa::setPitch(int32_t semitone)
@@ -259,7 +282,20 @@ void Melissa::process()
     {
         for (size_t iSample = 0; iSample < processLength_; ++iSample)
         {
-            if (readIndex_ > bIndex_) readIndex_ = aIndex_;
+            if (readIndex_ > bIndex_)
+            {
+                readIndex_ = aIndex_;
+                ++count_;
+                
+                if (speedIncPer_ != 0)
+                {
+                    const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
+                    currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
+                    if (currentSpeed_ > speedIncMax_) currentSpeed_ = speedIncMax_;
+                    soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
+                }
+
+            }
             bufferForSoundTouch_[iSample * 2 + 0] = originalBuffer_[0][readIndex_];
             bufferForSoundTouch_[iSample * 2 + 1] = originalBuffer_[1][readIndex_];
             ++readIndex_;
@@ -306,10 +342,8 @@ void Melissa::resetProcessedBuffer()
     soundTouch_->clear();
     soundTouch_->setChannels(2);
     soundTouch_->setSampleRate(originalSampleRate_);
-    soundTouch_->setTempo(fsConvPitch * speed_);
+    soundTouch_->setTempo(fsConvPitch * speed_ / 100.f);
     soundTouch_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
-    
-    std::cout << "ratio = " << soundTouch_->getInputOutputSampleRatio() << std::endl;
     
     mutex_.lock();
     processedBufferQue_.clear();
@@ -319,6 +353,7 @@ void Melissa::resetProcessedBuffer()
     readIndex_ = startIndex_;
     needToReset_ = false;
     metronome_.count_ = metronome_.offsetSec_ * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
+    count_ = 0;
 }
 
 std::string Melissa::getStatusString() const

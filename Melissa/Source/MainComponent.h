@@ -95,7 +95,7 @@ public:
                     break;
                 }
                 case kColumn_Speed + 1:
-                    text = String(static_cast<int32_t>(static_cast<float>(prac.getProperty("speed", 0)) * 100)) + "%";
+                    text = String(static_cast<int32_t>(prac.getProperty("speed", 0))) + " %";
                     break;
                 case kColumn_Pitch + 1:
                     text = MelissaUtility::getFormattedPitch(prac.getProperty("pitch", 0));
@@ -232,6 +232,20 @@ private:
     MelissaHost* host_;
 };
 
+class MelissaBlackGradationView : public Component
+{
+public:
+    MelissaBlackGradationView(bool isUpper)
+    {
+        
+    }
+    
+    void paint(Graphics& g)
+    {
+        
+    }
+};
+
 class MainComponent   : public AudioAppComponent,
                         public FileBrowserListener,
                         public KeyListener,
@@ -341,6 +355,10 @@ private:
     
     std::unique_ptr<Label> speedLabel_;
     std::unique_ptr<MelissaIncDecButton> speedButton_;
+    std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
+    std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
+    std::unique_ptr<MelissaIncDecButton> speedIncMaxButton_;
+    
     std::unique_ptr<Label> pitchLabel_;
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
@@ -359,6 +377,7 @@ private:
     
     MelissaLookAndFeel lookAndFeel_;
     MelissaLookAndFeel_Tab lookAndFeelTab_;
+    MelissaLookAndFeel_Memo lookAndFeelMemo_;
     
     String fileName_, fileFullPath_;
     

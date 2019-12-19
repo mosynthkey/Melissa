@@ -14,7 +14,18 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.15f));
+        constexpr int gradMargin = 20;
+        const int w = getWidth();
+        const int h = getHeight();
+        
+        g.setGradientFill(ColourGradient(Colour(0x00000000), w / 2, 0.f, Colour(0x16000000), w / 2, gradMargin, false));
+        g.fillRect(0, 0, w, gradMargin);
+        
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.16f));
+        g.fillRect(0, gradMargin, w, h - 2 * gradMargin);
+        
+        g.setGradientFill(ColourGradient(Colour(0x16000000), w / 2, h - gradMargin, Colour(0x00000000), w / 2, h, false));
+        g.fillRect(0, h - gradMargin, w, gradMargin);
     }
     
 private:
