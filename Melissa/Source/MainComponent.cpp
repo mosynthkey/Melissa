@@ -9,7 +9,7 @@ enum
     kBrowseRecentTabGroup = 1001,
     kPracticeMemoTabGroup = 1002,
     
-    kMaxSizeOfRecentList = 10,
+    kMaxSizeOfRecentList = 50,
 };
 
 
@@ -25,10 +25,6 @@ status_(kStatus_Stop), shouldExit_(false)
     melissa_ = make_unique<Melissa>();
     
     // look and feel
-    lookAndFeel_.setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-    lookAndFeel_.setColour(ListBox::outlineColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-    lookAndFeel_.setColour(ListBox::backgroundColourId, Colours::transparentWhite);
-    lookAndFeel_.setColour(DirectoryContentsDisplayComponent::highlightColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
     setLookAndFeel(&lookAndFeel_);
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
@@ -113,6 +109,10 @@ status_(kStatus_Stop), shouldExit_(false)
         volumeSlider_ = make_unique<Slider>();
         volumeSlider_->setRange(0.1f, 4.0f);
         volumeSlider_->setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+        volumeSlider_->onValueChange = [this]()
+        {
+            melissa_->setVolume(volumeSlider_->getValue());
+        };
         addAndMakeVisible(volumeSlider_.get());
     }
     
@@ -189,16 +189,61 @@ status_(kStatus_Stop), shouldExit_(false)
         speedButton_ = make_unique<MelissaIncDecButton>();
         speedButton_->onClickDecButton_ = [this](bool b)
         {
-            melissa_->setSpeed(melissa_->getSpeed() - (b ? 0.01 : 0.1));
+            melissa_->setSpeed(melissa_->getSpeed() - (b ? 1 : 10));
             updateSpeedButtonLabel();
         };
         speedButton_->onClickIncButton_ = [this](bool b)
         {
-            melissa_->setSpeed(melissa_->getSpeed() + (b ? 0.01 : 0.1));
+            melissa_->setSpeed(melissa_->getSpeed() + (b ? 1 : 10));
             updateSpeedButtonLabel();
         };
         speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         addAndMakeVisible(speedButton_.get());
+    }
+    
+    {
+        speedIncPerButton_ = make_unique<MelissaIncDecButton>();
+        speedIncPerButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setSpeedIncPer(melissa_->getSpeedIncPer() - 1);
+            updateSpeedButtonLabel();
+        };
+        speedIncPerButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setSpeedIncPer(melissa_->getSpeedIncPer() + 1);
+            updateSpeedButtonLabel();
+        };
+        addAndMakeVisible(speedIncPerButton_.get());
+    }
+    
+    {
+        speedIncValueButton_ = make_unique<MelissaIncDecButton>();
+        speedIncValueButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setSpeedIncValue(melissa_->getSpeedIncValue() - 1);
+            updateSpeedButtonLabel();
+        };
+        speedIncValueButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setSpeedIncValue(melissa_->getSpeedIncValue() + 1);
+            updateSpeedButtonLabel();
+        };
+        addAndMakeVisible(speedIncValueButton_.get());
+    }
+    
+    {
+        speedIncMaxButton_ = make_unique<MelissaIncDecButton>();
+        speedIncMaxButton_->onClickDecButton_ = [this](bool b)
+        {
+            melissa_->setSpeedIncMax(melissa_->getSpeedIncMax() - 1);
+            updateSpeedButtonLabel();
+        };
+        speedIncMaxButton_->onClickIncButton_ = [this](bool b)
+        {
+            melissa_->setSpeedIncMax(melissa_->getSpeedIncMax() + 1);
+            updateSpeedButtonLabel();
+        };
+        addAndMakeVisible(speedIncMaxButton_.get());
     }
     
     {
@@ -255,10 +300,12 @@ status_(kStatus_Stop), shouldExit_(false)
         memoTextEditor_ = make_unique<TextEditor>();
         memoTextEditor_->setLookAndFeel(nullptr);
         memoTextEditor_->setMultiLine(true, false);
+        memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
         memoTextEditor_->onFocusLost = [&]()
         {
             saveMemo();
         };
+        memoTextEditor_->setReturnKeyStartsNewLine(true);
         addAndMakeVisible(memoTextEditor_.get());
     }
     
@@ -347,41 +394,35 @@ status_(kStatus_Stop), shouldExit_(false)
             settingsDir_.createDirectory();
         }
         settingsFile_ = settingsDir_.getChildFile("Settings.melissa");
-        if (settingsFile_.existsAsFile())
+        if (!settingsFile_.existsAsFile()) createSettingsFile();
+        
+        setting_ = JSON::parse(settingsFile_.loadFileAsString());
+        
+        auto current = setting_["current"];
+        
+        File file(current["file"].toString());
+        if (file.existsAsFile())
         {
-            setting_ = JSON::parse(settingsFile_.loadFileAsString());
+            openFile(file);
             
-            auto current = setting_["current"];
+            melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
+            melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
+            melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
+            melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
+            melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
+            updateAll();
             
-            File file(current["file"].toString());
-            if (file.existsAsFile())
-            {
-                openFile(file);
-                
-                melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
-                melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
-                melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
-                melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 1.f)));
-                melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
-                updateAll();
-                
-                auto global = setting_["global"];
-                fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
-                
-                const bool isBrowse = global.getProperty("browse_recent", "browse") == "browse";
-                browseToggleButton_->setToggleState(isBrowse, dontSendNotification);
-                recentToggleButton_->setToggleState(!isBrowse, dontSendNotification);
-                updateBrowseRecent(isBrowse ? kBrowseRecentTab_Browse : kBrowseRecentTab_Recent);
-                
-            }
+            auto global = setting_["global"];
+            fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
             
-            recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
+            const bool isBrowse = global.getProperty("browse_recent", "browse") == "browse";
+            browseToggleButton_->setToggleState(isBrowse, dontSendNotification);
+            recentToggleButton_->setToggleState(!isBrowse, dontSendNotification);
+            updateBrowseRecent(isBrowse ? kBrowseRecentTab_Browse : kBrowseRecentTab_Recent);
+            
         }
-        else
-        {
-            // create if not exist
-            createSettingsFile();
-        }
+        
+        recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
     }
 }
 
@@ -398,6 +439,7 @@ MainComponent::~MainComponent()
     recentToggleButton_->setLookAndFeel(nullptr);
     practiceListToggleButton_->setLookAndFeel(nullptr);
     memoToggleButton_->setLookAndFeel(nullptr);
+    memoTextEditor_->setLookAndFeel(nullptr);
     
     stopThread(4000.f);
     stopTimer();
@@ -427,23 +469,24 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics& g)
 {
-    g.setGradientFill(ColourGradient(Colour(0xff019cdf), 0.f, 0.f, Colour(0xffc82788), getWidth(), getHeight(), true));
-    //g.setGradientFill(ColourGradient(Colour(0xff00284d), 0.f, 0.f, Colour(0xff00283a), getWidth(), getHeight(), true));
+    g.setGradientFill(ColourGradient(Colour(0xff4a90e2), 0.f, 0.f, Colour(0xff204673), getWidth(), getHeight(), false));
     g.fillAll();
 }
 
 void MainComponent::resized()
 {
-    controlComponent_->setBounds(0, 240, getWidth(), 240);
+    controlComponent_->setBounds(0, 220, getWidth(), 280);
     playPauseButton_->setBounds((getWidth() - 100) / 2, 280, 100, 100);
     toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
     fileNameLabel_->setBounds(getWidth() / 2 - 100, playPauseButton_->getBottom() + 10, 200, 30);
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 30);
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
+    // left-bottom part (Browser / Recent)
     {
         int32_t browserWidth = getWidth() / 4;
-        int32_t y = 490 + 10, w = browserWidth / 2 - 10;
+        int32_t y = controlComponent_->getBottom();
+        int32_t w = browserWidth / 2 - 10;
         
         browseToggleButton_->setBounds(20 + browserWidth / 2 - 1 - w, y, w, 30);
         recentToggleButton_->setBounds(browseToggleButton_->getRight() + 2, y, w, 30);
@@ -459,7 +502,7 @@ void MainComponent::resized()
         memoToggleButton_->setBounds(practiceListToggleButton_->getRight() + 2, browseToggleButton_->getY(), w, 30);
     }
     
-    int32_t marginX = 50;
+    int32_t marginX = 60;
     
     {
         int32_t y = 300;
@@ -472,12 +515,17 @@ void MainComponent::resized()
     {
         int32_t y = 390;
         volumeSlider_->setBounds(metronomeOnOffButton_->getX(), y, 200, 30);
+        
+        int32_t x = 300;
+        pitchLabel_->setBounds(x, y, 60, 30);
+        x = pitchLabel_->getRight() + 10;
+        pitchButton_->setBounds(x, y, 140, 30);
     }
     
     {
         int32_t y = 300;
         int32_t x = getWidth() - 60 - marginX;
-        resetButton_->setBounds(x, y, 60, 30);
+        resetButton_->setBounds(x, y, 70, 30);
         
         x = resetButton_->getX() - 140 - 10;
         bButton_->setBounds(x, y, 140, 30);
@@ -489,12 +537,14 @@ void MainComponent::resized()
         x = aButton_->getX() - 60 - 10;
         aSetButton_->setBounds(x, y,  60, 30);
         
-        y = 390;
+        y += 60;
         speedLabel_->setBounds(aSetButton_->getBounds().withY(y));
         speedButton_->setBounds(aButton_->getBounds().withY(y));
         
-        pitchLabel_->setBounds(bSetButton_->getBounds().withY(y));
-        pitchButton_->setBounds(bButton_->getBounds().withY(y));
+        x = bSetButton_->getX();
+        speedIncValueButton_->setBounds(x, y - 20, 140, 30);
+        speedIncPerButton_->setBounds(x, y + 20, 140, 30);
+        speedIncMaxButton_->setBounds(x + 150, y, 140, 30);
     }
 }
 
@@ -671,6 +721,8 @@ bool MainComponent::openFile(const File& file)
     
     delete reader;
     
+    saveSettings();
+    
     return true;
 }
 
@@ -808,8 +860,17 @@ void MainComponent::updateBButtonLabel()
 
 void MainComponent::updateSpeedButtonLabel()
 {
-    int32_t speed = melissa_->getSpeed() * 100;
+    const int32_t speed = melissa_->getSpeed();
     speedButton_->setText(String(speed) + "%");
+    
+    const int32_t incPer = melissa_->getSpeedIncPer();
+    speedIncPerButton_->setText("/ " + String(incPer));
+    
+    const int32_t incValue = melissa_->getSpeedIncValue();
+    speedIncValueButton_->setText("+ " + String(incValue) + " %");
+    
+    const int32_t incMax = melissa_->getSpeedIncMax();
+    speedIncMaxButton_->setText("Max: " + String(incMax) + " %");
 }
 
 void MainComponent::updatePitchButtonLabel()
@@ -849,8 +910,6 @@ void MainComponent::createSettingsFile()
     all->setProperty("songs", Array<var>());
     
     settingsFile_.replaceWithText(JSON::toString(all));
-    
-    setting_ = all;
 }
 
 void MainComponent::saveSettings()
