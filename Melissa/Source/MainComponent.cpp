@@ -47,17 +47,21 @@ status_(kStatus_Stop), shouldExit_(false)
     {
         // load setting file
         settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
-        if (!(settingsDir_.exists() && settingsDir_.isDirectory()))
-        {
-            settingsDir_.createDirectory();
-        }
-        settingsFile_ = settingsDir_.getChildFile("Settings.melissa");
+        if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
+        
+        settingsFile_ = settingsDir_.getChildFile("Settings.json");
         if (!settingsFile_.existsAsFile()) createSettingsFile();
         
         setting_ = JSON::parse(settingsFile_.loadFileAsString());
         
         auto global = setting_["global"];
-        fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
+        
+        fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "~/")));
+        
+        if (global.hasProperty("device"))
+        {
+            deviceManager.initialise(0, 2, XmlDocument::parse(global.getProperty("device", "")).get(), true);
+        }
         
         if (!setting_.hasProperty("recent"))
         {
@@ -85,12 +89,15 @@ status_(kStatus_Stop), shouldExit_(false)
         recentToggleButton_->setToggleState(false, dontSendNotification);
         updateFileChooserTab(kFileChooserTab_Browse);
     }
+    
+    deviceManager.addMidiInputCallback("", this);
 }
 
 MainComponent::~MainComponent()
 {
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
+    
     
     saveSettings();
     
@@ -515,7 +522,7 @@ void MainComponent::resized()
     controlComponent_->setBounds(0, 220, getWidth(), 280);
     playPauseButton_->setBounds((getWidth() - 100) / 2, 280, 100, 100);
     toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
-    fileNameLabel_->setBounds(getWidth() / 2 - 100, playPauseButton_->getBottom() + 10, 200, 30);
+    fileNameLabel_->setBounds(getWidth() / 2 - 200, playPauseButton_->getBottom() + 10, 400, 30);
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 30);
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
@@ -710,6 +717,11 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
     
 }
 
+void MainComponent::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
+{
+    midiControlManager_.processMIDIMessage(message);
+}
+
 void MainComponent::run()
 {
     while (!shouldExit_)
@@ -772,7 +784,7 @@ bool MainComponent::openFile(const File& file)
     waveformComponent_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
     audioSampleBuf_ = nullptr;
     
-    fileName_ = file.getFileName();
+    fileName_ = file.getFileNameWithoutExtension();
     fileFullPath_ = file.getFullPathName();
     fileNameLabel_->setText(fileName_, dontSendNotification);
     updateAll();
@@ -986,6 +998,9 @@ void MainComponent::saveSettings()
     auto global = setting_["global"].getDynamicObject();
     global->setProperty("version", "1.0");
     global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
+    
+    auto xml = deviceManager.createStateXml();
+    if (xml != nullptr) global->setProperty("device", xml->toString());
     
     auto current = setting_["current"].getDynamicObject();
     current->setProperty("file", fileFullPath_);
