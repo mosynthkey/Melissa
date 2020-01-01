@@ -607,6 +607,19 @@ void MainComponent::resized()
     }
 }
 
+bool MainComponent::isInterestedInFileDrag(const StringArray& files)
+{
+    return true;
+}
+
+void MainComponent::filesDropped(const StringArray& files, int x, int y)
+{
+    for (auto&& file : files)
+    {
+        if (loadFile(file)) break;
+    }
+}
+
 bool MainComponent::keyPressed(const KeyPress &key, Component* originatingComponent)
 {
     const auto keyCode = key.getKeyCode();
@@ -668,9 +681,9 @@ void MainComponent::updatePracticeList(const Array<var>& list)
     }
 }
 
-void MainComponent::loadFile(const String& filePath)
+bool MainComponent::loadFile(const String& filePath)
 {
-    openFile(File(filePath));
+    return openFile(File(filePath));
 }
 
 void MainComponent::fileDoubleClicked(const File& file)

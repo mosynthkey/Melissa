@@ -33,7 +33,7 @@ public:
     virtual void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) = 0;
     virtual void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) = 0;
     virtual void updatePracticeList(const Array<var>& list) = 0;    
-    virtual void loadFile(const String& filePath) = 0;
+    virtual bool loadFile(const String& filePath) = 0;
 };
 
 class MelissaPracticeTableListBox : public TableListBox,
@@ -268,6 +268,7 @@ private:
 };
 
 class MainComponent   : public AudioAppComponent,
+                        public FileDragAndDropTarget,
                         public FileBrowserListener,
                         public KeyListener,
                         public MelissaHost,
@@ -277,7 +278,6 @@ class MainComponent   : public AudioAppComponent,
                         public Timer,
                         public Thread,
                         public Thread::Listener
-                        
 {
 public:
     MainComponent();
@@ -292,6 +292,10 @@ public:
     void paint(Graphics& g) override;
     void resized() override;
     
+    // FileDragAndDropTarget
+    bool isInterestedInFileDrag(const StringArray &files) override;
+    void filesDropped(const StringArray& files, int x, int y) override;
+    
     // FileBrowserListener
     void selectionChanged() override {};
     void fileClicked(const File& file, const MouseEvent& e) override {}
@@ -305,7 +309,7 @@ public:
     void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) override;
     void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) override;
     void updatePracticeList(const Array<var>& list) override;
-    void loadFile(const String& filePath) override;
+    bool loadFile(const String& filePath) override;
     
     // MelissaWaveformControlListener
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
