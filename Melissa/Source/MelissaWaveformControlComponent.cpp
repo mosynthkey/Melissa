@@ -202,6 +202,7 @@ public:
     
     void setPlayPosition(float ratio)
     {
+        if (playingPosRatio_ == ratio) return;
         playingPosRatio_ = ratio;
         repaint();
     }
