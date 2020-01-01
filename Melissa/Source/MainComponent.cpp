@@ -20,12 +20,110 @@ status_(kStatus_Stop), shouldExit_(false)
     getLookAndFeel().setDefaultSansSerifTypefaceName("Hiragino Kaku Gothic ProN");
 #endif
     
-    addListener(this);
-    
     melissa_ = make_unique<Melissa>();
     
-    // look and feel
+    createUI();
+    setSize (1400, 860);
+    
+    // Some platforms require permissions to open input channels so request that here
+    if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
+        && ! RuntimePermissions::isGranted (RuntimePermissions::recordAudio))
+    {
+        RuntimePermissions::request (RuntimePermissions::recordAudio,
+                                     [&] (bool granted) { if (granted)  setAudioChannels (2, 2); });
+    }
+    else
+    {
+        // Specify the number of input and output channels that we want to open
+        setAudioChannels (2, 2);
+    }
+    
+    Thread::addListener(this);
+    startThread();
+    startTimer(1000 / 10);
+    
+    addKeyListener(this);
+    
+    {
+        // load setting file
+        settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
+        if (!(settingsDir_.exists() && settingsDir_.isDirectory()))
+        {
+            settingsDir_.createDirectory();
+        }
+        settingsFile_ = settingsDir_.getChildFile("Settings.melissa");
+        if (!settingsFile_.existsAsFile()) createSettingsFile();
+        
+        setting_ = JSON::parse(settingsFile_.loadFileAsString());
+        
+        auto global = setting_["global"];
+        fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
+        
+        if (!setting_.hasProperty("recent"))
+        {
+            setting_.getDynamicObject()->setProperty("recent", Array<var>());
+        }
+        recent_ = setting_["recent"].getArray();
+        
+        auto current = setting_["current"];
+        File file(current["file"].toString());
+        if (file.existsAsFile())
+        {
+            openFile(file);
+            
+            melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
+            melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
+            melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
+            melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
+            melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
+            updateAll();
+        }
+        
+        recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
+        browseToggleButton_->setToggleState(true, dontSendNotification);
+        setListToggleButton_->setToggleState(false, dontSendNotification);
+        recentToggleButton_->setToggleState(false, dontSendNotification);
+        updateFileChooserTab(kFileChooserTab_Browse);
+    }
+}
+
+MainComponent::~MainComponent()
+{
+    // This shuts down the audio device and clears the audio source.
+    shutdownAudio();
+    
+    saveSettings();
+    
+    setLookAndFeel(nullptr);
+    recentTable_->setLookAndFeel(nullptr);
+    browseToggleButton_->setLookAndFeel(nullptr);
+    setListToggleButton_->setLookAndFeel(nullptr);
+    recentToggleButton_->setLookAndFeel(nullptr);
+    practiceListToggleButton_->setLookAndFeel(nullptr);
+    memoToggleButton_->setLookAndFeel(nullptr);
+    memoTextEditor_->setLookAndFeel(nullptr);
+    
+#if JUCE_MAC
+    MenuBarModel::setMacMainMenu(nullptr);
+#endif
+    
+    stopThread(4000.f);
+    stopTimer();
+}
+
+void MainComponent::createUI()
+{
     setLookAndFeel(&lookAndFeel_);
+    
+    menuBar_ = std::make_unique<MenuBarComponent>(this);
+    addAndMakeVisible(menuBar_.get());
+    
+#if JUCE_MAC
+    extraAppleMenuItems_ = std::make_unique<PopupMenu>();
+    extraAppleMenuItems_->addItem("Preferences", [&]() { showPreferencesDialog(); });
+    
+    MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
+#endif
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     waveformComponent_->setListener(this);
@@ -382,88 +480,6 @@ status_(kStatus_Stop), shouldExit_(false)
             sectionTitles_.emplace_back(std::move(sectionTitle));
         }
     }
-    
-    setSize (1400, 860);
-    
-    // Some platforms require permissions to open input channels so request that here
-    if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
-        && ! RuntimePermissions::isGranted (RuntimePermissions::recordAudio))
-    {
-        RuntimePermissions::request (RuntimePermissions::recordAudio,
-                                     [&] (bool granted) { if (granted)  setAudioChannels (2, 2); });
-    }
-    else
-    {
-        // Specify the number of input and output channels that we want to open
-        setAudioChannels (2, 2);
-    }
-    
-    startThread();
-    startTimer(1000 / 10);
-    
-    addKeyListener(this);
-    
-    {
-        // load setting file
-        settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
-        if (!(settingsDir_.exists() && settingsDir_.isDirectory()))
-        {
-            settingsDir_.createDirectory();
-        }
-        settingsFile_ = settingsDir_.getChildFile("Settings.melissa");
-        if (!settingsFile_.existsAsFile()) createSettingsFile();
-        
-        setting_ = JSON::parse(settingsFile_.loadFileAsString());
-        
-        auto global = setting_["global"];
-        fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
-        
-        if (!setting_.hasProperty("recent"))
-        {
-            setting_.getDynamicObject()->setProperty("recent", Array<var>());
-        }
-        recent_ = setting_["recent"].getArray();
-        
-        auto current = setting_["current"];
-        File file(current["file"].toString());
-        if (file.existsAsFile())
-        {
-            openFile(file);
-            
-            melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
-            melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
-            melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
-            melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
-            melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
-            updateAll();
-        }
-        
-        recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
-        browseToggleButton_->setToggleState(true, dontSendNotification);
-        setListToggleButton_->setToggleState(false, dontSendNotification);
-        recentToggleButton_->setToggleState(false, dontSendNotification);
-        updateFileChooserTab(kFileChooserTab_Browse);
-    }
-}
-
-MainComponent::~MainComponent()
-{
-    // This shuts down the audio device and clears the audio source.
-    shutdownAudio();
-    
-    saveSettings();
-    
-    setLookAndFeel(nullptr);
-    recentTable_->setLookAndFeel(nullptr);
-    browseToggleButton_->setLookAndFeel(nullptr);
-    setListToggleButton_->setLookAndFeel(nullptr);
-    recentToggleButton_->setLookAndFeel(nullptr);
-    practiceListToggleButton_->setLookAndFeel(nullptr);
-    memoToggleButton_->setLookAndFeel(nullptr);
-    memoTextEditor_->setLookAndFeel(nullptr);
-    
-    stopThread(4000.f);
-    stopTimer();
 }
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -676,6 +692,22 @@ void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float 
     
     melissa_->setBPosRatio(ratio);
     updateBButtonLabel();
+}
+
+StringArray MainComponent::getMenuBarNames()
+{
+    return { "File" };
+}
+
+PopupMenu MainComponent::getMenuForIndex(int topLevelMenuIndex, const String& menuName)
+{
+    PopupMenu menu;
+    return menu;
+}
+
+void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
+{
+    
 }
 
 void MainComponent::run()
@@ -977,4 +1009,17 @@ var MainComponent::getSongSetting(String fileName)
     }
     
     return var();
+}
+
+void MainComponent::showPreferencesDialog()
+{
+    DialogWindow::LaunchOptions options;
+    options.dialogTitle = "Preferences";
+    options.content.setOwned(new MelissaPreferencesComponent(&deviceManager));
+    options.componentToCentreAround = this;
+    options.useNativeTitleBar = true;
+    options.escapeKeyTriggersCloseButton = false;
+    options.resizable = false;
+    
+    options.launchAsync();
 }

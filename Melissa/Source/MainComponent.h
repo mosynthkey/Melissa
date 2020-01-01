@@ -6,6 +6,7 @@
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaPlayPauseButton.h"
+#include "MelissaPreferencesComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
@@ -274,6 +275,7 @@ class MainComponent   : public AudioAppComponent,
                         public KeyListener,
                         public MelissaHost,
                         public MelissaWaveformControlListener,
+                        public MenuBarModel,
                         public Timer,
                         public Thread,
                         public Thread::Listener
@@ -281,6 +283,8 @@ class MainComponent   : public AudioAppComponent,
 public:
     MainComponent();
     ~MainComponent();
+    
+    void createUI();
     
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
@@ -309,6 +313,11 @@ public:
     void setAPosition(MelissaWaveformControlComponent* sender, float ratio) override;
     void setBPosition(MelissaWaveformControlComponent* sender, float ratio) override;
     
+    // MenuBarModel
+    StringArray getMenuBarNames() override;
+    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
+    void menuItemSelected (int menuItemID, int topLevelMenuIndex) override;
+
     // Thread
     void run() override;
     
@@ -354,6 +363,9 @@ private:
     std::unique_ptr<Melissa> melissa_;
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
     
+    std::unique_ptr<PopupMenu> extraAppleMenuItems_;
+    std::unique_ptr<MenuBarComponent> menuBar_;
+    
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaControlComponent> controlComponent_;
     
@@ -398,6 +410,10 @@ private:
     std::unique_ptr<TextEditor> memoTextEditor_;
     std::unique_ptr<TextButton> addToListButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
+    
+    std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
+    
+    void showPreferencesDialog();
     
     enum
     {
