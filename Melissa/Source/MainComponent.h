@@ -10,10 +10,12 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
-enum BrowseRecentTab
+enum FileChooserTab
 {
-    kBrowseRecentTab_Browse,
-    kBrowseRecentTab_Recent
+    kFileChooserTab_Browse,
+    kFileChooserTab_SetList,
+    kFileChooserTab_Recent,
+    kNumOfFileChooserTabs
 };
 
 enum PracticeMemoTab
@@ -316,7 +318,7 @@ public:
     // Timer
     void timerCallback() override;
     
-    void updateBrowseRecent(BrowseRecentTab tab);
+    void updateFileChooserTab(FileChooserTab tab);
     void updatePracticeMemo(PracticeMemoTab tab);
     
     enum Status
@@ -384,6 +386,7 @@ private:
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
+    std::unique_ptr<ToggleButton> setListToggleButton_;
     std::unique_ptr<ToggleButton> recentToggleButton_;
     std::unique_ptr<WildcardFileFilter> wildCardFilter_;
     std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
@@ -412,6 +415,7 @@ private:
     
     File settingsDir_, settingsFile_;
     var setting_;
+    Array<var>* recent_;
     
     bool shouldExit_;
 

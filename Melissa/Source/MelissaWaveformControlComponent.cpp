@@ -17,14 +17,16 @@ private:
     MelissaWaveformControlComponent* parent_;
 };
 
-class MelissaWaveformControlComponent::WaveformView : public Component
+class MelissaWaveformControlComponent::WaveformView : public Component,
+                                                      public Timer
 {
 public:
     WaveformView(MelissaWaveformControlComponent* parent) :
     parent_(parent),
-    numOfStrip_(1),
+    numOfStrip_(0),
     isMouseDown_(false),
-    clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1), playingPosRatio_(-1.f),
+    clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
+    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f),
     listener_(nullptr)
     {
         current_ = std::make_unique<Label>();
@@ -35,8 +37,7 @@ public:
     
     void resized() override
     {
-        numOfStrip_ = static_cast<float>(getWidth() / (waveformStripWidth_ + waveformStripInterval_));
-        previewBuffer_.resize(numOfStrip_);
+        update();
     }
     
     void paint(Graphics& g) override
@@ -61,16 +62,6 @@ public:
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }
-        
-        /*
-        if (playingPosRatio_ >= 0.f)
-        {
-            g.setColour(Colour(0xffff0000));
-            const int32_t height = previewBuffer_[playingPosRatio_ * numOfStrip_] * getHeight();
-            int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
-            g.fillRect(static_cast<int32_t>(playingPosRatio_ * getWidth()), getHeight() - height, 1, height);
-        }
-         */
     }
     
     void mouseMoveOrDrag(const MouseEvent& event)
@@ -149,9 +140,40 @@ public:
         current_->setVisible(false);
     }
     
+    void timerCallback() override
+    {
+        stopTimer();
+        update_();
+    }
+    
     void setBuffer(const float* buffer[], size_t bufferLength)
     {
-        if (numOfStrip_ <= 0) return;
+        originalMonoralBuffer_.resize(bufferLength);
+        for (size_t iBufIndex = 0; iBufIndex < bufferLength; ++iBufIndex)
+        {
+            originalMonoralBuffer_[iBufIndex] = ((buffer[0][iBufIndex] * buffer[0][iBufIndex]) + (buffer[1][iBufIndex] * buffer[1][iBufIndex])) / 2.f;
+        }
+        
+        update();
+    }
+    
+    void update()
+    {
+        stopTimer();
+        
+        numOfStrip_ = static_cast<float>(getWidth() / (waveformStripWidth_ + waveformStripInterval_));
+        previewBuffer_.resize(numOfStrip_);
+        loopAStripIndex_ = loopAPosRatio_ * numOfStrip_;
+        loopBStripIndex_ = loopBPosRatio_ * numOfStrip_;
+        
+        startTimer(1000); // 1 sec delay
+    }
+    
+    void update_()
+    {
+        if (numOfStrip_ <= 0 || originalMonoralBuffer_.size() == 0 || previewBuffer_.size() == 0) return;
+        
+        const size_t bufferLength = originalMonoralBuffer_.size();
         
         float preview, previewMax = 0.f;
         for (int32_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
@@ -161,8 +183,7 @@ public:
             {
                 const size_t bufIndex = iStrip * (bufferLength / numOfStrip_) + iBuffer;
                 if (bufIndex >= bufferLength) break;
-                //preview += (abs(buffer[0][bufIndex]) + abs(buffer[1][bufIndex])) / 2.f;
-                preview += ((buffer[0][bufIndex] * buffer[0][bufIndex]) + (buffer[1][bufIndex] * buffer[1][bufIndex])) / 2.f;
+                preview += originalMonoralBuffer_[bufIndex];
             }
             preview /= (bufferLength / numOfStrip_);
             if (preview >= 1.f) preview = 1.f;
@@ -176,11 +197,6 @@ public:
             previewBuffer_[iPreviewBuffer] /= previewMax;
         }
         
-        loopAStripIndex_ = 0;
-        loopBStripIndex_ = static_cast<int32_t>(numOfStrip_ - 1);
-        
-        playingPosRatio_ = -0.f;
-        
         repaint();
     }
     
@@ -192,12 +208,14 @@ public:
     
     void setAPosition(float ratio)
     {
+        loopAPosRatio_ = ratio;
         loopAStripIndex_ = ratio * numOfStrip_;
         repaint();
     }
     
     void setBPosition(float ratio)
     {
+        loopBPosRatio_ = ratio;
         loopBStripIndex_ = ratio * numOfStrip_;
         repaint();
     }
@@ -219,9 +237,10 @@ private:
     size_t numOfStrip_;
     bool isMouseDown_;
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
-    float playingPosRatio_;
+    float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
     MelissaWaveformControlListener* listener_;
     std::vector<float> previewBuffer_;
+    std::vector<float> originalMonoralBuffer_;
 };
 
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :

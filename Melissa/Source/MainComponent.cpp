@@ -6,7 +6,7 @@ using std::make_unique;
 
 enum
 {
-    kBrowseRecentTabGroup = 1001,
+    kFileChooserTabGroup = 1001,
     kPracticeMemoTabGroup = 1002,
     
     kMaxSizeOfRecentList = 50,
@@ -49,7 +49,7 @@ status_(kStatus_Stop), shouldExit_(false)
     
     fileNameLabel_ = make_unique<Label>();
     fileNameLabel_->setJustificationType(Justification::centred);
-    fileNameLabel_->setText("Not loaded...", dontSendNotification);
+    fileNameLabel_->setText("---", dontSendNotification);
     addAndMakeVisible(fileNameLabel_.get());
     
     {
@@ -273,15 +273,22 @@ status_(kStatus_Stop), shouldExit_(false)
         browseToggleButton_ = make_unique<ToggleButton>();
         browseToggleButton_->setButtonText("Browse");
         browseToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        browseToggleButton_->setRadioGroupId(kBrowseRecentTabGroup);
-        browseToggleButton_->onClick = [&]() { updateBrowseRecent(kBrowseRecentTab_Browse); };
+        browseToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+        browseToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
         addAndMakeVisible(browseToggleButton_.get());
+        
+        setListToggleButton_ = make_unique<ToggleButton>();
+        setListToggleButton_->setButtonText("Set List");
+        setListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+        setListToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+        setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_SetList); };
+        addAndMakeVisible(setListToggleButton_.get());
         
         recentToggleButton_ = make_unique<ToggleButton>();
         recentToggleButton_->setButtonText("Recent");
         recentToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        recentToggleButton_->setRadioGroupId(kBrowseRecentTabGroup);
-        recentToggleButton_->onClick = [&]() { updateBrowseRecent(kBrowseRecentTab_Recent); };
+        recentToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+        recentToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Recent); };
         addAndMakeVisible(recentToggleButton_.get());
     }
     
@@ -408,8 +415,16 @@ status_(kStatus_Stop), shouldExit_(false)
         
         setting_ = JSON::parse(settingsFile_.loadFileAsString());
         
-        auto current = setting_["current"];
+        auto global = setting_["global"];
+        fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
         
+        if (!setting_.hasProperty("recent"))
+        {
+            setting_.getDynamicObject()->setProperty("recent", Array<var>());
+        }
+        recent_ = setting_["recent"].getArray();
+        
+        auto current = setting_["current"];
         File file(current["file"].toString());
         if (file.existsAsFile())
         {
@@ -421,18 +436,13 @@ status_(kStatus_Stop), shouldExit_(false)
             melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
             melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
             updateAll();
-            
-            auto global = setting_["global"];
-            fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "/")));
-            
-            const bool isBrowse = global.getProperty("browse_recent", "browse") == "browse";
-            browseToggleButton_->setToggleState(isBrowse, dontSendNotification);
-            recentToggleButton_->setToggleState(!isBrowse, dontSendNotification);
-            updateBrowseRecent(isBrowse ? kBrowseRecentTab_Browse : kBrowseRecentTab_Recent);
-            
         }
         
         recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
+        browseToggleButton_->setToggleState(true, dontSendNotification);
+        setListToggleButton_->setToggleState(false, dontSendNotification);
+        recentToggleButton_->setToggleState(false, dontSendNotification);
+        updateFileChooserTab(kFileChooserTab_Browse);
     }
 }
 
@@ -446,6 +456,7 @@ MainComponent::~MainComponent()
     setLookAndFeel(nullptr);
     recentTable_->setLookAndFeel(nullptr);
     browseToggleButton_->setLookAndFeel(nullptr);
+    setListToggleButton_->setLookAndFeel(nullptr);
     recentToggleButton_->setLookAndFeel(nullptr);
     practiceListToggleButton_->setLookAndFeel(nullptr);
     memoToggleButton_->setLookAndFeel(nullptr);
@@ -492,24 +503,35 @@ void MainComponent::resized()
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 30);
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
-    // left-bottom part (Browser / Recent)
+    // left-bottom part (Browser / SetList / Recent)
     {
-        int32_t browserWidth = getWidth() / 4;
+        constexpr int32_t tabMargin = 2;
+        int32_t browserWidth = 360;
+        int32_t w = (browserWidth - tabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
         int32_t y = controlComponent_->getBottom();
-        int32_t w = browserWidth / 2 - 10;
         
-        browseToggleButton_->setBounds(20 + browserWidth / 2 - 1 - w, y, w, 30);
-        recentToggleButton_->setBounds(browseToggleButton_->getRight() + 2, y, w, 30);
+        int32_t x = 20;
+        browseToggleButton_ ->setBounds(x, y, w, 30);
+        x += (w + tabMargin);
+        setListToggleButton_->setBounds(x, y, w, 30);
+        x += (w + tabMargin);
+        recentToggleButton_ ->setBounds(x, y, w, 30);
+        
+        w = 180;
+        x = 20 + browserWidth + 20;
+        practiceListToggleButton_->setBounds(x, y, w, 30);
+        x += (w + 2);
+        memoToggleButton_->setBounds(x, y, w, 30);
+        
         pracListNameTextEditor_->setBounds(getWidth() - 60 - 20 - 220, y, 200, 30);
         addToListButton_->setBounds(getWidth() - 60 - 20, y, 60, 30);
         
         y += 40;
-        fileBrowserComponent_->setBounds(20, y, browserWidth, getHeight() - y - 20);
-        recentTable_->setBounds(fileBrowserComponent_->getX() + 20, y, fileBrowserComponent_->getWidth() - 40, getHeight() - y - 20);
-        practiceTable_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, getHeight() - y - 20);
-        memoTextEditor_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, getHeight() - y - 20);
-        practiceListToggleButton_->setBounds(practiceTable_->getX(), browseToggleButton_->getY(), w, 30);
-        memoToggleButton_->setBounds(practiceListToggleButton_->getRight() + 2, browseToggleButton_->getY(), w, 30);
+        const int32_t h = getHeight() - y - 20;
+        fileBrowserComponent_->setBounds(20, y, browserWidth, h);
+        recentTable_->setBounds(fileBrowserComponent_->getBounds());
+        practiceTable_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, h);
+        memoTextEditor_->setBounds(fileBrowserComponent_->getRight() + 20, y, getWidth() - fileBrowserComponent_->getRight() - 40, h);
     }
     
     int32_t marginX = 60;
@@ -684,10 +706,10 @@ void MainComponent::timerCallback()
     waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
 }
 
-void MainComponent::updateBrowseRecent(BrowseRecentTab tab)
+void MainComponent::updateFileChooserTab(FileChooserTab tab)
 {
-    fileBrowserComponent_->setVisible(tab == kBrowseRecentTab_Browse);
-    recentTable_->setVisible(tab == kBrowseRecentTab_Recent);
+    fileBrowserComponent_->setVisible(tab == kFileChooserTab_Browse);
+    recentTable_->setVisible(tab == kFileChooserTab_Recent);
 }
 
 void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
@@ -839,12 +861,11 @@ void MainComponent::saveMemo()
 
 void MainComponent::addToRecent(String filePath)
 {
-    auto recent = setting_["recent"].getArray();
-    recent->removeFirstMatchingValue(filePath);
-    recent->insert(0, filePath);
-    if (recent->size() >= kMaxSizeOfRecentList)
+    recent_->removeFirstMatchingValue(filePath);
+    recent_->insert(0, filePath);
+    if (recent_->size() >= kMaxSizeOfRecentList)
     {
-        recent->resize(kMaxSizeOfRecentList);
+        recent_->resize(kMaxSizeOfRecentList);
     }
 }
 
@@ -933,7 +954,6 @@ void MainComponent::saveSettings()
     auto global = setting_["global"].getDynamicObject();
     global->setProperty("version", "1.0");
     global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
-    global->setProperty("browse_recent", fileBrowserComponent_->isVisible() ? "browse" : "recent");
     
     auto current = setting_["current"].getDynamicObject();
     current->setProperty("file", fileFullPath_);
