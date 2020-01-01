@@ -5,6 +5,7 @@
 #include "MelissaControlComponent.h"
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
+#include "MelissaMIDIControlManager.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaToHeadButton.h"
@@ -46,14 +47,13 @@ public:
         kColumn_B,
         kColumn_Speed,
         kColumn_Pitch,
-        kColumn_Count,
         kNumOfColumn
     };
     
     MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
     TableListBox(componentName, this), host_(host)
     {
-        std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed", "Pitch", "Count" };
+        std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed", "Pitch" };
         for (int i = 0; i < kNumOfColumn; ++i)
         {
             getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -102,9 +102,6 @@ public:
                     break;
                 case kColumn_Pitch + 1:
                     text = MelissaUtility::getFormattedPitch(prac.getProperty("pitch", 0));
-                    break;
-                case kColumn_Count + 1:
-                    text = prac.getProperty("count", "").toString();
                     break;
             }
         }
@@ -276,9 +273,11 @@ class MainComponent   : public AudioAppComponent,
                         public MelissaHost,
                         public MelissaWaveformControlListener,
                         public MenuBarModel,
+                        public MidiInputCallback,
                         public Timer,
                         public Thread,
                         public Thread::Listener
+                        
 {
 public:
     MainComponent();
@@ -317,6 +316,9 @@ public:
     StringArray getMenuBarNames() override;
     PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
     void menuItemSelected (int menuItemID, int topLevelMenuIndex) override;
+    
+    // MidiInputCallback
+    void handleIncomingMidiMessage(MidiInput *source, const MidiMessage &message) override;
 
     // Thread
     void run() override;
@@ -413,6 +415,7 @@ private:
     
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     
+    
     void showPreferencesDialog();
     
     enum
@@ -434,6 +437,8 @@ private:
     Array<var>* recent_;
     
     bool shouldExit_;
+    
+    MelissaMIDIControlManager midiControlManager_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
