@@ -424,6 +424,8 @@ private:
     
     enum
     {
+        kSectionTitle_Metronome,
+        kSectionTitle_Settings,
         kSectionTitle_Loop,
         kSectionTitle_Speed,
         kNumOfSectionTitles

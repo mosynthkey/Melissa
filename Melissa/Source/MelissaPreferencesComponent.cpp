@@ -48,7 +48,7 @@ void MelissaPreferencesComponent::updateTab()
 
 void MelissaPreferencesComponent::paint(Graphics& g)
 {
-    g.fillAll(Colour(0xff343d44));
+    g.fillAll(Colour(0xff204673));
 }
 
 void MelissaPreferencesComponent::resized()

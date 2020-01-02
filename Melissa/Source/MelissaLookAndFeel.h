@@ -115,8 +115,16 @@ public:
     
     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const bool b = tb.getToggleState() || shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
+        float alpha = 0.4f;
+        if (tb.getToggleState())
+        {
+            alpha = 0.8f;
+        }
+        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            alpha = 0.6f;
+        }
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
         g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
     }
