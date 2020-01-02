@@ -122,11 +122,11 @@ void MainComponent::createUI()
 {
     setLookAndFeel(&lookAndFeel_);
     
-    menuBar_ = std::make_unique<MenuBarComponent>(this);
+    menuBar_ = make_unique<MenuBarComponent>(this);
     addAndMakeVisible(menuBar_.get());
     
 #if JUCE_MAC
-    extraAppleMenuItems_ = std::make_unique<PopupMenu>();
+    extraAppleMenuItems_ = make_unique<PopupMenu>();
     extraAppleMenuItems_->addItem("Preferences", [&]() { showPreferencesDialog(); });
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
@@ -467,7 +467,7 @@ void MainComponent::createUI()
     }
     
     {
-        wildCardFilter_ = std::make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a", "*", "Music Files");
+        wildCardFilter_ = make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a", "*", "Music Files");
         fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
                                                                   File::getSpecialLocation(File::userHomeDirectory),
                                                                   wildCardFilter_.get(),
@@ -481,8 +481,8 @@ void MainComponent::createUI()
     {
         for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
         {
-            const std::string titles_[] = { "A-B Loop", "Speed" };
-            auto sectionTitle = std::make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 200);
+            const std::string titles_[] = { "Metronome", "Song Settings", "A-B Loop", "Speed" };
+            auto sectionTitle = make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 180);
             addAndMakeVisible(sectionTitle.get());
             sectionTitles_.emplace_back(std::move(sectionTitle));
         }
@@ -565,6 +565,8 @@ void MainComponent::resized()
         bpmButton_->setBounds(metronomeOnOffButton_->getRight() + 10, y, 140, 30);
         metronomeOffsetButton_->setBounds(bpmButton_->getRight() + 10, y, 140, 30);
         analyzeButton_->setBounds(metronomeOffsetButton_->getRight() + 10, y, 80, 30);
+        
+        sectionTitles_[kSectionTitle_Metronome]->setBounds(metronomeOnOffButton_->getX(), y - 30 - 10, analyzeButton_->getRight() - metronomeOnOffButton_->getX(), 30);
     }
     
     {
@@ -575,6 +577,8 @@ void MainComponent::resized()
         pitchLabel_->setBounds(x, y, 60, 30);
         x = pitchLabel_->getRight() + 10;
         pitchButton_->setBounds(x, y, 140, 30);
+        
+        sectionTitles_[kSectionTitle_Settings]->setBounds(metronomeOnOffButton_->getX(), y - 30 - 10, analyzeButton_->getRight() - metronomeOnOffButton_->getX(), 30);
     }
     
     {
