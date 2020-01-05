@@ -20,16 +20,16 @@ audioDeviceManager_(audioDeviceManager)
             return b;
         };
         
-        String tabTitle[] = { "Audio / MIDI Settings ", "MIDI Control Assign" };
+        String tabTitle[kNumOfTabs] = { "Audio / MIDI ", "Keyboard Shortcut", "MIDI Control Assign" };
         for (int tabs_i = 0; tabs_i < kNumOfTabs; ++tabs_i)
         {
-            tabs_.emplace_back(createToggleButton(tabTitle[tabs_i], static_cast<Tab>(tabs_i), tabs_i == 0));
+            tabs_[tabs_i] = createToggleButton(tabTitle[tabs_i], static_cast<Tab>(tabs_i), tabs_i == 0);
         }
         updateTab();
     }
     
     setLookAndFeel(&lookAndFeel_);
-    setSize(600, 600);
+    setSize(800, 600);
 }
 
 MelissaPreferencesComponent::~MelissaPreferencesComponent()
@@ -53,7 +53,7 @@ void MelissaPreferencesComponent::paint(Graphics& g)
 
 void MelissaPreferencesComponent::resized()
 {
-    constexpr int tabWidth = 260;
+    constexpr int tabWidth = 240;
     constexpr int tabHeight = 30;
     constexpr int tabMargin = 2;
     constexpr int totalTabWidth = tabWidth * kNumOfTabs + tabMargin * (kNumOfTabs - 1);

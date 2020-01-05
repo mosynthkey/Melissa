@@ -3,11 +3,14 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
 #include "MelissaControlComponent.h"
+#include "MelissaFileListBox.h"
+#include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaMIDIControlManager.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
+#include "MelissaSetListComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
@@ -24,16 +27,6 @@ enum PracticeMemoTab
 {
     kPracticeMemoTab_Practice,
     kPracticeMemoTab_Memo
-};
-
-class MelissaHost
-{
-public:
-    virtual ~MelissaHost() {};
-    virtual void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) = 0;
-    virtual void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) = 0;
-    virtual void updatePracticeList(const Array<var>& list) = 0;    
-    virtual bool loadFile(const String& filePath) = 0;
 };
 
 class MelissaPracticeTableListBox : public TableListBox,
@@ -59,9 +52,12 @@ public:
             getHeader().addColumn(headerTitles[i], i + 1, 50);
         }
         
-        autoSizeAllColumns();
-        
         popupMenu_ = std::make_shared<PopupMenu>();
+    }
+    
+    void resized() override
+    {
+        autoSizeAllColumns();
     }
     
     int getNumRows() override
@@ -71,7 +67,7 @@ public:
     
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override
     {
-        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.2f : 0.f));
+        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.1f : 0.f));
     }
     
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override
@@ -117,7 +113,14 @@ public:
     
     int getColumnAutoSizeWidth(int columnId) override
     {
-        return 140;
+        constexpr int defaultWidth = 200;
+        switch (columnId)
+        {
+            case kColumn_Name + 1:
+                return getWidth() - defaultWidth * (kNumOfColumn - 1);
+            default:
+                return defaultWidth;
+        }
     }
     
     void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override
@@ -183,53 +186,6 @@ private:
     float totalLengthMSec_;
     MelissaHost* host_;
     std::shared_ptr<PopupMenu> popupMenu_;
-};
-
-class MelissaRecentListBox : public ListBox,
-                             public ListBoxModel
-{
-public:
-    MelissaRecentListBox(MelissaHost* host, const String& componentName = String()) :
-    ListBox(componentName, this), host_(host)
-    {
-    }
-    
-    void paint(Graphics& g) override
-    {
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRect(0, 0, getWidth(), getHeight());
-    }
-    
-    int getNumRows() override
-    {
-        return list_.size();
-    }
-    
-    void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
-    {
-        host_->loadFile(list_[row].toString());
-    }
-    
-    void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override
-    {
-        const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber].toString() : "";
-        const String fileName = File(fullPath).getFileName();
-        
-        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.2f : 0.f));
-        
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
-    }
-    
-    void setList(const Array<var>& list)
-    {
-        list_ = list;
-        updateContent();
-    }
-    
-private:
-    Array<var> list_;
-    MelissaHost* host_;
 };
 
 class MelissaSectionTitleComponent : public Component
@@ -408,7 +364,7 @@ private:
     std::unique_ptr<ToggleButton> recentToggleButton_;
     std::unique_ptr<WildcardFileFilter> wildCardFilter_;
     std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
-    std::unique_ptr<MelissaRecentListBox> recentTable_;
+    std::unique_ptr<MelissaFileListBox> recentTable_;
     
     std::unique_ptr<ToggleButton> practiceListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
@@ -419,6 +375,7 @@ private:
     
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     
+    std::unique_ptr<MelissaSetListComponent> setListComponent_;
     
     void showPreferencesDialog();
     
@@ -441,6 +398,7 @@ private:
     File settingsDir_, settingsFile_;
     var setting_;
     Array<var>* recent_;
+    Array<var>* setList_;
     
     bool shouldExit_;
     
