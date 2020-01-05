@@ -39,9 +39,13 @@ void MelissaSetListComponent::createUI()
         fileChooser_ = std::make_unique<FileChooser>("Choose a file to open...", File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
         fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser)
         {
-            auto choosenFilePath = chooser.getURLResult().getLocalFile().getFullPathName();
-            getCurrentSongList()->add(choosenFilePath);
-            update();
+            auto fileUrl = chooser.getURLResult();
+            if (fileUrl.isLocalFile())
+            {
+                auto filePath = fileUrl.getLocalFile().getFullPathName();
+                getCurrentSongList()->add(filePath);
+                update();
+            }
         });
     };
     addAndMakeVisible(addToSetListButton_.get());
