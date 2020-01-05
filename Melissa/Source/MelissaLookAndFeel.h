@@ -2,7 +2,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-static constexpr float lineThickNess = 1.4;
+static constexpr float lineThickness = 1.4;
 
 class MelissaLookAndFeel : public LookAndFeel_V4
 {
@@ -21,7 +21,7 @@ public:
     {
         const auto& c = b.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
-        g.drawRoundedRectangle(lineThickNess / 2, lineThickNess / 2, c.getWidth() - lineThickNess - 1, c.getHeight() - lineThickNess - 1, (c.getHeight() - lineThickNess) / 2, lineThickNess);
+        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
     
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
@@ -36,20 +36,37 @@ public:
         const auto& c = tb.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
         g.drawText(tb.getToggleState() ? "On" : "Off", 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
-        g.drawRoundedRectangle(lineThickNess / 2, lineThickNess / 2, c.getWidth() - lineThickNess - 1, c.getHeight() - lineThickNess - 1, (c.getHeight() - lineThickNess) / 2, lineThickNess);
+        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
-    /*
+    
     void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
     {
-        if (style != Slider::LinearHorizontal) return;
+        if (style != Slider::LinearBar) return;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.fillRect(static_cast<int>(sliderPos), 0, 1, height);
+        const auto& c = s.getLocalBounds();
+        const float xOffset = lineThickness / 2;
+        const float yOffset = lineThickness / 2;
+        const float w = c.getWidth() - lineThickness - 1;
+        const float h = c.getHeight() - lineThickness - 1;
+        const float cornerSize = (c.getHeight() - lineThickness) / 2;
         
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
+        g.drawRoundedRectangle(xOffset, yOffset, w, h, cornerSize, lineThickness);
         
-        g.drawRect(s.getLocalBounds(), 1);
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.3f));
+        g.fillRoundedRectangle(xOffset + lineThickness, yOffset + lineThickness, sliderPos - x, h - lineThickness * 2, h / 2 - lineThickness);
     }
-    */
+    
+    void drawLinearSliderBackground(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider& s) override
+    {
+        
+    }
+    
+    void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override
+    {
+        
+    }
+    
     Font getTextButtonFont(TextButton& tb, int buttonHeight) override
     {
         return Font(14);
@@ -69,14 +86,19 @@ public:
     {
         const auto& c = te.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(lineThickNess / 2, lineThickNess / 2, c.getWidth() - lineThickNess - 1, c.getHeight() - lineThickNess - 1, (c.getHeight() - lineThickNess) / 2, lineThickNess);
+        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
      
     void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
     {
         const auto& c = cb.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(lineThickNess / 2, lineThickNess / 2, c.getWidth() - lineThickNess - 1, c.getHeight() - lineThickNess - 1, (c.getHeight() - lineThickNess) / 2, lineThickNess);
+        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
+        
+        constexpr int triHeight = 6;
+        constexpr int triWidth = 12;
+        g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
+        g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
     }
     
     void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
@@ -115,7 +137,7 @@ public:
     
     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        float alpha = 0.4f;
+        float alpha = 0.2f;
         if (tb.getToggleState())
         {
             alpha = 0.8f;
@@ -144,7 +166,7 @@ public:
     {
         const auto& c = te.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRect(c, lineThickNess);
+        g.drawRect(c, lineThickness);
     }
     
     void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override

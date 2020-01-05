@@ -48,10 +48,10 @@ public:
         label_ = std::make_unique<MelissaLabel>();
         addAndMakeVisible(label_.get());
         
-        decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClickDecButton_ != nullptr) onClickDecButton_(b); });
+        decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClick_ != nullptr) onClick_(false, b); });
         addAndMakeVisible(decButton_.get());
         
-        incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton, [this](bool b) { if (onClickIncButton_ != nullptr) onClickIncButton_(b); });
+        incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton, [this](bool b) { if (onClick_ != nullptr) onClick_(true, b); });
         addAndMakeVisible(incButton_.get());
     }
     
@@ -69,8 +69,7 @@ public:
         label_->setText(str);
     }
     
-    std::function<void(bool)> onClickIncButton_;
-    std::function<void(bool)> onClickDecButton_;
+    std::function<void(bool, bool)> onClick_;
     
 private:
     std::unique_ptr<MelissaLabel> label_;

@@ -12,6 +12,7 @@ public:
     enum Tab
     {
         kTab_AudioMidi,
+        kTab_KeyShortCut,
         kTab_MidiAssign,
         kNumOfTabs
     };
@@ -22,7 +23,7 @@ public:
     void resized() override;
     
 private:
-    std::vector<std::unique_ptr<ToggleButton>> tabs_;
+    std::unique_ptr<ToggleButton> tabs_[kNumOfTabs];
     
     AudioDeviceManager* audioDeviceManager_;
     std::unique_ptr<AudioDeviceSelectorComponent> deviceComponent_;

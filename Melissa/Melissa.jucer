@@ -61,6 +61,9 @@
       <FILE id="A4qeKp" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="DMzl73" name="MelissaControlComponent.h" compile="0" resource="0"
             file="Source/MelissaControlComponent.h"/>
+      <FILE id="kttXVy" name="MelissaFileListBox.h" compile="0" resource="0"
+            file="Source/MelissaFileListBox.h"/>
+      <FILE id="OdLTuE" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>
       <FILE id="eJrVsF" name="MelissaIncDecButton.h" compile="0" resource="0"
             file="Source/MelissaIncDecButton.h"/>
       <FILE id="oVx3Fa" name="MelissaLabel.h" compile="0" resource="0" file="Source/MelissaLabel.h"/>
@@ -76,6 +79,10 @@
             resource="0" file="Source/MelissaPreferencesComponent.cpp"/>
       <FILE id="MiPpg3" name="MelissaPreferencesComponent.h" compile="0"
             resource="0" file="Source/MelissaPreferencesComponent.h"/>
+      <FILE id="doQeGb" name="MelissaSetListComponent.cpp" compile="1" resource="0"
+            file="Source/MelissaSetListComponent.cpp"/>
+      <FILE id="myIy6s" name="MelissaSetListComponent.h" compile="0" resource="0"
+            file="Source/MelissaSetListComponent.h"/>
       <FILE id="EVz2Vf" name="MelissaToHeadButton.h" compile="0" resource="0"
             file="Source/MelissaToHeadButton.h"/>
       <FILE id="dpnjGP" name="MelissaUtility.h" compile="0" resource="0"
