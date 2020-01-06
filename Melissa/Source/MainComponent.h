@@ -10,6 +10,7 @@
 #include "MelissaMIDIControlManager.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
+#include "MelissaScrollLabel.h"
 #include "MelissaSetListComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaUtility.h"
@@ -335,7 +336,7 @@ private:
     std::unique_ptr<MelissaToHeadButton> toHeadButton_;
     
     std::unique_ptr<Label> timeLabel_;
-    std::unique_ptr<Label> fileNameLabel_;
+    std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
     
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;

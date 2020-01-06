@@ -155,9 +155,8 @@ void MainComponent::createUI()
     timeLabel_->setText("-:--", dontSendNotification);
     addAndMakeVisible(timeLabel_.get());
     
-    fileNameLabel_ = make_unique<Label>();
-    fileNameLabel_->setJustificationType(Justification::centred);
-    fileNameLabel_->setText("---", dontSendNotification);
+    fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
+    fileNameLabel_->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTU");
     addAndMakeVisible(fileNameLabel_.get());
     
     {
@@ -495,7 +494,8 @@ void MainComponent::resized()
     controlComponent_->setBounds(0, 220, getWidth(), 280);
     playPauseButton_->setBounds((getWidth() - 100) / 2, 280, 100, 100);
     toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
-    fileNameLabel_->setBounds(getWidth() / 2 - 200, playPauseButton_->getBottom() + 10, 400, 30);
+    fileNameLabel_->setBounds(getWidth() / 2 - 120, playPauseButton_->getBottom() + 10, 240, 30);
+    
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 30);
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
@@ -763,8 +763,6 @@ bool MainComponent::openFile(const File& file)
     auto* reader = formatManager.createReaderFor(file);
     if (reader == nullptr) return false;
     
-    fileNameLabel_->setText("Loading...", dontSendNotification);
-    
     // read audio data from reader
     const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
     audioSampleBuf_ = make_unique<AudioSampleBuffer>(2, lengthInSamples);
@@ -778,7 +776,7 @@ bool MainComponent::openFile(const File& file)
     
     fileName_ = file.getFileNameWithoutExtension();
     fileFullPath_ = file.getFullPathName();
-    fileNameLabel_->setText(fileName_, dontSendNotification);
+    fileNameLabel_->setText(fileName_.toStdString());
     updateAll();
     
     if (auto songs = setting_["songs"].getArray())

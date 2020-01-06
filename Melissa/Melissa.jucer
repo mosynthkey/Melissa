@@ -79,6 +79,8 @@
             resource="0" file="Source/MelissaPreferencesComponent.cpp"/>
       <FILE id="MiPpg3" name="MelissaPreferencesComponent.h" compile="0"
             resource="0" file="Source/MelissaPreferencesComponent.h"/>
+      <FILE id="mFN7uL" name="MelissaScrollLabel.h" compile="0" resource="0"
+            file="Source/MelissaScrollLabel.h"/>
       <FILE id="doQeGb" name="MelissaSetListComponent.cpp" compile="1" resource="0"
             file="Source/MelissaSetListComponent.cpp"/>
       <FILE id="myIy6s" name="MelissaSetListComponent.h" compile="0" resource="0"
