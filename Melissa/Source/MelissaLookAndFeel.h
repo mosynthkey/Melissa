@@ -128,6 +128,51 @@ public:
         g.setColour(Colours::white);
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
+    
+    void drawFileBrowserRow(Graphics& g, int width, int height,
+                            const File&, const String& filename, Image* icon,
+                            const String& fileSizeDescription,
+                            const String& fileTimeDescription,
+                            bool isDirectory, bool isItemSelected,
+                            int /*itemIndex*/, DirectoryContentsDisplayComponent& dcc) override
+    {
+        auto fileListComp = dynamic_cast<Component*> (&dcc);
+
+        if (isItemSelected)
+            g.fillAll (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightColourId)
+                                               : findColour (DirectoryContentsDisplayComponent::highlightColourId));
+
+        const int x = 32;
+        g.setColour (Colours::black);
+
+        if (icon != nullptr && icon->isValid())
+        {
+            g.drawImageWithin (*icon, 2, 2, x - 4, height - 4,
+                               RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize,
+                               false);
+        }
+        else
+        {
+            if (auto* d = isDirectory ? getDefaultFolderImage()
+                                      : getDefaultDocumentFileImage())
+                d->drawWithin (g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, height - 4.0f),
+                               RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
+        }
+
+        if (isItemSelected)
+            g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightedTextColourId)
+                                                 : findColour (DirectoryContentsDisplayComponent::highlightedTextColourId));
+        else
+            g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
+                                                 : findColour (DirectoryContentsDisplayComponent::textColourId));
+
+        g.setFont (height * 0.7f);
+
+        g.drawFittedText (filename,
+                          x, 0, width - x, height,
+                          Justification::centredLeft, 1);
+
+    }
 };
 
 class MelissaLookAndFeel_Tab : public LookAndFeel_V4

@@ -10,6 +10,16 @@ public:
     {
     }
     
+    void mouseDown(const MouseEvent& event) override
+    {
+        if (getWidth() <= textWidth_)
+        {
+            position_ = 0;
+
+            startTimer(50);
+        }
+    }
+    
     void paint(Graphics& g) override
     {
         g.setColour(Colours::white.withAlpha(0.8f));
@@ -24,8 +34,9 @@ public:
         text_ = text;
         textWidth_ = font_.getStringWidth(text_);
         
-        if (getWidth() < textWidth_)
+        if (getWidth() <= textWidth_)
         {
+            // scroll
             position_ = 0;
             textWidth_ += getWidth();
             startTimer(50);
@@ -45,7 +56,8 @@ public:
         --position_;
         if (textWidth_ + position_ < w)
         {
-            position_ = w;
+            position_ = 0;
+            stopTimer();
         }
         repaint();
     }
