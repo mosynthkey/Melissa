@@ -115,6 +115,7 @@ private:
         uint32_t bpm_;
         int32_t count_;
         
+        // for beep
         float amp_;
         float osc_;
     } metronome_;
