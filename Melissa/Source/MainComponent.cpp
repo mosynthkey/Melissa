@@ -269,13 +269,6 @@ void MainComponent::createUI()
     }
     
     {
-        speedLabel_ = make_unique<Label>();
-        speedLabel_->setText("Speed", dontSendNotification);
-        speedLabel_->setJustificationType(Justification::centred);
-        addAndMakeVisible(speedLabel_.get());
-    }
-    
-    {
         speedButton_ = make_unique<MelissaIncDecButton>();
         speedButton_->onClick_= [this](bool inc, bool b)
         {
@@ -318,13 +311,6 @@ void MainComponent::createUI()
             updateSpeedButtonLabel();
         };
         addAndMakeVisible(speedIncMaxButton_.get());
-    }
-    
-    {
-        pitchLabel_ = make_unique<Label>();
-        pitchLabel_->setText("Pitch", dontSendNotification);
-        pitchLabel_->setJustificationType(Justification::centred);
-        addAndMakeVisible(pitchLabel_.get());
     }
     
     {
@@ -446,6 +432,37 @@ void MainComponent::createUI()
         addAndMakeVisible(fileBrowserComponent_.get());
     }
     
+    // Labels
+    {
+        const std::string labelTitles[] = {
+            "switch",
+            "bpm",
+            "timing",
+            
+            "volume",
+            "pitch",
+            
+            "A time",
+            "B time",
+            
+            "speed",
+            "+",
+            "per",
+            "max",
+        };
+        for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
+        {
+            auto l = make_unique<Label>();
+            l->setLookAndFeel(nullptr);
+            l->setText(labelTitles[label_i], dontSendNotification);
+            l->setFont(Font(12));
+            l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
+            l->setJustificationType(Justification::centredTop);
+            addAndMakeVisible(l.get());
+            labels_[label_i] = std::move(l);
+        }
+    }
+    
     // Set List
     setListComponent_ = make_unique<MelissaSetListComponent>(this);
     addChildComponent(setListComponent_.get());
@@ -453,9 +470,9 @@ void MainComponent::createUI()
     for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
     {
         const std::string titles_[kNumOfSectionTitles] = { "Metronome", "Song Settings", "A-B Loop", "Speed" };
-        auto sectionTitle = make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 180);
+        auto sectionTitle = make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 0.4f);
         addAndMakeVisible(sectionTitle.get());
-        sectionTitles_.emplace_back(std::move(sectionTitle));
+        sectionTitles_[sectionTitle_i] = std::move(sectionTitle);
     }
     
     updateFileChooserTab(kFileChooserTab_Browse);
@@ -524,64 +541,95 @@ void MainComponent::resized()
         
         y += 40;
         const int32_t h = getHeight() - y - 20;
-        fileBrowserComponent_->setBounds(20 - 20, y, browserWidth + 40, h);
+        fileBrowserComponent_->setBounds(20, y, browserWidth, h);
         setListComponent_->setBounds(20, y, browserWidth, h);
         recentTable_->setBounds(20, y, browserWidth, h);
         practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
         memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
     }
     
-    int32_t marginX = 60;
-    
+    // Section
+    int32_t marginX = 40;
+    const int sectionWidth = toHeadButton_->getX() - (marginX * 2);
+    for (auto&& sec : sectionTitles_)
     {
-        int32_t y = 300;
-        metronomeOnOffButton_->setBounds(marginX, y, 80, 30);
-        bpmButton_->setBounds(metronomeOnOffButton_->getRight() + 10, y, 140, 30);
-        metronomeOffsetButton_->setBounds(bpmButton_->getRight() + 10, y, 140, 30);
-        analyzeButton_->setBounds(metronomeOffsetButton_->getRight() + 10, y, 80, 30);
-        
-        sectionTitles_[kSectionTitle_Metronome]->setBounds(metronomeOnOffButton_->getX(), y - 30 - 10, analyzeButton_->getRight() - metronomeOnOffButton_->getX(), 30);
+        sec->setSize(sectionWidth, 30);
     }
     
-    {
-        int32_t y = 390;
-        volumeSlider_->setBounds(metronomeOnOffButton_->getX() + 5, y, 200, 20);
-        
-        int32_t x = 300;
-        pitchLabel_->setBounds(x, y, 60, 30);
-        x = pitchLabel_->getRight() + 10;
-        pitchButton_->setBounds(x, y, 140, 30);
-        
-        sectionTitles_[kSectionTitle_Settings]->setBounds(metronomeOnOffButton_->getX(), y - 30 - 10, analyzeButton_->getRight() - metronomeOnOffButton_->getX(), 30);
-    }
+    int y = 260;
     
+    // Song Settings
+    sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginX, y);
+    volumeSlider_->setSize(200, 20);
+    pitchButton_->setSize(140, 30);
+    arrangeEvenly({ marginX, y + 40, sectionWidth, 30 }, {
+        { volumeSlider_.get() },
+        { pitchButton_.get() }
+    });
+    
+    // A-B Loop
+    sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginX, y);
+    aSetButton_->setSize(60, 30);
+    aButton_->setSize(140, 30);
+    bSetButton_->setSize(60, 30);
+    bButton_->setSize(140, 30);
+    resetButton_->setSize(80, 30);
+    arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 40, sectionWidth, 30 }, {
+        { aSetButton_.get(), aButton_.get() },
+        { bSetButton_.get(), bButton_.get() },
+        { resetButton_.get() }
+    });
+    
+    y = 360;
+    
+    // Metronome
+    sectionTitles_[kSectionTitle_Metronome]->setTopLeftPosition(marginX, y);
+    metronomeOnOffButton_->setSize(80, 30);
+    bpmButton_->setSize(140, 30);
+    metronomeOffsetButton_->setSize(140, 30);
+    analyzeButton_->setSize(80, 30);
+    arrangeEvenly({ marginX, y + 40, sectionWidth, 30 }, {
+        { metronomeOnOffButton_.get() },
+        { bpmButton_.get() },
+        { metronomeOffsetButton_.get() },
+        { analyzeButton_.get()}
+    });
+    
+    // Speed
+    sectionTitles_[kSectionTitle_Speed]->setTopRightPosition(getWidth() - marginX, y);
+    speedButton_->setSize(140, 30);
+    speedIncValueButton_->setSize(140, 30);
+    speedIncPerButton_->setSize(140, 30);
+    speedIncMaxButton_->setSize(140, 30);
+    arrangeEvenly({ sectionTitles_[kSectionTitle_Speed]->getX(), y + 40, sectionWidth, 30 }, {
+        { speedButton_.get() },
+        { speedIncValueButton_.get(), speedIncPerButton_.get(), speedIncMaxButton_.get() }
+    });
+    
+    
+    // Labels
+    const Component* components[kNumOfLabels]
     {
-        int32_t y = 300;
-        int32_t x = getWidth() - 60 - marginX;
-        resetButton_->setBounds(x, y, 70, 30);
+        dynamic_cast<Component*>(metronomeOnOffButton_.get()),
+        dynamic_cast<Component*>(bpmButton_.get()),
+        dynamic_cast<Component*>(metronomeOffsetButton_.get()),
         
-        x = resetButton_->getX() - 140 - 10;
-        bButton_->setBounds(x, y, 140, 30);
-        x = bButton_->getX() - 60 - 10;
-        bSetButton_->setBounds(x, y,  60, 30);
+        dynamic_cast<Component*>(volumeSlider_.get()),
+        dynamic_cast<Component*>(pitchButton_.get()),
         
-        x = bSetButton_->getX() - 140 - 10;
-        aButton_->setBounds(x, y, 140, 30);
-        x = aButton_->getX() - 60 - 10;
-        aSetButton_->setBounds(x, y,  60, 30);
+        dynamic_cast<Component*>(aButton_.get()),
+        dynamic_cast<Component*>(bButton_.get()),
         
-        sectionTitles_[kSectionTitle_Loop]->setBounds(aSetButton_->getX(), y - 30 - 10, resetButton_->getRight() - aSetButton_->getX(), 30);
-        
-        y += 110;
-        speedLabel_->setBounds(aSetButton_->getBounds().withY(y));
-        speedButton_->setBounds(aButton_->getBounds().withY(y));
-        
-        x = bSetButton_->getX();
-        speedIncValueButton_->setBounds(x, y - 20, 140, 30);
-        speedIncPerButton_->setBounds(x, y + 20, 140, 30);
-        speedIncMaxButton_->setBounds(x + 150, y, 140, 30);
-        
-        sectionTitles_[kSectionTitle_Speed]->setBounds(aSetButton_->getX(), y - 50 - 10, resetButton_->getRight() - aSetButton_->getX(), 30);
+        dynamic_cast<Component*>(speedButton_.get()),
+        dynamic_cast<Component*>(speedIncValueButton_.get()),
+        dynamic_cast<Component*>(speedIncPerButton_.get()),
+        dynamic_cast<Component*>(speedIncMaxButton_.get()),
+    };
+    
+    for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
+    {
+        auto b = components[label_i]->getBoundsInParent();
+        labels_[label_i]->setBounds(b.getX(), b.getBottom(), b.getWidth(), 20);
     }
 }
 
@@ -765,7 +813,7 @@ bool MainComponent::openFile(const File& file)
     
     // read audio data from reader
     const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
-    audioSampleBuf_ = make_unique<AudioSampleBuffer>(2, lengthInSamples);
+    audioSampleBuf_ = std::make_shared<AudioSampleBuffer>(2, lengthInSamples);
     reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
     
     melissa_->reset();
@@ -932,13 +980,13 @@ void MainComponent::updateSpeedButtonLabel()
     speedButton_->setText(String(speed) + "%");
     
     const int32_t incPer = melissa_->getSpeedIncPer();
-    speedIncPerButton_->setText("/ " + String(incPer));
+    speedIncPerButton_->setText(String(incPer));
     
     const int32_t incValue = melissa_->getSpeedIncValue();
-    speedIncValueButton_->setText("+ " + String(incValue) + " %");
+    speedIncValueButton_->setText(String(incValue) + " %");
     
     const int32_t incMax = melissa_->getSpeedIncMax();
-    speedIncMaxButton_->setText("Max: " + String(incMax) + " %");
+    speedIncMaxButton_->setText(String(incMax) + " %");
 }
 
 void MainComponent::updatePitchButtonLabel()
@@ -1031,4 +1079,44 @@ void MainComponent::showPreferencesDialog()
     options.resizable = false;
     
     options.launchAsync();
+}
+
+void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
+{
+    // measure
+    const int marginNarrow = 10 * widthRatio;
+    int numOfGroups = 0;
+    int totalWidthOfAllComponents = 0;
+    int numOfComponents = 0;
+    for (auto&& group : components_)
+    {
+        numOfGroups += group.size() - 1;
+        for (auto&& component : group)
+        {
+            totalWidthOfAllComponents += component->getWidth() * widthRatio;
+            ++numOfComponents;
+        }
+    }
+    const float marginWide = (bounds.getWidth() - totalWidthOfAllComponents - marginNarrow * numOfGroups) / static_cast<float>(components_.size() - 1);
+    
+    // arrange
+    if (marginWide < marginNarrow && 0.5f <= widthRatio)
+    {
+        arrangeEvenly(bounds, components_, widthRatio - 0.05);
+    }
+    else
+    {
+        float x = bounds.getX(), y = bounds.getY();
+        for (auto&& group : components_)
+        {
+            for (auto&& component : group)
+            {
+                component->setTopLeftPosition(x, y);
+                component->setSize(component->getWidth() * widthRatio, component->getHeight());
+                x += component->getWidth();
+                x += marginNarrow;
+            }
+            x += (marginWide - marginNarrow);
+        }
+    }
 }

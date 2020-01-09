@@ -192,8 +192,8 @@ private:
 class MelissaSectionTitleComponent : public Component
 {
 public:
-    MelissaSectionTitleComponent(const std::string& title, int lineWidth) :
-    lineWidth_(lineWidth)
+    MelissaSectionTitleComponent(const std::string& title, float lineRatio) :
+    lineRatio_(lineRatio)
     {
         label_ = std::make_unique<Label>();
         label_->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
@@ -214,14 +214,16 @@ public:
         labelWidth_ = label_->getFont().getStringWidth(label_->getText());
         constexpr int lineHeight = 1;
         g.setColour(Colours::white.withAlpha(0.4f));
-        g.fillRect(0, (getHeight() - lineHeight) / 2, lineWidth_, lineHeight);
-        g.fillRect(getWidth() - lineWidth_, (getHeight() - lineHeight) / 2, lineWidth_, lineHeight);
+        
+        const int lineWidth = getWidth() * lineRatio_;
+        g.fillRect(0, (getHeight() - lineHeight) / 2, lineWidth, lineHeight);
+        g.fillRect(getWidth() - lineWidth, (getHeight() - lineHeight) / 2, lineWidth, lineHeight);
     }
 
 private:
     std::unique_ptr<Label> label_;
     int labelWidth_;
-    int lineWidth_;
+    float lineRatio_;
 };
 
 class MainComponent   : public AudioAppComponent,
@@ -323,8 +325,10 @@ public:
     var getSongSetting(String fileName);
 
 private:
+    void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
+    
     std::unique_ptr<Melissa> melissa_;
-    std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
+    std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;
@@ -350,14 +354,11 @@ private:
     std::unique_ptr<TextButton> bSetButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
     std::unique_ptr<TextButton> resetButton_;
-    
-    std::unique_ptr<Label> speedLabel_;
     std::unique_ptr<MelissaIncDecButton> speedButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncMaxButton_;
     
-    std::unique_ptr<Label> pitchLabel_;
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
@@ -382,13 +383,34 @@ private:
     
     enum
     {
+        kLabel_MetronomeSw,
+        kLabel_MetronomeBpm,
+        kLabel_MetronomeOffset,
+        
+        kLabel_Volume,
+        kLabel_Pitch,
+        
+        kLabel_ATime,
+        kLabel_BTime,
+        
+        kLabel_Speed,
+        kLabel_SpeedPlus,
+        kLabel_SpeedPer,
+        kLabel_SpeedMax,
+        
+        kNumOfLabels
+    };
+    std::unique_ptr<Label> labels_[kNumOfLabels];
+    
+    enum
+    {
         kSectionTitle_Metronome,
         kSectionTitle_Settings,
         kSectionTitle_Loop,
         kSectionTitle_Speed,
         kNumOfSectionTitles
     };
-    std::vector<std::unique_ptr<MelissaSectionTitleComponent>> sectionTitles_;
+    std::unique_ptr<MelissaSectionTitleComponent> sectionTitles_[kNumOfSectionTitles];
     
     MelissaLookAndFeel lookAndFeel_;
     MelissaLookAndFeel_Tab lookAndFeelTab_;

@@ -72,11 +72,6 @@ public:
         return Font(14);
     }
     
-    Font getLabelFont(Label& l) override
-    {
-        return Font(14);
-    }
-    
     void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
     {
         // no background
@@ -172,6 +167,41 @@ public:
                           x, 0, width - x, height,
                           Justification::centredLeft, 1);
 
+    }
+    
+    Button* createFileBrowserGoUpButton() override
+    {
+        auto goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
+
+        Path arrowPath;
+        arrowPath.addArrow({ 50.0f, 100.0f, 50.0f, 0.0f }, 2.0f, 100.0f, 50.0f);
+
+        DrawablePath arrowImage;
+        arrowImage.setFill(Colours::white.withAlpha(0.4f));
+        arrowImage.setPath(arrowPath);
+
+        goUpButton->setImages(&arrowImage);
+
+        return goUpButton;
+    }
+    
+    void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
+    {
+        const auto w = browserComp.getWidth();
+        const auto h = browserComp.getHeight();
+        
+        const int goUpButtonWidth = 60;
+        const int margin = 10;
+        const int controlHeight = 30;
+        currentPathBox->setBounds(0, 0, w - goUpButtonWidth - margin, controlHeight);
+        goUpButton->setBounds(currentPathBox->getRight() + margin, 0, goUpButtonWidth, controlHeight);
+        //filenameBox->setBounds(0, h - controlHeight, w, controlHeight);
+        
+        const int listHeight = h - (controlHeight + margin);
+        if (auto listAsComp = dynamic_cast<Component*>(fileListComponent))
+        {
+            listAsComp->setBounds(0, currentPathBox->getBottom() + margin, w, listHeight);
+        }
     }
 };
 
