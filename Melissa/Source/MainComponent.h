@@ -40,14 +40,13 @@ public:
         kColumn_A,
         kColumn_B,
         kColumn_Speed,
-        kColumn_Pitch,
         kNumOfColumn
     };
     
     MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
     TableListBox(componentName, this), host_(host)
     {
-        std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed", "Pitch" };
+        std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed" };
         for (int i = 0; i < kNumOfColumn; ++i)
         {
             getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -97,9 +96,6 @@ public:
                 case kColumn_Speed + 1:
                     text = String(static_cast<int32_t>(prac.getProperty("speed", 0))) + " %";
                     break;
-                case kColumn_Pitch + 1:
-                    text = MelissaUtility::getFormattedPitch(prac.getProperty("pitch", 0));
-                    break;
             }
         }
         
@@ -146,12 +142,10 @@ public:
             else if (result == kMenuId_Overwrite)
             {
                 float a, b, speed;
-                int32_t pitch, count;
-                host_->getMelissaParameters(&a, &b, &speed, &pitch, &count);
+                host_->getMelissaParameters(&a, &b, &speed);
                 list_[rowNumber].getDynamicObject()->setProperty("a", a);
                 list_[rowNumber].getDynamicObject()->setProperty("b", b);
                 list_[rowNumber].getDynamicObject()->setProperty("speed", speed);
-                list_[rowNumber].getDynamicObject()->setProperty("pitch", pitch);
                 shouldRefresh = true;
             }
         }
@@ -169,15 +163,15 @@ public:
         float a = prac.getProperty("a", 0);
         float b = prac.getProperty("b", 1);
         float speed = prac.getProperty("speed", 1.f);
-        float pitch = prac.getProperty("pitch", 1.f);
-        
-        host_->setMelissaParameters(a, b, speed, pitch);
+        host_->setMelissaParameters(a, b, speed);
     }
     
     void setList(const Array<var>& list, float totalLengthMSec)
     {
         list_ = list;
         totalLengthMSec_ = totalLengthMSec;
+        
+        printf("setList(%d)\n", list.size());
         
         updateContent();
     }
@@ -265,8 +259,8 @@ public:
     bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
     
     // Melissa
-    void setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch) override;
-    void getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count) override;
+    void setMelissaParameters(float aRatio, float bRatio, float speed) override;
+    void getMelissaParameters(float* aRatio, float* bRatio, float* speed) override;
     void updatePracticeList(const Array<var>& list) override;
     bool loadFile(const String& filePath) override;
     

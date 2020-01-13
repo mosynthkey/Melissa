@@ -45,6 +45,8 @@ void MelissaSetListComponent::createUI()
                 auto filePath = fileUrl.getLocalFile().getFullPathName();
                 getCurrentSongList()->add(filePath);
                 update();
+                
+                chooser.getResult().getParentDirectory().setAsCurrentWorkingDirectory();
             }
         });
     };
