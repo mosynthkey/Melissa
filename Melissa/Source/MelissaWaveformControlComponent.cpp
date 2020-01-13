@@ -154,10 +154,10 @@ public:
             originalMonoralBuffer_[iBufIndex] = ((buffer[0][iBufIndex] * buffer[0][iBufIndex]) + (buffer[1][iBufIndex] * buffer[1][iBufIndex])) / 2.f;
         }
         
-        update();
+        update(true);
     }
     
-    void update()
+    void update(bool immediately = false)
     {
         stopTimer();
         
@@ -166,7 +166,15 @@ public:
         loopAStripIndex_ = loopAPosRatio_ * numOfStrip_;
         loopBStripIndex_ = loopBPosRatio_ * numOfStrip_;
         
-        startTimer(1000); // 1 sec delay
+        if (immediately)
+        {
+            stopTimer();
+            update_();
+        }
+        else
+        {
+            startTimer(1000); // 1 sec delay
+        }
     }
     
     void update_()

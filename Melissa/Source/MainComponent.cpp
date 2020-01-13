@@ -56,7 +56,13 @@ status_(kStatus_Stop), shouldExit_(false)
         
         auto global = setting_["global"];
         
-        fileBrowserComponent_->setRoot(File(global.getProperty("root_dir", "~/")));
+        auto rootDir = File::getSpecialLocation(File::userHomeDirectory);
+        if (global.hasProperty("root_dir"))
+        {
+            rootDir = File(global.getProperty("root_dir", ""));
+            rootDir.setAsCurrentWorkingDirectory();
+            fileBrowserComponent_->setRoot(rootDir);
+        }
         
         auto width = static_cast<int>(global.getProperty("width", 1400));
         auto height = static_cast<int>(global.getProperty("height", 860));
@@ -680,22 +686,19 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
     return false;
 }
 
-void MainComponent::setMelissaParameters(float aRatio, float bRatio, float speed, int32_t pitch)
+void MainComponent::setMelissaParameters(float aRatio, float bRatio, float speed)
 {
     melissa_->setAPosRatio(aRatio);
     melissa_->setBPosRatio(bRatio);
     melissa_->setSpeed(speed);
-    melissa_->setPitch(pitch);
     updateAll();
 }
 
-void MainComponent::getMelissaParameters(float* aRatio, float* bRatio, float* speed, int32_t* pitch, int32_t* count)
+void MainComponent::getMelissaParameters(float* aRatio, float* bRatio, float* speed)
 {
     *aRatio = melissa_->getAPosRatio();
     *bRatio = melissa_->getBPosRatio();
     *speed  = melissa_->getSpeed();
-    *pitch  = melissa_->getPitch();
-    *count  = 0;
 }
 
 void MainComponent::updatePracticeList(const Array<var>& list)
@@ -892,7 +895,6 @@ void MainComponent::addToPracticeList(String name)
         prac->setProperty("a", melissa_->getAPosRatio());
         prac->setProperty("b", melissa_->getBPosRatio());
         prac->setProperty("speed", melissa_->getSpeed());
-        prac->setProperty("pitch", melissa_->getPitch());
         list->addIfNotAlreadyThere(prac);
     };
     
@@ -912,6 +914,7 @@ void MainComponent::addToPracticeList(String name)
     song->setProperty("volume", melissa_->getVolume());
     song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
     song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+    song->setProperty("pitch", melissa_->getPitch());
     song->setProperty("list", Array<var>());
     song->setProperty("memo", memoTextEditor_->getText());
     addToList(song->getProperty("list").getArray());
@@ -935,6 +938,7 @@ void MainComponent::saveMemo()
     song->setProperty("volume", melissa_->getVolume());
     song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
     song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+    song->setProperty("pitch", melissa_->getPitch());
     song->setProperty("list", Array<var>());
     song->setProperty("memo", memoTextEditor_->getText());
     songs->addIfNotAlreadyThere(song);
@@ -948,6 +952,7 @@ void MainComponent::addToRecent(String filePath)
     {
         recent_->resize(kMaxSizeOfRecentList);
     }
+    recentTable_->selectRow(0);
 }
 
 void MainComponent::updateAll()
