@@ -12,11 +12,13 @@ public:
     const Array<var>& getData();
     void setData(const Array<var>& data);
     void update();
+    void select(int index);
     
     // Component
     void resized() override;
     
 private:
+    void add();
     Array<var>* getCurrentSongList();
     
     MelissaHost* host_;
