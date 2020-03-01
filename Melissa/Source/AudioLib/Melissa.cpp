@@ -66,9 +66,8 @@ void Melissa::setAPosMSec(float aPosMSec)
     if (!isOriginalBufferPrepared_) return;
     aIndex_ = static_cast<size_t>(aPosMSec / 1000.f * originalSampleRate_);
     if (originalBufferLength_ < aIndex_) aIndex_ = 0;
-    
-    readIndex_ = startIndex_ = aIndex_;
-    
+
+    if (readIndex_ < aIndex_ || bIndex_ < readIndex_) readIndex_ = startIndex_ = aIndex_;
     needToReset_ = true;
 }
 
