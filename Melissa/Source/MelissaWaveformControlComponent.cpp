@@ -10,7 +10,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.fillAll(Colour(0x50ffffff));
+        g.fillAll(Colour(0xa0ffffff));
     }
     
 private:
@@ -26,6 +26,7 @@ public:
     numOfStrip_(0),
     isMouseDown_(false),
     clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
+    currentMouseOnStripIndex_(-1),
     playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f),
     listener_(nullptr)
     {
@@ -62,6 +63,20 @@ public:
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }
+        
+        if (isMouseDown_)
+        {
+            const int32_t highlightAStripIndex = std::min(currentMouseOnStripIndex_, clickedStripIndex_);
+            const int32_t highlightBStripIndex = std::max(currentMouseOnStripIndex_, clickedStripIndex_);
+            for (size_t iStrip = highlightAStripIndex; iStrip <= highlightBStripIndex; ++iStrip)
+            {
+                const int32_t height = previewBuffer_[iStrip] * getHeight();
+                const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
+                
+                g.setColour(Colour(0x33ffffff));
+                g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
+            }
+        }
     }
     
     void mouseMoveOrDrag(const MouseEvent& event)
@@ -74,8 +89,6 @@ public:
         const int32_t height = previewBuffer_[strip] * getHeight();
         const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * strip);
         current_->setBounds(x, getHeight() - height, waveformStripWidth_, height);
-        
-        repaint();
     }
     
     void mouseMove(const MouseEvent& event) override
@@ -86,12 +99,14 @@ public:
     void mouseDrag(const MouseEvent& event) override
     {
         mouseMoveOrDrag(event);
+        currentMouseOnStripIndex_ = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
+        repaint();
     }
     
     void mouseDown(const MouseEvent& event) override
     {
         isMouseDown_ = true;
-        clickedStripIndex_ = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
+        clickedStripIndex_ = currentMouseOnStripIndex_ = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
     }
     
     void mouseUp(const MouseEvent& event) override
@@ -133,6 +148,7 @@ public:
             }
         }
         isMouseDown_ = false;
+        currentMouseOnStripIndex_ = -1;
     }
     
     void mouseExit(const MouseEvent& event) override
@@ -246,6 +262,7 @@ private:
     size_t numOfStrip_;
     bool isMouseDown_;
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
+    int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
     MelissaWaveformControlListener* listener_;
     std::vector<float> previewBuffer_;
