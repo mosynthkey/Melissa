@@ -57,6 +57,7 @@ public:
     
     void resized() override
     {
+        TableListBox::resized();
         autoSizeAllColumns();
     }
     

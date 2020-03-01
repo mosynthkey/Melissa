@@ -441,20 +441,20 @@ void MainComponent::createUI()
     // Labels
     {
         const std::string labelTitles[] = {
-            "switch",
-            "bpm",
-            "timing",
+            "Switch",
+            "BPM",
+            "Timing",
             
-            "volume",
-            "pitch",
+            "Volume",
+            "Pitch",
             
-            "A time",
-            "B time",
+            "A Time",
+            "B Time",
             
-            "speed",
+            "Speed",
             "+",
-            "per",
-            "max",
+            "Per",
+            "Max",
         };
         for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
         {
@@ -508,7 +508,7 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics& g)
 {
-    g.setGradientFill(ColourGradient(Colour(0xff4a90e2), 0.f, 0.f, Colour(0xff204673), getWidth(), getHeight(), false));
+    g.setGradientFill(ColourGradient(Colour(0xff17142E), 0.f, 0.f, Colour(0xff151426), getWidth(), getHeight(), false));
     g.fillAll();
 }
 
@@ -568,7 +568,7 @@ void MainComponent::resized()
     sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginX, y);
     volumeSlider_->setSize(200, 20);
     pitchButton_->setSize(140, 30);
-    arrangeEvenly({ marginX, y + 40, sectionWidth, 30 }, {
+    arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
         { volumeSlider_.get() },
         { pitchButton_.get() }
     });
@@ -580,7 +580,7 @@ void MainComponent::resized()
     bSetButton_->setSize(60, 30);
     bButton_->setSize(140, 30);
     resetButton_->setSize(80, 30);
-    arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 40, sectionWidth, 30 }, {
+    arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
         { aSetButton_.get(), aButton_.get() },
         { bSetButton_.get(), bButton_.get() },
         { resetButton_.get() }
@@ -594,7 +594,7 @@ void MainComponent::resized()
     bpmButton_->setSize(140, 30);
     metronomeOffsetButton_->setSize(140, 30);
     analyzeButton_->setSize(80, 30);
-    arrangeEvenly({ marginX, y + 40, sectionWidth, 30 }, {
+    arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
         { metronomeOnOffButton_.get() },
         { bpmButton_.get() },
         { metronomeOffsetButton_.get() },
@@ -607,7 +607,7 @@ void MainComponent::resized()
     speedIncValueButton_->setSize(140, 30);
     speedIncPerButton_->setSize(140, 30);
     speedIncMaxButton_->setSize(140, 30);
-    arrangeEvenly({ sectionTitles_[kSectionTitle_Speed]->getX(), y + 40, sectionWidth, 30 }, {
+    arrangeEvenly({ sectionTitles_[kSectionTitle_Speed]->getX(), y + 60, sectionWidth, 30 }, {
         { speedButton_.get() },
         { speedIncValueButton_.get(), speedIncPerButton_.get(), speedIncMaxButton_.get() }
     });
@@ -635,7 +635,7 @@ void MainComponent::resized()
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
     {
         auto b = components[label_i]->getBoundsInParent();
-        labels_[label_i]->setBounds(b.getX(), b.getBottom(), b.getWidth(), 20);
+        labels_[label_i]->setBounds(b.getX(), b.getY() - 20, b.getWidth(), 20);
     }
 }
 

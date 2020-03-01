@@ -21,7 +21,7 @@ public:
         g.setGradientFill(ColourGradient(Colour(0x00000000), w / 2, 0.f, Colour(0x16000000), w / 2, gradMargin, false));
         g.fillRect(0, 0, w, gradMargin);
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.16f));
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.08f));
         g.fillRect(0, gradMargin, w, h - 2 * gradMargin);
         
         g.setGradientFill(ColourGradient(Colour(0x16000000), w / 2, h - gradMargin, Colour(0x00000000), w / 2, h, false));
