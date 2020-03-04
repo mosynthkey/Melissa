@@ -1,5 +1,6 @@
 #include <sstream>
 #include "MainComponent.h"
+#include "MelissaColourScheme.h"
 #include "MelissaUtility.h"
 
 using std::make_unique;
@@ -216,6 +217,8 @@ void MainComponent::createUI()
         volumeSlider_->onValueChange = [this]()
         {
             melissa_->setVolume(volumeSlider_->getValue());
+            const float db = 20 * log10(volumeSlider_->getValue());
+            labels_[kLabel_Volume]->setText(String::formatted("Volume (%+1.2fdB)", db), dontSendNotification);
         };
         addAndMakeVisible(volumeSlider_.get());
     }
@@ -508,7 +511,9 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics& g)
 {
-    g.setGradientFill(ColourGradient(Colour(0xff17142E), 0.f, 0.f, Colour(0xff151426), getWidth(), getHeight(), false));
+    const int center = getWidth() / 2;
+    const auto gradationColour = MelissaColourScheme::BackGroundGradationColour();
+    g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, 0.f, Colour(gradationColour.second), center, getHeight(), false));
     g.fillAll();
 }
 

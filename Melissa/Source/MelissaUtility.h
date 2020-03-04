@@ -17,7 +17,7 @@ public:
         msec -= sec * 1000;
         
         std::stringstream ss;
-        ss << minute << ":" << sec << "." << static_cast<int32_t>(msec) ;
+        ss << minute << ":" << sec << "." << static_cast<int32_t>(msec);
         
         return ss.str();
     }

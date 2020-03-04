@@ -37,7 +37,6 @@ private:
     class WaveformView;
     
     MelissaWaveformControlListener* listener_;
-    std::unique_ptr<Label> aLabel_, bLabel_;
     std::unique_ptr<TimeLineBar> timeLineBar_;
     std::unique_ptr<WaveformView> waveformView_;
     std::unique_ptr<MelissaLabel> posTooltip_;
