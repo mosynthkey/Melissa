@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.5"
+<JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.7"
               cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\AudioLib">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
@@ -59,6 +59,8 @@
       <FILE id="cDu0P4" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="A4qeKp" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="OENelF" name="MelissaColourScheme.h" compile="0" resource="0"
+            file="Source/MelissaColourScheme.h"/>
       <FILE id="DMzl73" name="MelissaControlComponent.h" compile="0" resource="0"
             file="Source/MelissaControlComponent.h"/>
       <FILE id="kttXVy" name="MelissaFileListBox.h" compile="0" resource="0"

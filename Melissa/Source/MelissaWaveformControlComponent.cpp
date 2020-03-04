@@ -1,3 +1,4 @@
+#include "MelissaColourScheme.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
@@ -10,7 +11,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.fillAll(Colour(0xa0ffffff));
+        g.fillAll(Colour(MelissaColourScheme::MainColour()).withAlpha(0.2f));
     }
     
 private:
@@ -43,7 +44,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.setColour(Colour(0x50ffffff));
+        Colour colour(MelissaColourScheme::MainColour());
         for (size_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
         {
             const int32_t height = previewBuffer_[iStrip] * getHeight();
@@ -51,15 +52,15 @@ public:
             
             if (iStrip == static_cast<size_t>(playingPosRatio_ * numOfStrip_))
             {
-                g.setColour(Colour(0xddffffff));
+                g.setColour(colour.withAlpha(1.f));
             }
             else if (loopAStripIndex_ != -1 && loopAStripIndex_ <= iStrip && iStrip <= loopBStripIndex_)
             {
-                g.setColour(Colour(0x88ffffff));
+                g.setColour(colour.withAlpha(0.6f));
             }
             else
             {
-                g.setColour(Colour(0x33ffffff));
+                g.setColour(colour.withAlpha(0.2f));
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }
@@ -68,12 +69,12 @@ public:
         {
             const int32_t highlightAStripIndex = std::min(currentMouseOnStripIndex_, clickedStripIndex_);
             const int32_t highlightBStripIndex = std::max(currentMouseOnStripIndex_, clickedStripIndex_);
-            for (size_t iStrip = highlightAStripIndex; iStrip <= highlightBStripIndex; ++iStrip)
+            for (size_t iStrip = highlightAStripIndex; iStrip < highlightBStripIndex; ++iStrip)
             {
                 const int32_t height = previewBuffer_[iStrip] * getHeight();
                 const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
                 
-                g.setColour(Colour(0x33ffffff));
+                g.setColour(colour.withAlpha(0.7f));
                 g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
             }
         }
@@ -258,7 +259,7 @@ private:
     
     MelissaWaveformControlComponent* parent_;
     std::shared_ptr<Label> current_;
-    const int32_t waveformStripWidth_ = 2, waveformStripInterval_ = 1;
+    const int32_t waveformStripWidth_ = 3, waveformStripInterval_ = 1;
     size_t numOfStrip_;
     bool isMouseDown_;
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
@@ -278,25 +279,9 @@ timeSec_(0)
     waveformView_ = std::make_unique<WaveformView>(this);
     addAndMakeVisible(waveformView_.get());
     
-    aLabel_ = std::make_unique<Label>();
-    aLabel_->setSize(60, 20);
-    aLabel_->setText("0:00", dontSendNotification);
-    aLabel_->setJustificationType(Justification::centredLeft);
-    aLabel_->setFont(Font(14));
-    aLabel_->setColour(Label::textColourId, Colour(0x80ffffff));
-    addAndMakeVisible(aLabel_.get());
-    
-    bLabel_ = std::make_unique<Label>();
-    bLabel_->setSize(60, 18);
-    bLabel_->setText("-:--", dontSendNotification);
-    bLabel_->setJustificationType(Justification::centredRight);
-    bLabel_->setFont(Font(14));
-    bLabel_->setColour(Label::textColourId, Colour(0x80ffffff));
-    addAndMakeVisible(bLabel_.get());
-    
     posTooltip_ = std::make_unique<MelissaLabel>();
     posTooltip_->setSize(100, 28);
-    addAndMakeVisible(posTooltip_.get());
+    addChildComponent(posTooltip_.get());
     
     startTimer(100);
 }
@@ -310,8 +295,6 @@ void MelissaWaveformControlComponent::resized()
 {
     timeLineBar_->setBounds(50, getHeight() - 18, getWidth() - 50 * 2, 2);
     waveformView_->setBounds(70, 20, getWidth() - 70 * 2, getHeight() - 20 - 30);
-    aLabel_->setTopLeftPosition(0, getHeight() - 20);
-    bLabel_->setTopRightPosition(getWidth(), getHeight() - 20);
     
     posTooltip_->setTopLeftPosition(0, 0);
 }
@@ -330,9 +313,7 @@ void MelissaWaveformControlComponent::timerCallback()
 void MelissaWaveformControlComponent::setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
     waveformView_->setBuffer(buffer, bufferLength);
-    
     timeSec_ = static_cast<float>(bufferLength) / sampleRate;
-    bLabel_->setText(MelissaUtility::getFormattedTimeSec(timeSec_), dontSendNotification);
 }
 
 void MelissaWaveformControlComponent::setPlayPosition(float ratio)

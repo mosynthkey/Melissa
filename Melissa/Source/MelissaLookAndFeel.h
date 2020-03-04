@@ -114,7 +114,7 @@ public:
     
     void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
+        g.setColour(Colour(0x14B8D4FF));
         g.fillAll();
     }
     
