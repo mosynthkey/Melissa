@@ -237,8 +237,8 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
         mutex_.lock();
         if (processedBufferQue_.size() > 0)
         {
-            bufferToRender[0][iSample] = processedBufferQue_[0] + metronomeOsc;
-            bufferToRender[1][iSample] = processedBufferQue_[1] + metronomeOsc;
+            bufferToRender[0][iSample] = processedBufferQue_[0] * volume_ + metronomeOsc;
+            bufferToRender[1][iSample] = processedBufferQue_[1] * volume_ + metronomeOsc;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
         }
         mutex_.unlock();
@@ -303,13 +303,12 @@ void Melissa::process()
         receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     }
     
+    mutex_.lock();
     for (size_t iSample = 0; iSample < receivedSampleSize * 2; ++iSample)
     {
-        mutex_.lock();
-        processedBufferQue_.emplace_back(bufferForSoundTouch_[iSample] * volume_);
-        mutex_.unlock();
+        processedBufferQue_.emplace_back(bufferForSoundTouch_[iSample]);
     }
-    
+    mutex_.unlock();
 }
 
 bool Melissa::needToProcess() const
@@ -331,7 +330,10 @@ void Melissa::reset()
     {
         originalBuffer_[iCh].clear();
     }
+    
+    mutex_.lock();
     processedBufferQue_.clear();
+    mutex_.unlock();
 }
 
 void Melissa::resetProcessedBuffer()
