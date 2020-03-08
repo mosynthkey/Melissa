@@ -1,0 +1,48 @@
+#pragma once
+
+#include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaHost.h"
+
+class MelissaInputDialog : public Component
+{
+public:
+    MelissaInputDialog(MelissaHost* host, const std::string& labelString,  const std::string& defaultTextEditorString, std::function<void(const std::string& string)> onClick) :
+    host_(host), onClick_(onClick)
+    {
+        constexpr int textEditorWidth = 400;
+        constexpr int buttonWidth = 80;
+        constexpr int controlHeight = 30;
+        constexpr int margin = 10;
+        
+        constexpr int width = textEditorWidth + margin * 2;
+        constexpr int height = margin * 4 + controlHeight * 3;
+        
+        setSize(width, height);
+        
+        label_ = std::make_unique<Label>();
+        label_->setText(labelString.c_str(), dontSendNotification);
+        label_->setBounds(margin, margin, textEditorWidth, controlHeight);
+        addAndMakeVisible(label_.get());
+        
+        textEditor_ = std::make_unique<TextEditor>();
+        textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
+        textEditor_->setText(defaultTextEditorString.c_str());
+        addAndMakeVisible(textEditor_.get());
+        
+        okButton_ = std::make_unique<TextButton>();
+        okButton_->setBounds(width - (margin + buttonWidth), margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
+        okButton_->setButtonText("OK");
+        okButton_->onClick = [&]() {
+            const std::string text = textEditor_->getText().toStdString();
+            onClick_(text);
+        };
+        addAndMakeVisible(okButton_.get());
+    }
+    
+private:
+    MelissaHost* host_;
+    std::unique_ptr<Label> label_;
+    std::unique_ptr<TextEditor> textEditor_;
+    std::unique_ptr<TextButton> okButton_;
+    std::function<void(const std::string& string)> onClick_;
+};

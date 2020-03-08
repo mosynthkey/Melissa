@@ -1,6 +1,7 @@
 #include <sstream>
 #include "MainComponent.h"
 #include "MelissaColourScheme.h"
+#include "MelissaInputDialog.h"
 #include "MelissaUtility.h"
 
 using std::make_unique;
@@ -405,26 +406,23 @@ void MainComponent::createUI()
     }
     
     {
-        pracListNameTextEditor_ = make_unique<TextEditor>();
-        pracListNameTextEditor_->setJustification(Justification::centredLeft);
-        addAndMakeVisible(pracListNameTextEditor_.get());
-    }
-    
-    {
         addToListButton_ = make_unique<TextButton>();
         addToListButton_->setButtonText("Add");
         addToListButton_->onClick = [this]()
         {
-            auto name = pracListNameTextEditor_->getText();
-            if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(melissa_->getAPosMSec());
+            auto dialog = std::make_shared<MelissaInputDialog>(this, "Enter the name", "", [&](const std::string& text) {
+                String name(text.c_str());
+                if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(melissa_->getAPosMSec());
+                addToPracticeList(name);
+                if (auto songs = setting_["songs"].getArray())
+                {
+                    auto song = getSongSetting(fileFullPath_);
+                    practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
+                    closeModalDialog();
+                }
+            });
+            showModalDialog(std::dynamic_pointer_cast<Component>(dialog), "Add");
             
-            addToPracticeList(name);
-            
-            if (auto songs = setting_["songs"].getArray())
-            {
-                auto song = getSongSetting(fileFullPath_);
-                practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
-            }
         };
         addAndMakeVisible(addToListButton_.get());
     }
@@ -515,6 +513,16 @@ void MainComponent::paint(Graphics& g)
     const auto gradationColour = MelissaColourScheme::BackGroundGradationColour();
     g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, 0.f, Colour(gradationColour.second), center, getHeight(), false));
     g.fillAll();
+    
+    constexpr int interval = 6;
+    g.setColour(Colours::white.withAlpha(0.04f));
+    for (int y_i = 0; y_i < getHeight(); y_i += interval)
+    {
+        for (int x_i = 0; x_i < getWidth(); x_i += interval)
+        {
+            g.fillRect(x_i, y_i, 1, 1);
+        }
+    }
 }
 
 void MainComponent::resized()
@@ -547,16 +555,22 @@ void MainComponent::resized()
         x += (w + 2);
         memoToggleButton_->setBounds(x, y, w, 30);
         
-        pracListNameTextEditor_->setBounds(getWidth() - 60 - 20 - 220, y, 200, 30);
-        addToListButton_->setBounds(getWidth() - 60 - 20, y, 60, 30);
-        
         y += 40;
-        const int32_t h = getHeight() - y - 20;
-        fileBrowserComponent_->setBounds(20, y, browserWidth, h);
-        setListComponent_->setBounds(20, y, browserWidth, h);
-        recentTable_->setBounds(20, y, browserWidth, h);
-        practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
-        memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+        {
+            const int32_t h = getHeight() - y - 20;
+            fileBrowserComponent_->setBounds(20, y, browserWidth, h);
+            setListComponent_->setBounds(20, y, browserWidth, h);
+            recentTable_->setBounds(20, y, browserWidth, h);
+        }
+        
+        {
+            const int32_t h = getHeight() - y - 20 - 40;
+            practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+            memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+        }
+        
+        y = practiceTable_->getBottom() + 10;
+        addToListButton_->setBounds(getWidth() - 60 - 20, y, 60, 30);
     }
     
     // Section
@@ -642,6 +656,11 @@ void MainComponent::resized()
         auto b = components[label_i]->getBoundsInParent();
         labels_[label_i]->setBounds(b.getX(), b.getY() - 20, b.getWidth(), 20);
     }
+    
+    if (modalDialog_ != nullptr)
+    {
+        modalDialog_->setSize(getWidth(), getHeight());
+    }
 }
 
 bool MainComponent::isInterestedInFileDrag(const StringArray& files)
@@ -715,9 +734,31 @@ void MainComponent::updatePracticeList(const Array<var>& list)
     }
 }
 
+void MainComponent::createSetlist(const std::string& name)
+{
+    setListComponent_->add(name, true);
+}
+
 bool MainComponent::loadFile(const String& filePath)
 {
     return openFile(File(filePath));
+}
+
+void MainComponent::showModalDialog(std::shared_ptr<Component> component, const std::string& title)
+{
+    closeModalDialog();
+    
+    modalDialog_ = std::make_unique<MelissaModalDialog>(this, component, title);
+    modalDialog_->setSize(getWidth(), getHeight());
+    addAndMakeVisible(modalDialog_.get());
+}
+
+void MainComponent::closeModalDialog()
+{
+    if (modalDialog_ == nullptr) return;
+    
+    removeChildComponent(modalDialog_.get());
+    modalDialog_ = nullptr;
 }
 
 void MainComponent::fileDoubleClicked(const File& file)
@@ -1080,15 +1121,8 @@ var MainComponent::getSongSetting(String fileName)
 
 void MainComponent::showPreferencesDialog()
 {
-    DialogWindow::LaunchOptions options;
-    options.dialogTitle = "Preferences";
-    options.content.setOwned(new MelissaPreferencesComponent(&deviceManager));
-    options.componentToCentreAround = this;
-    options.useNativeTitleBar = true;
-    options.escapeKeyTriggersCloseButton = false;
-    options.resizable = false;
-    
-    options.launchAsync();
+    auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
+    showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
 }
 
 void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)

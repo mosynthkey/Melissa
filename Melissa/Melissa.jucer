@@ -68,6 +68,8 @@
       <FILE id="OdLTuE" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>
       <FILE id="eJrVsF" name="MelissaIncDecButton.h" compile="0" resource="0"
             file="Source/MelissaIncDecButton.h"/>
+      <FILE id="lv8k7w" name="MelissaInputDialog.h" compile="0" resource="0"
+            file="Source/MelissaInputDialog.h"/>
       <FILE id="oVx3Fa" name="MelissaLabel.h" compile="0" resource="0" file="Source/MelissaLabel.h"/>
       <FILE id="ikpfYi" name="MelissaLookAndFeel.h" compile="0" resource="0"
             file="Source/MelissaLookAndFeel.h"/>
@@ -75,6 +77,10 @@
             resource="0" file="Source/MelissaMIDIControlManager.cpp"/>
       <FILE id="AYMcSK" name="MelissaMIDIControlManager.h" compile="0" resource="0"
             file="Source/MelissaMIDIControlManager.h"/>
+      <FILE id="y3cGPV" name="MelissaModalDialog.cpp" compile="1" resource="0"
+            file="Source/MelissaModalDialog.cpp"/>
+      <FILE id="rK8HQM" name="MelissaModalDialog.h" compile="0" resource="0"
+            file="Source/MelissaModalDialog.h"/>
       <FILE id="unM38y" name="MelissaPlayPauseButton.h" compile="0" resource="0"
             file="Source/MelissaPlayPauseButton.h"/>
       <FILE id="pkYjHS" name="MelissaPreferencesComponent.cpp" compile="1"

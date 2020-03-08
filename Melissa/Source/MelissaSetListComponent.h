@@ -13,12 +13,12 @@ public:
     void setData(const Array<var>& data);
     void update();
     void select(int index);
+    void add(const std::string& name, bool sholdSelect = false);
     
     // Component
     void resized() override;
     
 private:
-    void add();
     Array<var>* getCurrentSongList();
     
     MelissaHost* host_;
