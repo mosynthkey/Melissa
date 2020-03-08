@@ -13,6 +13,11 @@ public:
     
     static uint32_t MainColour()
     {
-        return 0xffDDEAFF;
+        return 0xffddeaff;
+    }
+    
+    static uint32_t DialogBackgoundColour()
+    {
+        return 0xff1B1F25;
     }
 };

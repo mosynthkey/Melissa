@@ -1,3 +1,4 @@
+#include "MelissaInputDialog.h"
 #include "MelissaSetListComponent.h"
 
 MelissaSetListComponent::MelissaSetListComponent(MelissaHost* host) :
@@ -18,7 +19,15 @@ void MelissaSetListComponent::createUI()
     
     newSetListButton_ = std::make_unique<TextButton>();
     newSetListButton_->setButtonText("New");
-    newSetListButton_->onClick = [&]() { add(); };
+    newSetListButton_->onClick = [&]()
+    {
+        auto inputDialog = std::make_shared<MelissaInputDialog>(host_, "Enter a name of a new setlist:", "New setlist", [&](const std::string& text) {
+            if (text == "") return;
+            host_->createSetlist(text);
+            host_->closeModalDialog();
+        });
+        host_->showModalDialog(std::dynamic_pointer_cast<Component>(inputDialog), "New setlist");
+    };
     addAndMakeVisible(newSetListButton_.get());
     
     removeSetListButton_ = std::make_unique<TextButton>();
@@ -98,6 +107,18 @@ void MelissaSetListComponent::select(int index)
     if (list != nullptr) listBox_->setList(*list);
 }
 
+void MelissaSetListComponent::add(const std::string& name, bool sholdSelect)
+{
+    auto object = new DynamicObject();
+    object->setProperty("name", String(name));
+    object->setProperty("songs", Array<var>());
+    data_.add(object);
+    update();
+
+    if (sholdSelect) select(data_.size() - 1);
+}
+
+
 void MelissaSetListComponent::resized()
 {
     const int w = getWidth();
@@ -114,22 +135,10 @@ void MelissaSetListComponent::resized()
     addToSetListButton_->setBounds(w - controlWidth, h - controlHeight, controlWidth, controlHeight);
 }
 
-void MelissaSetListComponent::add()
-{
-    auto object = new DynamicObject();
-    object->setProperty("name", "SetListName");
-    object->setProperty("songs", Array<var>());
-    data_.add(object);
-    update();
-
-    select(data_.size() - 1);
-}
-
 Array<var>* MelissaSetListComponent::getCurrentSongList()
 {
     const int selectedIndex = setListComboBox_->getSelectedId() - 1;
     
-    printf("selectedIndex = %d\n", selectedIndex);
     if (0 <= selectedIndex && selectedIndex < data_.size())
     {
         return data_[selectedIndex].getDynamicObject()->getProperty("songs").getArray();

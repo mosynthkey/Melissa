@@ -8,6 +8,7 @@
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaMIDIControlManager.h"
+#include "MelissaModalDialog.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
@@ -263,7 +264,10 @@ public:
     void setMelissaParameters(float aRatio, float bRatio, float speed) override;
     void getMelissaParameters(float* aRatio, float* bRatio, float* speed) override;
     void updatePracticeList(const Array<var>& list) override;
+    void createSetlist(const std::string& name) override;
     bool loadFile(const String& filePath) override;
+    void showModalDialog(std::shared_ptr<Component> component, const std::string& title) override;
+    void closeModalDialog() override;
     
     // MelissaWaveformControlListener
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
@@ -365,14 +369,13 @@ private:
     
     std::unique_ptr<ToggleButton> practiceListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
-    std::unique_ptr<TextEditor> pracListNameTextEditor_;
     std::unique_ptr<TextEditor> memoTextEditor_;
     std::unique_ptr<TextButton> addToListButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
-    
     std::unique_ptr<MelissaSetListComponent> setListComponent_;
+    std::unique_ptr<MelissaModalDialog> modalDialog_;
     
     void showPreferencesDialog();
     
