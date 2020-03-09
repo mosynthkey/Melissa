@@ -344,10 +344,12 @@ private:
     std::unique_ptr<Label> timeLabel_;
     std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
     
+#if defined(ENABLE_METRONOME)
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> metronomeOffsetButton_;
     std::unique_ptr<TextButton> analyzeButton_;
+#endif
     
     std::unique_ptr<Slider> volumeSlider_;
     
@@ -356,10 +358,14 @@ private:
     std::unique_ptr<TextButton> bSetButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
     std::unique_ptr<TextButton> resetButton_;
+    
     std::unique_ptr<MelissaIncDecButton> speedButton_;
+
+#if defined(ENABLE_SPEEDTRAINER)
     std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncMaxButton_;
+#endif
     
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
@@ -382,10 +388,11 @@ private:
     
     enum
     {
+#if defined(ENABLE_METRONOME)
         kLabel_MetronomeSw,
         kLabel_MetronomeBpm,
         kLabel_MetronomeOffset,
-        
+#endif
         kLabel_Volume,
         kLabel_Pitch,
         
@@ -393,20 +400,25 @@ private:
         kLabel_BTime,
         
         kLabel_Speed,
+#if defined(ENABLE_SPEEDTRAINER)
         kLabel_SpeedPlus,
         kLabel_SpeedPer,
         kLabel_SpeedMax,
-        
+#endif
         kNumOfLabels
     };
     std::unique_ptr<Label> labels_[kNumOfLabels];
     
     enum
     {
-        kSectionTitle_Metronome,
         kSectionTitle_Settings,
         kSectionTitle_Loop,
+#if defined(ENABLE_SPEEDTRAINER)
         kSectionTitle_Speed,
+#endif
+#if defined(ENABLE_METRONOME)
+        kSectionTitle_Metronome,
+#endif
         kNumOfSectionTitles
     };
     std::unique_ptr<MelissaSectionTitleComponent> sectionTitles_[kNumOfSectionTitles];
