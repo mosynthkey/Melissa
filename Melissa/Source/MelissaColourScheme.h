@@ -18,6 +18,6 @@ public:
     
     static uint32_t DialogBackgoundColour()
     {
-        return 0xff1B1F25;
+        return 0xFF1B1F25;
     }
 };
