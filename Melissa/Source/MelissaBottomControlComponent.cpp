@@ -2,7 +2,6 @@
 
 enum
 {
-    kTop = 20,
     kXMargin = 20,
     kSettingsButtonWidth = 80,
 };
@@ -28,15 +27,12 @@ void MelissaBottomControlComponent::setTooltipText(const String& tooltipText)
 
 void MelissaBottomControlComponent::paint(Graphics& g)
 {
-    const int gradMargin = kTop;
-    const int w = getWidth();
-    
-
+    g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.06f));
+    g.fillAll();
 }
 
 void MelissaBottomControlComponent::resized()
 {
-    const int height = getHeight() - kTop;
-    tooltipLabel_->setBounds(kXMargin, kTop, getWidth() - kXMargin * 2, height);
-    settingsButton_->setBounds(getWidth() - kSettingsButtonWidth - kXMargin, kTop, kSettingsButtonWidth, height);
+    tooltipLabel_->setBounds(kXMargin, 0, getWidth() - kXMargin * 2, getHeight());
+    settingsButton_->setBounds(getWidth() - kSettingsButtonWidth - kXMargin, 0, kSettingsButtonWidth, getHeight());
 }
