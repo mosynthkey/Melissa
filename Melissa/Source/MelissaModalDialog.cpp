@@ -29,7 +29,7 @@ component_(component)
 
 void MelissaModalDialog::paint(Graphics& g)
 {
-    g.fillAll(Colours::black.withAlpha(0.9f));
+    g.fillAll(Colours::black.withAlpha(0.8f));
     
     const int dialogWidth  = kMargin + component_->getWidth()  + kMargin;
     const int dialogHeight = kMargin + kCloseButtonSize + kMargin + component_->getHeight() + kMargin;

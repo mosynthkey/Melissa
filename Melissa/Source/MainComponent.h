@@ -3,6 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
 #include "MelissaControlComponent.h"
+#include "MelissaBottomControlComponent.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
@@ -267,6 +268,7 @@ public:
     void createSetlist(const std::string& name) override;
     bool loadFile(const String& filePath) override;
     void showModalDialog(std::shared_ptr<Component> component, const std::string& title) override;
+    void showPreferencesDialog() override;
     void closeModalDialog() override;
     
     // MelissaWaveformControlListener
@@ -334,6 +336,7 @@ private:
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaControlComponent> controlComponent_;
+    std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
     std::unique_ptr<MelissaToHeadButton> toHeadButton_;
@@ -376,8 +379,6 @@ private:
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     std::unique_ptr<MelissaSetListComponent> setListComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
-    
-    void showPreferencesDialog();
     
     enum
     {

@@ -557,21 +557,24 @@ void MainComponent::resized()
         
         y += 40;
         {
-            const int32_t h = getHeight() - y - 20;
+            const int32_t h = getHeight() - 20 - y - 20;
             fileBrowserComponent_->setBounds(20, y, browserWidth, h);
             setListComponent_->setBounds(20, y, browserWidth, h);
             recentTable_->setBounds(20, y, browserWidth, h);
         }
         
         {
-            const int32_t h = getHeight() - y - 20 - 40;
+            const int32_t h = getHeight() - 20 - y - 20 - 40;
             practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
             memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
         }
         
         y = practiceTable_->getBottom() + 10;
-        addToListButton_->setBounds(getWidth() - 60 - 20, y, 60, 30);
+        addToListButton_->setBounds(getWidth() - 80 - 20, y, 80, 30);
     }
+    
+    // Bottom
+    bottomComponent_->setBounds(0, getHeight() - 50, getWidth(), 50);
     
     // Section
     int32_t marginX = 40;
@@ -657,10 +660,7 @@ void MainComponent::resized()
         labels_[label_i]->setBounds(b.getX(), b.getY() - 20, b.getWidth(), 20);
     }
     
-    if (modalDialog_ != nullptr)
-    {
-        modalDialog_->setSize(getWidth(), getHeight());
-    }
+    if (modalDialog_ != nullptr) modalDialog_->setSize(getWidth(), getHeight());
 }
 
 bool MainComponent::isInterestedInFileDrag(const StringArray& files)
@@ -751,6 +751,12 @@ void MainComponent::showModalDialog(std::shared_ptr<Component> component, const 
     modalDialog_ = std::make_unique<MelissaModalDialog>(this, component, title);
     modalDialog_->setSize(getWidth(), getHeight());
     addAndMakeVisible(modalDialog_.get());
+}
+
+void MainComponent::showPreferencesDialog()
+{
+    auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
+    showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
 }
 
 void MainComponent::closeModalDialog()
@@ -1117,12 +1123,6 @@ var MainComponent::getSongSetting(String fileName)
     }
     
     return var();
-}
-
-void MainComponent::showPreferencesDialog()
-{
-    auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
-    showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
 }
 
 void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)

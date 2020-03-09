@@ -13,5 +13,6 @@ public:
     virtual bool loadFile(const String& filePath) = 0;
     
     virtual void showModalDialog(std::shared_ptr<Component> component, const std::string& title) = 0;
+    virtual void showPreferencesDialog() = 0;
     virtual void closeModalDialog() = 0;
 };
