@@ -173,50 +173,44 @@ void MainComponent::createUI()
     fileNameLabel_->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTU");
     addAndMakeVisible(fileNameLabel_.get());
     
+#if defined(ENABLE_METRONOME)
+    metronomeOnOffButton_ = make_unique<ToggleButton>();
+    metronomeOnOffButton_->setClickingTogglesState(true);
+    metronomeOnOffButton_->onClick = [this]()
     {
-        metronomeOnOffButton_ = make_unique<ToggleButton>();
-        metronomeOnOffButton_->setClickingTogglesState(true);
-        metronomeOnOffButton_->onClick = [this]()
-        {
-            melissa_->setMetoronome(metronomeOnOffButton_->getToggleState());
-        };
-        metronomeOnOffButton_->setButtonText("On");
-        addAndMakeVisible(metronomeOnOffButton_.get());
-    }
+        melissa_->setMetoronome(metronomeOnOffButton_->getToggleState());
+    };
+    metronomeOnOffButton_->setButtonText("On");
+    addAndMakeVisible(metronomeOnOffButton_.get());
     
+    bpmButton_ = make_unique<MelissaIncDecButton>();
+    bpmButton_->onClick_ = [this](bool inc, bool b)
     {
-        bpmButton_ = make_unique<MelissaIncDecButton>();
-        bpmButton_->onClick_ = [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            melissa_->setBpm(melissa_->getBpm() + sign * (b ? 10 : 1));
-            updateBpm();
-        };
-        addAndMakeVisible(bpmButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        melissa_->setBpm(melissa_->getBpm() + sign * (b ? 10 : 1));
+        updateBpm();
+    };
+    addAndMakeVisible(bpmButton_.get());
     
+    metronomeOffsetButton_ = make_unique<MelissaIncDecButton>();
+    metronomeOffsetButton_->onClick_= [this](bool inc, bool b)
     {
-        metronomeOffsetButton_ = make_unique<MelissaIncDecButton>();
-        metronomeOffsetButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            melissa_->setMetronomeOffsetSec(melissa_->getMetronomeOffsetSec() + sign);
-            updateMetronomeOffset();
-        };
-        addAndMakeVisible(metronomeOffsetButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        melissa_->setMetronomeOffsetSec(melissa_->getMetronomeOffsetSec() + sign);
+        updateMetronomeOffset();
+    };
+    addAndMakeVisible(metronomeOffsetButton_.get());
     
+    analyzeButton_ = make_unique<TextButton>();
+    analyzeButton_->setButtonText("Analyze");
+    analyzeButton_->onClick = [this]()
     {
-        analyzeButton_ = make_unique<TextButton>();
-        analyzeButton_->setButtonText("Analyze");
-        analyzeButton_->onClick = [this]()
-        {
-            melissa_->analyzeBpm();
-            updateBpm();
-            updateMetronomeOffset();
-        };
-        addAndMakeVisible(analyzeButton_.get());
-    }
+        melissa_->analyzeBpm();
+        updateBpm();
+        updateMetronomeOffset();
+    };
+    addAndMakeVisible(analyzeButton_.get());
+#endif
     
     {
         volumeSlider_ = make_unique<Slider>(Slider::LinearBar, Slider::NoTextBox);
@@ -296,38 +290,34 @@ void MainComponent::createUI()
         addAndMakeVisible(speedButton_.get());
     }
     
+#if defined(ENABLE_SPEEDTRAINER)
+    speedIncPerButton_ = make_unique<MelissaIncDecButton>();
+    speedIncPerButton_->onClick_= [this](bool inc, bool b)
     {
-        speedIncPerButton_ = make_unique<MelissaIncDecButton>();
-        speedIncPerButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            melissa_->setSpeedIncPer(melissa_->getSpeedIncPer() + sign);
-            updateSpeedButtonLabel();
-        };
-        addAndMakeVisible(speedIncPerButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        melissa_->setSpeedIncPer(melissa_->getSpeedIncPer() + sign);
+        updateSpeedButtonLabel();
+    };
+    addAndMakeVisible(speedIncPerButton_.get());
     
+    speedIncValueButton_ = make_unique<MelissaIncDecButton>();
+    speedIncValueButton_->onClick_= [this](bool inc, bool b)
     {
-        speedIncValueButton_ = make_unique<MelissaIncDecButton>();
-        speedIncValueButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            melissa_->setSpeedIncValue(melissa_->getSpeedIncValue() + sign);
-            updateSpeedButtonLabel();
-        };
-        addAndMakeVisible(speedIncValueButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        melissa_->setSpeedIncValue(melissa_->getSpeedIncValue() + sign);
+        updateSpeedButtonLabel();
+    };
+    addAndMakeVisible(speedIncValueButton_.get());
     
+    speedIncMaxButton_ = make_unique<MelissaIncDecButton>();
+    speedIncMaxButton_->onClick_= [this](bool inc, bool b)
     {
-        speedIncMaxButton_ = make_unique<MelissaIncDecButton>();
-        speedIncMaxButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            melissa_->setSpeedIncMax(melissa_->getSpeedIncMax() + sign);
-            updateSpeedButtonLabel();
-        };
-        addAndMakeVisible(speedIncMaxButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        melissa_->setSpeedIncMax(melissa_->getSpeedIncMax() + sign);
+        updateSpeedButtonLabel();
+    };
+    addAndMakeVisible(speedIncMaxButton_.get());
+#endif
     
     {
         pitchButton_ = make_unique<MelissaIncDecButton>();
@@ -447,11 +437,12 @@ void MainComponent::createUI()
     
     // Labels
     {
-        const std::string labelTitles[] = {
+        const std::string labelTitles[kNumOfLabels] = {
+#if defined(ENABLE_METRONOME)
             "Switch",
             "BPM",
             "Timing",
-            
+#endif
             "Volume",
             "Pitch",
             
@@ -459,9 +450,11 @@ void MainComponent::createUI()
             "B Time",
             
             "Speed",
+#if defined(ENABLE_SPEEDTRAINER)
             "+",
             "Per",
             "Max",
+#endif
         };
         for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
         {
@@ -482,7 +475,16 @@ void MainComponent::createUI()
     
     for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
     {
-        const std::string titles_[kNumOfSectionTitles] = { "Metronome", "Song Settings", "A-B Loop", "Speed" };
+        const std::string titles_[kNumOfSectionTitles] =
+        {
+            "Settings", "A-B Loop",
+#if defined(ENABLE_SPEEDTRAINER)
+            "Speed",
+#endif
+#if defined(ENABLE_METRONOME)
+            "Metronome",
+#endif
+        };
         auto sectionTitle = make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 0.4f);
         addAndMakeVisible(sectionTitle.get());
         sectionTitles_[sectionTitle_i] = std::move(sectionTitle);
@@ -553,13 +555,15 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
-    controlComponent_->setBounds(0, 240, getWidth(), 240);
-    playPauseButton_->setBounds((getWidth() - 100) / 2, 280, 100, 100);
-    toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
-    fileNameLabel_->setBounds(getWidth() / 2 - 120, playPauseButton_->getBottom() + 10, 240, 30);
-    
-    timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 30);
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
+    
+    controlComponent_->setBounds(0, 240, getWidth(), 180 /* 240 */);
+    playPauseButton_->setBounds((getWidth() - 90) / 2, 260, 90, 90);
+    toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
+    
+    fileNameLabel_->setBounds(getWidth() / 2 - 120, playPauseButton_->getBottom() + 10, 240, 20);
+    timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 20);
+    
     
     // left-bottom part (Browser / SetList / Recent)
     {
@@ -603,23 +607,25 @@ void MainComponent::resized()
     bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
     
     // Section
-    int32_t marginX = 40;
+    int32_t marginX = 60;
     const int sectionWidth = toHeadButton_->getX() - (marginX * 2);
     for (auto&& sec : sectionTitles_)
     {
         sec->setSize(sectionWidth, 30);
     }
     
-    int y = 260;
+    int y = 280; // 260;
     
     // Song Settings
     sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginX, y);
     volumeSlider_->setSize(200, 20);
     pitchButton_->setSize(140, 30);
+#if !defined(ENABLE_SPEEDTRAINER)
     arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
         { volumeSlider_.get() },
         { pitchButton_.get() }
     });
+#endif
     
     // A-B Loop
     sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginX, y);
@@ -634,9 +640,9 @@ void MainComponent::resized()
         { resetButton_.get() }
     });
     
-    y = 360;
-    
     // Metronome
+#if defined(ENABLE_METRONOME)
+    y = 360;
     sectionTitles_[kSectionTitle_Metronome]->setTopLeftPosition(marginX, y);
     metronomeOnOffButton_->setSize(80, 30);
     bpmButton_->setSize(140, 30);
@@ -648,7 +654,9 @@ void MainComponent::resized()
         { metronomeOffsetButton_.get() },
         { analyzeButton_.get()}
     });
+#endif
     
+#if defined(ENABLE_SPEEDTRAINER)
     // Speed
     sectionTitles_[kSectionTitle_Speed]->setTopRightPosition(getWidth() - marginX, y);
     speedButton_->setSize(140, 30);
@@ -659,15 +667,23 @@ void MainComponent::resized()
         { speedButton_.get() },
         { speedIncValueButton_.get(), speedIncPerButton_.get(), speedIncMaxButton_.get() }
     });
-    
+#else
+    speedButton_->setSize(140, 30);
+    arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
+        { volumeSlider_.get() },
+        { pitchButton_.get() },
+        { speedButton_.get() },
+    });
+#endif
     
     // Labels
     const Component* components[kNumOfLabels]
     {
+#if defined(ENABLE_METRONOME)
         dynamic_cast<Component*>(metronomeOnOffButton_.get()),
         dynamic_cast<Component*>(bpmButton_.get()),
         dynamic_cast<Component*>(metronomeOffsetButton_.get()),
-        
+#endif
         dynamic_cast<Component*>(volumeSlider_.get()),
         dynamic_cast<Component*>(pitchButton_.get()),
         
@@ -675,9 +691,11 @@ void MainComponent::resized()
         dynamic_cast<Component*>(bButton_.get()),
         
         dynamic_cast<Component*>(speedButton_.get()),
+#if defined(ENABLE_SPEEDTRAINER)
         dynamic_cast<Component*>(speedIncValueButton_.get()),
         dynamic_cast<Component*>(speedIncPerButton_.get()),
         dynamic_cast<Component*>(speedIncMaxButton_.get()),
+#endif
     };
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
@@ -1062,6 +1080,7 @@ void MainComponent::updateSpeedButtonLabel()
     const int32_t speed = melissa_->getSpeed();
     speedButton_->setText(String(speed) + "%");
     
+#if defined(ENABLE_SPEEDTRAINER)
     const int32_t incPer = melissa_->getSpeedIncPer();
     speedIncPerButton_->setText(String(incPer));
     
@@ -1070,6 +1089,7 @@ void MainComponent::updateSpeedButtonLabel()
     
     const int32_t incMax = melissa_->getSpeedIncMax();
     speedIncMaxButton_->setText(String(incMax) + " %");
+#endif
 }
 
 void MainComponent::updatePitchButtonLabel()
@@ -1079,12 +1099,16 @@ void MainComponent::updatePitchButtonLabel()
 
 void MainComponent::updateBpm()
 {
+#if defined(ENABLE_SPEEDTRAINER)
     bpmButton_->setText(String(static_cast<uint32_t>(melissa_->getBpm())));
+#endif
 }
 
 void MainComponent::updateMetronomeOffset()
 {
+#if defined(ENABLE_SPEEDTRAINER)
     metronomeOffsetButton_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getMetronomeOffsetSec() * 1000.f));
+#endif
 }
 
 void MainComponent::createSettingsFile()
@@ -1098,8 +1122,10 @@ void MainComponent::createSettingsFile()
     auto current = new DynamicObject();
     current->setProperty("file", fileFullPath_);
     current->setProperty("volume", melissa_->getVolume());
+#if defined(ENABLE_METRONOME)
     current->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
     current->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+#endif
     current->setProperty("a", melissa_->getAPosRatio());
     current->setProperty("b", melissa_->getBPosRatio());
     current->setProperty("speed", melissa_->getSpeed());
@@ -1128,8 +1154,10 @@ void MainComponent::saveSettings()
     auto current = setting_["current"].getDynamicObject();
     current->setProperty("file", fileFullPath_);
     current->setProperty("volume", melissa_->getVolume());
+#if defined(ENABLE_METRONOME)
     current->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
     current->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+#endif
     current->setProperty("a", melissa_->getAPosRatio());
     current->setProperty("b", melissa_->getBPosRatio());
     current->setProperty("speed", melissa_->getSpeed());
