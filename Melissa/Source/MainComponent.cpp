@@ -12,6 +12,9 @@ enum
     kPracticeMemoTabGroup = 1002,
     
     kMaxSizeOfRecentList = 50,
+    
+    // UI
+    kGradationHeight = 20,
 };
 
 
@@ -149,6 +152,9 @@ void MainComponent::createUI()
     
     controlComponent_ = make_unique<MelissaControlComponent>();
     addAndMakeVisible(controlComponent_.get());
+    
+    bottomComponent_ = make_unique<MelissaBottomControlComponent>(this);
+    addAndMakeVisible(bottomComponent_.get());
     
     playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
     playPauseButton_->onClick = [this]() { if (status_ == kStatus_Playing) { pause(); } else { play(); } };
@@ -509,25 +515,45 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics& g)
 {
-    const int center = getWidth() / 2;
+    const int w = getWidth();
+    const int center = w / 2;
     const auto gradationColour = MelissaColourScheme::BackGroundGradationColour();
     g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, 0.f, Colour(gradationColour.second), center, getHeight(), false));
     g.fillAll();
     
     constexpr int interval = 6;
-    g.setColour(Colours::white.withAlpha(0.04f));
+    bool offset = true;
+    g.setColour(Colours::white.withAlpha(0.08f));
     for (int y_i = 0; y_i < getHeight(); y_i += interval)
     {
-        for (int x_i = 0; x_i < getWidth(); x_i += interval)
+        if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i && y_i < bottomComponent_->getY()))
         {
-            g.fillRect(x_i, y_i, 1, 1);
+            for (int x_i = offset ? interval / 2 : 0; x_i < getWidth(); x_i += interval)
+            {
+                g.fillRect(x_i, y_i, 1, 1);
+            }
         }
+        offset = !offset;
     }
+    
+    Colour colours[] = { Colour(0x00000000), Colour(0x50000000) };
+    
+    int y = controlComponent_->getY() - kGradationHeight;
+    g.setGradientFill(ColourGradient(colours[0], center, y, colours[1], center, y + kGradationHeight, false));
+    g.fillRect(0, y, w, kGradationHeight);
+    
+    y = controlComponent_->getBottom();
+    g.setGradientFill(ColourGradient(colours[1], center, y, colours[0], center, y + kGradationHeight, false));
+    g.fillRect(0, y, w, kGradationHeight);
+    
+    y = bottomComponent_->getY() - kGradationHeight;
+    g.setGradientFill(ColourGradient(colours[0], center, y, colours[1], center, y + kGradationHeight, false));
+    g.fillRect(0, y, w, kGradationHeight);
 }
 
 void MainComponent::resized()
 {
-    controlComponent_->setBounds(0, 220, getWidth(), 280);
+    controlComponent_->setBounds(0, 240, getWidth(), 240);
     playPauseButton_->setBounds((getWidth() - 100) / 2, 280, 100, 100);
     toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
     fileNameLabel_->setBounds(getWidth() / 2 - 120, playPauseButton_->getBottom() + 10, 240, 30);
@@ -540,7 +566,7 @@ void MainComponent::resized()
         constexpr int32_t tabMargin = 2;
         int32_t browserWidth = 480;
         int32_t w = (browserWidth - tabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
-        int32_t y = controlComponent_->getBottom();
+        int32_t y = controlComponent_->getBottom() + kGradationHeight - 10;
         
         int32_t x = 20;
         browseToggleButton_ ->setBounds(x, y, w, 30);
@@ -574,7 +600,7 @@ void MainComponent::resized()
     }
     
     // Bottom
-    bottomComponent_->setBounds(0, getHeight() - 50, getWidth(), 50);
+    bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
     
     // Section
     int32_t marginX = 40;
