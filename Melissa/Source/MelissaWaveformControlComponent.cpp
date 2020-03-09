@@ -69,7 +69,7 @@ public:
         {
             const int32_t highlightAStripIndex = std::min(currentMouseOnStripIndex_, clickedStripIndex_);
             const int32_t highlightBStripIndex = std::max(currentMouseOnStripIndex_, clickedStripIndex_);
-            for (size_t iStrip = highlightAStripIndex; iStrip < highlightBStripIndex; ++iStrip)
+            for (size_t iStrip = highlightAStripIndex; iStrip < highlightBStripIndex && iStrip < previewBuffer_.size(); ++iStrip)
             {
                 const int32_t height = previewBuffer_[iStrip] * getHeight();
                 const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
