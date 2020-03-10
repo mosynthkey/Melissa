@@ -12,12 +12,12 @@ MelissaBottomControlComponent::MelissaBottomControlComponent(MelissaHost* host) 
     tooltipLabel_->setText("Tooltip", dontSendNotification);
     addAndMakeVisible(tooltipLabel_.get());
     
-    settingsButton_ = std::make_unique<MelissaSimpleTextButton>("Settings");
-    settingsButton_->onClick = [&]()
+    preferencesButton_ = std::make_unique<MelissaSimpleTextButton>("Preferences");
+    preferencesButton_->onClick = [&]()
     {
         host_->showPreferencesDialog();
     };
-    addAndMakeVisible(settingsButton_.get());
+    addAndMakeVisible(preferencesButton_.get());
 }
 
 void MelissaBottomControlComponent::setTooltipText(const String& tooltipText)
@@ -34,5 +34,5 @@ void MelissaBottomControlComponent::paint(Graphics& g)
 void MelissaBottomControlComponent::resized()
 {
     tooltipLabel_->setBounds(kXMargin, 0, getWidth() - kXMargin * 2, getHeight());
-    settingsButton_->setBounds(getWidth() - kSettingsButtonWidth - kXMargin, 0, kSettingsButtonWidth, getHeight());
+    preferencesButton_->setBounds(getWidth() - kSettingsButtonWidth - kXMargin, 0, kSettingsButtonWidth, getHeight());
 }

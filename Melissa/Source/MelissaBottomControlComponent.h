@@ -18,5 +18,5 @@ public:
 public:
     MelissaHost* host_;
     std::unique_ptr<Label> tooltipLabel_;
-    std::unique_ptr<MelissaSimpleTextButton> settingsButton_;
+    std::unique_ptr<MelissaSimpleTextButton> preferencesButton_;
 };
