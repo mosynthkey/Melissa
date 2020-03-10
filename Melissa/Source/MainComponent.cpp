@@ -1,5 +1,6 @@
 #include <sstream>
 #include "MainComponent.h"
+#include "MelissaAboutComponent.h"
 #include "MelissaColourScheme.h"
 #include "MelissaInputDialog.h"
 #include "MelissaUtility.h"
@@ -15,6 +16,13 @@ enum
     
     // UI
     kGradationHeight = 20,
+};
+
+enum
+{
+    kMenuID_MainAbout = 1000,
+    kMenuID_MainPreferences = 1001,
+    kMenuID_FileOpen = 2000,
 };
 
 
@@ -141,10 +149,29 @@ void MainComponent::createUI()
     
 #if JUCE_MAC
     extraAppleMenuItems_ = make_unique<PopupMenu>();
+    extraAppleMenuItems_->addItem("About",       [&]() { showAboutDialog(); });
     extraAppleMenuItems_->addItem("Preferences", [&]() { showPreferencesDialog(); });
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #endif
+    
+    menuButton_ = std::make_unique<MelissaMenuButton>();
+    menuButton_->onClick = [&]()
+    {
+        PopupMenu menu;
+        menu.addItem(kMenuID_MainAbout, "About");
+        menu.addItem(kMenuID_MainPreferences, "Preferenes");
+        const auto result = menu.show();
+        if (result == kMenuID_MainAbout)
+        {
+            showAboutDialog();
+        }
+        else if (result == kMenuID_MainPreferences)
+        {
+            showPreferencesDialog();
+        }
+    };
+    addAndMakeVisible(menuButton_.get());
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     waveformComponent_->setListener(this);
@@ -555,6 +582,8 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
+    menuButton_->setBounds(20, 20, 26, 14);
+    
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
     controlComponent_->setBounds(0, 240, getWidth(), 180 /* 240 */);
@@ -803,6 +832,12 @@ void MainComponent::showPreferencesDialog()
     showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
 }
 
+void MainComponent::showAboutDialog()
+{
+    auto component = std::make_shared<MelissaAboutComponent>();
+    showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
+}
+
 void MainComponent::closeModalDialog()
 {
     if (modalDialog_ == nullptr) return;
@@ -841,18 +876,34 @@ void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float 
 
 StringArray MainComponent::getMenuBarNames()
 {
-    return { "File", "Help" };
+    return { "File" };
 }
 
 PopupMenu MainComponent::getMenuForIndex(int topLevelMenuIndex, const String& menuName)
 {
     PopupMenu menu;
+    
+    if (topLevelMenuIndex == 0)
+    {
+        menu.addItem(kMenuID_FileOpen, "Open");
+    }
+    
     return menu;
 }
 
 void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 {
-    
+    if (menuItemID == kMenuID_FileOpen)
+    {
+        fileChooser_ = std::make_unique<FileChooser>("Choose a file to add to this set list...", File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
+        fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser) {
+            auto fileUrl = chooser.getURLResult();
+            if (fileUrl.isLocalFile())
+            {
+                openFile(File(fileUrl.getLocalFile().getFullPathName()));
+            }
+        });
+    }
 }
 
 void MainComponent::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)

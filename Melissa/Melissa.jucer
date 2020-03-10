@@ -5,6 +5,7 @@
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <FILE id="Y3ewMD" name="icon.png" compile="0" resource="1" file="icon.png"/>
+      <FILE id="pQdyKb" name="logo.png" compile="0" resource="1" file="Resource/logo.png"/>
     </GROUP>
     <GROUP id="{7861AF46-3FAB-B002-909F-38D9C3534B17}" name="soundtouch">
       <FILE id="j3IUBl" name="AAFilter.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/AAFilter.cpp"/>
@@ -59,6 +60,8 @@
       <FILE id="cDu0P4" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="A4qeKp" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="bVjaHW" name="MelissaAboutComponent.h" compile="0" resource="0"
+            file="Source/MelissaAboutComponent.h"/>
       <FILE id="lqYn04" name="MelissaBottomControlComponent.cpp" compile="1"
             resource="0" file="Source/MelissaBottomControlComponent.cpp"/>
       <FILE id="FdgRxf" name="MelissaBottomControlComponent.h" compile="0"

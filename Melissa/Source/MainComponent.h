@@ -223,6 +223,29 @@ private:
     float lineRatio_;
 };
 
+class MelissaMenuButton : public Button
+{
+public:
+    MelissaMenuButton() : Button("")
+    {
+        
+    }
+    
+    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        constexpr int lineHeight = 2;
+        
+        const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+        
+        const int w = getWidth();
+        const int h = getHeight();
+        g.fillRoundedRectangle(0, 0, w, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, (h - lineHeight) / 2, w, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, h - lineHeight, w, lineHeight, lineHeight / 2);
+    }
+};
+
 class MainComponent   : public AudioAppComponent,
                         public FileDragAndDropTarget,
                         public FileBrowserListener,
@@ -324,12 +347,15 @@ public:
     void saveSettings();
     
     var getSongSetting(String fileName);
+    void showAboutDialog();
 
 private:
     void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
     
     std::unique_ptr<Melissa> melissa_;
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
+    
+    std::unique_ptr<MelissaMenuButton> menuButton_;
     
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;
@@ -385,6 +411,8 @@ private:
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     std::unique_ptr<MelissaSetListComponent> setListComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
+    
+    std::unique_ptr<FileChooser> fileChooser_;
     
     enum
     {
