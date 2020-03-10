@@ -21,7 +21,7 @@ void MelissaSetListComponent::createUI()
     newSetListButton_->setButtonText("New");
     newSetListButton_->onClick = [&]()
     {
-        auto inputDialog = std::make_shared<MelissaInputDialog>(host_, "Enter a name of a new setlist:", "New setlist", [&](const std::string& text) {
+        auto inputDialog = std::make_shared<MelissaInputDialog>(host_, "Enter a name of a new setlist:", "New setlist", [&](const String& text) {
             if (text == "") return;
             host_->createSetlist(text);
             host_->closeModalDialog();
@@ -107,7 +107,7 @@ void MelissaSetListComponent::select(int index)
     if (list != nullptr) listBox_->setList(*list);
 }
 
-void MelissaSetListComponent::add(const std::string& name, bool sholdSelect)
+void MelissaSetListComponent::add(const String& name, bool sholdSelect)
 {
     auto object = new DynamicObject();
     object->setProperty("name", String(name));

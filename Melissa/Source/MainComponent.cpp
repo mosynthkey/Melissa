@@ -378,7 +378,7 @@ void MainComponent::createUI()
         addAndMakeVisible(browseToggleButton_.get());
         
         setListToggleButton_ = make_unique<ToggleButton>();
-        setListToggleButton_->setButtonText("Set List");
+        setListToggleButton_->setButtonText("Setlist");
         setListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
         setListToggleButton_->setRadioGroupId(kFileChooserTabGroup);
         setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_SetList); };
@@ -442,8 +442,8 @@ void MainComponent::createUI()
         addToListButton_->setButtonText("Add");
         addToListButton_->onClick = [this]()
         {
-            auto dialog = std::make_shared<MelissaInputDialog>(this, "Enter the name", "", [&](const std::string& text) {
-                String name(text.c_str());
+            auto dialog = std::make_shared<MelissaInputDialog>(this, "Enter the name", "", [&](const String& text) {
+                String name(text);
                 if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(melissa_->getAPosMSec());
                 addToPracticeList(name);
                 if (auto songs = setting_["songs"].getArray())
@@ -473,7 +473,7 @@ void MainComponent::createUI()
     
     // Labels
     {
-        const std::string labelTitles[kNumOfLabels] = {
+        const String labelTitles[kNumOfLabels] = {
 #if defined(ENABLE_METRONOME)
             "Switch",
             "BPM",
@@ -511,7 +511,7 @@ void MainComponent::createUI()
     
     for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
     {
-        const std::string titles_[kNumOfSectionTitles] =
+        const String titles_[kNumOfSectionTitles] =
         {
             "Settings", "A-B Loop",
 #if defined(ENABLE_SPEEDTRAINER)
@@ -836,7 +836,7 @@ void MainComponent::updatePracticeList(const Array<var>& list)
     }
 }
 
-void MainComponent::createSetlist(const std::string& name)
+void MainComponent::createSetlist(const String& name)
 {
     setListComponent_->add(name, true);
 }
@@ -846,7 +846,7 @@ bool MainComponent::loadFile(const String& filePath)
     return openFile(File(filePath));
 }
 
-void MainComponent::showModalDialog(std::shared_ptr<Component> component, const std::string& title)
+void MainComponent::showModalDialog(std::shared_ptr<Component> component, const String& title)
 {
     closeModalDialog();
     
@@ -864,7 +864,7 @@ void MainComponent::showPreferencesDialog()
 void MainComponent::showAboutDialog()
 {
     auto component = std::make_shared<MelissaAboutComponent>();
-    showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
+    showModalDialog(std::dynamic_pointer_cast<Component>(component), "About Melissa");
 }
 
 void MainComponent::closeModalDialog()

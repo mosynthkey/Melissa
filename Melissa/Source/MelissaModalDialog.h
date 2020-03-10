@@ -7,7 +7,7 @@
 class MelissaModalDialog : public Component
 {
 public:
-    MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const std::string& title);
+    MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const String& title);
     
     // Component
     void paint(Graphics& g) override;
