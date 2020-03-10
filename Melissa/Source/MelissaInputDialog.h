@@ -6,7 +6,7 @@
 class MelissaInputDialog : public Component
 {
 public:
-    MelissaInputDialog(MelissaHost* host, const std::string& labelString,  const std::string& defaultTextEditorString, std::function<void(const std::string& string)> onClick) :
+    MelissaInputDialog(MelissaHost* host, const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) :
     host_(host), onClick_(onClick)
     {
         constexpr int textEditorWidth = 400;
@@ -20,20 +20,20 @@ public:
         setSize(width, height);
         
         label_ = std::make_unique<Label>();
-        label_->setText(labelString.c_str(), dontSendNotification);
+        label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
         textEditor_ = std::make_unique<TextEditor>();
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
-        textEditor_->setText(defaultTextEditorString.c_str());
+        textEditor_->setText(defaultTextEditorString);
         addAndMakeVisible(textEditor_.get());
         
         okButton_ = std::make_unique<TextButton>();
         okButton_->setBounds(width - (margin + buttonWidth), margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
         okButton_->setButtonText("OK");
         okButton_->onClick = [&]() {
-            const std::string text = textEditor_->getText().toStdString();
+            const String text = textEditor_->getText().toStdString();
             onClick_(text);
         };
         addAndMakeVisible(okButton_.get());
@@ -44,5 +44,5 @@ private:
     std::unique_ptr<Label> label_;
     std::unique_ptr<TextEditor> textEditor_;
     std::unique_ptr<TextButton> okButton_;
-    std::function<void(const std::string& string)> onClick_;
+    std::function<void(const String& string)> onClick_;
 };

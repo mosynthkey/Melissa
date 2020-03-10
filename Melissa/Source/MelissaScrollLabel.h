@@ -27,7 +27,7 @@ public:
         g.drawText(text_, position_, 0, textWidth_, getHeight(), Justification::left);
     }
     
-    void setText(const std::string& text)
+    void setText(const String& text)
     {
         stopTimer();
         
@@ -64,7 +64,7 @@ public:
     
 private:
     Font font_;
-    std::string text_;
+    String text_;
     int textWidth_;
     int position_;
 };

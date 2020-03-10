@@ -48,7 +48,7 @@ public:
     MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
     TableListBox(componentName, this), host_(host)
     {
-        std::string headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed" };
+        String headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed" };
         for (int i = 0; i < kNumOfColumn; ++i)
         {
             getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -206,7 +206,7 @@ private:
 class MelissaSectionTitleComponent : public Component
 {
 public:
-    MelissaSectionTitleComponent(const std::string& title, float lineRatio) :
+    MelissaSectionTitleComponent(const String& title, float lineRatio) :
     lineRatio_(lineRatio)
     {
         label_ = std::make_unique<Label>();
@@ -305,9 +305,9 @@ public:
     void setMelissaParameters(float aRatio, float bRatio, float speed) override;
     void getMelissaParameters(float* aRatio, float* bRatio, float* speed) override;
     void updatePracticeList(const Array<var>& list) override;
-    void createSetlist(const std::string& name) override;
+    void createSetlist(const String& name) override;
     bool loadFile(const String& filePath) override;
-    void showModalDialog(std::shared_ptr<Component> component, const std::string& title) override;
+    void showModalDialog(std::shared_ptr<Component> component, const String& title) override;
     void showPreferencesDialog() override;
     void closeModalDialog() override;
     

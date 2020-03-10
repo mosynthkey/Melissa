@@ -6,7 +6,7 @@ enum
     kCloseButtonSize = 20,
 };
 
-MelissaModalDialog::MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const std::string& title) :
+MelissaModalDialog::MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const String& title) :
 host_(host),
 component_(component)
 {
