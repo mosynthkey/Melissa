@@ -41,20 +41,19 @@ public:
     
     void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
     {
-        if (style != Slider::LinearBar) return;
-        
+        if (style != Slider::LinearHorizontal) return;
         const auto& c = s.getLocalBounds();
         const float xOffset = lineThickness / 2;
         const float yOffset = lineThickness / 2;
         const float w = c.getWidth() - lineThickness - 1;
         const float h = c.getHeight() - lineThickness - 1;
-        const float cornerSize = (c.getHeight() - lineThickness) / 2;
+        const float cornerSize = (c.getHeight() - 10 - lineThickness) / 2;
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(xOffset, yOffset, w, h, cornerSize, lineThickness);
+        g.drawRoundedRectangle(xOffset, yOffset + 5, w, h - 10, cornerSize, lineThickness);
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.3f));
-        g.fillRoundedRectangle(xOffset + lineThickness, yOffset + lineThickness, sliderPos - x, h - lineThickness * 2, h / 2 - lineThickness);
+        g.fillRoundedRectangle(xOffset + lineThickness, yOffset + lineThickness + 5, sliderPos - x, h - lineThickness * 2 - 10, h / 2 - lineThickness - 5);
     }
     
     void drawLinearSliderBackground(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider& s) override
