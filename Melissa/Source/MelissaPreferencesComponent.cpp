@@ -4,9 +4,11 @@
 MelissaPreferencesComponent::MelissaPreferencesComponent(AudioDeviceManager* audioDeviceManager) :
 audioDeviceManager_(audioDeviceManager)
 {
-    deviceComponent_ = std::make_unique<AudioDeviceSelectorComponent>(*audioDeviceManager_, 0, 0, 0, 2, true, false, true, false);
+    constexpr bool showMidiSelector = false;
+    deviceComponent_ = std::make_unique<AudioDeviceSelectorComponent>(*audioDeviceManager_, 0, 0, 0, 2, showMidiSelector, false, true, false);
     addAndMakeVisible(deviceComponent_.get());
     
+#if defined(ENABLE_SHORTCUT_EDITOR)
     {
         // Tab
         auto createToggleButton = [&](String title, Tab tab, bool toggleState)
@@ -28,18 +30,24 @@ audioDeviceManager_(audioDeviceManager)
         }
         updateTab();
     }
+    setSize(800, 600);
+#else
+    setSize(800, 300);
+#endif
     
     setLookAndFeel(&lookAndFeel_);
-    setSize(800, 600);
+
 }
 
 MelissaPreferencesComponent::~MelissaPreferencesComponent()
 {
     setLookAndFeel(nullptr);
+#if defined(ENABLE_SHORTCUT_EDITOR)
     for (auto&& tab : tabs_)
     {
         tab->setLookAndFeel(nullptr);
     }
+#endif
 }
 
 void MelissaPreferencesComponent::updateTab()
@@ -54,6 +62,7 @@ void MelissaPreferencesComponent::paint(Graphics& g)
 
 void MelissaPreferencesComponent::resized()
 {
+#if defined(ENABLE_SHORTCUT_EDITOR)
     constexpr int tabWidth = 240;
     constexpr int tabHeight = 30;
     constexpr int tabMargin = 2;
@@ -68,4 +77,7 @@ void MelissaPreferencesComponent::resized()
     
     constexpr int y = tabHeight + 40;
     deviceComponent_->setBounds(0, y, getWidth(), getHeight() - y);
+#else
+    deviceComponent_->setBounds(0, 0, getWidth(), getHeight());
+#endif
 }
