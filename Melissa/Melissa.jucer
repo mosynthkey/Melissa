@@ -59,6 +59,10 @@
       <FILE id="cDu0P4" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="A4qeKp" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="lqYn04" name="MelissaBottomControlComponent.cpp" compile="1"
+            resource="0" file="Source/MelissaBottomControlComponent.cpp"/>
+      <FILE id="FdgRxf" name="MelissaBottomControlComponent.h" compile="0"
+            resource="0" file="Source/MelissaBottomControlComponent.h"/>
       <FILE id="OENelF" name="MelissaColourScheme.h" compile="0" resource="0"
             file="Source/MelissaColourScheme.h"/>
       <FILE id="DMzl73" name="MelissaControlComponent.h" compile="0" resource="0"
