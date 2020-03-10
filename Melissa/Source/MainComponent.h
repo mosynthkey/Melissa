@@ -186,6 +186,23 @@ private:
     std::shared_ptr<PopupMenu> popupMenu_;
 };
 
+class MelissaTieComponent : public Component
+{
+public:
+    MelissaTieComponent(Component* a, Component* b) : a_(a), b_(b) { }
+    void paint(Graphics& g) override { g.fillAll(Colours::white.withAlpha(0.4f)); }
+    void updatePosition()
+    {
+        constexpr int lightHeight = 2;
+        int x = a_->getRight() - 1;
+        int y = a_->getY() + a_->getHeight() / 2;
+        setBounds(x, y - lightHeight / 2, b_->getX() - x, lightHeight);
+    }
+    
+private:
+    Component *a_, *b_;
+};
+
 class MelissaSectionTitleComponent : public Component
 {
 public:
@@ -362,7 +379,9 @@ private:
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaControlComponent> controlComponent_;
+#if defined(SHOW_BOTTOM)
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
+#endif
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
     std::unique_ptr<MelissaToHeadButton> toHeadButton_;
@@ -384,6 +403,7 @@ private:
     std::unique_ptr<TextButton> bSetButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
     std::unique_ptr<TextButton> resetButton_;
+    std::unique_ptr<MelissaTieComponent> tie_[2];
     
     std::unique_ptr<MelissaIncDecButton> speedButton_;
 

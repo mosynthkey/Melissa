@@ -149,8 +149,8 @@ void MainComponent::createUI()
     
 #if JUCE_MAC
     extraAppleMenuItems_ = make_unique<PopupMenu>();
-    extraAppleMenuItems_->addItem("About",       [&]() { showAboutDialog(); });
-    extraAppleMenuItems_->addItem("Preferences", [&]() { showPreferencesDialog(); });
+    extraAppleMenuItems_->addItem("About Melissa", [&]() { showAboutDialog(); });
+    extraAppleMenuItems_->addItem("Preferences",   [&]() { showPreferencesDialog(); });
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #endif
@@ -180,8 +180,10 @@ void MainComponent::createUI()
     controlComponent_ = make_unique<MelissaControlComponent>();
     addAndMakeVisible(controlComponent_.get());
     
+#if defined(SHOW_BOTTOM)
     bottomComponent_ = make_unique<MelissaBottomControlComponent>(this);
     addAndMakeVisible(bottomComponent_.get());
+#endif
     
     playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
     playPauseButton_->onClick = [this]() { if (status_ == kStatus_Playing) { pause(); } else { play(); } };
@@ -240,8 +242,9 @@ void MainComponent::createUI()
 #endif
     
     {
-        volumeSlider_ = make_unique<Slider>(Slider::LinearBar, Slider::NoTextBox);
+        volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         volumeSlider_->setRange(0.01f, 2.0f);
+        volumeSlider_->setValue(0.f);
         volumeSlider_->onValueChange = [this]()
         {
             melissa_->setVolume(volumeSlider_->getValue());
@@ -303,6 +306,13 @@ void MainComponent::createUI()
         resetButton_->setButtonText("Reset");
         resetButton_->onClick = [this]() { resetLoop(); };
         addAndMakeVisible(resetButton_.get());
+    }
+    
+    {
+        tie_[0] = std::make_unique<MelissaTieComponent>(aSetButton_.get(), aButton_.get());
+        addAndMakeVisible(tie_[0].get());
+        tie_[1] = std::make_unique<MelissaTieComponent>(bSetButton_.get(), bButton_.get());
+        addAndMakeVisible(tie_[1].get());
     }
     
     {
@@ -425,7 +435,6 @@ void MainComponent::createUI()
         addAndMakeVisible(memoToggleButton_.get());
         
         practiceListToggleButton_->setToggleState(true, dontSendNotification);
-        updatePracticeMemo(kPracticeMemoTab_Practice);
     }
     
     {
@@ -473,8 +482,8 @@ void MainComponent::createUI()
             "Volume",
             "Pitch",
             
-            "A Time",
-            "B Time",
+            "Start Time",
+            "End Time",
             
             "Speed",
 #if defined(ENABLE_SPEEDTRAINER)
@@ -517,6 +526,7 @@ void MainComponent::createUI()
         sectionTitles_[sectionTitle_i] = std::move(sectionTitle);
     }
     
+    updatePracticeMemo(kPracticeMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
 }
 
@@ -555,7 +565,11 @@ void MainComponent::paint(Graphics& g)
     g.setColour(Colours::white.withAlpha(0.08f));
     for (int y_i = 0; y_i < getHeight(); y_i += interval)
     {
+#if defined(SHOW_BOTTOM)
         if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i && y_i < bottomComponent_->getY()))
+#else
+        if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i))
+#endif
         {
             for (int x_i = offset ? interval / 2 : 0; x_i < getWidth(); x_i += interval)
             {
@@ -575,9 +589,11 @@ void MainComponent::paint(Graphics& g)
     g.setGradientFill(ColourGradient(colours[1], center, y, colours[0], center, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
     
+#if defined(SHOW_BOTTOM)
     y = bottomComponent_->getY() - kGradationHeight;
     g.setGradientFill(ColourGradient(colours[0], center, y, colours[1], center, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
+#endif
 }
 
 void MainComponent::resized()
@@ -586,8 +602,8 @@ void MainComponent::resized()
     
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
-    controlComponent_->setBounds(0, 240, getWidth(), 180 /* 240 */);
-    playPauseButton_->setBounds((getWidth() - 90) / 2, 260, 90, 90);
+    controlComponent_->setBounds(0, 220, getWidth(), 180 /* 240 */);
+    playPauseButton_->setBounds((getWidth() - 90) / 2, 240, 90, 90);
     toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
     
     fileNameLabel_->setBounds(getWidth() / 2 - 120, playPauseButton_->getBottom() + 10, 240, 20);
@@ -616,24 +632,32 @@ void MainComponent::resized()
         
         y += 40;
         {
-            const int32_t h = getHeight() - 20 - y - 20;
+#if defined(SHOW_BOTTOM)
+            const int32_t h = getHeight() - 40 - y;
+#else
+            const int32_t h = getHeight() - 40 - y + 20;
+#endif
             fileBrowserComponent_->setBounds(20, y, browserWidth, h);
             setListComponent_->setBounds(20, y, browserWidth, h);
             recentTable_->setBounds(20, y, browserWidth, h);
         }
         
         {
-            const int32_t h = getHeight() - 20 - y - 20 - 40;
+#if defined(SHOW_BOTTOM)
+            const int32_t h = getHeight() - 80 - y;
+#else
+            const int32_t h = getHeight() - 80 - y + 20;
+#endif
             practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
-            memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+            addToListButton_->setBounds(getWidth() - 80 - 20, practiceTable_->getBottom() + 10, 80, 30);
+            memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
         }
-        
-        y = practiceTable_->getBottom() + 10;
-        addToListButton_->setBounds(getWidth() - 80 - 20, y, 80, 30);
     }
     
+#if defined(SHOW_BOTTOM)
     // Bottom
     bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
+#endif
     
     // Section
     int32_t marginX = 60;
@@ -643,12 +667,12 @@ void MainComponent::resized()
         sec->setSize(sectionWidth, 30);
     }
     
-    int y = 280; // 260;
+    int y = 260; // 260;
     
     // Song Settings
     sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginX, y);
-    volumeSlider_->setSize(200, 20);
-    pitchButton_->setSize(140, 30);
+    volumeSlider_->setSize(200, 30);
+    pitchButton_->setSize(200, 30);
 #if !defined(ENABLE_SPEEDTRAINER)
     arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
         { volumeSlider_.get() },
@@ -658,11 +682,11 @@ void MainComponent::resized()
     
     // A-B Loop
     sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginX, y);
-    aSetButton_->setSize(60, 30);
-    aButton_->setSize(140, 30);
-    bSetButton_->setSize(60, 30);
-    bButton_->setSize(140, 30);
-    resetButton_->setSize(80, 30);
+    aSetButton_->setSize(80, 30);
+    aButton_->setSize(200, 30);
+    bSetButton_->setSize(80, 30);
+    bButton_->setSize(200, 30);
+    resetButton_->setSize(100, 30);
     arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
         { aSetButton_.get(), aButton_.get() },
         { bSetButton_.get(), bButton_.get() },
@@ -697,7 +721,7 @@ void MainComponent::resized()
         { speedIncValueButton_.get(), speedIncPerButton_.get(), speedIncMaxButton_.get() }
     });
 #else
-    speedButton_->setSize(140, 30);
+    speedButton_->setSize(200, 30);
     arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
         { volumeSlider_.get() },
         { pitchButton_.get() },
@@ -729,9 +753,14 @@ void MainComponent::resized()
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
     {
+        if (label_i == kLabel_ATime || label_i == kLabel_BTime) continue;
         auto b = components[label_i]->getBoundsInParent();
         labels_[label_i]->setBounds(b.getX(), b.getY() - 20, b.getWidth(), 20);
     }
+    labels_[kLabel_ATime]->setBounds(aSetButton_->getX(), aSetButton_->getY() - 20, aButton_->getRight() - aSetButton_->getX(), 20);
+    labels_[kLabel_BTime]->setBounds(bSetButton_->getX(), bSetButton_->getY() - 20, bButton_->getRight() - bSetButton_->getX(), 20);
+    
+    for (auto&& tie : tie_) tie->updatePosition();
     
     if (modalDialog_ != nullptr) modalDialog_->setSize(getWidth(), getHeight());
 }
@@ -949,8 +978,8 @@ void MainComponent::updateFileChooserTab(FileChooserTab tab)
 void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
 {
     practiceTable_->setVisible(tab == kPracticeMemoTab_Practice);
+    addToListButton_->setVisible(tab == kPracticeMemoTab_Practice);
     memoTextEditor_->setVisible(tab == kPracticeMemoTab_Memo);
-    
 }
 
 bool MainComponent::openFile(const File& file)
