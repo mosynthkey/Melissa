@@ -3,6 +3,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaLookAndFeel.h"
 
+// #define ENABLE_SHORTCUT_EDITOR
+
 class MelissaPreferencesComponent : public Component
 {
 public:
