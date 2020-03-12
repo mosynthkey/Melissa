@@ -10,3 +10,5 @@ countries: us
 "are_you_sure" = "Are you sure?"
 "choose_file_setlist" = "Select files to add to this setlist"
 "add_practice_list" = "Add to the practice list"
+"erase" = "Erase"
+"overwrite" = "Overwrite"

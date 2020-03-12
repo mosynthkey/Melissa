@@ -31,14 +31,15 @@ status_(kStatus_Stop), shouldExit_(false)
 {
     melissa_ = make_unique<Melissa>();
     
+    getLookAndFeel().setDefaultSansSerifTypeface(Typeface::createSystemTypefaceFor(BinaryData::NotoSansCJKjpRegular_otf, BinaryData::NotoSansCJKjpRegular_otfSize));
+    
     if (SystemStats::getDisplayLanguage() == "ja-JP")
     {
-        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::enUS_txt, BinaryData::enUS_txtSize), false));
-        getLookAndFeel().setDefaultSansSerifTypefaceName("Hiragino Kaku Gothic ProN");
+        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::jaJP_txt, BinaryData::jaJP_txtSize), false));
     }
     else
     {
-        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::jaJP_txt, BinaryData::jaJP_txtSize), false));
+        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::enUS_txt, BinaryData::enUS_txtSize), false));
     }
     
     createUI();
@@ -165,6 +166,7 @@ void MainComponent::createUI()
     menuButton_->onClick = [&]()
     {
         PopupMenu menu;
+        menu.setLookAndFeel(&lookAndFeel_);
         menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
         menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
         const auto result = menu.show();
@@ -202,6 +204,7 @@ void MainComponent::createUI()
     timeLabel_ = make_unique<Label>();
     timeLabel_->setJustificationType(Justification::centred);
     timeLabel_->setText("-:--", dontSendNotification);
+    timeLabel_->setFont(22);
     addAndMakeVisible(timeLabel_.get());
     
     fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
@@ -411,6 +414,7 @@ void MainComponent::createUI()
     {
         memoTextEditor_ = make_unique<TextEditor>();
         memoTextEditor_->setLookAndFeel(nullptr);
+        memoTextEditor_->setFont(Font(22));
         memoTextEditor_->setMultiLine(true, false);
         memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
         memoTextEditor_->onFocusLost = [&]()
@@ -469,7 +473,6 @@ void MainComponent::createUI()
                                                                   wildCardFilter_.get(),
                                                                   nullptr);
         fileBrowserComponent_->setColour(ListBox::backgroundColourId, Colours::transparentWhite);
-        fileBrowserComponent_->setFilenameBoxLabel("File");
         fileBrowserComponent_->addListener(this);
         addAndMakeVisible(fileBrowserComponent_.get());
     }
@@ -500,7 +503,7 @@ void MainComponent::createUI()
             auto l = make_unique<Label>();
             l->setLookAndFeel(nullptr);
             l->setText(labelTitles[label_i], dontSendNotification);
-            l->setFont(Font(12));
+            l->setFont(Font(22));
             l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
             l->setJustificationType(Justification::centredTop);
             addAndMakeVisible(l.get());
@@ -758,10 +761,10 @@ void MainComponent::resized()
     {
         if (label_i == kLabel_ATime || label_i == kLabel_BTime) continue;
         auto b = components[label_i]->getBoundsInParent();
-        labels_[label_i]->setBounds(b.getX(), b.getY() - 20, b.getWidth(), 20);
+        labels_[label_i]->setBounds(b.getX(), b.getY() - 30, b.getWidth(), 30);
     }
-    labels_[kLabel_ATime]->setBounds(aSetButton_->getX(), aSetButton_->getY() - 20, aButton_->getRight() - aSetButton_->getX(), 20);
-    labels_[kLabel_BTime]->setBounds(bSetButton_->getX(), bSetButton_->getY() - 20, bButton_->getRight() - bSetButton_->getX(), 20);
+    labels_[kLabel_ATime]->setBounds(aSetButton_->getX(), aSetButton_->getY() - 30, aButton_->getRight() - aSetButton_->getX(), 30);
+    labels_[kLabel_BTime]->setBounds(bSetButton_->getX(), bSetButton_->getY() - 30, bButton_->getRight() - bSetButton_->getX(), 30);
     
     for (auto&& tie : tie_) tie->updatePosition();
     
@@ -919,6 +922,7 @@ PopupMenu MainComponent::getMenuForIndex(int topLevelMenuIndex, const String& me
     {
         menu.addItem(kMenuID_FileOpen, "Open");
     }
+    
     
     return menu;
 }

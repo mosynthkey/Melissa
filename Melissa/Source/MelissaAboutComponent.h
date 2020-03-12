@@ -17,12 +17,14 @@ public:
         
         copyrightLabel_ = std::make_unique<Label>();
         copyrightLabel_->setJustificationType(Justification::right);
+        copyrightLabel_->setFont(22);
         copyrightLabel_->setText("Copyright (c) 2020 Masaki Ono. All rights reserved.", dontSendNotification);
         copyrightLabel_->setBounds(0, 200, 600, 30);
         addAndMakeVisible(copyrightLabel_.get());
         
         versionLabel_ = std::make_unique<Label>();
         versionLabel_->setJustificationType(Justification::right);
+        versionLabel_->setFont(22);
         versionLabel_->setText(String("Version ") + ProjectInfo::versionString, dontSendNotification);
         versionLabel_->setBounds(0, 230, 600, 30);
         addAndMakeVisible(versionLabel_.get());

@@ -35,6 +35,7 @@ public:
         g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.1f : 0.f));
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setFont(22);
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     

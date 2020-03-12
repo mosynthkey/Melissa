@@ -27,6 +27,7 @@ public:
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setFont(22);
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
     
@@ -36,6 +37,7 @@ public:
         const auto& c = tb.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
         g.drawText(tb.getToggleState() ? "On" : "Off", 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        g.setFont(22);
         g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
     
@@ -43,7 +45,6 @@ public:
     {
         if (style != Slider::LinearHorizontal) return;
         
-        constexpr int thumbWidth = 2;
         const auto& c = s.getLocalBounds();
         const float xOffset = lineThickness / 2;
         const float yOffset = lineThickness / 2;
@@ -88,6 +89,22 @@ public:
         g.fillAll(Colour(MelissaColourScheme::DialogBackgoundColour()));
     }
     
+    void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
+    {
+        g.setColour(Colour(MelissaColourScheme::DialogBackgoundColour()));
+        g.fillRect(area);
+        
+        if (isHighlighted)
+        {
+            g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
+            g.fillRect(area.reduced(2, 0));
+        }
+        
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setFont(22);
+        g.drawText(text, area.reduced(10, 0), Justification::left);
+    }
+    
     void drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent &) override
     {
         if (isMouseOverBar)
@@ -102,7 +119,7 @@ public:
     
     Font getTextButtonFont(TextButton& tb, int buttonHeight) override
     {
-        return Font(14);
+        return Font(22);
     }
     
     void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
@@ -127,6 +144,11 @@ public:
         constexpr int triWidth = 12;
         g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
         g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
+    }
+    
+    Font getComboBoxFont (ComboBox &) override
+    {
+        return Font(22);
     }
     
     void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
@@ -154,6 +176,7 @@ public:
     void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
         g.setColour(Colours::white);
+        g.setFont(22);
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
     
@@ -194,13 +217,24 @@ public:
             g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
                                                  : findColour (DirectoryContentsDisplayComponent::textColourId));
 
-        g.setFont (height * 0.7f);
-
+        g.setFont(22);
         g.drawFittedText (filename,
                           x, 0, width - x, height,
                           Justification::centredLeft, 1);
 
     }
+    
+    Font getPopupMenuFont() override
+    {
+        return Font(22);
+    }
+    
+    
+    Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
+    {
+        return Font(22);
+    }
+    
     
     Button* createFileBrowserGoUpButton() override
     {
@@ -255,6 +289,7 @@ public:
             alpha = 0.6f;
         }
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
+        g.setFont(22);
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
         g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
     }
