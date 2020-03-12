@@ -42,28 +42,62 @@ public:
     void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
     {
         if (style != Slider::LinearHorizontal) return;
+        
+        constexpr int thumbWidth = 2;
         const auto& c = s.getLocalBounds();
         const float xOffset = lineThickness / 2;
         const float yOffset = lineThickness / 2;
         const float w = c.getWidth() - lineThickness - 1;
         const float h = c.getHeight() - lineThickness - 1;
-        const float cornerSize = (c.getHeight() - 10 - lineThickness) / 2;
+        const float cornerSize = (c.getHeight() - 12 - lineThickness) / 2;
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(xOffset, yOffset + 5, w, h - 10, cornerSize, lineThickness);
+        g.drawRoundedRectangle(xOffset, yOffset + 6, w, h - 12, cornerSize, lineThickness);
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.3f));
-        g.fillRoundedRectangle(xOffset + lineThickness, yOffset + lineThickness + 5, sliderPos - x, h - lineThickness * 2 - 10, h / 2 - lineThickness - 5);
-    }
-    
-    void drawLinearSliderBackground(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider& s) override
-    {
-        
+        {
+            Rectangle<float> rect(xOffset + lineThickness, yOffset + 6 + 1, (sliderPos - 1) - (xOffset + lineThickness) - 4, h - 12 - 2);
+            const float r = rect.getHeight();
+            const float x0 = rect.getX();
+            const float x1 = x0 + r / 2;
+            const float x2 = x0 + rect.getWidth();
+            const float y0 = rect.getY();
+            const float y1 = rect.getY() + rect.getHeight();
+            
+            //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
+            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4));
+            
+            Path path;
+            path.addArc(x0, y0, r, r, M_PI, 2 * M_PI);
+            path.lineTo(x1, y0);
+            path.lineTo(x2, y0);
+            path.addArc(x2, y0, r, r, 0, M_PI);
+            path.lineTo(x2, y1);
+            path.lineTo(x1, y1);
+            path.closeSubPath();
+            g.fillPath(path);
+        }
     }
     
     void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override
     {
         
+    }
+    
+    void drawPopupMenuBackground (Graphics& g, int width, int height) override
+    {
+        g.fillAll(Colour(MelissaColourScheme::DialogBackgoundColour()));
+    }
+    
+    void drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent &) override
+    {
+        if (isMouseOverBar)
+        {
+            g.fillAll(Colour(MelissaColourScheme::DialogBackgoundColour()));
+        }
+        else
+        {
+            g.fillAll(Colour(MelissaColourScheme::MainColour()).withAlpha(0.8f));
+        }
     }
     
     Font getTextButtonFont(TextButton& tb, int buttonHeight) override
