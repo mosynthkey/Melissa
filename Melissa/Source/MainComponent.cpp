@@ -29,11 +29,17 @@ enum
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop), shouldExit_(false)
 {
-#if JUCE_MAC || JUCE_WINDOWS
-    getLookAndFeel().setDefaultSansSerifTypefaceName("Hiragino Kaku Gothic ProN");
-#endif
-    
     melissa_ = make_unique<Melissa>();
+    
+    if (SystemStats::getDisplayLanguage() == "ja-JP")
+    {
+        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::enUS_txt, BinaryData::enUS_txtSize), false));
+        getLookAndFeel().setDefaultSansSerifTypefaceName("Hiragino Kaku Gothic ProN");
+    }
+    else
+    {
+        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::jaJP_txt, BinaryData::jaJP_txtSize), false));
+    }
     
     createUI();
     setSize (1400, 860);
@@ -159,8 +165,8 @@ void MainComponent::createUI()
     menuButton_->onClick = [&]()
     {
         PopupMenu menu;
-        menu.addItem(kMenuID_MainAbout, "About");
-        menu.addItem(kMenuID_MainPreferences, "Preferenes");
+        menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
+        menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
         const auto result = menu.show();
         if (result == kMenuID_MainAbout)
         {
@@ -199,7 +205,6 @@ void MainComponent::createUI()
     addAndMakeVisible(timeLabel_.get());
     
     fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
-    fileNameLabel_->setText("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTU");
     addAndMakeVisible(fileNameLabel_.get());
     
 #if defined(ENABLE_METRONOME)
@@ -248,8 +253,6 @@ void MainComponent::createUI()
         volumeSlider_->onValueChange = [this]()
         {
             melissa_->setVolume(volumeSlider_->getValue());
-            const float db = 20 * log10(volumeSlider_->getValue());
-            labels_[kLabel_Volume]->setText(String::formatted("Volume (%+1.2fdB)", db), dontSendNotification);
         };
         addAndMakeVisible(volumeSlider_.get());
     }
@@ -442,7 +445,7 @@ void MainComponent::createUI()
         addToListButton_->setButtonText("Add");
         addToListButton_->onClick = [this]()
         {
-            auto dialog = std::make_shared<MelissaInputDialog>(this, "Enter the name", "", [&](const String& text) {
+            auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), "", [&](const String& text) {
                 String name(text);
                 if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(melissa_->getAPosMSec());
                 addToPracticeList(name);
@@ -453,7 +456,7 @@ void MainComponent::createUI()
                     closeModalDialog();
                 }
             });
-            showModalDialog(std::dynamic_pointer_cast<Component>(dialog), "Add");
+            showModalDialog(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
             
         };
         addAndMakeVisible(addToListButton_.get());
@@ -482,8 +485,8 @@ void MainComponent::createUI()
             "Volume",
             "Pitch",
             
-            "Start Time",
-            "End Time",
+            "Start",
+            "End",
             
             "Speed",
 #if defined(ENABLE_SPEEDTRAINER)
@@ -858,13 +861,13 @@ void MainComponent::showModalDialog(std::shared_ptr<Component> component, const 
 void MainComponent::showPreferencesDialog()
 {
     auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
-    showModalDialog(std::dynamic_pointer_cast<Component>(component), "Preferences");
+    showModalDialog(std::dynamic_pointer_cast<Component>(component), TRANS("preferences"));
 }
 
 void MainComponent::showAboutDialog()
 {
     auto component = std::make_shared<MelissaAboutComponent>();
-    showModalDialog(std::dynamic_pointer_cast<Component>(component), "About Melissa");
+    showModalDialog(std::dynamic_pointer_cast<Component>(component), TRANS("about_melissa"));
 }
 
 void MainComponent::closeModalDialog()
@@ -924,7 +927,7 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 {
     if (menuItemID == kMenuID_FileOpen)
     {
-        fileChooser_ = std::make_unique<FileChooser>("Choose a file to add to this set list...", File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
+        fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
         fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser) {
             auto fileUrl = chooser.getURLResult();
             if (fileUrl.isLocalFile())

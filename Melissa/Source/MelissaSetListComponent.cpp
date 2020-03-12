@@ -21,12 +21,12 @@ void MelissaSetListComponent::createUI()
     newSetListButton_->setButtonText("New");
     newSetListButton_->onClick = [&]()
     {
-        auto inputDialog = std::make_shared<MelissaInputDialog>(host_, "Enter a name of a new setlist:", "New setlist", [&](const String& text) {
+        auto inputDialog = std::make_shared<MelissaInputDialog>(host_, TRANS("enter_setlist_name"), "new", [&](const String& text) {
             if (text == "") return;
             host_->createSetlist(text);
             host_->closeModalDialog();
         });
-        host_->showModalDialog(std::dynamic_pointer_cast<Component>(inputDialog), "New setlist");
+        host_->showModalDialog(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_setlist"));
     };
     addAndMakeVisible(newSetListButton_.get());
     
@@ -34,7 +34,7 @@ void MelissaSetListComponent::createUI()
     removeSetListButton_->setButtonText("Remove");
     removeSetListButton_->onClick = [&]()
     {
-        if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, "Remove setlist", "Are you sure?") == 0) return;
+        if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, TRANS("remove_setlist"), TRANS("are_you_sure")) == 0) return;
         
         const int selectedIndex = setListComboBox_->getSelectedId() - 1;
         data_.remove(selectedIndex);
@@ -50,7 +50,7 @@ void MelissaSetListComponent::createUI()
     addToSetListButton_->setButtonText("Add");
     addToSetListButton_->onClick = [&]()
     {
-        fileChooser_ = std::make_unique<FileChooser>("Choose a file to add to this set list...", File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
+        fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_setlist"), File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
         fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser)
         {
             auto fileUrl = chooser.getURLResult();
