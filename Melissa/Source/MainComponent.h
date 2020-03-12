@@ -174,8 +174,6 @@ public:
         list_ = list;
         totalLengthMSec_ = totalLengthMSec;
         
-        printf("setList(%d)\n", list.size());
-        
         updateContent();
     }
     

@@ -1,0 +1,12 @@
+language: Japanese
+countries: ja
+
+"about_melissa" = "Melissaについて"
+"preferences" = "設定"
+"enter_loop_name" = "ループ区間の名前を入力してください"
+"enter_setlist_name" = "setlistの名前を入力してください"
+"new_setlist" = "新規setlist"
+"remove_setlist" = "setlistの削除"
+"are_you_sure" = "よろしいですか?"
+"choose_file_setlist" = "setlistに追加するファイルを選択してください"
+"add_practice_list" = "練習リストに追加"

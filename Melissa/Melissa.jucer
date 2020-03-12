@@ -4,6 +4,10 @@
               cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\AudioLib">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
+      <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
+        <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
+        <FILE id="FtRcUX" name="ja-JP.txt" compile="0" resource="1" file="Resource/Language/ja-JP.txt"/>
+      </GROUP>
       <FILE id="Y3ewMD" name="icon.png" compile="0" resource="1" file="icon.png"/>
       <FILE id="pQdyKb" name="logo.png" compile="0" resource="1" file="Resource/logo.png"/>
     </GROUP>
