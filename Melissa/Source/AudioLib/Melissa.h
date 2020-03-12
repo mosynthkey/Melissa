@@ -33,7 +33,7 @@ public:
     float getBPosMSec() const;
     float getBPosRatio() const;
     int32_t getTotalLengthMSec() const;
-    int32_t getPlayingPosMSec() const;
+    float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
     void setSpeed(int32_t speed);
@@ -86,8 +86,10 @@ private:
     std::deque<float> processedBufferQue_;
     int32_t outputSampleRate_;
     
-    size_t aIndex_, bIndex_, startIndex_;
+    size_t aIndex_, bIndex_, processStartIndex_;
+    int32_t aNextIndex_, bNextIndex_;
     size_t readIndex_; // from originalBuffer_
+    float playingPosMSec_;
     
     int32_t speed_;
     int32_t semitone_;
@@ -96,7 +98,7 @@ private:
     float bufferForSoundTouch_[2 * processLength_];
     bool needToReset_;
     std::mutex mutex_;
-    size_t sampleTime_;
+    size_t renderTime_;
     
     int32_t count_;
     int32_t speedIncPer_;
@@ -119,4 +121,6 @@ private:
         float amp_;
         float osc_;
     } metronome_;
+    
+    void updateInternalTime();
 };
