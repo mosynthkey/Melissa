@@ -16,6 +16,7 @@ component_(component)
     
     titleLabel_ = std::make_unique<Label>();
     titleLabel_->setJustificationType(Justification::centred);
+    titleLabel_->setFont(Font(22));
     titleLabel_->setText(title, dontSendNotification);
     addAndMakeVisible(titleLabel_.get());
     

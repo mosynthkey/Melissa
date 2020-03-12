@@ -103,6 +103,7 @@ public:
         }
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setFont(22);
         g.drawText(text, 0, 0, width, height, Justification::left);
     }
     
@@ -134,8 +135,9 @@ public:
                 kMenuId_Overwrite,
             };
             popupMenu_->clear();
-            popupMenu_->addItem(kMenuId_Erase, "Erase", true);
-            popupMenu_->addItem(kMenuId_Overwrite, "Overwrite", true);
+            popupMenu_->setLookAndFeel(&lookAndFeel_);
+            popupMenu_->addItem(kMenuId_Erase, TRANS("erase"), true);
+            popupMenu_->addItem(kMenuId_Overwrite, TRANS("overwrite"), true);
             auto result = popupMenu_->show();
             if (result == kMenuId_Erase)
             {
@@ -182,6 +184,7 @@ private:
     float totalLengthMSec_;
     MelissaHost* host_;
     std::shared_ptr<PopupMenu> popupMenu_;
+    MelissaLookAndFeel lookAndFeel_;
 };
 
 class MelissaTieComponent : public Component
@@ -211,6 +214,7 @@ public:
         label_->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
         label_->setText(title, dontSendNotification);
         label_->setJustificationType(Justification::centred);
+        label_->setFont(Font(22));
         addAndMakeVisible(label_.get());
         
         labelWidth_ = label_->getFont().getStringWidth(title);

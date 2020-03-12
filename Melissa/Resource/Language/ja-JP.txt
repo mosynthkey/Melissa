@@ -10,3 +10,5 @@ countries: ja
 "are_you_sure" = "よろしいですか?"
 "choose_file_setlist" = "setlistに追加するファイルを選択してください"
 "add_practice_list" = "練習リストに追加"
+"erase" = "削除"
+"overwrite" = "上書き"

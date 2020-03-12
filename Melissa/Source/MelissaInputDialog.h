@@ -20,11 +20,13 @@ public:
         setSize(width, height);
         
         label_ = std::make_unique<Label>();
+        label_->setFont(Font(22));
         label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
         textEditor_ = std::make_unique<TextEditor>();
+        textEditor_->setFont(Font(22));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
         addAndMakeVisible(textEditor_.get());
