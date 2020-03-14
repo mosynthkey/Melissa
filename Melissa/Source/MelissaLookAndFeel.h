@@ -56,13 +56,13 @@ public:
         g.drawRoundedRectangle(xOffset, yOffset + 6, w, h - 12, cornerSize, lineThickness);
         
         {
-            Rectangle<float> rect(xOffset + lineThickness, yOffset + 6 + 1, (sliderPos - 1) - (xOffset + lineThickness) - 4, h - 12 - 2);
-            const float r = rect.getHeight();
-            const float x0 = rect.getX();
-            const float x1 = x0 + r / 2;
-            const float x2 = x0 + rect.getWidth();
-            const float y0 = rect.getY();
-            const float y1 = rect.getY() + rect.getHeight();
+            Rectangle<int> rect(xOffset + lineThickness, yOffset + 6 + 1, (sliderPos - 1) - (xOffset + lineThickness) - 4, h - 12 - 2);
+            const int r = rect.getHeight();
+            const int x0 = rect.getX();
+            const int x1 = x0 + r / 2;
+            const int x2 = x0 + rect.getWidth() + 2;
+            const int y0 = rect.getY() + 1;
+            const int y1 = rect.getY() + 1 + rect.getHeight();
             
             //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
             g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4));
@@ -169,7 +169,7 @@ public:
     
     void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(Colour(0x14B8D4FF));
+        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
         g.fillAll();
     }
     

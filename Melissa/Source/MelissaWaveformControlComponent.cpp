@@ -143,8 +143,7 @@ public:
                     if (1.f < aRatio) aRatio = 1.f;
                     float bRatio = static_cast<float>(loopBStripIndex_) / numOfStrip_;
                     if (1.f < bRatio) bRatio = 1.f;
-                    listener_->setAPosition(parent_, aRatio);
-                    listener_->setBPosition(parent_, bRatio);
+                    listener_->setABPosition(parent_, aRatio, bRatio);
                 }
             }
         }

@@ -15,7 +15,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.04f));
+        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.06f));
         g.fillAll();
     }
     

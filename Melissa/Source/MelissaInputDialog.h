@@ -9,8 +9,8 @@ public:
     MelissaInputDialog(MelissaHost* host, const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) :
     host_(host), onClick_(onClick)
     {
-        constexpr int textEditorWidth = 400;
-        constexpr int buttonWidth = 80;
+        constexpr int textEditorWidth = 440;
+        constexpr int buttonWidth = 100;
         constexpr int controlHeight = 30;
         constexpr int margin = 10;
         
@@ -32,13 +32,21 @@ public:
         addAndMakeVisible(textEditor_.get());
         
         okButton_ = std::make_unique<TextButton>();
-        okButton_->setBounds(width - (margin + buttonWidth), margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
+        okButton_->setBounds(width - (margin + buttonWidth) * 2, margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
         okButton_->setButtonText("OK");
         okButton_->onClick = [&]() {
             const String text = textEditor_->getText().toStdString();
             onClick_(text);
         };
         addAndMakeVisible(okButton_.get());
+        
+        cancelButton_ = std::make_unique<TextButton>();
+        cancelButton_->setBounds(width - (margin + buttonWidth), margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
+        cancelButton_->setButtonText(TRANS("cancel"));
+        cancelButton_->onClick = [&]() {
+            host_->closeModalDialog();
+        };
+        addAndMakeVisible(cancelButton_.get());
     }
     
 private:
@@ -46,5 +54,6 @@ private:
     std::unique_ptr<Label> label_;
     std::unique_ptr<TextEditor> textEditor_;
     std::unique_ptr<TextButton> okButton_;
+    std::unique_ptr<TextButton> cancelButton_;
     std::function<void(const String& string)> onClick_;
 };

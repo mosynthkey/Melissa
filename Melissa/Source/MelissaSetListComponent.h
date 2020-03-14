@@ -13,7 +13,9 @@ public:
     void setData(const Array<var>& data);
     void update();
     void select(int index);
-    void add(const String& name, bool sholdSelect = false);
+    void createSetlist(const String& name, bool shouldSelect = false);
+    enum { kIndex_Current = -1 };
+    void addToSetlist(const String& filePath, int index = kIndex_Current);
     
     // Component
     void resized() override;

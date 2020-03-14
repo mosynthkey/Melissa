@@ -25,6 +25,7 @@ public:
     void setAPosRatio(float ratio);
     void setBPosMSec(float bPosMSec);
     void setBPosRatio(float ratio);
+    void setABPosRatio(float aRatio, float bRatio);
     void setPlayingPosMSec(float playingPosMSec);
     void setPlayingPosRatio(float ratio);
     

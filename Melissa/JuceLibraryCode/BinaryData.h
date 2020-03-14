@@ -12,10 +12,10 @@ namespace BinaryData
     const int            NotoSansCJKjpRegular_otfSize = 16427228;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 462;
+    const int            enUS_txtSize = 593;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 535;
+    const int            jaJP_txtSize = 685;
 
     extern const char*   icon_png;
     const int            icon_pngSize = 352351;

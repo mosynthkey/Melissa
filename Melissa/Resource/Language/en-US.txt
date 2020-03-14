@@ -12,3 +12,5 @@ countries: us
 "add_practice_list" = "Add to the practice list"
 "erase" = "Erase"
 "overwrite" = "Overwrite"
+"detect_multifiles_drop" = "You dropped multiple files. Do you want to create a new setlist with these files?"
+"cancel" = "Cancel"

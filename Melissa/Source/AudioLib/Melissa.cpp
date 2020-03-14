@@ -120,6 +120,17 @@ void Melissa::setPlayingPosRatio(float ratio)
     setPlayingPosMSec((originalBufferLength_ - 1) * ratio / originalSampleRate_ * 1000.f);
 }
 
+void Melissa::setABPosRatio(float aRatio, float bRatio)
+{
+    if (!(0 <= aRatio && aRatio < bRatio && bRatio <= 1.f)) return;
+    
+    aNextIndex_ = static_cast<int32_t>(aRatio * originalBufferLength_);
+    bNextIndex_ = static_cast<int32_t>(bRatio * originalBufferLength_);
+    if (aNextIndex_ <= readIndex_ && readIndex_ < bNextIndex_) return;
+    readIndex_ = aNextIndex_;
+    needToReset_ = true;
+}
+
 float Melissa::getAPosMSec() const
 {
     return static_cast<float>((aNextIndex_ == -1) ? aIndex_ : aNextIndex_) / originalSampleRate_ * 1000.f;

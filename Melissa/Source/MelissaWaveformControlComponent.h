@@ -12,6 +12,7 @@ public:
     virtual void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) {};
     virtual void setAPosition(MelissaWaveformControlComponent* sender, float ratio) {};
     virtual void setBPosition(MelissaWaveformControlComponent* sender, float ratio) {};
+    virtual void setABPosition(MelissaWaveformControlComponent* sender, float aRatio, float bRatio) {};
 };
 
 class MelissaWaveformControlComponent : public Component,
