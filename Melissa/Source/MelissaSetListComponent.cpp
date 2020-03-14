@@ -57,9 +57,22 @@ void MelissaSetListComponent::createUI()
             if (fileUrl.isLocalFile())
             {
                 auto filePath = fileUrl.getLocalFile().getFullPathName();
-                getCurrentSongList()->add(filePath);
-                update();
-                
+                if (getCurrentSongList() == nullptr)
+                {
+                    auto inputDialog = std::make_shared<MelissaInputDialog>(host_, TRANS("enter_setlist_name"), "new", [&, filePath](const String& text) {
+                        if (text == "") return;
+                        host_->createSetlist(text);
+                        getCurrentSongList()->add(filePath);
+                        host_->closeModalDialog();
+                    });
+                    host_->showModalDialog(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_setlist"));
+                }
+                else
+                {
+                    getCurrentSongList()->add(filePath);
+                    update();
+                }
+
                 chooser.getResult().getParentDirectory().setAsCurrentWorkingDirectory();
             }
         });
@@ -107,7 +120,7 @@ void MelissaSetListComponent::select(int index)
     if (list != nullptr) listBox_->setList(*list);
 }
 
-void MelissaSetListComponent::add(const String& name, bool sholdSelect)
+void MelissaSetListComponent::createSetlist(const String& name, bool shouldSelect)
 {
     auto object = new DynamicObject();
     object->setProperty("name", String(name));
@@ -115,7 +128,21 @@ void MelissaSetListComponent::add(const String& name, bool sholdSelect)
     data_.add(object);
     update();
 
-    if (sholdSelect) select(data_.size() - 1);
+    if (shouldSelect) select(data_.size() - 1);
+}
+
+void MelissaSetListComponent::addToSetlist(const String& filePath, int index)
+{
+    if (index == kIndex_Current)
+    {
+        getCurrentSongList()->add(filePath);
+    }
+    else if (0 <= index && index < data_.size())
+    {
+        data_[index].getDynamicObject()->getProperty("songs").getArray()->add(filePath);
+        
+    }
+    update();
 }
 
 

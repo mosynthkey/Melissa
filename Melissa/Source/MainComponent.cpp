@@ -73,6 +73,11 @@ status_(kStatus_Stop), shouldExit_(false)
         if (!settingsFile_.existsAsFile()) createSettingsFile();
         
         setting_ = JSON::parse(settingsFile_.loadFileAsString());
+        if (!isSettingValid())
+        {
+            createSettingsFile();
+            setting_ = JSON::parse(settingsFile_.loadFileAsString());
+        }
         
         auto global = setting_["global"];
         
@@ -93,29 +98,37 @@ status_(kStatus_Stop), shouldExit_(false)
             deviceManager.initialise(0, 2, XmlDocument::parse(global.getProperty("device", "")).get(), true);
         }
         
-        if (!setting_.hasProperty("recent"))
+        if (setting_.hasProperty("recent"))
         {
-            setting_.getDynamicObject()->setProperty("recent", Array<var>());
+            recent_ = setting_["recent"].getArray();
         }
-        
-        recent_ = setting_["recent"].getArray();
+        else
+        {
+            recent_ = new Array<var>();
+        }
         recentTable_->setList(*recent_);
         
-        setList_ = setting_["setlist"].getArray();
-        setListComponent_->setData(*setList_);
-        
-        auto current = setting_["current"];
-        File file(current["file"].toString());
-        if (file.existsAsFile())
+        if (setting_.hasProperty("setlist"))
         {
-            openFile(file);
-            
-            melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
-            melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
-            melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
-            melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
-            melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
-            updateAll();
+            setList_ = setting_["setlist"].getArray();
+            setListComponent_->setData(*setList_);
+        }
+        
+        if (setting_.hasProperty("current"))
+        {
+            auto current = setting_["current"];
+            File file(current["file"].toString());
+            if (file.existsAsFile())
+            {
+                openFile(file);
+                
+                melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
+                melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
+                melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
+                melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
+                melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
+                updateAll();
+            }
         }
     }
     
@@ -503,7 +516,7 @@ void MainComponent::createUI()
             auto l = make_unique<Label>();
             l->setLookAndFeel(nullptr);
             l->setText(labelTitles[label_i], dontSendNotification);
-            l->setFont(Font(22));
+            l->setFont(Font(20));
             l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
             l->setJustificationType(Justification::centredTop);
             addAndMakeVisible(l.get());
@@ -761,10 +774,10 @@ void MainComponent::resized()
     {
         if (label_i == kLabel_ATime || label_i == kLabel_BTime) continue;
         auto b = components[label_i]->getBoundsInParent();
-        labels_[label_i]->setBounds(b.getX(), b.getY() - 30, b.getWidth(), 30);
+        labels_[label_i]->setBounds(b.getX(), b.getY() - 24, b.getWidth(), 24);
     }
-    labels_[kLabel_ATime]->setBounds(aSetButton_->getX(), aSetButton_->getY() - 30, aButton_->getRight() - aSetButton_->getX(), 30);
-    labels_[kLabel_BTime]->setBounds(bSetButton_->getX(), bSetButton_->getY() - 30, bButton_->getRight() - bSetButton_->getX(), 30);
+    labels_[kLabel_ATime]->setBounds(aSetButton_->getX(), aSetButton_->getY() - 24, aButton_->getRight() - aSetButton_->getX(), 24);
+    labels_[kLabel_BTime]->setBounds(bSetButton_->getX(), bSetButton_->getY() - 24, bButton_->getRight() - bSetButton_->getX(), 24);
     
     for (auto&& tie : tie_) tie->updatePosition();
     
@@ -778,9 +791,18 @@ bool MainComponent::isInterestedInFileDrag(const StringArray& files)
 
 void MainComponent::filesDropped(const StringArray& files, int x, int y)
 {
-    for (auto&& file : files)
+    if (files.size() == 1)
     {
-        if (loadFile(file)) break;
+        loadFile(files[0]);
+    }
+    else
+    {
+        showModalDialog(std::make_shared<MelissaInputDialog>(this, TRANS("detect_multifiles_drop"),  "new setlist", [&, files](const String& setlistName) {
+            createSetlist(setlistName);
+            for (auto&& file : files) setListComponent_->addToSetlist(file);
+            loadFile(files[0]);
+            closeModalDialog();
+        }), TRANS("new_setlist"));
     }
 }
 
@@ -813,8 +835,6 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
         return true;
     }
     
-    std::cout << keyCode << std::endl;
-    
     return false;
 }
 
@@ -844,7 +864,7 @@ void MainComponent::updatePracticeList(const Array<var>& list)
 
 void MainComponent::createSetlist(const String& name)
 {
-    setListComponent_->add(name, true);
+    setListComponent_->createSetlist(name, true);
 }
 
 bool MainComponent::loadFile(const String& filePath)
@@ -906,6 +926,15 @@ void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float 
     if (melissa_ == nullptr) return;
     
     melissa_->setBPosRatio(ratio);
+    updateBButtonLabel();
+}
+
+void MainComponent::setABPosition(MelissaWaveformControlComponent* sender, float aRatio, float bRatio)
+{
+    if (melissa_ == nullptr) return;
+    
+    melissa_->setABPosRatio(aRatio, bRatio);
+    updateAButtonLabel();
     updateBButtonLabel();
 }
 
@@ -1119,8 +1148,10 @@ void MainComponent::saveMemo()
     auto song = new DynamicObject();
     song->setProperty("file", fileFullPath_);
     song->setProperty("volume", melissa_->getVolume());
+#if defined(ENABLE_METRONOME)
     song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
     song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+#endif
     song->setProperty("pitch", melissa_->getPitch());
     song->setProperty("list", Array<var>());
     song->setProperty("memo", memoTextEditor_->getText());
@@ -1146,6 +1177,7 @@ void MainComponent::updateAll()
     updatePitchButtonLabel();
     updateBpm();
     updateMetronomeOffset();
+    updateVolume();
 }
 
 void MainComponent::updateAButtonLabel()
@@ -1196,6 +1228,11 @@ void MainComponent::updateMetronomeOffset()
 #if defined(ENABLE_SPEEDTRAINER)
     metronomeOffsetButton_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getMetronomeOffsetSec() * 1000.f));
 #endif
+}
+
+void MainComponent::updateVolume()
+{
+    volumeSlider_->setValue(melissa_->getVolume());
 }
 
 void MainComponent::createSettingsFile()
@@ -1304,4 +1341,9 @@ void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector
             x += (marginWide - marginNarrow);
         }
     }
+}
+
+bool MainComponent::isSettingValid() const
+{
+    return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("recent") &&setting_.hasProperty("setlist") &&setting_.hasProperty("songs"));
 }

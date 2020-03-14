@@ -70,7 +70,8 @@ public:
     
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override
     {
-        g.fillAll(Colour::fromFloatRGBA(1.f, 1.f, 1.f, rowIsSelected ? 0.1f : 0.f));
+        const auto colour = Colour(MelissaColourScheme::MainColour()).withAlpha(rowIsSelected ? 0.06f : 0.f);
+        g.fillAll(colour);
     }
     
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override
@@ -317,6 +318,7 @@ public:
     void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
     void setAPosition(MelissaWaveformControlComponent* sender, float ratio) override;
     void setBPosition(MelissaWaveformControlComponent* sender, float ratio) override;
+    void setABPosition(MelissaWaveformControlComponent* sender, float aRatio, float bRatio) override;
     
     // MenuBarModel
     StringArray getMenuBarNames() override;
@@ -361,6 +363,7 @@ public:
     void updatePitchButtonLabel();
     void updateBpm();
     void updateMetronomeOffset();
+    void updateVolume();
     
     void createSettingsFile();
     void saveSettings();
@@ -487,6 +490,8 @@ private:
     bool shouldExit_;
     
     MelissaMIDIControlManager midiControlManager_;
-
+    
+    bool isSettingValid() const;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

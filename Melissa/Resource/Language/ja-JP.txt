@@ -12,3 +12,5 @@ countries: ja
 "add_practice_list" = "練習リストに追加"
 "erase" = "削除"
 "overwrite" = "上書き"
+"detect_multifiles_drop" = "複数のファイルがドロップされました。セットリストを作りますか?"
+"cancel" = "キャンセル"
