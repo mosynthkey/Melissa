@@ -1,0 +1,124 @@
+#include "MelissaModel.h"
+
+MelissaModel MelissaModel::instance_;
+
+void MelissaModel::setLengthMSec(float lengthMSec)
+{
+    if (lengthMSec < 0.f) return;
+    
+    lengthMSec_ = lengthMSec;
+}
+
+void MelissaModel::setVolume(float volume)
+{
+    if (volume < 0.f || 2.f < volume) return;
+    
+    volume_ = volume;
+    for (auto&& l : listeners_) l->volumeChanged(volume);
+}
+
+void MelissaModel::setPitch(int semitone)
+{
+    if (semitone < -24 || 24 < semitone) return;
+    
+    semitone_ = semitone;
+    for (auto&& l : listeners_) l->pitchChanged(semitone);
+}
+
+void MelissaModel::setSpeed(float speed)
+{
+    if (speed < 0.2f || 2.f < speed) return;
+    
+    speed_ = speed;
+    for (auto&& l : listeners_) l->speedChanged(speed);
+}
+
+void MelissaModel::setLoopPosRatio(float aPosRatio, float bPosRatio)
+{
+    if (aPosRatio < 0.f || 1.f < aPosRatio || bPosRatio < 0.f || 1.f < bPosRatio || lengthMSec_ < 0.f) return;
+    
+    aPosRatio_ = aPosRatio;
+    bPosRatio_ = bPosRatio;
+    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+}
+
+void MelissaModel::setLoopAPosRatio(float aPosRatio)
+{
+    if (aPosRatio < 0.f || 1.f < aPosRatio || lengthMSec_ < 0.f) return;
+    
+    aPosRatio_ = aPosRatio;
+    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+}
+
+void MelissaModel::setLoopAPosMSec(float aPosMSec)
+{
+    if (aPosMSec < 0 || lengthMSec_ < aPosMSec || lengthMSec_ < 0.f) return;
+    
+    aPosRatio_ = aPosMSec / lengthMSec_;
+    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+}
+
+void MelissaModel::setLoopBPosRatio(float bPosRatio)
+{
+    if (bPosRatio < 0.f || 1.f < bPosRatio || lengthMSec_ < 0.f) return;
+    
+    bPosRatio_ = bPosRatio;
+    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+}
+
+void MelissaModel::setLoopBPosMSec(float bPosMSec)
+{
+    if (bPosMSec < 0 || lengthMSec_ < bPosMSec || lengthMSec_ < 0.f) return;
+    
+    bPosRatio_ = bPosMSec / lengthMSec_;
+    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+}
+
+void MelissaModel::setPlayingPosRatio(float playingPosRatio)
+{
+    if (playingPosRatio < 0.f || 1.f < playingPosRatio || lengthMSec_ < 0.f) return;
+    
+    playingPosRatio_ = playingPosRatio;
+    for (auto&& l : listeners_) l->playingPosChanged(lengthMSec_ * playingPosRatio, playingPosRatio);
+}
+
+void MelissaModel::setPlayingPosMSec(float playingPosMSec)
+{
+    if (playingPosMSec < 0 || lengthMSec_ < playingPosMSec || lengthMSec_ < 0.f) return;
+    
+    playingPosRatio_ = playingPosMSec / lengthMSec_;
+    for (auto&& l : listeners_) l->playingPosChanged(playingPosMSec, playingPosMSec / lengthMSec_);
+}
+
+void MelissaModel::addListener(MelissaModelListener* listener)
+{
+    for (auto&& l : listeners_)
+    {
+        if (l == listener) return;
+    }
+    
+    listeners_.emplace_back(listener);
+}
+
+void MelissaModel::removeListener(MelissaModelListener* listener)
+{
+    for (size_t listener_i = 0; listener_i < listeners_.size(); ++listener_i)
+    {
+        if (listeners_[listener_i] == listener)
+        {
+            listeners_.erase(listeners_.begin(), listeners_.begin() + 1);
+            return;
+        }
+    }
+}
+
+MelissaModel* MelissaModel::getInstance()
+{
+    return &instance_;
+}
+
+MelissaModel::MelissaModel() :
+lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(1.f), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f)
+{
+    
+}

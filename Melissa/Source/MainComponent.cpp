@@ -29,7 +29,11 @@ enum
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop), shouldExit_(false)
 {
-    melissa_ = make_unique<Melissa>();
+    model_ = MelissaModel::getInstance();
+    
+    melissa_ = std::make_unique<Melissa>();
+    model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
+    model_->addListener(this);
     
     getLookAndFeel().setDefaultSansSerifTypeface(Typeface::createSystemTypefaceFor(BinaryData::NotoSansCJKjpRegular_otf, BinaryData::NotoSansCJKjpRegular_otfSize));
     
@@ -122,11 +126,11 @@ status_(kStatus_Stop), shouldExit_(false)
             {
                 openFile(file);
                 
-                melissa_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
-                melissa_->setAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
-                melissa_->setBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
-                melissa_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
-                melissa_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
+                model_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
+                model_->setLoopAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
+                model_->setLoopBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
+                model_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
+                model_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
                 updateAll();
             }
         }
@@ -228,7 +232,7 @@ void MainComponent::createUI()
     metronomeOnOffButton_->setClickingTogglesState(true);
     metronomeOnOffButton_->onClick = [this]()
     {
-        melissa_->setMetoronome(metronomeOnOffButton_->getToggleState());
+        model_->setMetoronome(metronomeOnOffButton_->getToggleState());
     };
     metronomeOnOffButton_->setButtonText("On");
     addAndMakeVisible(metronomeOnOffButton_.get());
@@ -237,7 +241,7 @@ void MainComponent::createUI()
     bpmButton_->onClick_ = [this](bool inc, bool b)
     {
         const int sign = inc ? 1 : -1;
-        melissa_->setBpm(melissa_->getBpm() + sign * (b ? 10 : 1));
+        model_->setBpm(model_->getBpm() + sign * (b ? 10 : 1));
         updateBpm();
     };
     addAndMakeVisible(bpmButton_.get());
@@ -246,7 +250,7 @@ void MainComponent::createUI()
     metronomeOffsetButton_->onClick_= [this](bool inc, bool b)
     {
         const int sign = inc ? 1 : -1;
-        melissa_->setMetronomeOffsetSec(melissa_->getMetronomeOffsetSec() + sign);
+        model_->setMetronomeOffsetSec(model_->getMetronomeOffsetSec() + sign);
         updateMetronomeOffset();
     };
     addAndMakeVisible(metronomeOffsetButton_.get());
@@ -255,7 +259,7 @@ void MainComponent::createUI()
     analyzeButton_->setButtonText("Analyze");
     analyzeButton_->onClick = [this]()
     {
-        melissa_->analyzeBpm();
+        model_->analyzeBpm();
         updateBpm();
         updateMetronomeOffset();
     };
@@ -268,7 +272,7 @@ void MainComponent::createUI()
         volumeSlider_->setValue(0.f);
         volumeSlider_->onValueChange = [this]()
         {
-            melissa_->setVolume(volumeSlider_->getValue());
+            model_->setVolume(volumeSlider_->getValue());
         };
         addAndMakeVisible(volumeSlider_.get());
     }
@@ -279,7 +283,7 @@ void MainComponent::createUI()
         aButton_->onClick_= [this](bool inc, bool b)
         {
             const int sign = inc ? 1 : -1;
-            melissa_->setAPosMSec(melissa_->getAPosMSec() + sign * (b ? 100 : 1000));
+            model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
             updateAButtonLabel();
         };
         addAndMakeVisible(aButton_.get());
@@ -290,7 +294,7 @@ void MainComponent::createUI()
         aSetButton_->setButtonText("A");
         aSetButton_->onClick = [this]()
         {
-            melissa_->setAPosMSec(melissa_->getPlayingPosMSec());
+            model_->setLoopAPosMSec(model_->getPlayingPosMSec());
             updateAButtonLabel();
         };
         addAndMakeVisible(aSetButton_.get());
@@ -303,7 +307,7 @@ void MainComponent::createUI()
         bButton_->onClick_= [this](bool inc, bool b)
         {
             const int sign = inc ? 1 : -1;
-            melissa_->setBPosMSec(melissa_->getBPosMSec() + sign * (b ? 100 : 1000));
+            model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
             updateBButtonLabel();
         };
         addAndMakeVisible(bButton_.get());
@@ -314,7 +318,7 @@ void MainComponent::createUI()
         bSetButton_->setButtonText("B");
         bSetButton_->onClick = [this]()
         {
-            melissa_->setBPosMSec(melissa_->getPlayingPosMSec());
+            model_->setLoopBPosMSec(model_->getPlayingPosMSec());
             updateBButtonLabel();
         };
         addAndMakeVisible(bSetButton_.get());
@@ -339,7 +343,7 @@ void MainComponent::createUI()
         speedButton_->onClick_= [this](bool inc, bool b)
         {
             const int sign = inc ? 1 : -1;
-            melissa_->setSpeed(melissa_->getSpeed() + sign * (b ? 1 : 10));
+            model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
             updateSpeedButtonLabel();
         };
         speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
@@ -351,7 +355,7 @@ void MainComponent::createUI()
     speedIncPerButton_->onClick_= [this](bool inc, bool b)
     {
         const int sign = inc ? 1 : -1;
-        melissa_->setSpeedIncPer(melissa_->getSpeedIncPer() + sign);
+        model_->setSpeedIncPer(model_->getSpeedIncPer() + sign);
         updateSpeedButtonLabel();
     };
     addAndMakeVisible(speedIncPerButton_.get());
@@ -360,7 +364,7 @@ void MainComponent::createUI()
     speedIncValueButton_->onClick_= [this](bool inc, bool b)
     {
         const int sign = inc ? 1 : -1;
-        melissa_->setSpeedIncValue(melissa_->getSpeedIncValue() + sign);
+        model_->setSpeedIncValue(model_->getSpeedIncValue() + sign);
         updateSpeedButtonLabel();
     };
     addAndMakeVisible(speedIncValueButton_.get());
@@ -369,7 +373,7 @@ void MainComponent::createUI()
     speedIncMaxButton_->onClick_= [this](bool inc, bool b)
     {
         const int sign = inc ? 1 : -1;
-        melissa_->setSpeedIncMax(melissa_->getSpeedIncMax() + sign);
+        model_->setSpeedIncMax(model_->getSpeedIncMax() + sign);
         updateSpeedButtonLabel();
     };
     addAndMakeVisible(speedIncMaxButton_.get());
@@ -380,7 +384,7 @@ void MainComponent::createUI()
         pitchButton_->onClick_= [this](bool inc, bool b)
         {
             const int sign = inc ? 1 : -1;
-            melissa_->setPitch(melissa_->getPitch() + sign);
+            model_->setPitch(model_->getPitch() + sign);
             updatePitchButtonLabel();
         };
         pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
@@ -464,12 +468,12 @@ void MainComponent::createUI()
         {
             auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), "", [&](const String& text) {
                 String name(text);
-                if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(melissa_->getAPosMSec());
+                if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(model_->getLoopAPosMSec());
                 addToPracticeList(name);
                 if (auto songs = setting_["songs"].getArray())
                 {
                     auto song = getSongSetting(fileFullPath_);
-                    practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
+                    practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
                     closeModalDialog();
                 }
             });
@@ -558,7 +562,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
 {
     bufferToFill.clearActiveBufferRegion();
     
-    if (melissa_ == nullptr || status_ != kStatus_Playing) return;
+    if (model_ == nullptr || status_ != kStatus_Playing) return;
     float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
     melissa_->render(buffer, bufferToFill.numSamples);
 }
@@ -824,14 +828,14 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
     }
     else if (keyCode == 63234)
     {
-        auto currentMSec = melissa_->getPlayingPosMSec();
-        melissa_->setPlayingPosMSec(currentMSec - 1000);
+        auto currentMSec = model_->getPlayingPosMSec();
+        model_->setPlayingPosMSec(currentMSec - 1000);
         return true;
     }
     else if (keyCode == 63235)
     {
-        auto currentMSec = melissa_->getPlayingPosMSec();
-        melissa_->setPlayingPosMSec(currentMSec + 1000);
+        auto currentMSec = model_->getPlayingPosMSec();
+        model_->setPlayingPosMSec(currentMSec + 1000);
         return true;
     }
     
@@ -840,17 +844,17 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
 
 void MainComponent::setMelissaParameters(float aRatio, float bRatio, float speed)
 {
-    melissa_->setAPosRatio(aRatio);
-    melissa_->setBPosRatio(bRatio);
-    melissa_->setSpeed(speed);
+    model_->setLoopAPosRatio(aRatio);
+    model_->setLoopBPosRatio(bRatio);
+    model_->setSpeed(speed);
     updateAll();
 }
 
 void MainComponent::getMelissaParameters(float* aRatio, float* bRatio, float* speed)
 {
-    *aRatio = melissa_->getAPosRatio();
-    *bRatio = melissa_->getBPosRatio();
-    *speed  = melissa_->getSpeed();
+    *aRatio = model_->getLoopAPosRatio();
+    *bRatio = model_->getLoopBPosRatio();
+    *speed  = model_->getSpeed();
 }
 
 void MainComponent::updatePracticeList(const Array<var>& list)
@@ -908,32 +912,33 @@ void MainComponent::fileDoubleClicked(const File& file)
 
 void MainComponent::setPlayPosition(MelissaWaveformControlComponent* sender, float ratio)
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     
-    melissa_->setPlayingPosRatio(ratio);
+    model_->setPlayingPosRatio(ratio);
 }
 
 void MainComponent::setAPosition(MelissaWaveformControlComponent* sender, float ratio)
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     
-    melissa_->setAPosRatio(ratio);
+    model_->setLoopAPosRatio(ratio);
     updateAButtonLabel();
 }
 
 void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float ratio)
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     
-    melissa_->setBPosRatio(ratio);
+    model_->setLoopBPosRatio(ratio);
     updateBButtonLabel();
 }
 
 void MainComponent::setABPosition(MelissaWaveformControlComponent* sender, float aRatio, float bRatio)
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     
-    melissa_->setABPosRatio(aRatio, bRatio);
+    model_->setLoopBPosRatio(bRatio);
+    model_->setLoopAPosRatio(aRatio);
     updateAButtonLabel();
     updateBButtonLabel();
 }
@@ -980,7 +985,7 @@ void MainComponent::run()
 {
     while (!shouldExit_)
     {
-        if (melissa_ != nullptr && melissa_->isBufferSet() && melissa_->needToProcess())
+        if (model_ != nullptr && melissa_->isBufferSet() && melissa_->needToProcess())
         {
             melissa_->process();
         }
@@ -998,10 +1003,10 @@ void MainComponent::exitSignalSent()
 
 void MainComponent::timerCallback()
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     
-    timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getPlayingPosMSec()), dontSendNotification);
-    waveformComponent_->setPlayPosition(melissa_->getPlayingPosRatio());
+    timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
+    waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
 }
 
 void MainComponent::updateFileChooserTab(FileChooserTab tab)
@@ -1033,6 +1038,7 @@ bool MainComponent::openFile(const File& file)
     
     melissa_->reset();
     const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
+    model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
     melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
     waveformComponent_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
     audioSampleBuf_ = nullptr;
@@ -1045,7 +1051,7 @@ bool MainComponent::openFile(const File& file)
     if (auto songs = setting_["songs"].getArray())
     {
         auto song = getSongSetting(fileFullPath_);
-        practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), melissa_->getTotalLengthMSec());
+        practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
         memoTextEditor_->setText(song.getProperty("memo", "").toString());
     }
     
@@ -1061,35 +1067,35 @@ bool MainComponent::openFile(const File& file)
 
 void MainComponent::play()
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     status_ = kStatus_Playing;
     playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Pause);
 }
 
 void MainComponent::pause()
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     status_ = kStatus_Pause;
     playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Play);
 }
 
 void MainComponent::stop()
 {
-    if (melissa_ == nullptr) return;
+    if (model_ == nullptr) return;
     status_ = kStatus_Stop;
-    melissa_->setPlayingPosMSec(0);
+    model_->setPlayingPosMSec(0);
     playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Play);
 }
 
 void MainComponent::toHead()
 {
-    if (melissa_ == nullptr) return;
-    melissa_->setPlayingPosRatio(melissa_->getAPosRatio());
+    if (model_ == nullptr) return;
+    model_->setPlayingPosRatio(model_->getLoopAPosRatio());
 }
 
 void MainComponent::resetLoop()
 {
-    melissa_->setABPosRatio(0.f, 1.f);
+    model_->setLoopPosRatio(0.f, 1.f);
     waveformComponent_->setAPosition(0.f);
     waveformComponent_->setBPosition(1.f);
     
@@ -1103,9 +1109,9 @@ void MainComponent::addToPracticeList(String name)
     {
         auto prac = new DynamicObject();
         prac->setProperty("name", name);
-        prac->setProperty("a", melissa_->getAPosRatio());
-        prac->setProperty("b", melissa_->getBPosRatio());
-        prac->setProperty("speed", melissa_->getSpeed());
+        prac->setProperty("a", model_->getLoopAPosRatio());
+        prac->setProperty("b", model_->getLoopBPosRatio());
+        prac->setProperty("speed", model_->getSpeed());
         list->addIfNotAlreadyThere(prac);
     };
     
@@ -1122,10 +1128,12 @@ void MainComponent::addToPracticeList(String name)
     
     auto song = new DynamicObject();
     song->setProperty("file", fileFullPath_);
-    song->setProperty("volume", melissa_->getVolume());
-    song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
-    song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
-    song->setProperty("pitch", melissa_->getPitch());
+    song->setProperty("volume", model_->getVolume());
+#if defined(ENABLE_METRONOME)
+    song->setProperty("bpm", static_cast<float>(model_->getBpm()));
+    song->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
+#endif
+    song->setProperty("pitch", model_->getPitch());
     song->setProperty("list", Array<var>());
     song->setProperty("memo", memoTextEditor_->getText());
     addToList(song->getProperty("list").getArray());
@@ -1146,12 +1154,12 @@ void MainComponent::saveMemo()
     
     auto song = new DynamicObject();
     song->setProperty("file", fileFullPath_);
-    song->setProperty("volume", melissa_->getVolume());
+    song->setProperty("volume", model_->getVolume());
 #if defined(ENABLE_METRONOME)
-    song->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
-    song->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+    song->setProperty("bpm", static_cast<float>(model_->getBpm()));
+    song->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
 #endif
-    song->setProperty("pitch", melissa_->getPitch());
+    song->setProperty("pitch", model_->getPitch());
     song->setProperty("list", Array<var>());
     song->setProperty("memo", memoTextEditor_->getText());
     songs->addIfNotAlreadyThere(song);
@@ -1181,57 +1189,57 @@ void MainComponent::updateAll()
 
 void MainComponent::updateAButtonLabel()
 {
-    const auto aPosMSec = melissa_->getAPosMSec();
-    aButton_->setText(MelissaUtility::getFormattedTimeMSec(aPosMSec));
-    waveformComponent_->setAPosition(melissa_->getAPosRatio());
+    const auto LoopAPosMSec = model_->getLoopAPosMSec();
+    aButton_->setText(MelissaUtility::getFormattedTimeMSec(LoopAPosMSec));
+    waveformComponent_->setAPosition(model_->getLoopAPosRatio());
 }
 
 void MainComponent::updateBButtonLabel()
 {
-    const auto bPosMSec = melissa_->getBPosMSec();
-    bButton_->setText(MelissaUtility::getFormattedTimeMSec(bPosMSec));
-    waveformComponent_->setBPosition(melissa_->getBPosRatio());
+    const auto LoopBPosMSec = model_->getLoopBPosMSec();
+    bButton_->setText(MelissaUtility::getFormattedTimeMSec(LoopBPosMSec));
+    waveformComponent_->setBPosition(model_->getLoopBPosRatio());
 }
 
 void MainComponent::updateSpeedButtonLabel()
 {
-    const int32_t speed = melissa_->getSpeed();
+    const int32_t speed = model_->getSpeed();
     speedButton_->setText(String(speed) + "%");
     
 #if defined(ENABLE_SPEEDTRAINER)
-    const int32_t incPer = melissa_->getSpeedIncPer();
+    const int32_t incPer = model_->getSpeedIncPer();
     speedIncPerButton_->setText(String(incPer));
     
-    const int32_t incValue = melissa_->getSpeedIncValue();
+    const int32_t incValue = model_->getSpeedIncValue();
     speedIncValueButton_->setText(String(incValue) + " %");
     
-    const int32_t incMax = melissa_->getSpeedIncMax();
+    const int32_t incMax = model_->getSpeedIncMax();
     speedIncMaxButton_->setText(String(incMax) + " %");
 #endif
 }
 
 void MainComponent::updatePitchButtonLabel()
 {
-    pitchButton_->setText(MelissaUtility::getFormattedPitch(melissa_->getPitch()));
+    pitchButton_->setText(MelissaUtility::getFormattedPitch(model_->getPitch()));
 }
 
 void MainComponent::updateBpm()
 {
 #if defined(ENABLE_SPEEDTRAINER)
-    bpmButton_->setText(String(static_cast<uint32_t>(melissa_->getBpm())));
+    bpmButton_->setText(String(static_cast<uint32_t>(model_->getBpm())));
 #endif
 }
 
 void MainComponent::updateMetronomeOffset()
 {
 #if defined(ENABLE_SPEEDTRAINER)
-    metronomeOffsetButton_->setText(MelissaUtility::getFormattedTimeMSec(melissa_->getMetronomeOffsetSec() * 1000.f));
+    metronomeOffsetButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getMetronomeOffsetSec() * 1000.f));
 #endif
 }
 
 void MainComponent::updateVolume()
 {
-    volumeSlider_->setValue(melissa_->getVolume());
+    volumeSlider_->setValue(model_->getVolume());
 }
 
 void MainComponent::createSettingsFile()
@@ -1244,15 +1252,15 @@ void MainComponent::createSettingsFile()
     
     auto current = new DynamicObject();
     current->setProperty("file", fileFullPath_);
-    current->setProperty("volume", melissa_->getVolume());
+    current->setProperty("volume", model_->getVolume());
 #if defined(ENABLE_METRONOME)
-    current->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
-    current->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+    current->setProperty("bpm", static_cast<float>(model_->getBpm()));
+    current->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
 #endif
-    current->setProperty("a", melissa_->getAPosRatio());
-    current->setProperty("b", melissa_->getBPosRatio());
-    current->setProperty("speed", melissa_->getSpeed());
-    current->setProperty("pitch", melissa_->getPitch());
+    current->setProperty("a", model_->getLoopAPosRatio());
+    current->setProperty("b", model_->getLoopBPosRatio());
+    current->setProperty("speed", model_->getSpeed());
+    current->setProperty("pitch", model_->getPitch());
     all->setProperty("current", var(current));
     all->setProperty("recent", Array<var>());
     all->setProperty("setlist", Array<var>());
@@ -1276,15 +1284,15 @@ void MainComponent::saveSettings()
     
     auto current = setting_["current"].getDynamicObject();
     current->setProperty("file", fileFullPath_);
-    current->setProperty("volume", melissa_->getVolume());
+    current->setProperty("volume", model_->getVolume());
 #if defined(ENABLE_METRONOME)
-    current->setProperty("bpm", static_cast<float>(melissa_->getBpm()));
-    current->setProperty("metronome_offset", melissa_->getMetronomeOffsetSec());
+    current->setProperty("bpm", static_cast<float>(model_->getBpm()));
+    current->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
 #endif
-    current->setProperty("a", melissa_->getAPosRatio());
-    current->setProperty("b", melissa_->getBPosRatio());
-    current->setProperty("speed", melissa_->getSpeed());
-    current->setProperty("pitch", melissa_->getPitch());
+    current->setProperty("a", model_->getLoopAPosRatio());
+    current->setProperty("b", model_->getLoopBPosRatio());
+    current->setProperty("speed", model_->getSpeed());
+    current->setProperty("pitch", model_->getPitch());
     
     setting_.getDynamicObject()->setProperty("setlist", setListComponent_->getData());
     
@@ -1346,3 +1354,29 @@ bool MainComponent::isSettingValid() const
 {
     return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("recent") &&setting_.hasProperty("setlist") &&setting_.hasProperty("songs"));
 }
+
+void MainComponent::volumeChanged(float volume)
+{
+    
+}
+
+void MainComponent::pitchChanged(int semitone)
+{
+    
+}
+
+void MainComponent::speedChanged(int speed)
+{
+    
+}
+
+void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
+{
+    
+}
+
+void MainComponent::playingPosChanged(float time, float ratio)
+{
+    
+}
+

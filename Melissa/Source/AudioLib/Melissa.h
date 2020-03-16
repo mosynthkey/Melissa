@@ -1,5 +1,5 @@
 //
-//  Melissa.hpp
+//  Melissa.h
 //  Melissa_JUCE - App
 //
 //  Created by Masaki on 2019/07/29.
@@ -7,12 +7,13 @@
 
 #pragma once
 
-#include "SoundTouch.h"
 #include <deque>
 #include <mutex>
 #include <vector>
+#include "MelissaModel.h"
+#include "SoundTouch.h"
 
-class Melissa
+class Melissa : public MelissaModelListener
 {
 public:
     Melissa();
@@ -89,7 +90,6 @@ private:
     int32_t outputSampleRate_;
     
     size_t aIndex_, bIndex_, processStartIndex_;
-    int32_t aNextIndex_, bNextIndex_;
     size_t readIndex_; // from originalBuffer_
     float playingPosMSec_;
     
@@ -123,5 +123,10 @@ private:
         float osc_;
     } metronome_;
     
-    void updateInternalTime();
+    // MelissaModelListener
+    void volumeChanged(float volume) override;
+    void pitchChanged(int semitone) override;
+    void speedChanged(int speed) override;
+    void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
+    void playingPosChanged(float time, float ratio) override;
 };
