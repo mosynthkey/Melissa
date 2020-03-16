@@ -32,6 +32,7 @@ status_(kStatus_Stop), shouldExit_(false)
     model_ = MelissaModel::getInstance();
     
     melissa_ = std::make_unique<Melissa>();
+    model_->setMelissa(melissa_.get());
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
     
@@ -199,7 +200,6 @@ void MainComponent::createUI()
     addAndMakeVisible(menuButton_.get());
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
-    waveformComponent_->setListener(this);
     addAndMakeVisible(waveformComponent_.get());
     
     controlComponent_ = make_unique<MelissaControlComponent>();
@@ -842,21 +842,6 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
     return false;
 }
 
-void MainComponent::setMelissaParameters(float aRatio, float bRatio, float speed)
-{
-    model_->setLoopAPosRatio(aRatio);
-    model_->setLoopBPosRatio(bRatio);
-    model_->setSpeed(speed);
-    updateAll();
-}
-
-void MainComponent::getMelissaParameters(float* aRatio, float* bRatio, float* speed)
-{
-    *aRatio = model_->getLoopAPosRatio();
-    *bRatio = model_->getLoopBPosRatio();
-    *speed  = model_->getSpeed();
-}
-
 void MainComponent::updatePracticeList(const Array<var>& list)
 {
     if (auto songs = setting_["songs"].getArray())
@@ -908,39 +893,6 @@ void MainComponent::closeModalDialog()
 void MainComponent::fileDoubleClicked(const File& file)
 {
     openFile(file);
-}
-
-void MainComponent::setPlayPosition(MelissaWaveformControlComponent* sender, float ratio)
-{
-    if (model_ == nullptr) return;
-    
-    model_->setPlayingPosRatio(ratio);
-}
-
-void MainComponent::setAPosition(MelissaWaveformControlComponent* sender, float ratio)
-{
-    if (model_ == nullptr) return;
-    
-    model_->setLoopAPosRatio(ratio);
-    updateAButtonLabel();
-}
-
-void MainComponent::setBPosition(MelissaWaveformControlComponent* sender, float ratio)
-{
-    if (model_ == nullptr) return;
-    
-    model_->setLoopBPosRatio(ratio);
-    updateBButtonLabel();
-}
-
-void MainComponent::setABPosition(MelissaWaveformControlComponent* sender, float aRatio, float bRatio)
-{
-    if (model_ == nullptr) return;
-    
-    model_->setLoopBPosRatio(bRatio);
-    model_->setLoopAPosRatio(aRatio);
-    updateAButtonLabel();
-    updateBButtonLabel();
 }
 
 StringArray MainComponent::getMenuBarNames()
@@ -1372,7 +1324,8 @@ void MainComponent::speedChanged(int speed)
 
 void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
-    
+    updateAButtonLabel();
+    updateBButtonLabel();
 }
 
 void MainComponent::playingPosChanged(float time, float ratio)

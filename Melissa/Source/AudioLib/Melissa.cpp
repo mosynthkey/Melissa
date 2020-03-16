@@ -12,12 +12,13 @@
 #include <limits.h>
 #include <sstream>
 #include "Melissa.h"
+#include "MelissaModel.h"
 #include "MelissaUtility.h"
 
 using std::make_unique;
 
 Melissa::Melissa() :
-soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
+model_(MelissaModel::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), semitone_(0), volume_(1.f), needToReset_(false), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
 {
     for (int iCh = 0; iCh < 2; ++iCh)
@@ -43,11 +44,11 @@ void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t samp
     
     originalBufferLength_ = bufferLength;
     
-    aIndex_ = 0;
-    bIndex_ =  bufferLength - 1;
     processStartIndex_ = 0;
-    setPitch(0);
-    setSpeed(100);
+    
+    model_->setLoopPosRatio(0.f, 1.f);
+    model_->setPitch(0);
+    model_->setSpeed(100);
    
     isOriginalBufferPrepared_ = true;
     needToReset_ = true;
@@ -61,104 +62,9 @@ void Melissa::setOutputSampleRate(int32_t sampleRate)
     needToReset_ = true;
 }
 
-void Melissa::setAPosMSec(float aPosMSec)
-{
-    if (!isOriginalBufferPrepared_) return;
-    if (getBPosMSec() < aPosMSec || ((originalBufferLength_ - 1) / originalSampleRate_ * 1000.f) < aPosMSec) return;
-    
-    aIndex_ = static_cast<int32_t>(aPosMSec / 1000.f * originalSampleRate_);
-    if (originalBufferLength_ < aIndex_) aIndex_ = 0;
-
-    processStartIndex_ = getPlayingPosRatio() * originalBufferLength_;
-    needToReset_ = true;
-}
-
-void Melissa::setBPosMSec(float bPosMSec)
-{
-    if (!isOriginalBufferPrepared_) return;
-    if (bPosMSec < getAPosMSec() || ((originalBufferLength_ - 1) / originalSampleRate_ * 1000.f) < bPosMSec) return;
-    
-    bIndex_ = static_cast<int32_t>(bPosMSec / 1000.f * originalSampleRate_);
-    if (bIndex_ < readIndex_)
-    {
-        processStartIndex_ = aIndex_;
-    }
-    else
-    {
-        processStartIndex_ = getPlayingPosRatio() * originalBufferLength_;
-    }
-    
-    needToReset_ = true;
-}
-
-void Melissa::setPlayingPosMSec(float playingPosMSec)
-{
-    processStartIndex_ = static_cast<size_t>(playingPosMSec / 1000.f * originalSampleRate_);
-    if (processStartIndex_ < aIndex_) processStartIndex_ = aIndex_;
-    if (bIndex_ < processStartIndex_) processStartIndex_ = bIndex_;
-    needToReset_ = true;
-}
-
-void Melissa::setAPosRatio(float ratio)
-{
-    if (ratio < 0.f) ratio = 0.f;
-    if (ratio > 1.f) ratio = 1.f;
-    setAPosMSec((originalBufferLength_ - 1) * ratio / originalSampleRate_ * 1000.f);
-}
-
-void Melissa::setBPosRatio(float ratio)
-{
-    if (ratio < 0.f) ratio = 0.f;
-    if (ratio > 1.f) ratio = 1.f;
-    setBPosMSec((originalBufferLength_ - 1) * ratio / originalSampleRate_ * 1000.f);
-}
-
-void Melissa::setPlayingPosRatio(float ratio)
-{
-    if (ratio < 0.f) ratio = 0.f;
-    if (ratio > 1.f) ratio = 1.f;
-    setPlayingPosMSec((originalBufferLength_ - 1) * ratio / originalSampleRate_ * 1000.f);
-}
-
-void Melissa::setABPosRatio(float aRatio, float bRatio)
-{
-    if (!(0 <= aRatio && aRatio < bRatio && bRatio <= 1.f)) return;
-    
-    aIndex_ = static_cast<int32_t>(aRatio * originalBufferLength_);
-    bIndex_ = static_cast<int32_t>(bRatio * originalBufferLength_);
-    if (aIndex_ <= readIndex_ && readIndex_ < bIndex_) return;
-    readIndex_ = aIndex_;
-    needToReset_ = true;
-}
-
-float Melissa::getAPosMSec() const
-{
-    return static_cast<float>(aIndex_) / originalSampleRate_ * 1000.f;
-}
-
-float Melissa::getBPosMSec() const
-{
-    return static_cast<float>(bIndex_) / originalSampleRate_ * 1000.f;
-}
-
-int32_t Melissa::getTotalLengthMSec() const
-{
-    return static_cast<float>(originalBufferLength_) / originalSampleRate_ * 1000.f;
-}
-
 float Melissa::getPlayingPosMSec() const
 {
     return playingPosMSec_;
-}
-
-float Melissa::getAPosRatio() const
-{
-    return static_cast<float>(getAPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
-}
-
-float Melissa::getBPosRatio() const
-{
-    return static_cast<float>(getBPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
 float Melissa::getPlayingPosRatio() const
@@ -166,18 +72,6 @@ float Melissa::getPlayingPosRatio() const
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
-void Melissa::setSpeed(int32_t speed)
-{
-    if (speed_ == speed) return;
-    
-    if (speed > 200) speed = 200;
-    if (speed < 20) speed = 20;
-    
-    speed_ = speed;
-    currentSpeed_ = speed;
-    
-    needToReset_ = true;
-}
 
 void Melissa::setSpeedIncPer(int32_t speedIncPer)
 {
@@ -200,25 +94,6 @@ void Melissa::setSpeedIncMax(int32_t speedIncMax)
     if (speedIncMax > 200) speedIncMax = 200;
     if (speedIncMax < speed_) speed_ = speedIncMax;
     speedIncMax_ = speedIncMax;
-}
-
-void Melissa::setPitch(int32_t semitone)
-{
-    if (semitone_ == semitone) return;
-    
-    if (semitone > 24) semitone = 24;
-    if (semitone < -24) semitone = -24;
-    
-    semitone_ = semitone;
-    needToReset_ = true;
-}
-
-void Melissa::setVolume(float volume)
-{
-    if (volume < 0.f) volume = 0.f;
-    if (2.f < volume) volume = 2.f;
-    
-    volume_ = volume;
 }
 
 void Melissa::render(float* bufferToRender[], size_t bufferLength)
@@ -475,25 +350,37 @@ void Melissa::analyzeBpm()
 
 void Melissa::volumeChanged(float volume)
 {
-    setVolume(volume);
+    volume_ = volume;
 }
 
 void Melissa::pitchChanged(int semitone)
 {
-    setPitch(semitone);
+    semitone_ = semitone;
+    needToReset_ = true;
 }
 
 void Melissa::speedChanged(int speed)
 {
-    setSpeed(speed_);
+    speed_ = speed;
+    currentSpeed_ = speed;
+    needToReset_ = true;
 }
 
 void Melissa::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
-    setABPosRatio(aRatio, bRatio);
+    if (!(0 <= aRatio && aRatio < bRatio && bRatio <= 1.f)) return;
+    
+    aIndex_ = static_cast<int32_t>(aRatio * originalBufferLength_);
+    bIndex_ = static_cast<int32_t>(bRatio * originalBufferLength_);
+    if (aIndex_ <= readIndex_ && readIndex_ < bIndex_) return;
+    readIndex_ = aIndex_;
+    needToReset_ = true;
 }
 
 void Melissa::playingPosChanged(float time, float ratio)
 {
-    setPlayingPosRatio(ratio);
+    processStartIndex_ = static_cast<size_t>((originalBufferLength_ - 1) * ratio);
+    if (processStartIndex_ < aIndex_) processStartIndex_ = aIndex_;
+    if (bIndex_ < processStartIndex_) processStartIndex_ = bIndex_;
+    needToReset_ = true;
 }

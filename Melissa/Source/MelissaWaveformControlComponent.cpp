@@ -28,8 +28,7 @@ public:
     isMouseDown_(false),
     clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
     currentMouseOnStripIndex_(-1),
-    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f),
-    listener_(nullptr)
+    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f)
     {
         current_ = std::make_unique<Label>();
         current_->setColour(Label::backgroundColourId, Colour(0x80ffffff));
@@ -120,7 +119,8 @@ public:
             {
                 // Click
                 clickedStripIndex_ = -1;
-                if (listener_ != nullptr) listener_->setPlayPosition(parent_, static_cast<float>(event.getPosition().getX()) / getWidth());
+                
+                MelissaModel::getInstance()->setPlayingPosRatio(static_cast<float>(event.getPosition().getX()) / getWidth());
             }
             else
             {
@@ -137,14 +137,12 @@ public:
                 {
                     loopBStripIndex_ = stripIndex;
                 }
-                if (listener_ != nullptr)
-                {
-                    float aRatio = static_cast<float>(loopAStripIndex_) / numOfStrip_;
-                    if (1.f < aRatio) aRatio = 1.f;
-                    float bRatio = static_cast<float>(loopBStripIndex_) / numOfStrip_;
-                    if (1.f < bRatio) bRatio = 1.f;
-                    listener_->setABPosition(parent_, aRatio, bRatio);
-                }
+                
+                float aRatio = static_cast<float>(loopAStripIndex_) / numOfStrip_;
+                if (1.f < aRatio) aRatio = 1.f;
+                float bRatio = static_cast<float>(loopBStripIndex_) / numOfStrip_;
+                if (1.f < bRatio) bRatio = 1.f;
+                MelissaModel::getInstance()->setLoopPosRatio(aRatio, bRatio);
             }
         }
         isMouseDown_ = false;
@@ -245,11 +243,6 @@ public:
         repaint();
     }
     
-    void setListener(MelissaWaveformControlListener* listener)
-    {
-        listener_ = listener;
-    }
-    
 private:
     int32_t getStripIndexOnX(float x)
     {
@@ -264,7 +257,6 @@ private:
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
-    MelissaWaveformControlListener* listener_;
     std::vector<float> previewBuffer_;
     std::vector<float> originalMonoralBuffer_;
 };
@@ -296,12 +288,6 @@ void MelissaWaveformControlComponent::resized()
     waveformView_->setBounds(70, 20, getWidth() - 70 * 2, getHeight() - 20 - 30);
     
     posTooltip_->setTopLeftPosition(0, 0);
-}
-
-void MelissaWaveformControlComponent::setListener(MelissaWaveformControlListener* listener)
-{
-    listener_ = listener;
-    waveformView_->setListener(listener);
 }
 
 void MelissaWaveformControlComponent::timerCallback()
@@ -342,4 +328,9 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
         startTimer(2000);
         posTooltip_->setVisible(true);
     }
+}
+
+void MelissaWaveformControlComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
+{
+    
 }
