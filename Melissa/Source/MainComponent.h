@@ -381,7 +381,7 @@ private:
     std::unique_ptr<MenuBarComponent> menuBar_;
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
-    std::unique_ptr<MelissaControlComponent> controlComponent_;
+    std::unique_ptr<Label> controlComponent_;
 #if defined(SHOW_BOTTOM)
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
 #endif

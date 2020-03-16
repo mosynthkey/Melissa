@@ -202,7 +202,9 @@ void MainComponent::createUI()
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     addAndMakeVisible(waveformComponent_.get());
     
-    controlComponent_ = make_unique<MelissaControlComponent>();
+    controlComponent_ = make_unique<Label>();
+    controlComponent_->setOpaque(false);
+    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaColourScheme::MainColour()).withAlpha(0.06f));
     addAndMakeVisible(controlComponent_.get());
     
 #if defined(SHOW_BOTTOM)
