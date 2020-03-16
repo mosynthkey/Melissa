@@ -18,7 +18,7 @@ using std::make_unique;
 
 Melissa::Melissa() :
 soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), processStartIndex_(0), aNextIndex_(-1), bNextIndex_(-1), readIndex_(0), playingPosMSec_(0.f), speed_(100), semitone_(0), volume_(1.f), needToReset_(false), renderTime_(0), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
+aIndex_(0), bIndex_(0), processStartIndex_(0), aNextIndex_(-1), bNextIndex_(-1), readIndex_(0), playingPosMSec_(0.f), speed_(100), semitone_(0), volume_(1.f), needToReset_(false), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
 {
     for (int iCh = 0; iCh < 2; ++iCh)
     {
@@ -240,7 +240,14 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
             bufferToRender[0][iSample] = processedBufferQue_[0] * volume_ + metronomeOsc;
             bufferToRender[1][iSample] = processedBufferQue_[1] * volume_ + metronomeOsc;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
+            
+            if (timeQue_.size() > 0)
+            {
+                playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
+                timeQue_.pop_front();
+            }
         }
+
         mutex_.unlock();
         
         if (--metronome_.count_ < 0)
@@ -257,8 +264,6 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
         {
             metronome_.amp_ = 0.f;
         }
-        
-         ++renderTime_;
     }
     
     if (triggerMetronome)
@@ -279,6 +284,9 @@ void Melissa::process()
 {
     if (!isOriginalBufferPrepared_) return;
     if (needToReset_) resetProcessedBuffer();
+    
+    const auto speed = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (speed_ / 100);
+    size_t sampleIndex[processLength_];
     
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     while (receivedSampleSize == 0)
@@ -303,11 +311,20 @@ void Melissa::process()
                 }
 
             }
+            sampleIndex[iSample] = readIndex_;
             bufferForSoundTouch_[iSample * 2 + 0] = originalBuffer_[0][readIndex_];
             bufferForSoundTouch_[iSample * 2 + 1] = originalBuffer_[1][readIndex_];
             ++readIndex_;
         }
+        
         soundTouch_->putSamples(bufferForSoundTouch_, processLength_);
+        mutex_.lock();
+        for (size_t index = 0; index < processLength_ / speed; ++index)
+        {
+            timeQue_.emplace_back(sampleIndex[static_cast<size_t>(index * speed)]);
+        }
+        mutex_.unlock();
+        
         receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     }
     
@@ -356,10 +373,11 @@ void Melissa::resetProcessedBuffer()
     
     mutex_.lock();
     processedBufferQue_.clear();
+    timeQue_.clear();
     mutex_.unlock();
     
-    renderTime_ = 0;
     playingPosMSec_ = static_cast<float>(processStartIndex_) / originalSampleRate_ * 1000.f;
+    if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
     readIndex_ = processStartIndex_;
     needToReset_ = false;
     metronome_.count_ = metronome_.offsetSec_ * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
@@ -469,19 +487,6 @@ void Melissa::analyzeBpm()
 
 void Melissa::updateInternalTime()
 {
-    const float elapsedTimeMSec = static_cast<float>(renderTime_ * speed_ / 100.f) / outputSampleRate_ * 1000.f;
-    const float aTimeMSec       = static_cast<float>(aIndex_) / originalSampleRate_ * 1000.f;
-    const float bTimeMSec       = static_cast<float>(bIndex_) / originalSampleRate_ * 1000.f;
-    
-    playingPosMSec_ += elapsedTimeMSec;
-    
-    while (bTimeMSec < playingPosMSec_)
-    {
-        playingPosMSec_ = aTimeMSec + (playingPosMSec_ - bTimeMSec);
-    }
-    
-    renderTime_ = 0;
-    
     if (aNextIndex_ != -1)
     {
         aIndex_ = aNextIndex_;

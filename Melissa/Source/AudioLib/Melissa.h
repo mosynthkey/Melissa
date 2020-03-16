@@ -85,6 +85,7 @@ private:
     size_t originalBufferLength_;
     
     std::deque<float> processedBufferQue_;
+    std::deque<float> timeQue_;
     int32_t outputSampleRate_;
     
     size_t aIndex_, bIndex_, processStartIndex_;
@@ -99,7 +100,6 @@ private:
     float bufferForSoundTouch_[2 * processLength_];
     bool needToReset_;
     std::mutex mutex_;
-    size_t renderTime_;
     
     int32_t count_;
     int32_t speedIncPer_;
