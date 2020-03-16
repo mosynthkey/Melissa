@@ -1089,8 +1089,7 @@ void MainComponent::toHead()
 
 void MainComponent::resetLoop()
 {
-    melissa_->setAPosRatio(0.f);
-    melissa_->setBPosRatio(1.f);
+    melissa_->setABPosRatio(0.f, 1.f);
     waveformComponent_->setAPosition(0.f);
     waveformComponent_->setBPosition(1.f);
     
