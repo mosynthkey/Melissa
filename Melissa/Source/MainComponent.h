@@ -53,7 +53,6 @@ public:
         {
             getHeader().addColumn(headerTitles[i], i + 1, 50);
         }
-        
         popupMenu_ = std::make_shared<PopupMenu>();
     }
     
