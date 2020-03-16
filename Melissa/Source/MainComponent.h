@@ -10,6 +10,7 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
+#include "MelissaModel.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
@@ -270,6 +271,7 @@ class MainComponent   : public AudioAppComponent,
                         public FileBrowserListener,
                         public KeyListener,
                         public MelissaHost,
+                        public MelissaModelListener,
                         public MelissaWaveformControlListener,
                         public MenuBarModel,
                         public MidiInputCallback,
@@ -371,9 +373,9 @@ public:
     void showAboutDialog();
 
 private:
-    void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
-    
     std::unique_ptr<Melissa> melissa_;
+    MelissaModel* model_;
+    
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
@@ -490,7 +492,15 @@ private:
     
     MelissaMIDIControlManager midiControlManager_;
     
+    void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
     bool isSettingValid() const;
+    
+    // MelissaModelListener
+    void volumeChanged(float volume) override;
+    void pitchChanged(int semitone) override;
+    void speedChanged(int speed) override;
+    void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
+    void playingPosChanged(float time, float ratio) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
