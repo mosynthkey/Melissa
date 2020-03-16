@@ -147,8 +147,12 @@ public:
             }
             else if (result == kMenuId_Overwrite)
             {
-                float a, b, speed;
-                host_->getMelissaParameters(&a, &b, &speed);
+                float a, b;
+                int speed;
+                auto model = MelissaModel::getInstance();
+                a = model->getLoopAPosRatio();
+                b = model->getLoopBPosRatio();
+                speed = model->getSpeed();
                 list_[rowNumber].getDynamicObject()->setProperty("a", a);
                 list_[rowNumber].getDynamicObject()->setProperty("b", b);
                 list_[rowNumber].getDynamicObject()->setProperty("speed", speed);
@@ -169,7 +173,9 @@ public:
         float a = prac.getProperty("a", 0);
         float b = prac.getProperty("b", 1);
         float speed = prac.getProperty("speed", 1.f);
-        host_->setMelissaParameters(a, b, speed);
+        auto model = MelissaModel::getInstance();
+        model->setLoopPosRatio(a, b);
+        model->setSpeed(speed);
     }
     
     void setList(const Array<var>& list, float totalLengthMSec)
@@ -272,7 +278,6 @@ class MainComponent   : public AudioAppComponent,
                         public KeyListener,
                         public MelissaHost,
                         public MelissaModelListener,
-                        public MelissaWaveformControlListener,
                         public MenuBarModel,
                         public MidiInputCallback,
                         public Timer,
@@ -306,20 +311,12 @@ public:
     bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
     
     // Melissa
-    void setMelissaParameters(float aRatio, float bRatio, float speed) override;
-    void getMelissaParameters(float* aRatio, float* bRatio, float* speed) override;
     void updatePracticeList(const Array<var>& list) override;
     void createSetlist(const String& name) override;
     bool loadFile(const String& filePath) override;
     void showModalDialog(std::shared_ptr<Component> component, const String& title) override;
     void showPreferencesDialog() override;
     void closeModalDialog() override;
-    
-    // MelissaWaveformControlListener
-    void setPlayPosition(MelissaWaveformControlComponent* sender, float ratio) override;
-    void setAPosition(MelissaWaveformControlComponent* sender, float ratio) override;
-    void setBPosition(MelissaWaveformControlComponent* sender, float ratio) override;
-    void setABPosition(MelissaWaveformControlComponent* sender, float aRatio, float bRatio) override;
     
     // MenuBarModel
     StringArray getMenuBarNames() override;

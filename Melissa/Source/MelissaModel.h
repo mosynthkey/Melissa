@@ -1,23 +1,15 @@
 #pragma once
 
 #include <vector>
-
-class MelissaModelListener
-{
-public:
-    virtual ~MelissaModelListener() {};
-    
-    virtual void volumeChanged(float volume) = 0;
-    virtual void pitchChanged(int semitone) = 0;
-    virtual void speedChanged(int speed) = 0;
-    virtual void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) = 0;
-    virtual void playingPosChanged(float time, float ratio) = 0;
-};
+#include "Melissa.h"
+#include "MelissaModelListener.h"
 
 class MelissaModel
 {
 public:
-    void setLengthMSec(float totalMSec);
+    void setMelissa(Melissa* melissa) { melissa_ = melissa; }
+    
+    void setLengthMSec(float lengthMSec);
     float getLengthMSec() const { return lengthMSec_; }
     
     void setVolume(float volume);
@@ -26,8 +18,8 @@ public:
     void setPitch(int semitone);
     int getPitch() const  { return semitone_; }
     
-    void setSpeed(float speed);
-    float getSpeed() const  { return speed_; }
+    void setSpeed(int speed);
+    int getSpeed() const  { return speed_; }
     
     void setLoopPosRatio(float aRatio, float bRatio);
     
@@ -44,10 +36,12 @@ public:
     float getLoopBPosMSec() const { return bPosRatio_ * lengthMSec_; }
     
     void setPlayingPosRatio(float playbackPosRatio);
-    float getPlayingPosRatio() const { return playingPosRatio_; }
+    float getPlayingPosRatio() const;
     
     void setPlayingPosMSec(float playbackPosMSec);
-    float getPlayingPosMSec() const { return playingPosRatio_ * lengthMSec_; }
+    float getPlayingPosMSec() const;
+    
+    void synchronize();
     
     // Listener
     void addListener(MelissaModelListener* listener);
@@ -64,11 +58,13 @@ private:
     MelissaModel();
     ~MelissaModel() {};
     
+    Melissa* melissa_;
+    
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
     float volume_;
     int semitone_;
-    float speed_;
+    int speed_;
     float aPosRatio_, bPosRatio_;
     float playingPosRatio_;
     

@@ -25,9 +25,9 @@ void MelissaModel::setPitch(int semitone)
     for (auto&& l : listeners_) l->pitchChanged(semitone);
 }
 
-void MelissaModel::setSpeed(float speed)
+void MelissaModel::setSpeed(int speed)
 {
-    if (speed < 0.2f || 2.f < speed) return;
+    if (speed < 20 || 200 < speed) return;
     
     speed_ = speed;
     for (auto&& l : listeners_) l->speedChanged(speed);
@@ -82,12 +82,31 @@ void MelissaModel::setPlayingPosRatio(float playingPosRatio)
     for (auto&& l : listeners_) l->playingPosChanged(lengthMSec_ * playingPosRatio, playingPosRatio);
 }
 
+float MelissaModel::getPlayingPosRatio() const
+{
+    return melissa_->getPlayingPosRatio();
+}
+
 void MelissaModel::setPlayingPosMSec(float playingPosMSec)
 {
     if (playingPosMSec < 0 || lengthMSec_ < playingPosMSec || lengthMSec_ < 0.f) return;
     
     playingPosRatio_ = playingPosMSec / lengthMSec_;
     for (auto&& l : listeners_) l->playingPosChanged(playingPosMSec, playingPosMSec / lengthMSec_);
+}
+
+float MelissaModel::getPlayingPosMSec() const
+{
+    return melissa_->getPlayingPosMSec();
+}
+
+void MelissaModel::synchronize()
+{
+    setLengthMSec(lengthMSec_);
+    setVolume(volume_);
+    setPitch(semitone_);
+    setSpeed(speed_);
+    setLoopPosRatio(aPosRatio_, bPosRatio_);
 }
 
 void MelissaModel::addListener(MelissaModelListener* listener)
@@ -118,7 +137,7 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(1.f), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f)
+lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f)
 {
     
 }

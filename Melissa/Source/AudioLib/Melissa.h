@@ -1,6 +1,6 @@
 //
 //  Melissa.h
-//  Melissa_JUCE - App
+//  Melissa
 //
 //  Created by Masaki on 2019/07/29.
 //
@@ -10,8 +10,10 @@
 #include <deque>
 #include <mutex>
 #include <vector>
-#include "MelissaModel.h"
+#include "MelissaModelListener.h"
 #include "SoundTouch.h"
+
+class MelissaModel;
 
 class Melissa : public MelissaModelListener
 {
@@ -22,36 +24,17 @@ public:
     void setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate);
     void setOutputSampleRate(int32_t sampleRate);
     
-    void setAPosMSec(float aPosMSec);
-    void setAPosRatio(float ratio);
-    void setBPosMSec(float bPosMSec);
-    void setBPosRatio(float ratio);
-    void setABPosRatio(float aRatio, float bRatio);
-    void setPlayingPosMSec(float playingPosMSec);
-    void setPlayingPosRatio(float ratio);
-    
-    float getAPosMSec() const;
-    float getAPosRatio() const;
-    float getBPosMSec() const;
-    float getBPosRatio() const;
-    int32_t getTotalLengthMSec() const;
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
-    void setSpeed(int32_t speed);
     void setSpeedIncPer(int32_t speedIncPer);
     void setSpeedIncValue(int32_t speedIncValue);
     void setSpeedIncMax(int32_t speedIncMax);
-    void setPitch(int32_t semitone);
-    void setVolume(float volume);
     
-    int32_t getSpeed() const { return speed_; }
     int32_t getSpeedIncPer() const { return speedIncPer_; };
     int32_t getSpeedIncValue() const  { return speedIncValue_; };
     int32_t getSpeedIncMax() const { return speedIncMax_; }
     int32_t getCurrentSpeed() const { return speed_ + speedIncValue_; }
-    int32_t getPitch() const { return semitone_; }
-    float getVolume() const { return volume_; }
     
     bool isMetoronomeOn() const { return metronome_.on_ ;};
     uint32_t getBpm() const { return metronome_.bpm_; }
@@ -75,6 +58,7 @@ public:
     std::string getStatusString() const;
     
 private:
+    MelissaModel* model_;
     static constexpr size_t processLength_ = 4096;
     static constexpr size_t queLength_ = 10 * processLength_ * 2 /* Stereo */;
     
