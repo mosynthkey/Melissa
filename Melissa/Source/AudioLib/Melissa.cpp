@@ -19,7 +19,7 @@ using std::make_unique;
 
 Melissa::Melissa() :
 model_(MelissaModel::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), semitone_(0), volume_(1.f), needToReset_(false), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
 {
     for (int iCh = 0; iCh < 2; ++iCh)
     {
@@ -156,7 +156,6 @@ void Melissa::process()
     if (!isOriginalBufferPrepared_) return;
     if (needToReset_) resetProcessedBuffer();
     
-    const auto speed = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (speed_ / 100);
     size_t sampleIndex[processLength_];
     
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
@@ -186,9 +185,9 @@ void Melissa::process()
         
         soundTouch_->putSamples(bufferForSoundTouch_, processLength_);
         mutex_.lock();
-        for (size_t index = 0; index < processLength_ / speed; ++index)
+        for (size_t index = 0; index < processLength_ / processingSpeed_; ++index)
         {
-            timeQue_.emplace_back(sampleIndex[static_cast<size_t>(index * speed)]);
+            timeQue_.emplace_back(sampleIndex[static_cast<size_t>(index * processingSpeed_)]);
         }
         mutex_.unlock();
         
@@ -237,6 +236,7 @@ void Melissa::resetProcessedBuffer()
     soundTouch_->setSampleRate(originalSampleRate_);
     soundTouch_->setTempo(fsConvPitch * speed_ / 100.f);
     soundTouch_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
+    processingSpeed_ = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (speed_ / 100.f);
     
     mutex_.lock();
     processedBufferQue_.clear();
@@ -356,6 +356,7 @@ void Melissa::volumeChanged(float volume)
 void Melissa::pitchChanged(int semitone)
 {
     semitone_ = semitone;
+    processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
 }
 
@@ -363,6 +364,7 @@ void Melissa::speedChanged(int speed)
 {
     speed_ = speed;
     currentSpeed_ = speed;
+    processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
 }
 

@@ -78,6 +78,7 @@ private:
     float playingPosMSec_;
     
     int32_t speed_;
+    float processingSpeed_;
     int32_t semitone_;
     float   volume_;
     
