@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.7"
-              cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\AudioLib">
+              cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\AudioLib"
+              version="1.0.0" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono "
+              companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <GROUP id="{55A9D247-4C5C-0676-F3A0-910D91DE75CC}" name="Font">
