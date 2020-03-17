@@ -2,7 +2,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
-#include "MelissaControlComponent.h"
 #include "MelissaBottomControlComponent.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"

@@ -1014,8 +1014,6 @@ bool MainComponent::openFile(const File& file)
     
     delete reader;
     
-    saveSettings();
-    
     return true;
 }
 
@@ -1050,9 +1048,6 @@ void MainComponent::toHead()
 void MainComponent::resetLoop()
 {
     model_->setLoopPosRatio(0.f, 1.f);
-    waveformComponent_->setAPosition(0.f);
-    waveformComponent_->setBPosition(1.f);
-    
     updateAButtonLabel();
     updateBButtonLabel();
 }
@@ -1145,14 +1140,12 @@ void MainComponent::updateAButtonLabel()
 {
     const auto LoopAPosMSec = model_->getLoopAPosMSec();
     aButton_->setText(MelissaUtility::getFormattedTimeMSec(LoopAPosMSec));
-    waveformComponent_->setAPosition(model_->getLoopAPosRatio());
 }
 
 void MainComponent::updateBButtonLabel()
 {
     const auto LoopBPosMSec = model_->getLoopBPosMSec();
     bButton_->setText(MelissaUtility::getFormattedTimeMSec(LoopBPosMSec));
-    waveformComponent_->setBPosition(model_->getLoopBPosRatio());
 }
 
 void MainComponent::updateSpeedButtonLabel()
@@ -1311,17 +1304,17 @@ bool MainComponent::isSettingValid() const
 
 void MainComponent::volumeChanged(float volume)
 {
-    
+    updateVolume();
 }
 
 void MainComponent::pitchChanged(int semitone)
 {
-    
+    updatePitchButtonLabel();
 }
 
 void MainComponent::speedChanged(int speed)
 {
-    
+    updateSpeedButtonLabel();
 }
 
 void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
@@ -1332,6 +1325,5 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
 
 void MainComponent::playingPosChanged(float time, float ratio)
 {
-    
 }
 

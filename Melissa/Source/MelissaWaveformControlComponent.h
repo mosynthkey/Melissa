@@ -5,7 +5,6 @@
 #include "MelissaModel.h"
 
 class MelissaWaveformControlComponent : public Component,
-                                        public MelissaModelListener,
                                         public Timer
                                         
 {
@@ -18,13 +17,8 @@ public:
     void timerCallback() override;
     
     void setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate);
-    void setAPosition(float ratio);
-    void setBPosition(float ratio);
     void setPlayPosition(float ratio);
     void showTimeTooltip(float posRatio);
-    
-    // MelissaModelListener
-    void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     
 private:
     class TimeLineBar;
