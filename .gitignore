@@ -33,3 +33,7 @@
 
 # Project / Solution
 Melissa/Builds/*
+
+# Installer
+*.dmg
+*.exe
