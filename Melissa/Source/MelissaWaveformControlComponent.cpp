@@ -19,6 +19,7 @@ private:
 };
 
 class MelissaWaveformControlComponent::WaveformView : public Component,
+                                                      public MelissaModelListener,
                                                       public Timer
 {
 public:
@@ -30,6 +31,8 @@ public:
     currentMouseOnStripIndex_(-1),
     playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f)
     {
+        MelissaModel::getInstance()->addListener(this);
+        
         current_ = std::make_unique<Label>();
         current_->setColour(Label::backgroundColourId, Colour(0x80ffffff));
         current_->setInterceptsMouseClicks(false, false);
@@ -249,6 +252,13 @@ private:
         return x / (waveformStripWidth_ + waveformStripInterval_);
     }
     
+    // MelissaModelListener
+    void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override
+    {
+        setAPosition(aRatio);
+        setBPosition(bRatio);
+    }
+    
     MelissaWaveformControlComponent* parent_;
     std::shared_ptr<Label> current_;
     const int32_t waveformStripWidth_ = 3, waveformStripInterval_ = 1;
@@ -306,16 +316,6 @@ void MelissaWaveformControlComponent::setPlayPosition(float ratio)
     waveformView_->setPlayPosition(ratio);
 }
 
-void MelissaWaveformControlComponent::setAPosition(float ratio)
-{
-    waveformView_->setAPosition(ratio);
-}
-
-void MelissaWaveformControlComponent::setBPosition(float ratio)
-{
-    waveformView_->setBPosition(ratio);
-}
-
 void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
 {
     posTooltip_->setText(timeSec_ != 0 ? MelissaUtility::getFormattedTimeMSec(timeSec_ * posRatio * 1000) : "-:--.----");
@@ -328,9 +328,4 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
         startTimer(2000);
         posTooltip_->setVisible(true);
     }
-}
-
-void MelissaWaveformControlComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
-{
-    
 }
