@@ -1,5 +1,6 @@
 #pragma once
 
+#include <numeric>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
 #include "MelissaBottomControlComponent.h"
@@ -39,8 +40,7 @@ public:
     enum Column
     {
         kColumn_Name,
-        kColumn_A,
-        kColumn_B,
+        kColumn_LoopRange,
         kColumn_Speed,
         kNumOfColumn
     };
@@ -48,7 +48,7 @@ public:
     MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
     TableListBox(componentName, this), host_(host)
     {
-        String headerTitles[kNumOfColumn] = { "Name", "A", "B", "Speed" };
+        String headerTitles[kNumOfColumn] = { "Name", "Range", "Speed" };
         for (int i = 0; i < kNumOfColumn; ++i)
         {
             getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -82,46 +82,79 @@ public:
             switch (columnId)
             {
                 case kColumn_Name + 1:
+                {
                     text = prac.getProperty("name", "").toString();
-                    break;
-                case kColumn_A + 1:
-                {
-                    float ratio = prac.getProperty("a", 0);
-                    text = MelissaUtility::getFormattedTimeMSec(ratio * totalLengthMSec_);
-                    break;
-                }
-                case kColumn_B + 1:
-                {
-                    float ratio = prac.getProperty("b", 1);
-                    text = MelissaUtility::getFormattedTimeMSec(ratio * totalLengthMSec_);
                     break;
                 }
                 case kColumn_Speed + 1:
+                {
                     text = String(static_cast<int32_t>(prac.getProperty("speed", 0))) + " %";
                     break;
+                }
+                default:
+                {
+                    return;
+                }
             }
         }
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         g.setFont(22);
-        g.drawText(text, 0, 0, width, height, Justification::left);
+        constexpr int xMargin = 10;
+        g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
     }
     
     Component* refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate) override
     {
+        class LoopRangeComponent : public Component
+        {
+        public:
+            LoopRangeComponent(float aRatio, float bRatio) : aRatio_(aRatio), bRatio_(bRatio)
+            {
+                setInterceptsMouseClicks(false, false);
+            };
+            void paint(Graphics& g) override
+            {
+                constexpr float lineWidth = 8.f;
+                constexpr float xMargin = 10.f;
+                const auto w = getWidth();
+                const auto h = getHeight();
+                const float aX = (w - lineWidth - xMargin * 2) * aRatio_ + xMargin;
+                const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + lineWidth;
+                
+                g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
+                g.fillRoundedRectangle(xMargin, (h - lineWidth) / 2.f, w - xMargin * 2, lineWidth, lineWidth / 2);
+                g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.4f));
+                g.fillRoundedRectangle(aX,      (h - lineWidth) / 2.f, bX - aX,         lineWidth, lineWidth / 2);
+            }
+            
+        private:
+            float aRatio_, bRatio_;
+        };
+        
+        if (rowNumber < list_.size() && columnId == kColumn_LoopRange + 1)
+        {
+            auto prac = list_[rowNumber];
+            if (existingComponentToUpdate == nullptr)
+            {
+                const float aRatio = prac.getProperty("a", 0);
+                const float bRatio = prac.getProperty("b", 0);
+                return dynamic_cast<Component*>(new LoopRangeComponent(aRatio, bRatio));
+            }
+            else
+            {
+                return existingComponentToUpdate;
+            }
+        }
+        
         return nullptr;
     }
     
     int getColumnAutoSizeWidth(int columnId) override
     {
-        constexpr int defaultWidth = 200;
-        switch (columnId)
-        {
-            case kColumn_Name + 1:
-                return getWidth() - defaultWidth * (kNumOfColumn - 1);
-            default:
-                return defaultWidth;
-        }
+        const std::vector<int> widthRatio = { 3, 5, 2 };
+        const float sum = std::accumulate(widthRatio.begin(), widthRatio.end(), 0);
+        return widthRatio[columnId - 1] / sum * getWidth();
     }
     
     void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override
