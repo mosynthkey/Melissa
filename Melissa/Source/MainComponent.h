@@ -120,7 +120,7 @@ public:
                 const auto w = getWidth();
                 const auto h = getHeight();
                 const float aX = (w - lineWidth - xMargin * 2) * aRatio_ + xMargin;
-                const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + lineWidth;
+                const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + xMargin + lineWidth;
                 
                 g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
                 g.fillRoundedRectangle(xMargin, (h - lineWidth) / 2.f, w - xMargin * 2, lineWidth, lineWidth / 2);
@@ -196,6 +196,7 @@ public:
         {
             host_->updatePracticeList(list_);
             updateContent();
+            repaint();
         }
     }
     

@@ -980,6 +980,9 @@ void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
 
 bool MainComponent::openFile(const File& file)
 {
+    pause();
+    toHead();
+    
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     
