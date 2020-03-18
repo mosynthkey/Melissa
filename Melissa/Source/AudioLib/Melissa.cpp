@@ -279,6 +279,7 @@ std::string Melissa::getStatusString() const
 
 void Melissa::analyzeBpm()
 {
+    // Ref : http://hp.vector.co.jp/authors/VA046927/tempo/tempo.html
     //if (!isOriginalBufferPrepared_) return;
     
     constexpr size_t frameLength = 32;
