@@ -7,7 +7,7 @@
 class MelissaModalDialog : public Component
 {
 public:
-    MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const String& title);
+    MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const String& title, bool closeOnClickingOutside = false);
     
     // Component
     void paint(Graphics& g) override;
@@ -16,6 +16,7 @@ public:
 private:
     MelissaHost* host_;
     std::shared_ptr<Component> component_;
+    bool closeOnClickingOutside_;
     
     class CloseButton : public Button
     {

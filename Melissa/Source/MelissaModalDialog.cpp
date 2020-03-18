@@ -6,12 +6,13 @@ enum
     kCloseButtonSize = 20,
 };
 
-MelissaModalDialog::MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const String& title) :
+MelissaModalDialog::MelissaModalDialog(MelissaHost* host, std::shared_ptr<Component>& component, const String& title, bool closeOnClickingOutside) :
 host_(host),
-component_(component)
+component_(component),
+closeOnClickingOutside_(closeOnClickingOutside)
 {
     backgroundButton_ = std::make_unique<BackgroundButton>();
-    backgroundButton_->onClick = [&]() { host_->closeModalDialog(); };
+    backgroundButton_->onClick = [&]() { if (closeOnClickingOutside_) host_->closeModalDialog(); };
     addAndMakeVisible(backgroundButton_.get());
     
     titleLabel_ = std::make_unique<Label>();

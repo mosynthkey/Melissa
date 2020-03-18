@@ -468,9 +468,10 @@ void MainComponent::createUI()
         addToListButton_->setButtonText("Add");
         addToListButton_->onClick = [this]()
         {
-            auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), "", [&](const String& text) {
+            const String defaultName = MelissaUtility::getFormattedTimeSec(model_->getLoopAPosMSec() / 1000.f) + " - " + MelissaUtility::getFormattedTimeSec(model_->getLoopBPosMSec() / 1000.f);
+            auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), defaultName, [&](const String& text) {
                 String name(text);
-                if (name.isEmpty()) name = MelissaUtility::getFormattedTimeMSec(model_->getLoopAPosMSec());
+                if (name.isEmpty()) name = defaultName;
                 addToPracticeList(name);
                 if (auto songs = setting_["songs"].getArray())
                 {
