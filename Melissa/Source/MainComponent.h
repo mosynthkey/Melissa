@@ -11,13 +11,16 @@
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
+#include "MelissaOkCancelDialog.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaSetListComponent.h"
 #include "MelissaToHeadButton.h"
+#include "MelissaTutorialComponent.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
+
 
 enum FileChooserTab
 {
@@ -350,6 +353,7 @@ public:
     void showModalDialog(std::shared_ptr<Component> component, const String& title) override;
     void showPreferencesDialog() override;
     void closeModalDialog() override;
+    void closeTutorial() override;
     
     // MenuBarModel
     StringArray getMenuBarNames() override;
@@ -401,6 +405,8 @@ public:
     
     var getSongSetting(String fileName);
     void showAboutDialog();
+    
+    void showTutorial();
 
 private:
     std::unique_ptr<Melissa> melissa_;
@@ -469,6 +475,8 @@ private:
     std::unique_ptr<MelissaModalDialog> modalDialog_;
     
     std::unique_ptr<FileChooser> fileChooser_;
+    
+    std::unique_ptr<MelissaTutorialComponent> tutorialComponent_;
     
     enum
     {

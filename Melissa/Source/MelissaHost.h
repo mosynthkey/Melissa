@@ -13,4 +13,6 @@ public:
     virtual void showModalDialog(std::shared_ptr<Component> component, const String& title) = 0;
     virtual void showPreferencesDialog() = 0;
     virtual void closeModalDialog() = 0;
+    
+    virtual void closeTutorial() = 0;
 };

@@ -238,18 +238,27 @@ public:
     
     Button* createFileBrowserGoUpButton() override
     {
-        auto goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
+        class UpButton : public Button
+        {
+        public:
+            UpButton() : Button("") { }
+            
+            void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+            {
+                constexpr int lineHeight = 2;
+                
+                const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+                g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+                
+                const int w = getWidth();
+                const int h = getHeight();
+                g.fillRoundedRectangle(0, 0, w, lineHeight, lineHeight / 2);
+                g.fillRoundedRectangle(0, (h - lineHeight) / 2, w, lineHeight, lineHeight / 2);
+                g.fillRoundedRectangle(0, h - lineHeight, w, lineHeight, lineHeight / 2);
+            }
+        };
 
-        Path arrowPath;
-        arrowPath.addArrow({ 50.0f, 100.0f, 50.0f, 0.0f }, 2.0f, 100.0f, 50.0f);
-
-        DrawablePath arrowImage;
-        arrowImage.setFill(Colours::white.withAlpha(0.4f));
-        arrowImage.setPath(arrowPath);
-
-        goUpButton->setImages(&arrowImage);
-
-        return goUpButton;
+        return new UpButton();
     }
     
     void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
