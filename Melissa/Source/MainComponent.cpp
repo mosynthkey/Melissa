@@ -22,6 +22,7 @@ enum
 {
     kMenuID_MainAbout = 1000,
     kMenuID_MainPreferences = 1001,
+    kMenuID_MainTutorial = 1002,
     kMenuID_FileOpen = 2000,
 };
 
@@ -48,7 +49,6 @@ status_(kStatus_Stop), shouldExit_(false)
     }
     
     createUI();
-    setSize (1400, 860);
     
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -69,17 +69,23 @@ status_(kStatus_Stop), shouldExit_(false)
     
     addKeyListener(this);
     
+    bool isFirstLaunch = true;
     {
         // load setting file
         settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
         if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
         
         settingsFile_ = settingsDir_.getChildFile("Settings.json");
-        if (!settingsFile_.existsAsFile()) createSettingsFile();
+        if (!settingsFile_.existsAsFile())
+        {
+            isFirstLaunch = true;
+            createSettingsFile();
+        }
         
         setting_ = JSON::parse(settingsFile_.loadFileAsString());
         if (!isSettingValid())
         {
+            isFirstLaunch = true;
             createSettingsFile();
             setting_ = JSON::parse(settingsFile_.loadFileAsString());
         }
@@ -138,6 +144,14 @@ status_(kStatus_Stop), shouldExit_(false)
     }
     
     deviceManager.addMidiInputCallback("", this);
+    
+    if (isFirstLaunch)
+    {
+        auto component = std::make_shared<MelissaOkCancelDialog>(this, TRANS("first_message"), [&](){
+            showTutorial();
+        });
+        showModalDialog(component, TRANS("tutorial"));
+    }
 }
 
 MainComponent::~MainComponent()
@@ -156,6 +170,7 @@ MainComponent::~MainComponent()
     practiceListToggleButton_->setLookAndFeel(nullptr);
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
+    practiceTable_->setLookAndFeel(nullptr);
     
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(nullptr);
@@ -187,6 +202,7 @@ void MainComponent::createUI()
         menu.setLookAndFeel(&lookAndFeel_);
         menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
         menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
+        menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
         const auto result = menu.show();
         if (result == kMenuID_MainAbout)
         {
@@ -195,6 +211,10 @@ void MainComponent::createUI()
         else if (result == kMenuID_MainPreferences)
         {
             showPreferencesDialog();
+        }
+        else if (result == kMenuID_MainTutorial)
+        {
+            showTutorial();
         }
     };
     addAndMakeVisible(menuButton_.get());
@@ -487,7 +507,7 @@ void MainComponent::createUI()
     }
     
     {
-        wildCardFilter_ = make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a", "*", "Music Files");
+        wildCardFilter_ = make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a;*.flac;*.ogg;*.w", "*", "Music Files");
         fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
                                                                   File::getSpecialLocation(File::userHomeDirectory),
                                                                   wildCardFilter_.get(),
@@ -789,6 +809,7 @@ void MainComponent::resized()
     for (auto&& tie : tie_) tie->updatePosition();
     
     if (modalDialog_ != nullptr) modalDialog_->setSize(getWidth(), getHeight());
+    if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
 }
 
 bool MainComponent::isInterestedInFileDrag(const StringArray& files)
@@ -885,12 +906,31 @@ void MainComponent::showAboutDialog()
     showModalDialog(std::dynamic_pointer_cast<Component>(component), TRANS("about_melissa"));
 }
 
+void MainComponent::showTutorial()
+{
+    tutorialComponent_ = std::make_unique<MelissaTutorialComponent>(this);
+    tutorialComponent_->setPages({
+        { dynamic_cast<Component*>(menuButton_.get()), TRANS("explanation_menu") },
+        { dynamic_cast<Component*>(waveformComponent_.get()), TRANS("explanation_waveform") },
+        { dynamic_cast<Component*>(volumeSlider_.get()), TRANS("explanation_volume") },
+        { dynamic_cast<Component*>(pitchButton_.get()), TRANS("explanation_pitch") },
+        { dynamic_cast<Component*>(speedButton_.get()), TRANS("explanation_speed") },
+    });
+    addAndMakeVisible(tutorialComponent_.get());
+    resized();
+}
+
 void MainComponent::closeModalDialog()
 {
     if (modalDialog_ == nullptr) return;
     
     removeChildComponent(modalDialog_.get());
     modalDialog_ = nullptr;
+}
+
+void MainComponent::closeTutorial()
+{
+    tutorialComponent_ = nullptr;
 }
 
 void MainComponent::fileDoubleClicked(const File& file)

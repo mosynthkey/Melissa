@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include "../JuceLibraryCode/JuceHeader.h"
 
 class MelissaUtility
 {
@@ -48,4 +49,23 @@ public:
             return "b " + std::to_string(pitch * -1);
         }
     }
+    
+    static StringArray splitString(const String& string)
+    {
+        StringArray array;
+        array.addTokens(string, "\n", "\"");
+        return array;
+    }
+    
+    static std::pair<int, int> getStringSize(const Font& font, const String& string)
+    {
+        int maxWidth = 0;
+        const auto stringArray = MelissaUtility::splitString(string);
+        for (int i = 0; i < stringArray.size(); ++i)
+        {
+            const auto width = font.getStringWidth(stringArray[i]);
+            maxWidth = jmax(maxWidth, width);
+        }
+        return std::make_pair(maxWidth + 10, stringArray.size() * font.getHeight());
+    };
 };
