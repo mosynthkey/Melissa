@@ -18,6 +18,7 @@
 #include "MelissaSetListComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaTutorialComponent.h"
+#include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
@@ -51,7 +52,7 @@ public:
     MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
     TableListBox(componentName, this), host_(host)
     {
-        String headerTitles[kNumOfColumn] = { "Name", "Range", "Speed" };
+        String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed" };
         for (int i = 0; i < kNumOfColumn; ++i)
         {
             getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -407,6 +408,7 @@ public:
     void showAboutDialog();
     
     void showTutorial();
+    void showUpdateDialog(bool showIfThereIsNoUpdate = false);
 
 private:
     std::unique_ptr<Melissa> melissa_;
@@ -529,6 +531,8 @@ private:
     bool shouldExit_;
     
     MelissaMIDIControlManager midiControlManager_;
+    
+    std::unique_ptr<TooltipWindow> tooltipWindow_;
     
     void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
     bool isSettingValid() const;

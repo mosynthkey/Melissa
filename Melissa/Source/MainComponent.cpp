@@ -21,8 +21,9 @@ enum
 enum
 {
     kMenuID_MainAbout = 1000,
-    kMenuID_MainPreferences = 1001,
-    kMenuID_MainTutorial = 1002,
+    kMenuID_MainVersionCheck = 1001,
+    kMenuID_MainPreferences = 1002,
+    kMenuID_MainTutorial = 1003,
     kMenuID_FileOpen = 2000,
 };
 
@@ -39,16 +40,39 @@ status_(kStatus_Stop), shouldExit_(false)
     
     getLookAndFeel().setDefaultSansSerifTypeface(Typeface::createSystemTypefaceFor(BinaryData::NotoSansCJKjpRegular_otf, BinaryData::NotoSansCJKjpRegular_otfSize));
     
+    String localizedStrings = "";
     if (SystemStats::getDisplayLanguage() == "ja-JP")
     {
-        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::jaJP_txt, BinaryData::jaJP_txtSize), false));
+#ifdef DEBUG
+        File file("../../../../Resource/Language/ja-JP.txt");
+        if (file.exists())
+        {
+            localizedStrings = file.loadFileAsString();
+        }
+        else
+#endif
+        {
+            localizedStrings = String::createStringFromData(BinaryData::jaJP_txt, BinaryData::jaJP_txtSize);
+        }
     }
     else
     {
-        LocalisedStrings::setCurrentMappings(new LocalisedStrings(String::createStringFromData(BinaryData::enUS_txt, BinaryData::enUS_txtSize), false));
+#ifdef DEBUG
+        File file("../../../../Resource/Language/en-US.txt");
+        if (file.exists())
+        {
+            localizedStrings = file.loadFileAsString();
+        }
+        else
+#endif
+        {
+            localizedStrings = String::createStringFromData(BinaryData::enUS_txt, BinaryData::enUS_txtSize);
+        }
     }
+    LocalisedStrings::setCurrentMappings(new LocalisedStrings(localizedStrings, false));
     
     createUI();
+
     
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -69,7 +93,7 @@ status_(kStatus_Stop), shouldExit_(false)
     
     addKeyListener(this);
     
-    bool isFirstLaunch = true;
+    bool isFirstLaunch = false;
     {
         // load setting file
         settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
@@ -152,6 +176,8 @@ status_(kStatus_Stop), shouldExit_(false)
         });
         showModalDialog(component, TRANS("tutorial"));
     }
+    
+    // showUpdateDialog();
 }
 
 MainComponent::~MainComponent()
@@ -201,12 +227,17 @@ void MainComponent::createUI()
         PopupMenu menu;
         menu.setLookAndFeel(&lookAndFeel_);
         menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
+        menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
         menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
         menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
         const auto result = menu.show();
         if (result == kMenuID_MainAbout)
         {
             showAboutDialog();
+        }
+        else if (result == kMenuID_MainVersionCheck)
+        {
+            showUpdateDialog(true);
         }
         else if (result == kMenuID_MainPreferences)
         {
@@ -362,6 +393,7 @@ void MainComponent::createUI()
     
     {
         speedButton_ = make_unique<MelissaIncDecButton>();
+        speedButton_->setText("100 %");
         speedButton_->onClick_= [this](bool inc, bool b)
         {
             const int sign = inc ? 1 : -1;
@@ -403,6 +435,7 @@ void MainComponent::createUI()
     
     {
         pitchButton_ = make_unique<MelissaIncDecButton>();
+        pitchButton_->setText("Original");
         pitchButton_->onClick_= [this](bool inc, bool b)
         {
             const int sign = inc ? 1 : -1;
@@ -559,7 +592,7 @@ void MainComponent::createUI()
     {
         const String titles_[kNumOfSectionTitles] =
         {
-            "Settings", "A-B Loop",
+            "Settings", "Loop",
 #if defined(ENABLE_SPEEDTRAINER)
             "Speed",
 #endif
@@ -734,8 +767,10 @@ void MainComponent::resized()
     bButton_->setSize(200, 30);
     resetButton_->setSize(100, 30);
     arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
-        { aSetButton_.get(), aButton_.get() },
-        { bSetButton_.get(), bButton_.get() },
+        { aSetButton_.get() },
+        { aButton_.get() },
+        { bSetButton_.get() },
+        { bButton_.get() },
         { resetButton_.get() }
     });
     
@@ -915,9 +950,38 @@ void MainComponent::showTutorial()
         { dynamic_cast<Component*>(volumeSlider_.get()), TRANS("explanation_volume") },
         { dynamic_cast<Component*>(pitchButton_.get()), TRANS("explanation_pitch") },
         { dynamic_cast<Component*>(speedButton_.get()), TRANS("explanation_speed") },
+        { dynamic_cast<Component*>(fileBrowserComponent_.get()), TRANS("explanation_browser") },
     });
     addAndMakeVisible(tutorialComponent_.get());
     resized();
+}
+
+void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)
+{
+    const String latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString();
+    
+    if (latestVersionNumberString == (String("v") + ProjectInfo::versionString))
+    {
+        if (showIfThereIsNoUpdate)
+        {
+            NativeMessageBox::showMessageBox(AlertWindow::NoIcon, TRANS("update"), TRANS("there_is_no_update"), this);
+        }
+    }
+    else if (latestVersionNumberString == "")
+    {
+        if (showIfThereIsNoUpdate)
+        {
+            NativeMessageBox::showMessageBox(AlertWindow::NoIcon, TRANS("update"), TRANS("failed_to_get_update"), this);
+        }
+    }
+    else
+    {
+        const auto result = NativeMessageBox::showYesNoBox(AlertWindow::NoIcon, TRANS("update"), TRANS("there_is_update"), this);
+        if (result == 1)
+        {
+            URL("https://github.com/mosynthkey/Melissa/releases").launchInDefaultBrowser();
+        }
+    }
 }
 
 void MainComponent::closeModalDialog()

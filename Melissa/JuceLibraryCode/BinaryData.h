@@ -15,7 +15,7 @@ namespace BinaryData
     const int            enUS_txtSize = 593;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 1626;
+    const int            jaJP_txtSize = 1973;
 
     extern const char*   icon_png;
     const int            icon_pngSize = 352351;
