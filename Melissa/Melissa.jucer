@@ -121,6 +121,10 @@
             file="Source/MelissaTutorialComponent.cpp"/>
       <FILE id="lEYbQo" name="MelissaTutorialComponent.h" compile="0" resource="0"
             file="Source/MelissaTutorialComponent.h"/>
+      <FILE id="ZG1AhD" name="MelissaUpdateChecker.cpp" compile="1" resource="0"
+            file="Source/MelissaUpdateChecker.cpp"/>
+      <FILE id="IChU9I" name="MelissaUpdateChecker.h" compile="0" resource="0"
+            file="Source/MelissaUpdateChecker.h"/>
       <FILE id="dpnjGP" name="MelissaUtility.h" compile="0" resource="0"
             file="Source/MelissaUtility.h"/>
       <FILE id="MLWaqo" name="MelissaWaveformControlComponent.cpp" compile="1"

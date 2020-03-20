@@ -24,3 +24,8 @@ countries: ja
 "end" = "終了"
 "first_message" = "Melissaをダウンロードしていただきありがとうございます。\nチュートリアルを開始しますか？"
 "tutorial" = "チュートリアル"
+"there_is_update" = "新しいバージョンがリリースされています。\nサイトからダウンロードしますか？"
+"there_is_no_update" = "最新バージョンを利用しています。"
+"update" = "アップデート"
+"check_update" = "最新版をチェック"
+"failed_to_get_update" = "アップデートの取得に失敗しました。"

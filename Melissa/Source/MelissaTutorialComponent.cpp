@@ -4,6 +4,7 @@
 
 MelissaTutorialComponent::MelissaTutorialComponent(MelissaHost* host) : host_(host), currentPage_(0)
 {
+    setInterceptsMouseClicks(false, true);
     skipButton_ = std::make_unique<TextButton>();
     skipButton_->setSize(100, 30);
     skipButton_->setButtonText(TRANS("skip"));
@@ -64,7 +65,10 @@ void MelissaTutorialComponent::update()
     explanationLabel_->setFont(22);
     const auto labelSize = MelissaUtility::getStringSize(explanationLabel_->getFont(), explanation);
     explanationLabel_->setSize(labelSize.first + 10, labelSize.second);
-    explanationLabel_->setTopLeftPosition(targetRect.getX(), targetRect.getBottom() + 20);
+    
+    int expLabalY = targetRect.getBottom() + 20;
+    if (getHeight() < expLabalY) expLabalY = targetRect.getY() - 20 - (explanationLabel_->getHeight() + 10 + nextButton_->getHeight());
+    explanationLabel_->setTopLeftPosition(targetRect.getX(), expLabalY);
     
     int explanationLabelX = explanationLabel_->getRight() - nextButton_->getWidth();
     if (getWidth() <= explanationLabelX + explanationLabel_->getWidth())
