@@ -4,8 +4,7 @@ Now preparing for release...
 
 <div align="center"><image src="Images/logo.png"></div>
 
-<h1 align="center">A music player for musical instrument practice</h1>
-<h2 align="center">for macOS and Windows</h2>
+<h1 align="center">A music player for musical instrument practice<br>for macOS and Windows</h1>
 
 ![uiimage](Images/screenshot.png)
 
