@@ -1,3 +1,7 @@
+Now preparing for release...
+
+---
+
 <div align="center"><image src="Images/logo.png"></div>
 
 <h1 align="center">A music player for musical instrument practice</h1>
@@ -18,5 +22,5 @@ git submodule update --init
 4. Create and open a Xcode project file or Visual Studio solution on Projucer
 
 ## License
-[LGPL-2.1 (c) Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2020 Masaki Ono](LICENSE)
 
