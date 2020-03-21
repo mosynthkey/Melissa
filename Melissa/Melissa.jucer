@@ -111,10 +111,10 @@
             resource="0" file="Source/MelissaPreferencesComponent.h"/>
       <FILE id="mFN7uL" name="MelissaScrollLabel.h" compile="0" resource="0"
             file="Source/MelissaScrollLabel.h"/>
-      <FILE id="doQeGb" name="MelissaSetListComponent.cpp" compile="1" resource="0"
-            file="Source/MelissaSetListComponent.cpp"/>
-      <FILE id="myIy6s" name="MelissaSetListComponent.h" compile="0" resource="0"
-            file="Source/MelissaSetListComponent.h"/>
+      <FILE id="doQeGb" name="MelissaPlaylistComponent.cpp" compile="1" resource="0"
+            file="Source/MelissaPlaylistComponent.cpp"/>
+      <FILE id="myIy6s" name="MelissaPlaylistComponent.h" compile="0" resource="0"
+            file="Source/MelissaPlaylistComponent.h"/>
       <FILE id="EVz2Vf" name="MelissaToHeadButton.h" compile="0" resource="0"
             file="Source/MelissaToHeadButton.h"/>
       <FILE id="VcylMM" name="MelissaTutorialComponent.cpp" compile="1" resource="0"

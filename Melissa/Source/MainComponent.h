@@ -12,10 +12,10 @@
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaOkCancelDialog.h"
+#include "MelissaPlaylistComponent.h"
 #include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
-#include "MelissaSetListComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
@@ -28,7 +28,7 @@
 enum FileChooserTab
 {
     kFileChooserTab_Browse,
-    kFileChooserTab_SetList,
+    kFileChooserTab_Playlist,
     kFileChooserTab_Recent,
     kNumOfFileChooserTabs
 };
@@ -351,7 +351,7 @@ public:
     
     // Melissa
     void updatePracticeList(const Array<var>& list) override;
-    void createSetlist(const String& name) override;
+    void createPlaylist(const String& name) override;
     bool loadFile(const String& filePath) override;
     void showModalDialog(std::shared_ptr<Component> component, const String& title) override;
     void showPreferencesDialog() override;
@@ -475,7 +475,7 @@ private:
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
-    std::unique_ptr<MelissaSetListComponent> setListComponent_;
+    std::unique_ptr<MelissaPlaylistComponent> setListComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
     
     std::unique_ptr<FileChooser> fileChooser_;

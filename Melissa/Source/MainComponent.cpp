@@ -142,9 +142,9 @@ status_(kStatus_Stop), shouldExit_(false)
         }
         recentTable_->setList(*recent_);
         
-        if (setting_.hasProperty("setlist"))
+        if (setting_.hasProperty("playlist"))
         {
-            setList_ = setting_["setlist"].getArray();
+            setList_ = setting_["playlist"].getArray();
             setListComponent_->setData(*setList_);
         }
         
@@ -442,10 +442,10 @@ void MainComponent::createUI()
     addAndMakeVisible(browseToggleButton_.get());
     
     setListToggleButton_ = make_unique<ToggleButton>();
-    setListToggleButton_->setButtonText("Setlist");
+    setListToggleButton_->setButtonText("Playlist");
     setListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
     setListToggleButton_->setRadioGroupId(kFileChooserTabGroup);
-    setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_SetList); };
+    setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Playlist); };
     setListToggleButton_->setToggleState(false, dontSendNotification);
     addAndMakeVisible(setListToggleButton_.get());
     
@@ -558,7 +558,7 @@ void MainComponent::createUI()
     }
     
     // Set List
-    setListComponent_ = make_unique<MelissaSetListComponent>(this);
+    setListComponent_ = make_unique<MelissaPlaylistComponent>(this);
     addChildComponent(setListComponent_.get());
     
     for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
@@ -662,7 +662,7 @@ void MainComponent::resized()
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 20);
     
     
-    // left-bottom part (Browser / SetList / Recent)
+    // left-bottom part (Browser / Playlist / Recent)
     {
         constexpr int32_t tabMargin = 2;
         int32_t browserWidth = 480;
@@ -833,12 +833,12 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
     }
     else
     {
-        showModalDialog(std::make_shared<MelissaInputDialog>(this, TRANS("detect_multifiles_drop"),  "new setlist", [&, files](const String& setlistName) {
-            createSetlist(setlistName);
-            for (auto&& file : files) setListComponent_->addToSetlist(file);
+        showModalDialog(std::make_shared<MelissaInputDialog>(this, TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
+            createPlaylist(playlistName);
+            for (auto&& file : files) setListComponent_->addToPlaylist(file);
             loadFile(files[0]);
             closeModalDialog();
-        }), TRANS("new_setlist"));
+        }), TRANS("new_playlist"));
     }
 }
 
@@ -883,9 +883,9 @@ void MainComponent::updatePracticeList(const Array<var>& list)
     }
 }
 
-void MainComponent::createSetlist(const String& name)
+void MainComponent::createPlaylist(const String& name)
 {
-    setListComponent_->createSetlist(name, true);
+    setListComponent_->createPlaylist(name, true);
 }
 
 bool MainComponent::loadFile(const String& filePath)
@@ -1044,7 +1044,7 @@ void MainComponent::timerCallback()
 void MainComponent::updateFileChooserTab(FileChooserTab tab)
 {
     fileBrowserComponent_->setVisible(tab == kFileChooserTab_Browse);
-    setListComponent_->setVisible(tab == kFileChooserTab_SetList);
+    setListComponent_->setVisible(tab == kFileChooserTab_Playlist);
     recentTable_->setVisible(tab == kFileChooserTab_Recent);
 }
 
@@ -1291,7 +1291,7 @@ void MainComponent::createSettingsFile()
     current->setProperty("pitch", model_->getPitch());
     all->setProperty("current", var(current));
     all->setProperty("recent", Array<var>());
-    all->setProperty("setlist", Array<var>());
+    all->setProperty("playlist", Array<var>());
     all->setProperty("songs", Array<var>());
     
     settingsFile_.replaceWithText(JSON::toString(all));
@@ -1322,7 +1322,7 @@ void MainComponent::saveSettings()
     current->setProperty("speed", model_->getSpeed());
     current->setProperty("pitch", model_->getPitch());
     
-    setting_.getDynamicObject()->setProperty("setlist", setListComponent_->getData());
+    setting_.getDynamicObject()->setProperty("playlist", setListComponent_->getData());
     
     settingsFile_.replaceWithText(JSON::toString(setting_));
 }
@@ -1380,7 +1380,7 @@ void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector
 
 bool MainComponent::isSettingValid() const
 {
-    return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("recent") &&setting_.hasProperty("setlist") &&setting_.hasProperty("songs"));
+    return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("recent") &&setting_.hasProperty("playlist") &&setting_.hasProperty("songs"));
 }
 
 void MainComponent::volumeChanged(float volume)
