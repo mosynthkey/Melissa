@@ -23,6 +23,8 @@
 #include "MelissaWaveformControlComponent.h"
 
 
+#define SHOW_BOTTOM
+
 enum FileChooserTab
 {
     kFileChooserTab_Browse,

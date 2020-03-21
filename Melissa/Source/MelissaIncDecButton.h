@@ -43,15 +43,17 @@ public:
 class MelissaIncDecButton : public Component
 {
 public:
-    MelissaIncDecButton()
+    MelissaIncDecButton(const String& decTooltipStr = "", const String& incTooltipStr = "")
     {
         label_ = std::make_unique<MelissaLabel>();
         addAndMakeVisible(label_.get());
         
         decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClick_ != nullptr) onClick_(false, b); });
+        decButton_->setTooltip(decTooltipStr);
         addAndMakeVisible(decButton_.get());
         
         incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton, [this](bool b) { if (onClick_ != nullptr) onClick_(true, b); });
+        incButton_->setTooltip(incTooltipStr);
         addAndMakeVisible(incButton_.get());
     }
     

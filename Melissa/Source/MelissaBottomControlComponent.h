@@ -8,15 +8,8 @@
 class MelissaBottomControlComponent : public Component
 {
 public:
-    MelissaBottomControlComponent(MelissaHost* host);
-    void setTooltipText(const String& tooltipText);
+    MelissaBottomControlComponent();
     
     // Component
     void paint(Graphics& g) override;
-    void resized() override;
-    
-public:
-    MelissaHost* host_;
-    std::unique_ptr<Label> tooltipLabel_;
-    std::unique_ptr<MelissaSimpleTextButton> preferencesButton_;
 };

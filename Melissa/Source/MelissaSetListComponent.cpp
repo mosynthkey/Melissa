@@ -19,6 +19,7 @@ void MelissaSetListComponent::createUI()
     
     newSetListButton_ = std::make_unique<TextButton>();
     newSetListButton_->setButtonText("New");
+    newSetListButton_->setTooltip(TRANS("tooltip_new_playlist"));
     newSetListButton_->onClick = [&]()
     {
         auto inputDialog = std::make_shared<MelissaInputDialog>(host_, TRANS("enter_setlist_name"), "new", [&](const String& text) {
@@ -32,6 +33,7 @@ void MelissaSetListComponent::createUI()
     
     removeSetListButton_ = std::make_unique<TextButton>();
     removeSetListButton_->setButtonText("Remove");
+    removeSetListButton_->setTooltip(TRANS("tooltip_remove_setlist"));
     removeSetListButton_->onClick = [&]()
     {
         if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, TRANS("remove_setlist"), TRANS("are_you_sure")) == 0) return;
@@ -48,6 +50,7 @@ void MelissaSetListComponent::createUI()
     
     addToSetListButton_ = std::make_unique<TextButton>();
     addToSetListButton_->setButtonText("Add");
+    addToSetListButton_->setTooltip(TRANS("tooltip_addto_setlist"));
     addToSetListButton_->onClick = [&]()
     {
         fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_setlist"), File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);

@@ -2,7 +2,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class MelissaLabel : public Component
+class MelissaLabel : public Component, public SettableTooltipClient
 {
 public:
     MelissaLabel() :
