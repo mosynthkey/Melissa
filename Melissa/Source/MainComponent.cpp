@@ -27,7 +27,6 @@ enum
     kMenuID_FileOpen = 2000,
 };
 
-
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop), shouldExit_(false)
 {
@@ -176,8 +175,6 @@ status_(kStatus_Stop), shouldExit_(false)
         });
         showModalDialog(component, TRANS("tutorial"));
     }
-    
-    // showUpdateDialog();
 }
 
 MainComponent::~MainComponent()
@@ -197,6 +194,7 @@ MainComponent::~MainComponent()
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
     practiceTable_->setLookAndFeel(nullptr);
+    tooltipWindow_->setLookAndFeel(nullptr);
     
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(nullptr);
@@ -209,6 +207,9 @@ MainComponent::~MainComponent()
 void MainComponent::createUI()
 {
     setLookAndFeel(&lookAndFeel_);
+    
+    tooltipWindow_ = std::make_unique<TooltipWindow>(this, 0);
+    tooltipWindow_->setLookAndFeel(&lookAndFeel_);
     
     menuBar_ = make_unique<MenuBarComponent>(this);
     addAndMakeVisible(menuBar_.get());
@@ -259,7 +260,8 @@ void MainComponent::createUI()
     addAndMakeVisible(controlComponent_.get());
     
 #if defined(SHOW_BOTTOM)
-    bottomComponent_ = make_unique<MelissaBottomControlComponent>(this);
+    bottomComponent_ = make_unique<MelissaBottomControlComponent>();
+    lookAndFeel_.setBottomComponent(bottomComponent_.get());
     addAndMakeVisible(bottomComponent_.get());
 #endif
     
@@ -319,90 +321,77 @@ void MainComponent::createUI()
     addAndMakeVisible(analyzeButton_.get());
 #endif
     
+    volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+    volumeSlider_->setRange(0.01f, 2.0f);
+    volumeSlider_->setValue(0.f);
+    volumeSlider_->onValueChange = [this]()
     {
-        volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
-        volumeSlider_->setRange(0.01f, 2.0f);
-        volumeSlider_->setValue(0.f);
-        volumeSlider_->onValueChange = [this]()
-        {
-            model_->setVolume(volumeSlider_->getValue());
-        };
-        addAndMakeVisible(volumeSlider_.get());
-    }
-    
+        model_->setVolume(volumeSlider_->getValue());
+    };
+    addAndMakeVisible(volumeSlider_.get());
+
+    aButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
+    aButton_->setText("-:--");
+    aButton_->onClick_= [this](bool inc, bool b)
     {
-        aButton_ = make_unique<MelissaIncDecButton>();
-        aButton_->setText("-:--");
-        aButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
-            updateAButtonLabel();
-        };
-        addAndMakeVisible(aButton_.get());
-    }
-    
+        const int sign = inc ? 1 : -1;
+        model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
+        updateAButtonLabel();
+    };
+    addAndMakeVisible(aButton_.get());
+
+    aSetButton_ = make_unique<TextButton>();
+    aSetButton_->setButtonText("A");
+    aSetButton_->setTooltip(TRANS("tooltip_loop_start_set"));
+    aSetButton_->onClick = [this]()
     {
-        aSetButton_ = make_unique<TextButton>();
-        aSetButton_->setButtonText("A");
-        aSetButton_->onClick = [this]()
-        {
-            model_->setLoopAPosMSec(model_->getPlayingPosMSec());
-            updateAButtonLabel();
-        };
-        addAndMakeVisible(aSetButton_.get());
-    }
-    
+        model_->setLoopAPosMSec(model_->getPlayingPosMSec());
+        updateAButtonLabel();
+    };
+    addAndMakeVisible(aSetButton_.get());
+
+    bButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
+    bButton_->setText("-:--");
+    bButton_->setBounds(0, 240, 140, 34);
+    bButton_->onClick_= [this](bool inc, bool b)
     {
-        bButton_ = make_unique<MelissaIncDecButton>();
-        bButton_->setText("-:--");
-        bButton_->setBounds(0, 240, 140, 34);
-        bButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
-            updateBButtonLabel();
-        };
-        addAndMakeVisible(bButton_.get());
-    }
-    
+        const int sign = inc ? 1 : -1;
+        model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
+        updateBButtonLabel();
+    };
+    addAndMakeVisible(bButton_.get());
+
+    bSetButton_ = make_unique<TextButton>();
+    bSetButton_->setButtonText("B");
+    bSetButton_->setTooltip(TRANS("tooltip_loop_end_set"));
+    bSetButton_->onClick = [this]()
     {
-        bSetButton_ = make_unique<TextButton>();
-        bSetButton_->setButtonText("B");
-        bSetButton_->onClick = [this]()
-        {
-            model_->setLoopBPosMSec(model_->getPlayingPosMSec());
-            updateBButtonLabel();
-        };
-        addAndMakeVisible(bSetButton_.get());
-    }
-    
+        model_->setLoopBPosMSec(model_->getPlayingPosMSec());
+        updateBButtonLabel();
+    };
+    addAndMakeVisible(bSetButton_.get());
+
+    resetButton_ = make_unique<TextButton>();
+    resetButton_->setButtonText("Reset");
+    resetButton_->setTooltip(TRANS("tooltip_loop_reset"));
+    resetButton_->onClick = [this]() { resetLoop(); };
+    addAndMakeVisible(resetButton_.get());
+
+    tie_[0] = std::make_unique<MelissaTieComponent>(aSetButton_.get(), aButton_.get());
+    addAndMakeVisible(tie_[0].get());
+    tie_[1] = std::make_unique<MelissaTieComponent>(bSetButton_.get(), bButton_.get());
+    addAndMakeVisible(tie_[1].get());
+
+    speedButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
+    speedButton_->setText("100 %");
+    speedButton_->onClick_= [this](bool inc, bool b)
     {
-        resetButton_ = make_unique<TextButton>();
-        resetButton_->setButtonText("Reset");
-        resetButton_->onClick = [this]() { resetLoop(); };
-        addAndMakeVisible(resetButton_.get());
-    }
-    
-    {
-        tie_[0] = std::make_unique<MelissaTieComponent>(aSetButton_.get(), aButton_.get());
-        addAndMakeVisible(tie_[0].get());
-        tie_[1] = std::make_unique<MelissaTieComponent>(bSetButton_.get(), bButton_.get());
-        addAndMakeVisible(tie_[1].get());
-    }
-    
-    {
-        speedButton_ = make_unique<MelissaIncDecButton>();
-        speedButton_->setText("100 %");
-        speedButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
-            updateSpeedButtonLabel();
-        };
-        speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        addAndMakeVisible(speedButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
+        updateSpeedButtonLabel();
+    };
+    speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+    addAndMakeVisible(speedButton_.get());
     
 #if defined(ENABLE_SPEEDTRAINER)
     speedIncPerButton_ = make_unique<MelissaIncDecButton>();
@@ -433,122 +422,106 @@ void MainComponent::createUI()
     addAndMakeVisible(speedIncMaxButton_.get());
 #endif
     
+    pitchButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
+    pitchButton_->setText("Original");
+    pitchButton_->onClick_= [this](bool inc, bool b)
     {
-        pitchButton_ = make_unique<MelissaIncDecButton>();
-        pitchButton_->setText("Original");
-        pitchButton_->onClick_= [this](bool inc, bool b)
-        {
-            const int sign = inc ? 1 : -1;
-            model_->setPitch(model_->getPitch() + sign);
-            updatePitchButtonLabel();
-        };
-        pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        addAndMakeVisible(pitchButton_.get());
-    }
+        const int sign = inc ? 1 : -1;
+        model_->setPitch(model_->getPitch() + sign);
+        updatePitchButtonLabel();
+    };
+    pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+    addAndMakeVisible(pitchButton_.get());
     
+    browseToggleButton_ = make_unique<ToggleButton>();
+    browseToggleButton_->setButtonText("Browse");
+    browseToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    browseToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+    browseToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
+    browseToggleButton_->setToggleState(true, dontSendNotification);
+    addAndMakeVisible(browseToggleButton_.get());
+    
+    setListToggleButton_ = make_unique<ToggleButton>();
+    setListToggleButton_->setButtonText("Setlist");
+    setListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    setListToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+    setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_SetList); };
+    setListToggleButton_->setToggleState(false, dontSendNotification);
+    addAndMakeVisible(setListToggleButton_.get());
+    
+    recentToggleButton_ = make_unique<ToggleButton>();
+    recentToggleButton_->setButtonText("Recent");
+    recentToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    recentToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+    recentToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Recent); };
+    recentToggleButton_->setToggleState(false, dontSendNotification);
+    addAndMakeVisible(recentToggleButton_.get());
+
+    recentTable_ = make_unique<MelissaFileListBox>(this);
+    recentTable_->setLookAndFeel(&lookAndFeel_);
+    addAndMakeVisible(recentTable_.get());
+
+    practiceTable_ = make_unique<MelissaPracticeTableListBox>(this);
+    addAndMakeVisible(practiceTable_.get());
+
+    memoTextEditor_ = make_unique<TextEditor>();
+    memoTextEditor_->setLookAndFeel(nullptr);
+    memoTextEditor_->setFont(Font(22));
+    memoTextEditor_->setMultiLine(true, false);
+    memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
+    memoTextEditor_->onFocusLost = [&]()
     {
-        browseToggleButton_ = make_unique<ToggleButton>();
-        browseToggleButton_->setButtonText("Browse");
-        browseToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        browseToggleButton_->setRadioGroupId(kFileChooserTabGroup);
-        browseToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
-        browseToggleButton_->setToggleState(true, dontSendNotification);
-        addAndMakeVisible(browseToggleButton_.get());
+        saveMemo();
+    };
+    memoTextEditor_->setReturnKeyStartsNewLine(true);
+    addAndMakeVisible(memoTextEditor_.get());
+
+    practiceListToggleButton_ = make_unique<ToggleButton>();
+    practiceListToggleButton_ = make_unique<ToggleButton>();
+    practiceListToggleButton_->setButtonText("Practice List");
+    practiceListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    practiceListToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
+    practiceListToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Practice); };
+    addAndMakeVisible(practiceListToggleButton_.get());
+    
+    memoToggleButton_ = make_unique<ToggleButton>();
+    memoToggleButton_->setButtonText("Memo");
+    memoToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    memoToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
+    memoToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Memo); };
+    addAndMakeVisible(memoToggleButton_.get());
+    
+    practiceListToggleButton_->setToggleState(true, dontSendNotification);
+
+    addToListButton_ = make_unique<TextButton>();
+    addToListButton_->setButtonText("Add");
+    addToListButton_->onClick = [this]()
+    {
+        const String defaultName = MelissaUtility::getFormattedTimeSec(model_->getLoopAPosMSec() / 1000.f) + " - " + MelissaUtility::getFormattedTimeSec(model_->getLoopBPosMSec() / 1000.f);
+        auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), defaultName, [&](const String& text) {
+            String name(text);
+            if (name.isEmpty()) name = defaultName;
+            addToPracticeList(name);
+            if (auto songs = setting_["songs"].getArray())
+            {
+                auto song = getSongSetting(fileFullPath_);
+                practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
+                closeModalDialog();
+            }
+        });
+        showModalDialog(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
-        setListToggleButton_ = make_unique<ToggleButton>();
-        setListToggleButton_->setButtonText("Setlist");
-        setListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        setListToggleButton_->setRadioGroupId(kFileChooserTabGroup);
-        setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_SetList); };
-        setListToggleButton_->setToggleState(false, dontSendNotification);
-        addAndMakeVisible(setListToggleButton_.get());
-        
-        recentToggleButton_ = make_unique<ToggleButton>();
-        recentToggleButton_->setButtonText("Recent");
-        recentToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        recentToggleButton_->setRadioGroupId(kFileChooserTabGroup);
-        recentToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Recent); };
-        recentToggleButton_->setToggleState(false, dontSendNotification);
-        addAndMakeVisible(recentToggleButton_.get());
-    }
-    
-    {
-        recentTable_ = make_unique<MelissaFileListBox>(this);
-        recentTable_->setLookAndFeel(&lookAndFeel_);
-        addAndMakeVisible(recentTable_.get());
-    }
-    
-    {
-        practiceTable_ = make_unique<MelissaPracticeTableListBox>(this);
-        addAndMakeVisible(practiceTable_.get());
-    }
-    
-    {
-        memoTextEditor_ = make_unique<TextEditor>();
-        memoTextEditor_->setLookAndFeel(nullptr);
-        memoTextEditor_->setFont(Font(22));
-        memoTextEditor_->setMultiLine(true, false);
-        memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
-        memoTextEditor_->onFocusLost = [&]()
-        {
-            saveMemo();
-        };
-        memoTextEditor_->setReturnKeyStartsNewLine(true);
-        addAndMakeVisible(memoTextEditor_.get());
-    }
-    
-    {
-        practiceListToggleButton_ = make_unique<ToggleButton>();
-        practiceListToggleButton_ = make_unique<ToggleButton>();
-        practiceListToggleButton_->setButtonText("Practice List");
-        practiceListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        practiceListToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
-        practiceListToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Practice); };
-        addAndMakeVisible(practiceListToggleButton_.get());
-        
-        memoToggleButton_ = make_unique<ToggleButton>();
-        memoToggleButton_->setButtonText("Memo");
-        memoToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-        memoToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
-        memoToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Memo); };
-        addAndMakeVisible(memoToggleButton_.get());
-        
-        practiceListToggleButton_->setToggleState(true, dontSendNotification);
-    }
-    
-    {
-        addToListButton_ = make_unique<TextButton>();
-        addToListButton_->setButtonText("Add");
-        addToListButton_->onClick = [this]()
-        {
-            const String defaultName = MelissaUtility::getFormattedTimeSec(model_->getLoopAPosMSec() / 1000.f) + " - " + MelissaUtility::getFormattedTimeSec(model_->getLoopBPosMSec() / 1000.f);
-            auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), defaultName, [&](const String& text) {
-                String name(text);
-                if (name.isEmpty()) name = defaultName;
-                addToPracticeList(name);
-                if (auto songs = setting_["songs"].getArray())
-                {
-                    auto song = getSongSetting(fileFullPath_);
-                    practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
-                    closeModalDialog();
-                }
-            });
-            showModalDialog(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
-            
-        };
-        addAndMakeVisible(addToListButton_.get());
-    }
-    
-    {
-        wildCardFilter_ = make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a;*.flac;*.ogg;*.w", "*", "Music Files");
-        fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
-                                                                  File::getSpecialLocation(File::userHomeDirectory),
-                                                                  wildCardFilter_.get(),
-                                                                  nullptr);
-        fileBrowserComponent_->setColour(ListBox::backgroundColourId, Colours::transparentWhite);
-        fileBrowserComponent_->addListener(this);
-        addAndMakeVisible(fileBrowserComponent_.get());
-    }
+    };
+    addAndMakeVisible(addToListButton_.get());
+
+    wildCardFilter_ = make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a;*.flac;*.ogg;*.w", "*", "Music Files");
+    fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
+                                                              File::getSpecialLocation(File::userHomeDirectory),
+                                                              wildCardFilter_.get(),
+                                                              nullptr);
+    fileBrowserComponent_->setColour(ListBox::backgroundColourId, Colours::transparentWhite);
+    fileBrowserComponent_->addListener(this);
+    addAndMakeVisible(fileBrowserComponent_.get());
     
     // Labels
     {

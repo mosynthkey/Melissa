@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaUtility.h"
 
 static constexpr float lineThickness = 1.4;
 
@@ -16,6 +17,11 @@ public:
     }
     
     virtual ~MelissaLookAndFeel() {};
+    
+    void setBottomComponent(Component* bottomComponent)
+    {
+        bottomComponent_ = bottomComponent;
+    }
     
     void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
@@ -279,6 +285,46 @@ public:
             listAsComp->setBounds(0, currentPathBox->getBottom() + margin, w, listHeight);
         }
     }
+    
+    Rectangle<int> getTooltipBounds(const String& tipText, Point<int> screenPos, Rectangle<int> parentArea) override
+    {
+        if (bottomComponent_ == nullptr)
+        {
+            int w, h;
+            std::tie(w, h) = MelissaUtility::getStringSize(Font(20), tipText);
+            w += 10;
+            h += 4;
+            
+            return Rectangle<int> (screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 12) : screenPos.x + 24,
+                                   screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 6)  : screenPos.y + 6,
+                                   w, h).constrainedWithin(parentArea);
+        }
+        else
+        {
+            return bottomComponent_->getBounds().reduced(20, 0).withWidth(bottomComponent_->getWidth() - 100);
+        }
+    }
+    
+    void drawTooltip(Graphics& g, const String& text, int width, int height) override
+    {
+        Rectangle<int> bounds (width, height);
+        
+        if (bottomComponent_ == nullptr)
+        {
+            g.setColour(Colours::white.withAlpha(0.8f));
+            g.fillRoundedRectangle(0, 0, width, height, height / 2);
+            
+            g.setColour(Colours::black/* Colour(MelissaColourScheme::DialogBackgoundColour())*/);
+            g.fillRoundedRectangle(1, 1, width - 2, height - 2, (height - 2) / 2);
+        }
+        g.fillAll(Colour(0xff2B2D31));
+        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setFont(Font(20));
+        g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
+    }
+    
+private:
+    Component* bottomComponent_;
 };
 
 class MelissaLookAndFeel_Tab : public LookAndFeel_V4
