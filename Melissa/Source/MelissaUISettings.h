@@ -26,7 +26,7 @@ public:
     {
         if (isMac)
         {
-            return isJa ? 15 : 17;
+            return isJa ? 16 : 17;
         }
         else
         {
@@ -38,7 +38,7 @@ public:
     {
         if (isMac)
         {
-            return isJa ? 13 : 15;
+            return isJa ? 14 : 15;
         }
         else
         {
