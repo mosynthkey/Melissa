@@ -47,7 +47,7 @@ status_(kStatus_Stop), shouldExit_(false)
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
     
-    MelissaUISettings::isJa = false;//(SystemStats::getDisplayLanguage() == "ja-JP");
+    MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
     MelissaUISettings::isMac = isMac;
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::FontName());
     
