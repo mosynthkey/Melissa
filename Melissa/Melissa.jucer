@@ -3,13 +3,10 @@
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.7"
               cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\AudioLib"
               version="1.0.0" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono "
-              companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa">
+              companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
+              compilerFlagSchemes="">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
-      <GROUP id="{55A9D247-4C5C-0676-F3A0-910D91DE75CC}" name="Font">
-        <FILE id="zY5jlC" name="NotoSansCJKjp-Regular.otf" compile="0" resource="1"
-              file="Resource/Font/NotoSansCJKjp-Regular.otf"/>
-      </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
         <FILE id="FtRcUX" name="ja-JP.txt" compile="0" resource="1" file="Resource/Language/ja-JP.txt"/>
@@ -158,7 +155,7 @@
         <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2017 targetFolder="Builds/VisualStudio2017" bigIcon="Y3ewMD" smallIcon="Y3ewMD">
+    <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
@@ -178,7 +175,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
       </MODULEPATHS>
-    </VS2017>
+    </VS2019>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
