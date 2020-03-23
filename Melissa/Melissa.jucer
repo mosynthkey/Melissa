@@ -116,6 +116,8 @@
             file="Source/MelissaTutorialComponent.cpp"/>
       <FILE id="lEYbQo" name="MelissaTutorialComponent.h" compile="0" resource="0"
             file="Source/MelissaTutorialComponent.h"/>
+      <FILE id="ayWghx" name="MelissaUISettings.cpp" compile="1" resource="0"
+            file="Source/MelissaUISettings.cpp"/>
       <FILE id="OENelF" name="MelissaUISettings.h" compile="0" resource="0"
             file="Source/MelissaUISettings.h"/>
       <FILE id="ZG1AhD" name="MelissaUpdateChecker.cpp" compile="1" resource="0"

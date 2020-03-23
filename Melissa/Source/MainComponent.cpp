@@ -47,15 +47,13 @@ status_(kStatus_Stop), shouldExit_(false)
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
     
+    MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
+    MelissaUISettings::isMac = isMac;
+    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::FontName());
+    
     String localizedStrings = "";
-    if (SystemStats::getDisplayLanguage() == "ja-JP")
+    if (MelissaUISettings::isJa)
     {
-#ifdef JUCE_WINDOWS
-        getLookAndFeel().setDefaultSansSerifTypefaceName("Meiryo UI");
-#else
-
-#endif
-
 #ifdef DEBUG
         File file("../../../../Resource/Language/ja-JP.txt");
         if (file.exists())
