@@ -5,7 +5,17 @@
 #include "MelissaInputDialog.h"
 #include "MelissaUtility.h"
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
 using std::make_unique;
+
+#if defined(JUCE_MAC)
+constexpr bool isMac = true;
+#else
+constexpr bool isMac = false;
+#endif
 
 enum
 {
@@ -37,11 +47,15 @@ status_(kStatus_Stop), shouldExit_(false)
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
     
-    getLookAndFeel().setDefaultSansSerifTypeface(Typeface::createSystemTypefaceFor(BinaryData::NotoSansCJKjpRegular_otf, BinaryData::NotoSansCJKjpRegular_otfSize));
-    
     String localizedStrings = "";
     if (SystemStats::getDisplayLanguage() == "ja-JP")
     {
+#ifdef JUCE_WINDOWS
+        getLookAndFeel().setDefaultSansSerifTypefaceName("Meiryo UI");
+#else
+
+#endif
+
 #ifdef DEBUG
         File file("../../../../Resource/Language/ja-JP.txt");
         if (file.exists())
@@ -1303,7 +1317,7 @@ var MainComponent::getSongSetting(String fileName)
     return var();
 }
 
-void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
+void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
 {
     // measure
     const int marginNarrow = 10 * widthRatio;
