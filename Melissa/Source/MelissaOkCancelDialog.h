@@ -34,14 +34,14 @@ public:
         okButton_->setButtonText("OK");
         okButton_->onClick = [&]() {
             onClick_();
-            host_->closeModalDialog();
+            MelissaModalDialog::close();
         };
         addAndMakeVisible(okButton_.get());
         
         cancelButton_ = std::make_unique<TextButton>();
         cancelButton_->setBounds(width - (margin + buttonWidth), margin * 2 + labelSize.second, buttonWidth, controlHeight);
         cancelButton_->setButtonText(TRANS("cancel"));
-        cancelButton_->onClick = [&]() { host_->closeModalDialog(); };
+        cancelButton_->onClick = [&]() { MelissaModalDialog::close(); };
         addAndMakeVisible(cancelButton_.get());
     }
     

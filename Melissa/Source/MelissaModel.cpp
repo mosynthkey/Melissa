@@ -35,43 +35,48 @@ void MelissaModel::setSpeed(int speed)
 
 void MelissaModel::setLoopPosRatio(float aPosRatio, float bPosRatio)
 {
-    if (aPosRatio < 0.f || 1.f < aPosRatio || bPosRatio < 0.f || 1.f < bPosRatio || lengthMSec_ < 0.f) return;
-    
-    aPosRatio_ = aPosRatio;
-    bPosRatio_ = bPosRatio;
-    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    if (0 < lengthMSec_ && 0.f <= aPosRatio && aPosRatio < bPosRatio && bPosRatio <= 1.f)
+    {
+        aPosRatio_ = aPosRatio;
+        bPosRatio_ = bPosRatio;
+        for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    }
 }
 
 void MelissaModel::setLoopAPosRatio(float aPosRatio)
 {
-    if (aPosRatio < 0.f || 1.f < aPosRatio || lengthMSec_ < 0.f) return;
-    
-    aPosRatio_ = aPosRatio;
-    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    if (0 < lengthMSec_ && 0.f <= aPosRatio && aPosRatio < bPosRatio_)
+    {
+        aPosRatio_ = aPosRatio;
+        for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    }
 }
 
 void MelissaModel::setLoopAPosMSec(float aPosMSec)
 {
-    if (aPosMSec < 0 || lengthMSec_ < aPosMSec || lengthMSec_ < 0.f) return;
-    
-    aPosRatio_ = aPosMSec / lengthMSec_;
-    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    if (0 < lengthMSec_ && 0.f <= aPosMSec && aPosMSec < bPosRatio_ * lengthMSec_)
+    {
+        aPosRatio_ = aPosMSec / lengthMSec_;
+        for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    }
 }
 
 void MelissaModel::setLoopBPosRatio(float bPosRatio)
 {
-    if (bPosRatio < 0.f || 1.f < bPosRatio || lengthMSec_ < 0.f) return;
-    
-    bPosRatio_ = bPosRatio;
-    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio_)
+    {
+        bPosRatio_ = bPosRatio;
+        for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    }
 }
 
 void MelissaModel::setLoopBPosMSec(float bPosMSec)
 {
-    if (bPosMSec < 0 || lengthMSec_ < bPosMSec || lengthMSec_ < 0.f) return;
-    
-    bPosRatio_ = bPosMSec / lengthMSec_;
-    for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    if (0 < lengthMSec_ && aPosRatio_  * lengthMSec_ < bPosMSec)
+    {
+        bPosRatio_ = bPosMSec / lengthMSec_;
+        for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
+    }
 }
 
 void MelissaModel::setPlayingPosRatio(float playingPosRatio)

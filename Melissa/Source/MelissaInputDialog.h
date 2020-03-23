@@ -2,12 +2,12 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaHost.h"
+#include "MelissaModalDialog.h"
 
 class MelissaInputDialog : public Component
 {
 public:
-    MelissaInputDialog(MelissaHost* host, const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) :
-    host_(host), onClick_(onClick)
+    MelissaInputDialog(const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) : onClick_(onClick)
     {
         constexpr int textEditorWidth = 440;
         constexpr int buttonWidth = 100;
@@ -43,9 +43,7 @@ public:
         cancelButton_ = std::make_unique<TextButton>();
         cancelButton_->setBounds(width - (margin + buttonWidth), margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
         cancelButton_->setButtonText(TRANS("cancel"));
-        cancelButton_->onClick = [&]() {
-            host_->closeModalDialog();
-        };
+        cancelButton_->onClick = [&]() { MelissaModalDialog::close(); };
         addAndMakeVisible(cancelButton_.get());
     }
     

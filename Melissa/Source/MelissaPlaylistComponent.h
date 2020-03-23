@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaButtons.h"
 #include "MelissaFileListBox.h"
+#include "MelissaLookAndFeel.h"
 
 class MelissaPlaylistComponent : public Component
 {
@@ -26,9 +28,9 @@ private:
     MelissaHost* host_;
     Array<var> data_;
     std::unique_ptr<FileChooser> fileChooser_;
-    std::unique_ptr<ComboBox> setListComboBox_;
-    std::unique_ptr<TextButton> newPlaylistButton_;
-    std::unique_ptr<TextButton> removePlaylistButton_;
-    std::unique_ptr<TextButton> addToPlaylistButton_;
+    std::unique_ptr<ComboBox> playlistComboBox_;
+    std::unique_ptr<MelissaMenuButton> menuButton_;
+    std::unique_ptr<MelissaAddButton> addToPlaylistButton_;
     std::unique_ptr<MelissaFileListBox> listBox_;
+    MelissaLookAndFeel lookAndFeel_;
 };

@@ -144,8 +144,8 @@ status_(kStatus_Stop), shouldExit_(false)
         
         if (setting_.hasProperty("playlist"))
         {
-            setList_ = setting_["playlist"].getArray();
-            setListComponent_->setData(*setList_);
+            playlist_ = setting_["playlist"].getArray();
+            playlistComponent_->setData(*playlist_);
         }
         
         if (setting_.hasProperty("current"))
@@ -173,7 +173,7 @@ status_(kStatus_Stop), shouldExit_(false)
         auto component = std::make_shared<MelissaOkCancelDialog>(this, TRANS("first_message"), [&](){
             showTutorial();
         });
-        showModalDialog(component, TRANS("tutorial"));
+        MelissaModalDialog::show(component, TRANS("tutorial"));
     }
 }
 
@@ -188,7 +188,7 @@ MainComponent::~MainComponent()
     setLookAndFeel(nullptr);
     recentTable_->setLookAndFeel(nullptr);
     browseToggleButton_->setLookAndFeel(nullptr);
-    setListToggleButton_->setLookAndFeel(nullptr);
+    playlistToggleButton_->setLookAndFeel(nullptr);
     recentToggleButton_->setLookAndFeel(nullptr);
     practiceListToggleButton_->setLookAndFeel(nullptr);
     memoToggleButton_->setLookAndFeel(nullptr);
@@ -207,6 +207,8 @@ MainComponent::~MainComponent()
 void MainComponent::createUI()
 {
     setLookAndFeel(&lookAndFeel_);
+    
+    MelissaModalDialog::setParentComponent(this);
     
     tooltipWindow_ = std::make_unique<TooltipWindow>(this, 0);
     tooltipWindow_->setLookAndFeel(&lookAndFeel_);
@@ -336,7 +338,6 @@ void MainComponent::createUI()
     {
         const int sign = inc ? 1 : -1;
         model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
-        updateAButtonLabel();
     };
     addAndMakeVisible(aButton_.get());
 
@@ -346,7 +347,6 @@ void MainComponent::createUI()
     aSetButton_->onClick = [this]()
     {
         model_->setLoopAPosMSec(model_->getPlayingPosMSec());
-        updateAButtonLabel();
     };
     addAndMakeVisible(aSetButton_.get());
 
@@ -357,7 +357,6 @@ void MainComponent::createUI()
     {
         const int sign = inc ? 1 : -1;
         model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
-        updateBButtonLabel();
     };
     addAndMakeVisible(bButton_.get());
 
@@ -367,7 +366,6 @@ void MainComponent::createUI()
     bSetButton_->onClick = [this]()
     {
         model_->setLoopBPosMSec(model_->getPlayingPosMSec());
-        updateBButtonLabel();
     };
     addAndMakeVisible(bSetButton_.get());
 
@@ -388,7 +386,6 @@ void MainComponent::createUI()
     {
         const int sign = inc ? 1 : -1;
         model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
-        updateSpeedButtonLabel();
     };
     speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
     addAndMakeVisible(speedButton_.get());
@@ -441,13 +438,13 @@ void MainComponent::createUI()
     browseToggleButton_->setToggleState(true, dontSendNotification);
     addAndMakeVisible(browseToggleButton_.get());
     
-    setListToggleButton_ = make_unique<ToggleButton>();
-    setListToggleButton_->setButtonText("Playlist");
-    setListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-    setListToggleButton_->setRadioGroupId(kFileChooserTabGroup);
-    setListToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Playlist); };
-    setListToggleButton_->setToggleState(false, dontSendNotification);
-    addAndMakeVisible(setListToggleButton_.get());
+    playlistToggleButton_ = make_unique<ToggleButton>();
+    playlistToggleButton_->setButtonText("Playlist");
+    playlistToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    playlistToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+    playlistToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Playlist); };
+    playlistToggleButton_->setToggleState(false, dontSendNotification);
+    addAndMakeVisible(playlistToggleButton_.get());
     
     recentToggleButton_ = make_unique<ToggleButton>();
     recentToggleButton_->setButtonText("Recent");
@@ -493,12 +490,11 @@ void MainComponent::createUI()
     
     practiceListToggleButton_->setToggleState(true, dontSendNotification);
 
-    addToListButton_ = make_unique<TextButton>();
-    addToListButton_->setButtonText("Add");
+    addToListButton_ = make_unique<MelissaAddButton>();
     addToListButton_->onClick = [this]()
     {
         const String defaultName = MelissaUtility::getFormattedTimeSec(model_->getLoopAPosMSec() / 1000.f) + " - " + MelissaUtility::getFormattedTimeSec(model_->getLoopBPosMSec() / 1000.f);
-        auto dialog = std::make_shared<MelissaInputDialog>(this, TRANS("enter_loop_name"), defaultName, [&](const String& text) {
+        auto dialog = std::make_shared<MelissaInputDialog>(TRANS("enter_loop_name"), defaultName, [&](const String& text) {
             String name(text);
             if (name.isEmpty()) name = defaultName;
             addToPracticeList(name);
@@ -506,10 +502,10 @@ void MainComponent::createUI()
             {
                 auto song = getSongSetting(fileFullPath_);
                 practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
-                closeModalDialog();
+                MelissaModalDialog::close();
             }
         });
-        showModalDialog(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
+        MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
     };
     addAndMakeVisible(addToListButton_.get());
@@ -558,8 +554,8 @@ void MainComponent::createUI()
     }
     
     // Set List
-    setListComponent_ = make_unique<MelissaPlaylistComponent>(this);
-    addChildComponent(setListComponent_.get());
+    playlistComponent_ = make_unique<MelissaPlaylistComponent>(this);
+    addChildComponent(playlistComponent_.get());
     
     for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
     {
@@ -672,7 +668,7 @@ void MainComponent::resized()
         int32_t x = 20;
         browseToggleButton_ ->setBounds(x, y, w, 30);
         x += (w + tabMargin);
-        setListToggleButton_->setBounds(x, y, w, 30);
+        playlistToggleButton_->setBounds(x, y, w, 30);
         x += (w + tabMargin);
         recentToggleButton_ ->setBounds(x, y, w, 30);
         
@@ -690,7 +686,7 @@ void MainComponent::resized()
             const int32_t h = getHeight() - 40 - y + 20;
 #endif
             fileBrowserComponent_->setBounds(20, y, browserWidth, h);
-            setListComponent_->setBounds(20, y, browserWidth, h);
+            playlistComponent_->setBounds(20, y, browserWidth, h);
             recentTable_->setBounds(20, y, browserWidth, h);
         }
         
@@ -701,7 +697,7 @@ void MainComponent::resized()
             const int32_t h = getHeight() - 80 - y + 20;
 #endif
             practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
-            addToListButton_->setBounds(getWidth() - 80 - 20, practiceTable_->getBottom() + 10, 80, 30);
+            addToListButton_->setBounds(getWidth() - 30 - 20, practiceTable_->getBottom() + 10, 30, 30);
             memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
         }
     }
@@ -816,7 +812,6 @@ void MainComponent::resized()
     
     for (auto&& tie : tie_) tie->updatePosition();
     
-    if (modalDialog_ != nullptr) modalDialog_->setSize(getWidth(), getHeight());
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
 }
 
@@ -833,11 +828,11 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
     }
     else
     {
-        showModalDialog(std::make_shared<MelissaInputDialog>(this, TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
+        MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
             createPlaylist(playlistName);
-            for (auto&& file : files) setListComponent_->addToPlaylist(file);
+            for (auto&& file : files) playlistComponent_->addToPlaylist(file);
             loadFile(files[0]);
-            closeModalDialog();
+            MelissaModalDialog::close();
         }), TRANS("new_playlist"));
     }
 }
@@ -885,7 +880,7 @@ void MainComponent::updatePracticeList(const Array<var>& list)
 
 void MainComponent::createPlaylist(const String& name)
 {
-    setListComponent_->createPlaylist(name, true);
+    playlistComponent_->createPlaylist(name, true);
 }
 
 bool MainComponent::loadFile(const String& filePath)
@@ -893,25 +888,16 @@ bool MainComponent::loadFile(const String& filePath)
     return openFile(File(filePath));
 }
 
-void MainComponent::showModalDialog(std::shared_ptr<Component> component, const String& title)
-{
-    closeModalDialog();
-    
-    modalDialog_ = std::make_unique<MelissaModalDialog>(this, component, title);
-    modalDialog_->setSize(getWidth(), getHeight());
-    addAndMakeVisible(modalDialog_.get());
-}
-
 void MainComponent::showPreferencesDialog()
 {
     auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
-    showModalDialog(std::dynamic_pointer_cast<Component>(component), TRANS("preferences"));
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("preferences"));
 }
 
 void MainComponent::showAboutDialog()
 {
     auto component = std::make_shared<MelissaAboutComponent>();
-    showModalDialog(std::dynamic_pointer_cast<Component>(component), TRANS("about_melissa"));
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("about_melissa"));
 }
 
 void MainComponent::showTutorial()
@@ -955,14 +941,6 @@ void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)
             URL("https://github.com/mosynthkey/Melissa/releases").launchInDefaultBrowser();
         }
     }
-}
-
-void MainComponent::closeModalDialog()
-{
-    if (modalDialog_ == nullptr) return;
-    
-    removeChildComponent(modalDialog_.get());
-    modalDialog_ = nullptr;
 }
 
 void MainComponent::closeTutorial()
@@ -1037,14 +1015,14 @@ void MainComponent::timerCallback()
 {
     if (model_ == nullptr) return;
     
-    timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
+    timeLabel_->setText(MelissaUtility::getFormattedTimeSec(model_->getPlayingPosMSec() / 1000), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
 }
 
 void MainComponent::updateFileChooserTab(FileChooserTab tab)
 {
     fileBrowserComponent_->setVisible(tab == kFileChooserTab_Browse);
-    setListComponent_->setVisible(tab == kFileChooserTab_Playlist);
+    playlistComponent_->setVisible(tab == kFileChooserTab_Playlist);
     recentTable_->setVisible(tab == kFileChooserTab_Recent);
 }
 
@@ -1322,7 +1300,7 @@ void MainComponent::saveSettings()
     current->setProperty("speed", model_->getSpeed());
     current->setProperty("pitch", model_->getPitch());
     
-    setting_.getDynamicObject()->setProperty("playlist", setListComponent_->getData());
+    setting_.getDynamicObject()->setProperty("playlist", playlistComponent_->getData());
     
     settingsFile_.replaceWithText(JSON::toString(setting_));
 }
