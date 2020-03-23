@@ -33,7 +33,7 @@ public:
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
     
@@ -43,7 +43,7 @@ public:
         const auto& c = tb.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
         g.drawText(tb.getToggleState() ? "On" : "Off", 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
     
@@ -92,22 +92,22 @@ public:
     
     void drawPopupMenuBackground (Graphics& g, int width, int height) override
     {
-        g.fillAll(Colour(MelissaColourScheme::DialogBackgoundColour()));
+        g.fillAll(Colour(MelissaUISettings::DialogBackgoundColour()));
     }
     
     void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
     {
-        g.setColour(Colour(MelissaColourScheme::DialogBackgoundColour()));
+        g.setColour(Colour(MelissaUISettings::DialogBackgoundColour()));
         g.fillRect(area);
         
         if (isHighlighted)
         {
-            g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
+            g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.1f));
             g.fillRect(area.reduced(2, 0));
         }
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawText(text, area.reduced(10, 0), Justification::left);
     }
     
@@ -115,17 +115,17 @@ public:
     {
         if (isMouseOverBar)
         {
-            g.fillAll(Colour(MelissaColourScheme::DialogBackgoundColour()));
+            g.fillAll(Colour(MelissaUISettings::DialogBackgoundColour()));
         }
         else
         {
-            g.fillAll(Colour(MelissaColourScheme::MainColour()).withAlpha(0.8f));
+            g.fillAll(Colour(MelissaUISettings::MainColour()).withAlpha(0.8f));
         }
     }
     
     Font getTextButtonFont(TextButton& tb, int buttonHeight) override
     {
-        return Font(22);
+        return Font(MelissaUISettings::FontSizeMain());
     }
     
     void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
@@ -154,7 +154,7 @@ public:
     
     Font getComboBoxFont (ComboBox &) override
     {
-        return Font(22);
+        return Font(MelissaUISettings::FontSizeMain());
     }
     
     void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
@@ -175,14 +175,14 @@ public:
     
     void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
+        g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.1f));
         g.fillAll();
     }
     
     void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
         g.setColour(Colours::white);
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
     
@@ -223,7 +223,7 @@ public:
             g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
                                                  : findColour (DirectoryContentsDisplayComponent::textColourId));
 
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawFittedText (filename,
                           x, 0, width - x, height,
                           Justification::centredLeft, 1);
@@ -232,13 +232,13 @@ public:
     
     Font getPopupMenuFont() override
     {
-        return Font(22);
+        return Font(MelissaUISettings::FontSizeMain());
     }
     
     
     Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
     {
-        return Font(22);
+        return Font(MelissaUISettings::FontSizeMain());
     }
     
     
@@ -254,7 +254,7 @@ public:
                 constexpr int lineHeight = 2;
                 
                 const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-                g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+                g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
                 
                 const int w = getWidth();
                 const int h = getHeight();
@@ -291,7 +291,7 @@ public:
         if (bottomComponent_ == nullptr)
         {
             int w, h;
-            std::tie(w, h) = MelissaUtility::getStringSize(Font(20), tipText);
+            std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaUISettings::FontSizeSub()), tipText);
             w += 10;
             h += 4;
             
@@ -301,7 +301,7 @@ public:
         }
         else
         {
-            return bottomComponent_->getBounds().reduced(20, 0).withWidth(bottomComponent_->getWidth() - 100);
+            return bottomComponent_->getLocalBounds().reduced(20, 0).withWidth(bottomComponent_->getWidth() - 100);
         }
     }
     
@@ -314,12 +314,12 @@ public:
             g.setColour(Colours::white.withAlpha(0.8f));
             g.fillRoundedRectangle(0, 0, width, height, height / 2);
             
-            g.setColour(Colours::black/* Colour(MelissaColourScheme::DialogBackgoundColour())*/);
+            g.setColour(Colours::black/* Colour(MelissaUISettings::DialogBackgoundColour())*/);
             g.fillRoundedRectangle(1, 1, width - 2, height - 2, (height - 2) / 2);
         }
         g.fillAll(Colour(0xff2B2D31));
         g.setColour(Colours::white.withAlpha(0.8f));
-        g.setFont(Font(20));
+        g.setFont(Font(MelissaUISettings::FontSizeSub()));
         g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
     }
     
@@ -344,7 +344,7 @@ public:
             alpha = 0.6f;
         }
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
         g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
     }

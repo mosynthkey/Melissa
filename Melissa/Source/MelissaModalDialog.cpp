@@ -6,7 +6,7 @@ enum
     kCloseButtonSize = 20,
 };
 
-MelissaDialog::MelissaDialog(std::shared_ptr<Component> contentComponent, bool closeOnClickingOutside) :
+MelissaDialog::MelissaDialog(std::shared_ptr<Component> contentComponent, const String& title, bool closeOnClickingOutside) :
 contentComponent_(contentComponent),
 closeOnClickingOutside_(closeOnClickingOutside)
 {
@@ -16,7 +16,8 @@ closeOnClickingOutside_(closeOnClickingOutside)
     
     titleLabel_ = std::make_unique<Label>();
     titleLabel_->setJustificationType(Justification::centred);
-    titleLabel_->setFont(Font(22));
+    titleLabel_->setText(title, dontSendNotification);
+    titleLabel_->setFont(Font(MelissaUISettings::FontSizeMain()));
     addAndMakeVisible(titleLabel_.get());
     
     closeButton_ = std::make_unique<CloseButton>();
@@ -34,7 +35,7 @@ void MelissaDialog::paint(Graphics& g)
     const int dialogWidth  = kMargin + contentComponent_->getWidth()  + kMargin;
     const int dialogHeight = kMargin + kCloseButtonSize + kMargin + contentComponent_->getHeight() + kMargin;
     
-    g.setColour(Colour(MelissaColourScheme::DialogBackgoundColour()));
+    g.setColour(Colour(MelissaUISettings::DialogBackgoundColour()));
     g.fillRoundedRectangle((getWidth() - dialogWidth) / 2, (getHeight() - dialogHeight) / 2, dialogWidth, dialogHeight, 4);
 }
 
@@ -57,7 +58,7 @@ std::unique_ptr<MelissaDialog> MelissaModalDialog::dialog_;
 
 void MelissaModalDialog::show(std::shared_ptr<Component> component, const String& title, bool closeOnClickingOutside)
 {
-    dialog_ = std::make_unique<MelissaDialog>(component, closeOnClickingOutside);
+    dialog_ = std::make_unique<MelissaDialog>(component, title, closeOnClickingOutside);
     dialog_->setBounds(parentComponent_->getBounds());
     parentComponent_->addAndMakeVisible(dialog_.get());
 }

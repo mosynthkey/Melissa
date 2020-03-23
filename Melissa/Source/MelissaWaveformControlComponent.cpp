@@ -1,22 +1,6 @@
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
-
-class MelissaWaveformControlComponent::TimeLineBar : public Component
-{
-public:
-    TimeLineBar(MelissaWaveformControlComponent* parent) :
-    parent_(parent)
-    {};
-    
-    void paint(Graphics& g) override
-    {
-        //g.fillAll(Colour(MelissaColourScheme::MainColour()).withAlpha(0.2f));
-    }
-    
-private:
-    MelissaWaveformControlComponent* parent_;
-};
 
 class MelissaWaveformControlComponent::WaveformView : public Component,
                                                       public MelissaModelListener,
@@ -46,7 +30,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        Colour colour(MelissaColourScheme::MainColour());
+        Colour colour(MelissaUISettings::MainColour());
         for (size_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
         {
             const int32_t height = previewBuffer_[iStrip] * getHeight();
@@ -274,9 +258,6 @@ private:
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
 timeSec_(0)
 {
-    timeLineBar_ = std::make_unique<TimeLineBar>(this);
-    addAndMakeVisible(timeLineBar_.get());
-    
     waveformView_ = std::make_unique<WaveformView>(this);
     addAndMakeVisible(waveformView_.get());
     
@@ -294,8 +275,7 @@ MelissaWaveformControlComponent::~MelissaWaveformControlComponent()
 
 void MelissaWaveformControlComponent::resized()
 {
-    timeLineBar_->setBounds(50, getHeight() - 18, getWidth() - 50 * 2, 2);
-    waveformView_->setBounds(70, 20, getWidth() - 70 * 2, getHeight() - 20 - 30);
+    waveformView_->setBounds(60, 20, getWidth() - 60 * 2, getHeight() - 40);
     
     posTooltip_->setTopLeftPosition(0, 0);
 }

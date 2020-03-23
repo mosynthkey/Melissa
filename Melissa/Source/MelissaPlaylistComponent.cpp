@@ -1,5 +1,6 @@
 #include "MelissaInputDialog.h"
 #include "MelissaModalDialog.h"
+#include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
 
 MelissaPlaylistComponent::MelissaPlaylistComponent(MelissaHost* host) :
@@ -13,6 +14,12 @@ enum
     kMenuID_New = 1,
     kMenuID_Rename,
     kMenuID_Remove
+};
+
+enum
+{
+    kMenuIDAddToList_Select = 1,
+    kMenuIDAddToList_Current
 };
 
 void MelissaPlaylistComponent::createUI()
@@ -49,7 +56,7 @@ void MelissaPlaylistComponent::createUI()
             const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
             if (selectedIndex < 0) return;
             const String currentName = data_[selectedIndex].getDynamicObject()->getProperty("name").toString();
-            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), currentName, [&](const String& text) {
+            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), currentName, [&, selectedIndex](const String& text) {
                 if (text == "") return;
                 data_[selectedIndex].getDynamicObject()->setProperty("name", text);
                 MelissaModalDialog::close();
@@ -76,32 +83,30 @@ void MelissaPlaylistComponent::createUI()
     addToPlaylistButton_->setTooltip(TRANS("tooltip_addto_playlist"));
     addToPlaylistButton_->onClick = [&]()
     {
-        fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_playlist"), File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
-        fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser)
+        PopupMenu menu;
+        menu.setLookAndFeel(&lookAndFeel_);
+        menu.addItem(kMenuID_New, TRANS("addtolist_select"));
+        menu.addItem(kMenuID_Rename, TRANS("addtolist_current"));
+        
+        const auto result = menu.show();
+        if (result == kMenuIDAddToList_Select)
         {
-            auto fileUrl = chooser.getURLResult();
-            if (fileUrl.isLocalFile())
+            fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_playlist"), File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
+            fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser)
             {
-                auto filePath = fileUrl.getLocalFile().getFullPathName();
-                if (getCurrentSongList() == nullptr)
+                auto fileUrl = chooser.getURLResult();
+                if (fileUrl.isLocalFile())
                 {
-                    auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "new", [&, filePath](const String& text) {
-                        if (text == "") return;
-                        host_->createPlaylist(text);
-                        getCurrentSongList()->add(filePath);
-                        MelissaModalDialog::close();
-                    });
-                    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_playlist"));
+                    auto filePath = fileUrl.getLocalFile().getFullPathName();
+                    addToCurrentPlaylist(filePath);
+                    chooser.getResult().getParentDirectory().setAsCurrentWorkingDirectory();
                 }
-                else
-                {
-                    getCurrentSongList()->add(filePath);
-                    update();
-                }
-
-                chooser.getResult().getParentDirectory().setAsCurrentWorkingDirectory();
-            }
-        });
+            });
+        }
+        else if (result == kMenuIDAddToList_Current)
+        {
+            addToCurrentPlaylist(MelissaModel::getInstance()->getCurrentFilePath());
+        }
     };
     addAndMakeVisible(addToPlaylistButton_.get());
     
@@ -193,8 +198,37 @@ Array<var>* MelissaPlaylistComponent::getCurrentSongList()
     
     if (0 <= selectedIndex && selectedIndex < data_.size())
     {
+        auto array = data_[selectedIndex].getDynamicObject()->getProperty("songs").getArray();
+        if (array == nullptr)
+        {
+            data_[selectedIndex].getDynamicObject()->setProperty("songs", Array<var>());
+        }
         return data_[selectedIndex].getDynamicObject()->getProperty("songs").getArray();
     }
     
     return nullptr;
+}
+
+void MelissaPlaylistComponent::addToCurrentPlaylist(const String& filePath)
+{
+    if (filePath.isEmpty()) return;
+    
+    const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
+    if (selectedIndex < 0)
+    {
+        auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "new", [&, filePath](const String& text) {
+            if (text == "") return;
+            createPlaylist(text, true);
+            getCurrentSongList()->add(filePath);
+            MelissaModalDialog::close();
+        });
+        MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_playlist"));
+    }
+    else
+    {
+        auto list = getCurrentSongList();
+        if (list == nullptr) list->add(Array<var>());
+        list->add(filePath);
+        update();
+    }
 }

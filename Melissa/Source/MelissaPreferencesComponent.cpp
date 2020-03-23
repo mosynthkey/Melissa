@@ -1,4 +1,4 @@
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 #include "MelissaPreferencesComponent.h"
 
 MelissaPreferencesComponent::MelissaPreferencesComponent(AudioDeviceManager* audioDeviceManager) :
@@ -57,7 +57,7 @@ void MelissaPreferencesComponent::updateTab()
 
 void MelissaPreferencesComponent::paint(Graphics& g)
 {
-    g.fillAll(Colour(MelissaColourScheme::DialogBackgoundColour()));
+    g.fillAll(Colour(MelissaUISettings::DialogBackgoundColour()));
 }
 
 void MelissaPreferencesComponent::resized()
