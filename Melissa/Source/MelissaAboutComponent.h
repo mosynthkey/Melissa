@@ -30,7 +30,7 @@ public:
         addAndMakeVisible(versionLabel_.get());
         
         linkButton_ = std::make_unique<HyperlinkButton>("Open GitHub page", URL("https://github.com/mosynthkey/Melissa"));
-        linkButton_->setJustificationType(Justification::right);
+        linkButton_->setFont(MelissaUISettings::FontSizeMain(), false, Justification::right);
         linkButton_->setBounds(0, 260, 600, 30);
         addAndMakeVisible(linkButton_.get());
     }
