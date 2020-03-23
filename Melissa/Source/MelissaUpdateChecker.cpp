@@ -8,7 +8,6 @@ String MelissaUpdateChecker::getLatestVersionNumberString()
     if (inStream == nullptr) return "";
 
     auto content = inStream->readEntireStreamAsString();
-    printf("%s\n", content.toRawUTF8());
     auto latestReleaseDetails = JSON::parse(content);
 
     auto* json = latestReleaseDetails.getDynamicObject();
