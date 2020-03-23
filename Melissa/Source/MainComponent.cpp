@@ -47,7 +47,7 @@ status_(kStatus_Stop), shouldExit_(false)
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
     
-    MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
+    MelissaUISettings::isJa = false;//(SystemStats::getDisplayLanguage() == "ja-JP");
     MelissaUISettings::isMac = isMac;
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::FontName());
     
@@ -179,6 +179,7 @@ status_(kStatus_Stop), shouldExit_(false)
     
     deviceManager.addMidiInputCallback("", this);
     
+#if defined(ENABLE_TUTORIAL)
     if (isFirstLaunch)
     {
         auto component = std::make_shared<MelissaOkCancelDialog>(this, TRANS("first_message"), [&](){
@@ -186,6 +187,7 @@ status_(kStatus_Stop), shouldExit_(false)
         });
         MelissaModalDialog::show(component, TRANS("tutorial"));
     }
+#endif
 }
 
 MainComponent::~MainComponent()
@@ -240,7 +242,9 @@ void MainComponent::createUI()
         menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
         menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
         menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
+#if defined(ENABLE_TUTORIAL)
         menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
+#endif
         const auto result = menu.show();
         if (result == kMenuID_MainAbout)
         {
@@ -906,6 +910,7 @@ void MainComponent::showAboutDialog()
 
 void MainComponent::showTutorial()
 {
+#if defined(ENABLE_TUTORIAL)
     tutorialComponent_ = std::make_unique<MelissaTutorialComponent>(this);
     tutorialComponent_->setPages({
         { dynamic_cast<Component*>(menuButton_.get()), TRANS("explanation_menu") },
@@ -917,6 +922,7 @@ void MainComponent::showTutorial()
     });
     addAndMakeVisible(tutorialComponent_.get());
     resized();
+#endif
 }
 
 void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)

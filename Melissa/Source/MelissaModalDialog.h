@@ -26,7 +26,7 @@ public:
     MelissaModalDialog() {}
     
     static void setParentComponent(Component* parentComponent) { parentComponent_ = parentComponent; }
-    static void show(std::shared_ptr<Component> component, const String& title, bool closeOnClickingOutside = false);
+    static void show(std::shared_ptr<Component> component, const String& title, bool closeOnClickingOutside = true);
     static void close();
     
 private:
