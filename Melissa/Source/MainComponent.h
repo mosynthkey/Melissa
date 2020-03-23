@@ -29,7 +29,7 @@ enum FileChooserTab
 {
     kFileChooserTab_Browse,
     kFileChooserTab_Playlist,
-    kFileChooserTab_Recent,
+    kFileChooserTab_History,
     kNumOfFileChooserTabs
 };
 
@@ -365,7 +365,7 @@ public:
     void toHead();
     void resetLoop();
     void addToPracticeList(String name);
-    void addToRecent(String filePath);
+    void addToHistory(String filePath);
     void saveMemo();
     
     void updateAll();
@@ -438,10 +438,10 @@ private:
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
     std::unique_ptr<ToggleButton> playlistToggleButton_;
-    std::unique_ptr<ToggleButton> recentToggleButton_;
+    std::unique_ptr<ToggleButton> historyToggleButton_;
     std::unique_ptr<WildcardFileFilter> wildCardFilter_;
     std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
-    std::unique_ptr<MelissaFileListBox> recentTable_;
+    std::unique_ptr<MelissaFileListBox> historyTable_;
     
     std::unique_ptr<ToggleButton> practiceListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
@@ -502,7 +502,7 @@ private:
     
     File settingsDir_, settingsFile_;
     var setting_;
-    Array<var>* recent_;
+    Array<var>* history_;
     Array<var>* playlist_;
     
     bool shouldExit_;

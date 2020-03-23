@@ -12,7 +12,7 @@ enum
     kFileChooserTabGroup = 1001,
     kPracticeMemoTabGroup = 1002,
     
-    kMaxSizeOfRecentList = 50,
+    kMaxSizeOfHistoryList = 50,
     
     // UI
     kGradationHeight = 20,
@@ -132,15 +132,15 @@ status_(kStatus_Stop), shouldExit_(false)
             deviceManager.initialise(0, 2, XmlDocument::parse(global.getProperty("device", "")).get(), true);
         }
         
-        if (setting_.hasProperty("recent"))
+        if (setting_.hasProperty("history"))
         {
-            recent_ = setting_["recent"].getArray();
+            history_ = setting_["history"].getArray();
         }
         else
         {
-            recent_ = new Array<var>();
+            history_ = new Array<var>();
         }
-        recentTable_->setList(*recent_);
+        historyTable_->setList(*history_);
         
         if (setting_.hasProperty("playlist"))
         {
@@ -186,10 +186,10 @@ MainComponent::~MainComponent()
     saveSettings();
     
     setLookAndFeel(nullptr);
-    recentTable_->setLookAndFeel(nullptr);
+    historyTable_->setLookAndFeel(nullptr);
     browseToggleButton_->setLookAndFeel(nullptr);
     playlistToggleButton_->setLookAndFeel(nullptr);
-    recentToggleButton_->setLookAndFeel(nullptr);
+    historyToggleButton_->setLookAndFeel(nullptr);
     practiceListToggleButton_->setLookAndFeel(nullptr);
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
@@ -446,17 +446,17 @@ void MainComponent::createUI()
     playlistToggleButton_->setToggleState(false, dontSendNotification);
     addAndMakeVisible(playlistToggleButton_.get());
     
-    recentToggleButton_ = make_unique<ToggleButton>();
-    recentToggleButton_->setButtonText("Recent");
-    recentToggleButton_->setLookAndFeel(&lookAndFeelTab_);
-    recentToggleButton_->setRadioGroupId(kFileChooserTabGroup);
-    recentToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Recent); };
-    recentToggleButton_->setToggleState(false, dontSendNotification);
-    addAndMakeVisible(recentToggleButton_.get());
+    historyToggleButton_ = make_unique<ToggleButton>();
+    historyToggleButton_->setButtonText("History");
+    historyToggleButton_->setLookAndFeel(&lookAndFeelTab_);
+    historyToggleButton_->setRadioGroupId(kFileChooserTabGroup);
+    historyToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_History); };
+    historyToggleButton_->setToggleState(false, dontSendNotification);
+    addAndMakeVisible(historyToggleButton_.get());
 
-    recentTable_ = make_unique<MelissaFileListBox>(this);
-    recentTable_->setLookAndFeel(&lookAndFeel_);
-    addAndMakeVisible(recentTable_.get());
+    historyTable_ = make_unique<MelissaFileListBox>(this);
+    historyTable_->setLookAndFeel(&lookAndFeel_);
+    addAndMakeVisible(historyTable_.get());
 
     practiceTable_ = make_unique<MelissaPracticeTableListBox>(this);
     addAndMakeVisible(practiceTable_.get());
@@ -658,7 +658,7 @@ void MainComponent::resized()
     timeLabel_->setBounds(getWidth() / 2 - 100, fileNameLabel_->getBottom(), 200, 20);
     
     
-    // left-bottom part (Browser / Playlist / Recent)
+    // left-bottom part (Browser / Playlist / History)
     {
         constexpr int32_t tabMargin = 2;
         int32_t browserWidth = 480;
@@ -670,7 +670,7 @@ void MainComponent::resized()
         x += (w + tabMargin);
         playlistToggleButton_->setBounds(x, y, w, 30);
         x += (w + tabMargin);
-        recentToggleButton_ ->setBounds(x, y, w, 30);
+        historyToggleButton_ ->setBounds(x, y, w, 30);
         
         w = 180;
         x = 20 + browserWidth + 20;
@@ -687,7 +687,7 @@ void MainComponent::resized()
 #endif
             fileBrowserComponent_->setBounds(20, y, browserWidth, h);
             playlistComponent_->setBounds(20, y, browserWidth, h);
-            recentTable_->setBounds(20, y, browserWidth, h);
+            historyTable_->setBounds(20, y, browserWidth, h);
         }
         
         {
@@ -1023,7 +1023,7 @@ void MainComponent::updateFileChooserTab(FileChooserTab tab)
 {
     fileBrowserComponent_->setVisible(tab == kFileChooserTab_Browse);
     playlistComponent_->setVisible(tab == kFileChooserTab_Playlist);
-    recentTable_->setVisible(tab == kFileChooserTab_Recent);
+    historyTable_->setVisible(tab == kFileChooserTab_History);
 }
 
 void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
@@ -1068,8 +1068,8 @@ bool MainComponent::openFile(const File& file)
         memoTextEditor_->setText(song.getProperty("memo", "").toString());
     }
     
-    addToRecent(fileFullPath_);
-    recentTable_->setList(*(setting_.getProperty("recent", Array<var>()).getArray()));
+    addToHistory(fileFullPath_);
+    historyTable_->setList(*(setting_.getProperty("history", Array<var>()).getArray()));
     
     delete reader;
     
@@ -1173,15 +1173,15 @@ void MainComponent::saveMemo()
     songs->addIfNotAlreadyThere(song);
 }
 
-void MainComponent::addToRecent(String filePath)
+void MainComponent::addToHistory(String filePath)
 {
-    recent_->removeFirstMatchingValue(filePath);
-    recent_->insert(0, filePath);
-    if (recent_->size() >= kMaxSizeOfRecentList)
+    history_->removeFirstMatchingValue(filePath);
+    history_->insert(0, filePath);
+    if (history_->size() >= kMaxSizeOfHistoryList)
     {
-        recent_->resize(kMaxSizeOfRecentList);
+        history_->resize(kMaxSizeOfHistoryList);
     }
-    recentTable_->selectRow(0);
+    historyTable_->selectRow(0);
 }
 
 void MainComponent::updateAll()
@@ -1268,7 +1268,7 @@ void MainComponent::createSettingsFile()
     current->setProperty("speed", model_->getSpeed());
     current->setProperty("pitch", model_->getPitch());
     all->setProperty("current", var(current));
-    all->setProperty("recent", Array<var>());
+    all->setProperty("history", Array<var>());
     all->setProperty("playlist", Array<var>());
     all->setProperty("songs", Array<var>());
     
@@ -1358,7 +1358,7 @@ void MainComponent::arrangeEvenly(const Rectangle<int> bounds, const std::vector
 
 bool MainComponent::isSettingValid() const
 {
-    return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("recent") &&setting_.hasProperty("playlist") &&setting_.hasProperty("songs"));
+    return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("history") &&setting_.hasProperty("playlist") &&setting_.hasProperty("songs"));
 }
 
 void MainComponent::volumeChanged(float volume)
