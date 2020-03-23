@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 
 class MelissaMenuButton : public Button
 {
@@ -12,7 +12,7 @@ public:
         constexpr int lineHeight = 2;
         
         const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+        g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
         
         const int w = getWidth();
         const int h = getHeight();
@@ -31,7 +31,7 @@ public:
         constexpr int lineThickness = 2;
         
         const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+        g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
         
         const int w = getWidth();
         const int h = getHeight();
@@ -117,7 +117,7 @@ public:
         
         if (highlighted)
         {
-            g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.2f));
+            g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.2f));
             g.fillRoundedRectangle(0, 0, size, size, size / 6);
         }
         

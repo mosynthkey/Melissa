@@ -29,7 +29,7 @@ public:
         sec -= static_cast<int32_t>(60 * minute);
         
         std::stringstream ss;
-        ss << minute << ":" << std::setw(2) << std::setfill('0') << sec;
+        ss << minute << ":" << std::setw(2) << std::setfill('0') << static_cast<int32_t>(sec);
         
         return ss.str();
     }

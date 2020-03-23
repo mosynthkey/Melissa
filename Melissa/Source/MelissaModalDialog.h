@@ -2,13 +2,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaButtons.h"
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
 class MelissaDialog : public Component
 {
 public:
-    MelissaDialog(std::shared_ptr<Component> contentComponent, bool closeOnClickingOutside);
+    MelissaDialog(std::shared_ptr<Component> contentComponent, const String& title, bool closeOnClickingOutside);
     void paint(Graphics& g) override;
     void resized() override;
     

@@ -20,13 +20,13 @@ public:
         setSize(width, height);
         
         label_ = std::make_unique<Label>();
-        label_->setFont(Font(22));
+        label_->setFont(Font(MelissaUISettings::FontSizeMain()));
         label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
         textEditor_ = std::make_unique<TextEditor>();
-        textEditor_->setFont(Font(22));
+        textEditor_->setFont(Font(MelissaUISettings::FontSizeMain()));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
         addAndMakeVisible(textEditor_.get());
@@ -35,7 +35,7 @@ public:
         okButton_->setBounds(width - (margin + buttonWidth) * 2, margin * 3 + controlHeight * 2, buttonWidth, controlHeight);
         okButton_->setButtonText("OK");
         okButton_->onClick = [&]() {
-            const String text = textEditor_->getText().toStdString();
+            const String text = textEditor_->getText();
             onClick_(text);
         };
         addAndMakeVisible(okButton_.get());

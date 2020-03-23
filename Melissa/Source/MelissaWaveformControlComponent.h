@@ -21,10 +21,8 @@ public:
     void showTimeTooltip(float posRatio);
     
 private:
-    class TimeLineBar;
     class WaveformView;
     
-    std::unique_ptr<TimeLineBar> timeLineBar_;
     std::unique_ptr<WaveformView> waveformView_;
     std::unique_ptr<MelissaLabel> posTooltip_;
     float timeSec_;

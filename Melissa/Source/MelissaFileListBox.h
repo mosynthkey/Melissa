@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
 class MelissaFileListBox : public ListBox, public ListBoxModel
@@ -33,11 +33,11 @@ public:
         const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber].toString() : "";
         const String fileName = File(fullPath).getFileName();
         
-        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
+        g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
         g.fillAll();
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     

@@ -33,4 +33,6 @@ private:
     std::unique_ptr<MelissaAddButton> addToPlaylistButton_;
     std::unique_ptr<MelissaFileListBox> listBox_;
     MelissaLookAndFeel lookAndFeel_;
+    
+    void addToCurrentPlaylist(const String& filePath);
 };

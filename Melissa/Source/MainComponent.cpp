@@ -1,7 +1,7 @@
 #include <sstream>
 #include "MainComponent.h"
 #include "MelissaAboutComponent.h"
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 #include "MelissaInputDialog.h"
 #include "MelissaUtility.h"
 
@@ -161,7 +161,6 @@ status_(kStatus_Stop), shouldExit_(false)
                 model_->setLoopBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
                 model_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
                 model_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
-                updateAll();
             }
         }
     }
@@ -210,9 +209,6 @@ void MainComponent::createUI()
     
     MelissaModalDialog::setParentComponent(this);
     
-    tooltipWindow_ = std::make_unique<TooltipWindow>(this, 0);
-    tooltipWindow_->setLookAndFeel(&lookAndFeel_);
-    
     menuBar_ = make_unique<MenuBarComponent>(this);
     addAndMakeVisible(menuBar_.get());
     
@@ -258,7 +254,7 @@ void MainComponent::createUI()
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
-    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaColourScheme::MainColour()).withAlpha(0.06f));
+    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::MainColour()).withAlpha(0.06f));
     addAndMakeVisible(controlComponent_.get());
     
 #if defined(SHOW_BOTTOM)
@@ -278,7 +274,7 @@ void MainComponent::createUI()
     timeLabel_ = make_unique<Label>();
     timeLabel_->setJustificationType(Justification::centred);
     timeLabel_->setText("-:--", dontSendNotification);
-    timeLabel_->setFont(22);
+    timeLabel_->setFont(MelissaUISettings::FontSizeMain());
     addAndMakeVisible(timeLabel_.get());
     
     fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
@@ -463,7 +459,7 @@ void MainComponent::createUI()
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
-    memoTextEditor_->setFont(Font(22));
+    memoTextEditor_->setFont(Font(MelissaUISettings::FontSizeMain()));
     memoTextEditor_->setMultiLine(true, false);
     memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
     memoTextEditor_->onFocusLost = [&]()
@@ -545,7 +541,7 @@ void MainComponent::createUI()
             auto l = make_unique<Label>();
             l->setLookAndFeel(nullptr);
             l->setText(labelTitles[label_i], dontSendNotification);
-            l->setFont(Font(20));
+            l->setFont(Font(MelissaUISettings::FontSizeSub()));
             l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
             l->setJustificationType(Justification::centredTop);
             addAndMakeVisible(l.get());
@@ -573,6 +569,9 @@ void MainComponent::createUI()
         addAndMakeVisible(sectionTitle.get());
         sectionTitles_[sectionTitle_i] = std::move(sectionTitle);
     }
+    
+    tooltipWindow_ = std::make_unique<TooltipWindow>(bottomComponent_.get(), 0);
+    tooltipWindow_->setLookAndFeel(&lookAndFeel_);
     
     updatePracticeMemo(kPracticeMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
@@ -604,7 +603,7 @@ void MainComponent::paint(Graphics& g)
 {
     const int w = getWidth();
     const int center = w / 2;
-    const auto gradationColour = MelissaColourScheme::BackGroundGradationColour();
+    const auto gradationColour = MelissaUISettings::BackGroundGradationColour();
     g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, 0.f, Colour(gradationColour.second), center, getHeight(), false));
     g.fillAll();
     
@@ -708,8 +707,9 @@ void MainComponent::resized()
 #endif
     
     // Section
-    int32_t marginX = 60;
-    const int sectionWidth = toHeadButton_->getX() - (marginX * 2);
+    const int32_t marginSideX = 40;
+    const int32_t marginCenterX = 40;
+    const int sectionWidth = toHeadButton_->getX() - (marginSideX + marginCenterX);
     for (auto&& sec : sectionTitles_)
     {
         sec->setSize(sectionWidth, 30);
@@ -718,28 +718,20 @@ void MainComponent::resized()
     int y = 260; // 260;
     
     // Song Settings
-    sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginX, y);
+    sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginSideX, y);
     volumeSlider_->setSize(200, 30);
     pitchButton_->setSize(200, 30);
-#if !defined(ENABLE_SPEEDTRAINER)
-    arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
-        { volumeSlider_.get() },
-        { pitchButton_.get() }
-    });
-#endif
     
     // A-B Loop
-    sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginX, y);
+    sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginSideX, y);
     aSetButton_->setSize(80, 30);
     aButton_->setSize(200, 30);
     bSetButton_->setSize(80, 30);
     bButton_->setSize(200, 30);
     resetButton_->setSize(100, 30);
     arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
-        { aSetButton_.get() },
-        { aButton_.get() },
-        { bSetButton_.get() },
-        { bButton_.get() },
+        { aSetButton_.get(), aButton_.get() },
+        { bSetButton_.get(), bButton_.get() },
         { resetButton_.get() }
     });
     
@@ -772,7 +764,7 @@ void MainComponent::resized()
     });
 #else
     speedButton_->setSize(200, 30);
-    arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
+    arrangeEvenly({ marginSideX, y + 60, sectionWidth, 30 }, {
         { volumeSlider_.get() },
         { pitchButton_.get() },
         { speedButton_.get() },
@@ -1058,8 +1050,9 @@ bool MainComponent::openFile(const File& file)
     
     fileName_ = file.getFileNameWithoutExtension();
     fileFullPath_ = file.getFullPathName();
-    fileNameLabel_->setText(fileName_.toStdString());
-    updateAll();
+    fileNameLabel_->setText(fileName_);
+    model_->loadFile(file.getFullPathName());
+    model_->setVolume(1.f);
     
     if (auto songs = setting_["songs"].getArray())
     {
@@ -1184,17 +1177,6 @@ void MainComponent::addToHistory(String filePath)
     historyTable_->selectRow(0);
 }
 
-void MainComponent::updateAll()
-{
-    updateAButtonLabel();
-    updateBButtonLabel();
-    updateSpeedButtonLabel();
-    updatePitchButtonLabel();
-    updateBpm();
-    updateMetronomeOffset();
-    updateVolume();
-}
-
 void MainComponent::updateAButtonLabel()
 {
     const auto LoopAPosMSec = model_->getLoopAPosMSec();
@@ -1269,7 +1251,12 @@ void MainComponent::createSettingsFile()
     current->setProperty("pitch", model_->getPitch());
     all->setProperty("current", var(current));
     all->setProperty("history", Array<var>());
-    all->setProperty("playlist", Array<var>());
+    Array<var> playlist;
+    auto newPlaylist = new DynamicObject();
+    newPlaylist->setProperty("name", "New playlist");
+    newPlaylist->setProperty("list", Array<var>());
+    playlist.add(newPlaylist);
+    all->setProperty("playlist", playlist);
     all->setProperty("songs", Array<var>());
     
     settingsFile_.replaceWithText(JSON::toString(all));

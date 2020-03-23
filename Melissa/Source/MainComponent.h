@@ -75,7 +75,7 @@ public:
     
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override
     {
-        const auto colour = Colour(MelissaColourScheme::MainColour()).withAlpha(rowIsSelected ? 0.06f : 0.f);
+        const auto colour = Colour(MelissaUISettings::MainColour()).withAlpha(rowIsSelected ? 0.06f : 0.f);
         g.fillAll(colour);
     }
     
@@ -105,7 +105,7 @@ public:
         }
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(22);
+        g.setFont(MelissaUISettings::FontSizeMain());
         constexpr int xMargin = 10;
         g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
     }
@@ -128,9 +128,9 @@ public:
                 const float aX = (w - lineWidth - xMargin * 2) * aRatio_ + xMargin;
                 const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + xMargin + lineWidth;
                 
-                g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.1f));
+                g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.1f));
                 g.fillRoundedRectangle(xMargin, (h - lineWidth) / 2.f, w - xMargin * 2, lineWidth, lineWidth / 2);
-                g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(0.4f));
+                g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.4f));
                 g.fillRoundedRectangle(aX,      (h - lineWidth) / 2.f, bX - aX,         lineWidth, lineWidth / 2);
             }
             
@@ -260,7 +260,7 @@ public:
         label_->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
         label_->setText(title, dontSendNotification);
         label_->setJustificationType(Justification::centred);
-        label_->setFont(Font(22));
+        label_->setFont(Font(MelissaUISettings::FontSizeMain()));
         addAndMakeVisible(label_.get());
         
         labelWidth_ = label_->getFont().getStringWidth(title);
@@ -368,7 +368,6 @@ public:
     void addToHistory(String filePath);
     void saveMemo();
     
-    void updateAll();
     void updateAButtonLabel();
     void updateBButtonLabel();
     void updateSpeedButtonLabel();

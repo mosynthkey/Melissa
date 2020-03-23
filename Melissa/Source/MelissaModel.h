@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
 #include "MelissaModelListener.h"
 
@@ -43,6 +44,10 @@ public:
     
     void synchronize();
     
+    // wip
+    void loadFile(const String& filePath) { filePath_ = filePath; }
+    String getCurrentFilePath() const { return filePath_; }
+    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);
@@ -67,6 +72,7 @@ private:
     int speed_;
     float aPosRatio_, bPosRatio_;
     float playingPosRatio_;
+    String filePath_;
     
     // Singleton
     static MelissaModel instance_;

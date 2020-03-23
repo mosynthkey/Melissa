@@ -78,8 +78,6 @@
             resource="0" file="Source/MelissaBottomControlComponent.h"/>
       <FILE id="Du0Jqh" name="MelissaButtons.h" compile="0" resource="0"
             file="Source/MelissaButtons.h"/>
-      <FILE id="OENelF" name="MelissaColourScheme.h" compile="0" resource="0"
-            file="Source/MelissaColourScheme.h"/>
       <FILE id="kttXVy" name="MelissaFileListBox.h" compile="0" resource="0"
             file="Source/MelissaFileListBox.h"/>
       <FILE id="OdLTuE" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>
@@ -121,6 +119,8 @@
             file="Source/MelissaTutorialComponent.cpp"/>
       <FILE id="lEYbQo" name="MelissaTutorialComponent.h" compile="0" resource="0"
             file="Source/MelissaTutorialComponent.h"/>
+      <FILE id="OENelF" name="MelissaUISettings.h" compile="0" resource="0"
+            file="Source/MelissaUISettings.h"/>
       <FILE id="ZG1AhD" name="MelissaUpdateChecker.cpp" compile="1" resource="0"
             file="Source/MelissaUpdateChecker.cpp"/>
       <FILE id="IChU9I" name="MelissaUpdateChecker.h" compile="0" resource="0"

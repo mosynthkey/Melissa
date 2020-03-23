@@ -1,9 +1,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MelissaColourScheme.h"
+#include "MelissaUISettings.h"
 #include "MelissaHost.h"
-#include "MelissaSimpleTextButton.h"
 
 class MelissaBottomControlComponent : public Component
 {

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <tuple>
 
-class MelissaColourScheme
+class MelissaUISettings
 {
 public:
     static std::pair<uint32_t, uint32_t> BackGroundGradationColour()
@@ -20,4 +20,8 @@ public:
     {
         return 0xFF1B1F25;
     }
+    
+    static int FontSizeMain() { return 22; }
+    
+    static int FontSizeSub() { return 20; }
 };

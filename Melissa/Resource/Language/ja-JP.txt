@@ -44,3 +44,5 @@ countries: ja
 "create_playlist" = "playlistを作成"
 "rename_playlist" = "playlistの名称変更"
 "remove_playlist" = "playlistの削除"
+"addtolist_select" = "ファイルを選択"
+"addtolist_current" = "現在再生されているファイルを追加"
