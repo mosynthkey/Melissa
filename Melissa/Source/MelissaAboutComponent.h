@@ -8,7 +8,7 @@ class MelissaAboutComponent : public Component
 public:
     MelissaAboutComponent()
     {
-        setSize(600, 260);
+        setSize(600, 290);
         
         imageComponent_ = std::make_unique<ImageComponent>();
         imageComponent_->setImage(ImageCache::getFromMemory(BinaryData::logo_png, BinaryData::logo_pngSize));
@@ -28,10 +28,16 @@ public:
         versionLabel_->setText(String("Version ") + ProjectInfo::versionString, dontSendNotification);
         versionLabel_->setBounds(0, 230, 600, 30);
         addAndMakeVisible(versionLabel_.get());
+        
+        linkButton_ = std::make_unique<HyperlinkButton>("Open GitHub page", URL("https://github.com/mosynthkey/Melissa"));
+        linkButton_->setJustificationType(Justification::right);
+        linkButton_->setBounds(0, 260, 600, 30);
+        addAndMakeVisible(linkButton_.get());
     }
     
 private:
     std::unique_ptr<ImageComponent> imageComponent_;
     std::unique_ptr<Label> copyrightLabel_;
     std::unique_ptr<Label> versionLabel_;
+    std::unique_ptr<HyperlinkButton> linkButton_;
 };
