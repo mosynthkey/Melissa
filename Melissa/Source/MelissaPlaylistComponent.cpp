@@ -1,4 +1,5 @@
 #include "MelissaInputDialog.h"
+#include "MelissaModalDialog.h"
 #include "MelissaPlaylistComponent.h"
 
 MelissaPlaylistComponent::MelissaPlaylistComponent(MelissaHost* host) :
@@ -7,49 +8,71 @@ host_(host)
     createUI();
 }
 
+enum
+{
+    kMenuID_New = 1,
+    kMenuID_Rename,
+    kMenuID_Remove
+};
+
 void MelissaPlaylistComponent::createUI()
 {
-    setListComboBox_ = std::make_unique<ComboBox>();
-    setListComboBox_->onChange = [&]()
+    playlistComboBox_ = std::make_unique<ComboBox>();
+    playlistComboBox_->onChange = [&]()
     {
         auto list = getCurrentSongList();
         if (list != nullptr) listBox_->setList(*list);
     };
-    addAndMakeVisible(setListComboBox_.get());
+    addAndMakeVisible(playlistComboBox_.get());
     
-    newPlaylistButton_ = std::make_unique<TextButton>();
-    newPlaylistButton_->setButtonText("New");
-    newPlaylistButton_->setTooltip(TRANS("tooltip_new_playlist"));
-    newPlaylistButton_->onClick = [&]()
+    menuButton_ = std::make_unique<MelissaMenuButton>();
+    menuButton_->onClick = [&]()
     {
-        auto inputDialog = std::make_shared<MelissaInputDialog>(host_, TRANS("enter_playlist_name"), "new", [&](const String& text) {
-            if (text == "") return;
-            host_->createPlaylist(text);
-            host_->closeModalDialog();
-        });
-        host_->showModalDialog(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_playlist"));
-    };
-    addAndMakeVisible(newPlaylistButton_.get());
-    
-    removePlaylistButton_ = std::make_unique<TextButton>();
-    removePlaylistButton_->setButtonText("Remove");
-    removePlaylistButton_->setTooltip(TRANS("tooltip_remove_playlist"));
-    removePlaylistButton_->onClick = [&]()
-    {
-        if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, TRANS("remove_playlist"), TRANS("are_you_sure")) == 0) return;
+        PopupMenu menu;
+        menu.setLookAndFeel(&lookAndFeel_);
+        menu.addItem(kMenuID_New, TRANS("create_playlist"));
+        menu.addItem(kMenuID_Rename, TRANS("rename_playlist"));
+        menu.addItem(kMenuID_Remove, TRANS("remove_playlist"));
         
-        const int selectedIndex = setListComboBox_->getSelectedId() - 1;
-        data_.remove(selectedIndex);
-        update();
-        
-        int indexToSelect = selectedIndex - 1;
-        if (indexToSelect < 0) indexToSelect = 0;
-        select(indexToSelect);
+        const auto result = menu.show();
+        if (result == kMenuID_New)
+        {
+            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "New playlist", [&](const String& text) {
+                if (text == "") return;
+                host_->createPlaylist(text);
+                MelissaModalDialog::close();
+            });
+            MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("create_playlist"));
+        }
+        else if (result == kMenuID_Rename)
+        {
+            const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
+            if (selectedIndex < 0) return;
+            const String currentName = data_[selectedIndex].getDynamicObject()->getProperty("name").toString();
+            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), currentName, [&](const String& text) {
+                if (text == "") return;
+                data_[selectedIndex].getDynamicObject()->setProperty("name", text);
+                MelissaModalDialog::close();
+                update();
+            });
+            MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("rename_playlist"));
+        }
+        else if (result == kMenuID_Remove)
+        {
+            if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, TRANS("remove_playlist"), TRANS("are_you_sure")) == 0) return;
+            
+            const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
+            data_.remove(selectedIndex);
+            update();
+            
+            int indexToSelect = selectedIndex - 1;
+            if (indexToSelect < 0) indexToSelect = 0;
+            select(indexToSelect);
+        }
     };
-    addAndMakeVisible(removePlaylistButton_.get());
+    addAndMakeVisible(menuButton_.get());
     
-    addToPlaylistButton_ = std::make_unique<TextButton>();
-    addToPlaylistButton_->setButtonText("Add");
+    addToPlaylistButton_ = std::make_unique<MelissaAddButton>();
     addToPlaylistButton_->setTooltip(TRANS("tooltip_addto_playlist"));
     addToPlaylistButton_->onClick = [&]()
     {
@@ -62,13 +85,13 @@ void MelissaPlaylistComponent::createUI()
                 auto filePath = fileUrl.getLocalFile().getFullPathName();
                 if (getCurrentSongList() == nullptr)
                 {
-                    auto inputDialog = std::make_shared<MelissaInputDialog>(host_, TRANS("enter_playlist_name"), "new", [&, filePath](const String& text) {
+                    auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "new", [&, filePath](const String& text) {
                         if (text == "") return;
                         host_->createPlaylist(text);
                         getCurrentSongList()->add(filePath);
-                        host_->closeModalDialog();
+                        MelissaModalDialog::close();
                     });
-                    host_->showModalDialog(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_playlist"));
+                    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_playlist"));
                 }
                 else
                 {
@@ -102,12 +125,12 @@ void MelissaPlaylistComponent::update()
 {
     // update combobox
     
-    const int selectedId = setListComboBox_->getSelectedId();
+    const int selectedId = playlistComboBox_->getSelectedId();
     
-    setListComboBox_->clear();
+    playlistComboBox_->clear();
     for (int iItemId = 0; iItemId < data_.size(); ++iItemId)
     {
-        setListComboBox_->addItem(data_[iItemId].getDynamicObject()->getProperty("name").toString(), iItemId + 1);
+        playlistComboBox_->addItem(data_[iItemId].getDynamicObject()->getProperty("name").toString(), iItemId + 1);
     }
     
     select(selectedId - 1);
@@ -117,7 +140,7 @@ void MelissaPlaylistComponent::select(int index)
 {
     if (index < 0 ||  data_.size() < index) return;
     
-    setListComboBox_->setSelectedId(index + 1);
+    playlistComboBox_->setSelectedId(index + 1);
     
     auto list = getCurrentSongList();
     if (list != nullptr) listBox_->setList(*list);
@@ -154,12 +177,11 @@ void MelissaPlaylistComponent::resized()
     const int w = getWidth();
     const int h = getHeight();
     const int margin = 10;
-    const int controlWidth = 80;
+    const int controlWidth = 30;
     const int controlHeight = 30;
     
-    setListComboBox_->setBounds(0, 0, w - (controlWidth + margin) * 2, controlHeight);
-    newPlaylistButton_->setBounds(setListComboBox_->getRight() + margin, 0, controlWidth, controlHeight);
-    removePlaylistButton_->setBounds(newPlaylistButton_->getRight() + margin, 0, controlWidth, controlHeight);
+    playlistComboBox_->setBounds(0, 0, w - (26 + margin + 10), controlHeight);
+    menuButton_->setBounds(playlistComboBox_->getRight() + margin + 5, (playlistComboBox_->getHeight() - 14) / 2, 26, 14);
     
     listBox_->setBounds(0, 40, w, h - (controlHeight + margin) * 2);
     addToPlaylistButton_->setBounds(w - controlWidth, h - controlHeight, controlWidth, controlHeight);
@@ -167,7 +189,7 @@ void MelissaPlaylistComponent::resized()
 
 Array<var>* MelissaPlaylistComponent::getCurrentSongList()
 {
-    const int selectedIndex = setListComboBox_->getSelectedId() - 1;
+    const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
     
     if (0 <= selectedIndex && selectedIndex < data_.size())
     {

@@ -4,6 +4,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Melissa.h"
 #include "MelissaBottomControlComponent.h"
+#include "MelissaButtons.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
@@ -13,7 +14,6 @@
 #include "MelissaModel.h"
 #include "MelissaOkCancelDialog.h"
 #include "MelissaPlaylistComponent.h"
-#include "MelissaPlayPauseButton.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaToHeadButton.h"
@@ -288,29 +288,6 @@ private:
     float lineRatio_;
 };
 
-class MelissaMenuButton : public Button
-{
-public:
-    MelissaMenuButton() : Button("")
-    {
-        
-    }
-    
-    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
-    {
-        constexpr int lineHeight = 2;
-        
-        const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour(MelissaColourScheme::MainColour()).withAlpha(highlighed ? 1.f : 0.6f));
-        
-        const int w = getWidth();
-        const int h = getHeight();
-        g.fillRoundedRectangle(0, 0, w, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, (h - lineHeight) / 2, w, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, h - lineHeight, w, lineHeight, lineHeight / 2);
-    }
-};
-
 class MainComponent   : public AudioAppComponent,
                         public FileDragAndDropTarget,
                         public FileBrowserListener,
@@ -353,9 +330,6 @@ public:
     void updatePracticeList(const Array<var>& list) override;
     void createPlaylist(const String& name) override;
     bool loadFile(const String& filePath) override;
-    void showModalDialog(std::shared_ptr<Component> component, const String& title) override;
-    void showPreferencesDialog() override;
-    void closeModalDialog() override;
     void closeTutorial() override;
     
     // MenuBarModel
@@ -407,6 +381,7 @@ public:
     void saveSettings();
     
     var getSongSetting(String fileName);
+    void showPreferencesDialog();
     void showAboutDialog();
     
     void showTutorial();
@@ -462,7 +437,7 @@ private:
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
-    std::unique_ptr<ToggleButton> setListToggleButton_;
+    std::unique_ptr<ToggleButton> playlistToggleButton_;
     std::unique_ptr<ToggleButton> recentToggleButton_;
     std::unique_ptr<WildcardFileFilter> wildCardFilter_;
     std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
@@ -471,11 +446,11 @@ private:
     std::unique_ptr<ToggleButton> practiceListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
     std::unique_ptr<TextEditor> memoTextEditor_;
-    std::unique_ptr<TextButton> addToListButton_;
+    std::unique_ptr<MelissaAddButton> addToListButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
-    std::unique_ptr<MelissaPlaylistComponent> setListComponent_;
+    std::unique_ptr<MelissaPlaylistComponent> playlistComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
     
     std::unique_ptr<FileChooser> fileChooser_;
@@ -528,7 +503,7 @@ private:
     File settingsDir_, settingsFile_;
     var setting_;
     Array<var>* recent_;
-    Array<var>* setList_;
+    Array<var>* playlist_;
     
     bool shouldExit_;
     
