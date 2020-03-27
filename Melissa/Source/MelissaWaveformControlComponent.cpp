@@ -258,6 +258,8 @@ private:
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
 timeSec_(0)
 {
+    MelissaDataSource::getInstance()->addListener(this);
+    
     waveformView_ = std::make_unique<WaveformView>(this);
     addAndMakeVisible(waveformView_.get());
     
@@ -285,12 +287,6 @@ void MelissaWaveformControlComponent::timerCallback()
     posTooltip_->setVisible(false);
 }
 
-void MelissaWaveformControlComponent::setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate)
-{
-    waveformView_->setBuffer(buffer, bufferLength);
-    timeSec_ = static_cast<float>(bufferLength) / sampleRate;
-}
-
 void MelissaWaveformControlComponent::setPlayPosition(float ratio)
 {
     waveformView_->setPlayPosition(ratio);
@@ -308,4 +304,10 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
         startTimer(2000);
         posTooltip_->setVisible(true);
     }
+}
+
+void MelissaWaveformControlComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
+{
+    waveformView_->setBuffer(buffer, bufferLength);
+    timeSec_ = static_cast<float>(bufferLength) / sampleRate;
 }

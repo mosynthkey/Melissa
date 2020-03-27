@@ -47,7 +47,8 @@ status_(kStatus_Stop), shouldExit_(false)
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
     
-    dataSource_ = std::make_unique<MelissaDataSource>();
+    dataSource_ = MelissaDataSource::getInstance();
+    dataSource_->setMelissa(melissa_.get());
     
     MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
     MelissaUISettings::isMac = isMac;
@@ -169,7 +170,7 @@ status_(kStatus_Stop), shouldExit_(false)
             File file(current["file"].toString());
             if (file.existsAsFile())
             {
-                openFile(file);
+                dataSource_->loadFile(file);
                 
                 model_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
                 model_->setLoopAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
@@ -835,14 +836,14 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
 {
     if (files.size() == 1)
     {
-        loadFile(files[0]);
+        dataSource_->loadFile(files[0]);
     }
     else
     {
         MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
             createPlaylist(playlistName);
             for (auto&& file : files) playlistComponent_->addToPlaylist(file);
-            loadFile(files[0]);
+            dataSource_->loadFile(files[0]);
             MelissaModalDialog::close();
         }), TRANS("new_playlist"));
     }
@@ -892,11 +893,6 @@ void MainComponent::updatePracticeList(const Array<var>& list)
 void MainComponent::createPlaylist(const String& name)
 {
     playlistComponent_->createPlaylist(name, true);
-}
-
-bool MainComponent::loadFile(const String& filePath)
-{
-    return openFile(File(filePath));
 }
 
 void MainComponent::showPreferencesDialog()
@@ -961,9 +957,14 @@ void MainComponent::closeTutorial()
     tutorialComponent_ = nullptr;
 }
 
+void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
+{
+    
+}
+
 void MainComponent::fileDoubleClicked(const File& file)
 {
-    openFile(file);
+    dataSource_->loadFile(file);
 }
 
 StringArray MainComponent::getMenuBarNames()
@@ -993,7 +994,7 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
             auto fileUrl = chooser.getURLResult();
             if (fileUrl.isLocalFile())
             {
-                openFile(File(fileUrl.getLocalFile().getFullPathName()));
+                dataSource_->loadFile(fileUrl.getLocalFile().getFullPathName());
             }
         });
     }
@@ -1046,49 +1047,6 @@ void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
     memoTextEditor_->setVisible(tab == kPracticeMemoTab_Memo);
 }
 
-bool MainComponent::openFile(const File& file)
-{
-    pause();
-    toHead();
-    
-    AudioFormatManager formatManager;
-    formatManager.registerBasicFormats();
-    
-    auto* reader = formatManager.createReaderFor(file);
-    if (reader == nullptr) return false;
-    
-    // read audio data from reader
-    const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
-    audioSampleBuf_ = std::make_shared<AudioSampleBuffer>(2, lengthInSamples);
-    reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
-    
-    melissa_->reset();
-    const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
-    model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
-    melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
-    waveformComponent_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
-    audioSampleBuf_ = nullptr;
-    
-    fileName_ = file.getFileNameWithoutExtension();
-    fileFullPath_ = file.getFullPathName();
-    fileNameLabel_->setText(fileName_);
-    model_->loadFile(file.getFullPathName());
-    model_->setVolume(1.f);
-    
-    if (auto songs = setting_["songs"].getArray())
-    {
-        auto song = getSongSetting(fileFullPath_);
-        practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
-        memoTextEditor_->setText(song.getProperty("memo", "").toString());
-    }
-    
-    addToHistory(fileFullPath_);
-    historyTable_->setList(*(setting_.getProperty("history", Array<var>()).getArray()));
-    
-    delete reader;
-    
-    return true;
-}
 
 void MainComponent::play()
 {

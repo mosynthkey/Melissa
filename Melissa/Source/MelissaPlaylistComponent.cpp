@@ -105,7 +105,7 @@ void MelissaPlaylistComponent::createUI()
         }
         else if (result == kMenuIDAddToList_Current)
         {
-            addToCurrentPlaylist(MelissaModel::getInstance()->getCurrentFilePath());
+            //addToCurrentPlaylist();
         }
     };
     addAndMakeVisible(addToPlaylistButton_.get());
