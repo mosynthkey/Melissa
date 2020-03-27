@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MelissaUISettings.h"
+
+#include "MelissaDataSource.h"
 #include "MelissaHost.h"
+#include "MelissaUISettings.h"
 
 class MelissaFileListBox : public ListBox, public ListBoxModel
 {
@@ -25,7 +27,7 @@ public:
     
     void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
     {
-        host_->loadFile(list_[row].toString());
+        MelissaDataSource::getInstance()->loadFile(list_[row].toString());
     }
     
     void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override

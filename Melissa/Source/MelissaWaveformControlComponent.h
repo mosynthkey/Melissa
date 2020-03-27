@@ -1,10 +1,12 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDataSource.h"
 #include "MelissaLabel.h"
 #include "MelissaModel.h"
 
 class MelissaWaveformControlComponent : public Component,
+                                        public MelissaDataSourceListener,
                                         public Timer
                                         
 {
@@ -16,9 +18,11 @@ public:
     
     void timerCallback() override;
     
-    void setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate);
     void setPlayPosition(float ratio);
     void showTimeTooltip(float posRatio);
+    
+    // MelissaDataSourceListener
+    void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) override;
     
 private:
     class WaveformView;

@@ -44,10 +44,6 @@ public:
     
     void synchronize();
     
-    // wip
-    void loadFile(const String& filePath) { filePath_ = filePath; }
-    String getCurrentFilePath() const { return filePath_; }
-    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);

@@ -1,7 +1,10 @@
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
 
-MelissaDataSource::MelissaDataSource()
+MelissaDataSource MelissaDataSource::instance_;
+
+MelissaDataSource::MelissaDataSource() :
+model_(MelissaModel::getInstance())
 {
 }
 
@@ -41,7 +44,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         {
             for (auto history : *array)
             {
-                history_.emplace_back(history.toString());
+                history_.add(history.toString());
             }
         }
     }
@@ -58,7 +61,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                 playlist.name_ = obj->getProperty("name");
                 for (auto l : *(obj->getProperty("list").getArray()))
                 {
-                    playlist.list_.emplace_back(l.toString());
+                    playlist.list_.add(l.toString());
                 }
                 playlists_.emplace_back(playlist);
             }
@@ -91,8 +94,6 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             }
         }
     }
-    
-    saveSettingsFile();
 }
 
 void MelissaDataSource::saveSettingsFile()
@@ -157,4 +158,40 @@ void MelissaDataSource::saveSettingsFile()
     settings->setProperty("songs", songs);
     
     settingsFile_.replaceWithText(JSON::toString(settings));
+}
+
+bool MelissaDataSource::loadFile(const File& file)
+{
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+    
+    auto* reader = formatManager.createReaderFor(file);
+    if (reader == nullptr)
+    {
+        for (auto l : listeners_) l->songLoadFailed(file.getFullPathName());
+        return false;
+    }
+    
+    // read audio data from reader
+    const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
+    audioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
+    reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
+    
+    currentSongFilePath_ = file.getFullPathName();
+    
+    const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
+    melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    for (auto l : listeners_) l->songChanged(currentSongFilePath_, buffer, lengthInSamples, reader->sampleRate);
+    
+    model_->setVolume(1.f);
+    model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
+    
+    delete reader;
+    
+    return true;
+}
+
+void MelissaDataSource::addListener(MelissaDataSourceListener* listener)
+{
+    listeners_.emplace_back(listener);
 }

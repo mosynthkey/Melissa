@@ -293,6 +293,7 @@ class MainComponent   : public AudioAppComponent,
                         public FileDragAndDropTarget,
                         public FileBrowserListener,
                         public KeyListener,
+                        public MelissaDataSourceListener,
                         public MelissaHost,
                         public MelissaModelListener,
                         public MenuBarModel,
@@ -330,8 +331,10 @@ public:
     // Melissa
     void updatePracticeList(const Array<var>& list) override;
     void createPlaylist(const String& name) override;
-    bool loadFile(const String& filePath) override;
     void closeTutorial() override;
+    
+    // MelissaDataSourceListener
+    void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) override;
     
     // MenuBarModel
     StringArray getMenuBarNames() override;
@@ -359,7 +362,6 @@ public:
         kStatus_Pause,
         kStatus_Stop
     } status_;
-    bool openFile(const File& file);
     void play();
     void pause();
     void stop();
@@ -390,7 +392,7 @@ public:
 private:
     std::unique_ptr<Melissa> melissa_;
     MelissaModel* model_;
-    std::unique_ptr<MelissaDataSource> dataSource_;
+    MelissaDataSource* dataSource_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     

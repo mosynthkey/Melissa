@@ -1,18 +1,22 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaModel.h"
 
 class MelissaDataSourceListener
 {
 public:
     virtual ~MelissaDataSourceListener() { }
-    virtual void historyChanged() { }
+    
+    virtual void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) { }
+    virtual void songLoadFailed(const String& filePath) { }
+    virtual void historyUpdated() { }
 };
 
 class MelissaDataSource
 {
 public:
-    typedef std::vector<String> FilePathList;
+    typedef Array<String> FilePathList;
     
     struct Global
     {
@@ -72,12 +76,39 @@ public:
     };
     std::vector<Song> songs_;
     
-    MelissaDataSource();
-    ~MelissaDataSource() {}
+    void setMelissa(Melissa* melissa) { melissa_ = melissa; }
     
     void loadSettingsFile(const File& file);
     void saveSettingsFile();
     
+    bool loadFile(const File& file);
+    bool loadFile(const String& filePath) { return loadFile(File(filePath)); }
+    
+    void addListener(MelissaDataSourceListener* listener);
+    
+    const String& getCurrentSongFilePath() { return currentSongFilePath_; }
+    
+    // Singleton
+    static MelissaDataSource* getInstance() { return &instance_; }
+    MelissaDataSource(const MelissaDataSource&) = delete;
+    MelissaDataSource& operator=(const MelissaDataSource&) = delete;
+    MelissaDataSource(MelissaDataSource&&) = delete;
+    MelissaDataSource& operator=(MelissaDataSource&&) = delete;
+    
 private:
+    MelissaDataSource();
+    ~MelissaDataSource() {}
+    
+    Melissa* melissa_;
+    MelissaModel* model_;
     File settingsFile_;
+    
+    String currentSongFilePath_;
+    
+    std::vector<MelissaDataSourceListener*> listeners_;
+    
+    std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
+    
+    // Singleton
+    static MelissaDataSource instance_;
 };
