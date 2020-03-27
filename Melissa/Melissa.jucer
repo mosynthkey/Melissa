@@ -75,6 +75,10 @@
             resource="0" file="Source/MelissaBottomControlComponent.h"/>
       <FILE id="Du0Jqh" name="MelissaButtons.h" compile="0" resource="0"
             file="Source/MelissaButtons.h"/>
+      <FILE id="Mwmw2n" name="MelissaDataSource.cpp" compile="1" resource="0"
+            file="Source/MelissaDataSource.cpp"/>
+      <FILE id="q8LWYC" name="MelissaDataSource.h" compile="0" resource="0"
+            file="Source/MelissaDataSource.h"/>
       <FILE id="kttXVy" name="MelissaFileListBox.h" compile="0" resource="0"
             file="Source/MelissaFileListBox.h"/>
       <FILE id="OdLTuE" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>

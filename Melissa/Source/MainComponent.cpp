@@ -40,12 +40,14 @@ enum
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop), shouldExit_(false)
 {
-    model_ = MelissaModel::getInstance();
-    
     melissa_ = std::make_unique<Melissa>();
+    
+    model_ = MelissaModel::getInstance();
     model_->setMelissa(melissa_.get());
     model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
     model_->addListener(this);
+    
+    dataSource_ = std::make_unique<MelissaDataSource>();
     
     MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
     MelissaUISettings::isMac = isMac;
@@ -83,7 +85,6 @@ status_(kStatus_Stop), shouldExit_(false)
     LocalisedStrings::setCurrentMappings(new LocalisedStrings(localizedStrings, false));
     
     createUI();
-
     
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -111,6 +112,8 @@ status_(kStatus_Stop), shouldExit_(false)
         if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
         
         settingsFile_ = settingsDir_.getChildFile("Settings.json");
+        dataSource_->loadSettingsFile(settingsFile_);
+        
         if (!settingsFile_.existsAsFile())
         {
             isFirstLaunch = true;

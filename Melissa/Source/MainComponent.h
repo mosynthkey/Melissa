@@ -5,6 +5,7 @@
 #include "Melissa.h"
 #include "MelissaBottomControlComponent.h"
 #include "MelissaButtons.h"
+#include "MelissaDataSource.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
@@ -389,6 +390,7 @@ public:
 private:
     std::unique_ptr<Melissa> melissa_;
     MelissaModel* model_;
+    std::unique_ptr<MelissaDataSource> dataSource_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
