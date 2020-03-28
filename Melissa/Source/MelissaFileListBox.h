@@ -9,8 +9,8 @@
 class MelissaFileListBox : public ListBox, public ListBoxModel
 {
 public:
-    MelissaFileListBox(MelissaHost* host, const String& componentName = String()) :
-    ListBox(componentName, this), host_(host)
+    MelissaFileListBox(const String& componentName = String()) :
+    ListBox(componentName, this)
     {
     }
     
@@ -27,12 +27,12 @@ public:
     
     void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
     {
-        MelissaDataSource::getInstance()->loadFile(list_[row].toString());
+        MelissaDataSource::getInstance()->loadFile(list_[row]);
     }
     
     void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override
     {
-        const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber].toString() : "";
+        const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
         const String fileName = File(fullPath).getFileName();
         
         g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
@@ -43,7 +43,7 @@ public:
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     
-    void setList(const Array<var>& list)
+    void setList(const Array<String>& list)
     {
         list_ = list;
         updateContent();
@@ -51,6 +51,5 @@ public:
     }
     
 private:
-    Array<var> list_;
-    MelissaHost* host_;
+    Array<String> list_;
 };

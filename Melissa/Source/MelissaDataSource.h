@@ -9,8 +9,9 @@ public:
     virtual ~MelissaDataSourceListener() { }
     
     virtual void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) { }
-    virtual void songLoadFailed(const String& filePath) { }
     virtual void historyUpdated() { }
+    virtual void playlistUpdated(size_t index) { }
+    virtual void practiceListUpdated() { }
 };
 
 class MelissaDataSource
@@ -77,20 +78,35 @@ public:
     std::vector<Song> songs_;
     
     void setMelissa(Melissa* melissa) { melissa_ = melissa; }
+    void addListener(MelissaDataSourceListener* listener) { listeners_.emplace_back(listener); }
     
     void loadSettingsFile(const File& file);
     void saveSettingsFile();
+    const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
     bool loadFile(const File& file);
     bool loadFile(const String& filePath) { return loadFile(File(filePath)); }
     
+    // Previous
     void restorePreviousState();
     
-    void addToCurrentPracticeList(const String& name);
+    // Playlist
+    size_t getNumOfPlaylists() { return playlists_.size(); }
+    String getPlaylistName(size_t index) const;
+    void   setPlaylistName(size_t index, const String& name);
+    void   getPlaylist(size_t index, FilePathList& list) const;
+    void   setPlaylist(size_t index, const FilePathList& list);
+    void   addToPlaylist(size_t index, const String& filePath);
+    size_t createPlaylist(const String& name);
+    void   removePlaylist(size_t index);
     
-    void addListener(MelissaDataSourceListener* listener);
-    
-    const String& getCurrentSongFilePath() { return currentSongFilePath_; }
+    // Song (Current)
+    void saveSongState();
+    void saveMemo(const String& memo);
+    void getPracticeList(std::vector<Song::PracticeList>& list);
+    void addPracticeList(const String& name);
+    void removePracticeList(size_t index);
+    void overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed);
     
     // Singleton
     static MelissaDataSource* getInstance() { return &instance_; }
@@ -100,19 +116,18 @@ public:
     MelissaDataSource& operator=(MelissaDataSource&&) = delete;
     
 private:
+    // Singleton
     MelissaDataSource();
-    ~MelissaDataSource() {}
+    ~MelissaDataSource() { saveSettingsFile(); }
+    static MelissaDataSource instance_;
+    
+    // History
+    void addToHistory(const String& filePath);
     
     Melissa* melissa_;
     MelissaModel* model_;
     File settingsFile_;
-    
     String currentSongFilePath_;
-    
     std::vector<MelissaDataSourceListener*> listeners_;
-    
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
-    
-    // Singleton
-    static MelissaDataSource instance_;
 };

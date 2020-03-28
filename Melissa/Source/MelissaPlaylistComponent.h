@@ -2,37 +2,34 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaButtons.h"
+#include "MelissaDataSource.h"
 #include "MelissaFileListBox.h"
 #include "MelissaLookAndFeel.h"
 
-class MelissaPlaylistComponent : public Component
+class MelissaPlaylistComponent : public Component,
+                                 public MelissaDataSourceListener
 {
 public:
-    MelissaPlaylistComponent(MelissaHost* host);
+    MelissaPlaylistComponent();
     
     void createUI();
-    const Array<var>& getData();
-    void setData(const Array<var>& data);
-    void update();
-    void select(int index);
-    void createPlaylist(const String& name, bool shouldSelect = false);
-    enum { kIndex_Current = -1 };
-    void addToPlaylist(const String& filePath, int index = kIndex_Current);
+    void updateComboBox();
+    void updateList();
+    void select(size_t index);
     
     // Component
     void resized() override;
     
-private:
-    Array<var>* getCurrentSongList();
+    // MelissaDataSourceListener
+    void playlistUpdated(size_t index) override;
     
-    MelissaHost* host_;
-    Array<var> data_;
+private:
+    MelissaDataSource* dataSource_;
+    MelissaDataSource::FilePathList list_;
     std::unique_ptr<FileChooser> fileChooser_;
     std::unique_ptr<ComboBox> playlistComboBox_;
     std::unique_ptr<MelissaMenuButton> menuButton_;
     std::unique_ptr<MelissaAddButton> addToPlaylistButton_;
     std::unique_ptr<MelissaFileListBox> listBox_;
     MelissaLookAndFeel lookAndFeel_;
-    
-    void addToCurrentPlaylist(const String& filePath);
 };

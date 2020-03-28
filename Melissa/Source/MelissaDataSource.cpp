@@ -1,10 +1,16 @@
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
 
+enum
+{
+    kMaxSizeOfHistoryList = 20,
+};
+
 MelissaDataSource MelissaDataSource::instance_;
 
 MelissaDataSource::MelissaDataSource() :
-model_(MelissaModel::getInstance())
+model_(MelissaModel::getInstance()),
+currentSongFilePath_("")
 {
 }
 
@@ -67,6 +73,12 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             }
         }
     }
+    if (playlists_.size() == 0)
+    {
+        Playlist playlist;
+        playlists_.emplace_back(playlist);
+    }
+    for (auto l : listeners_) l->playlistUpdated(0);
     
     if (settings.hasProperty("songs"))
     {
@@ -108,13 +120,13 @@ void MelissaDataSource::saveSettingsFile()
     settings->setProperty("global", global);
     
     auto previous = new DynamicObject();
-    previous->setProperty("file",   previous_.filePath_);
-    previous->setProperty("volume", previous_.volume_);
-    previous->setProperty("a",      previous_.aRatio_);
-    previous->setProperty("b",      previous_.bRatio_);
-    previous->setProperty("speed",  previous_.speed_);
-    previous->setProperty("pitch",  previous_.pitch_);
-    settings->setProperty("current", previous);
+    previous->setProperty("file",   currentSongFilePath_);
+    previous->setProperty("volume", model_->getVolume());
+    previous->setProperty("a",      model_->getLoopAPosRatio());
+    previous->setProperty("b",      model_->getLoopBPosRatio());
+    previous->setProperty("speed",  model_->getSpeed());
+    previous->setProperty("pitch",  model_->getPitch());
+    settings->setProperty("previous", previous);
     
     Array<var> history;
     for (auto h : history_)
@@ -162,15 +174,15 @@ void MelissaDataSource::saveSettingsFile()
 
 bool MelissaDataSource::loadFile(const File& file)
 {
+    if (!file.existsAsFile()) return false;
+    
+    saveSongState();
+    
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     
     auto* reader = formatManager.createReaderFor(file);
-    if (reader == nullptr)
-    {
-        for (auto l : listeners_) l->songLoadFailed(file.getFullPathName());
-        return false;
-    }
+    if (reader == nullptr) return false;
     
     // read audio data from reader
     const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
@@ -183,11 +195,30 @@ bool MelissaDataSource::loadFile(const File& file)
     melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
     for (auto l : listeners_) l->songChanged(currentSongFilePath_, buffer, lengthInSamples, reader->sampleRate);
     
-    model_->setVolume(1.f);
+    bool found = false;
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            found = true;
+            model_->setVolume(song.volume_);
+            model_->setPitch(song.pitch_);
+        }
+    }
+    if (!found)
+    {
+        model_->setVolume(1.f);
+        model_->setPitch(0);
+    }
     model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
+    model_->setLoopPosRatio(0.f, 1.f);
+    model_->setPlayingPosRatio(0.f);
     
+    addToHistory(currentSongFilePath_);
+    saveSongState();
+    
+    audioSampleBuf_ = nullptr;
     delete reader;
-    
     return true;
 }
 
@@ -196,18 +227,173 @@ void MelissaDataSource::restorePreviousState()
     File file(previous_.filePath_);
     if (!file.existsAsFile()) return;
     
+    loadFile(file);
     model_->setVolume(previous_.volume_);
     model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
     model_->setSpeed(previous_.speed_);
     model_->setPitch(previous_.pitch_);
 }
 
-void MelissaDataSource::addToCurrentPracticeList(const String& name)
+String MelissaDataSource::getPlaylistName(size_t index) const
 {
-    
+    if (playlists_.size() <= index) return "Out of range";
+    return playlists_[index].name_;
 }
 
-void MelissaDataSource::addListener(MelissaDataSourceListener* listener)
+void MelissaDataSource::setPlaylistName(size_t index, const String& name)
 {
-    listeners_.emplace_back(listener);
+    if (playlists_.size() <= index) return;
+    playlists_[index].name_ = name;
+    for (auto l : listeners_) l->playlistUpdated(index);
+}
+
+void MelissaDataSource::getPlaylist(size_t index, FilePathList& list) const
+{
+    if (playlists_.size() <= index) return;
+    list = playlists_[index].list_;
+}
+
+void MelissaDataSource::setPlaylist(size_t index, const FilePathList& list)
+{
+    if (playlists_.size() <= index) return;
+    playlists_[index].list_ = list;
+    for (auto l : listeners_) l->playlistUpdated(index);
+}
+
+void MelissaDataSource::addToPlaylist(size_t index, const String& filePath)
+{
+    if (playlists_.size() <= index) return;
+    playlists_[index].list_.addIfNotAlreadyThere(filePath);
+    for (auto l : listeners_) l->playlistUpdated(index);
+}
+
+size_t MelissaDataSource::createPlaylist(const String& name)
+{
+    Playlist playlist;
+    playlist.name_ = name;
+    playlists_.emplace_back(playlist);
+    const size_t index = playlists_.size() - 1;
+    for (auto l : listeners_) l->playlistUpdated(index);
+    return index;
+}
+
+void MelissaDataSource::removePlaylist(size_t index)
+{
+    if (playlists_.size() <= index) return;
+    playlists_.erase(playlists_.begin() + index);
+    for (auto l : listeners_) l->playlistUpdated(index);
+}
+
+void MelissaDataSource::saveSongState()
+{
+    if (currentSongFilePath_.isEmpty()) return;
+    
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            song.volume_ = model_->getVolume();
+            song.pitch_  = model_->getPitch();
+            return;
+        }
+    }
+    
+    Song song;
+    song.filePath_ = currentSongFilePath_;
+    song.volume_ = model_->getVolume();
+    song.pitch_  = model_->getPitch();
+    songs_.emplace_back(song);
+}
+
+void MelissaDataSource::saveMemo(const String& memo)
+{
+    if (currentSongFilePath_.isEmpty()) return;
+    
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            song.memo_ = memo;
+            return;
+        }
+    }
+}
+
+void MelissaDataSource::getPracticeList(std::vector<MelissaDataSource::Song::PracticeList>& list)
+{
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            list = song.practiceList_;
+            return;
+        }
+    }
+}
+
+void MelissaDataSource::addPracticeList(const String& name)
+{
+    if (currentSongFilePath_.isEmpty()) return;
+    
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            Song::PracticeList plist;
+            plist.name_   = name;
+            plist.aRatio_ = model_->getLoopAPosRatio();
+            plist.bRatio_ = model_->getLoopBPosRatio();
+            plist.speed_  = model_->getSpeed();
+            song.practiceList_.emplace_back(plist);
+            for (auto l : listeners_) l->practiceListUpdated();
+            return;
+        }
+    }
+}
+
+void MelissaDataSource::removePracticeList(size_t index)
+{
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            if (index < song.practiceList_.size())
+            {
+                song.practiceList_.erase(song.practiceList_.begin() + index);
+            }
+            for (auto l : listeners_) l->practiceListUpdated();
+            return;
+        }
+    }
+}
+
+void MelissaDataSource::overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed)
+{
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            if (index < song.practiceList_.size())
+            {
+                song.practiceList_[index].name_   = name;
+                song.practiceList_[index].aRatio_ = aRatio;
+                song.practiceList_[index].bRatio_ = bRatio;
+                song.practiceList_[index].speed_  = speed;
+            }
+            for (auto l : listeners_) l->practiceListUpdated();
+            return;
+        }
+    }
+}
+
+void MelissaDataSource::addToHistory(const String& filePath)
+{
+    history_.removeFirstMatchingValue(filePath);
+    history_.insert(0, filePath);
+    if (history_.size() >= kMaxSizeOfHistoryList)
+    {
+        history_.resize(kMaxSizeOfHistoryList);
+    }
+    
+    for (auto l : listeners_) l->historyUpdated();
 }

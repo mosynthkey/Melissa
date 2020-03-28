@@ -22,8 +22,6 @@ enum
     kFileChooserTabGroup = 1001,
     kPracticeMemoTabGroup = 1002,
     
-    kMaxSizeOfHistoryList = 50,
-    
     // UI
     kGradationHeight = 20,
 };
@@ -107,37 +105,33 @@ status_(kStatus_Stop), shouldExit_(false)
     addKeyListener(this);
     
     bool isFirstLaunch = false;
+    
+    // load setting file
+    settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
+    if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
+    
+    settingsFile_ = settingsDir_.getChildFile("Settings.json");
+    if (!settingsFile_.existsAsFile())
     {
-        // load setting file
-        settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
-        if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
-        
-        settingsFile_ = settingsDir_.getChildFile("Settings.json");
-        if (!settingsFile_.existsAsFile())
-        {
-            isFirstLaunch = true;
-        }
-        dataSource_->loadSettingsFile(settingsFile_);
-        
-        auto rootDir = File::getSpecialLocation(File::userHomeDirectory);
-        rootDir = File(dataSource_->global_.rootDir_);
-        rootDir.setAsCurrentWorkingDirectory();
-        fileBrowserComponent_->setRoot(rootDir);
-        
-        auto width  = dataSource_->global_.width_;
-        auto height = dataSource_->global_.height_;
-        setSize(width, height);
-        
-        deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
-        
-#warning todo
-        //historyTable_->setList(*history_);
-        
-#warning todo
-        // playlistComponent_->setData(*playlist_);
-        
-        dataSource_->restorePreviousState();
+        isFirstLaunch = true;
     }
+    dataSource_->loadSettingsFile(settingsFile_);
+    
+    auto rootDir = File::getSpecialLocation(File::userHomeDirectory);
+    rootDir = File(dataSource_->global_.rootDir_);
+    rootDir.setAsCurrentWorkingDirectory();
+    fileBrowserComponent_->setRoot(rootDir);
+    
+    auto width  = dataSource_->global_.width_;
+    auto height = dataSource_->global_.height_;
+    setSize(width, height);
+    
+    deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
+    
+#warning todo
+    // playlistComponent_->setData(*playlist_);
+    
+    dataSource_->restorePreviousState();
     
     deviceManager.addMidiInputCallback("", this);
     
@@ -428,7 +422,7 @@ void MainComponent::createUI()
     historyToggleButton_->setToggleState(false, dontSendNotification);
     addAndMakeVisible(historyToggleButton_.get());
 
-    historyTable_ = make_unique<MelissaFileListBox>(this);
+    historyTable_ = make_unique<MelissaFileListBox>();
     historyTable_->setLookAndFeel(&lookAndFeel_);
     addAndMakeVisible(historyTable_.get());
 
@@ -473,7 +467,7 @@ void MainComponent::createUI()
             if (name.isEmpty()) name = defaultName;
             
 #warning refactor
-            dataSource_->addToCurrentPracticeList(name);
+            dataSource_->addPracticeList(name);
             /*
             addToPracticeList(name);
             if (auto songs = setting_["songs"].getArray())
@@ -533,7 +527,7 @@ void MainComponent::createUI()
     }
     
     // Set List
-    playlistComponent_ = make_unique<MelissaPlaylistComponent>(this);
+    playlistComponent_ = make_unique<MelissaPlaylistComponent>();
     addChildComponent(playlistComponent_.get());
     
     for (size_t sectionTitle_i = 0; sectionTitle_i < kNumOfSectionTitles; ++sectionTitle_i)
@@ -804,8 +798,12 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
     else
     {
         MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
+            
+#warning todo
+            /*
             createPlaylist(playlistName);
             for (auto&& file : files) playlistComponent_->addToPlaylist(file);
+             */
             dataSource_->loadFile(files[0]);
             MelissaModalDialog::close();
         }), TRANS("new_playlist"));
@@ -858,7 +856,8 @@ void MainComponent::updatePracticeList(const Array<var>& list)
 
 void MainComponent::createPlaylist(const String& name)
 {
-    playlistComponent_->createPlaylist(name, true);
+#warning todo
+    // playlistComponent_->createPlaylist(name, true);
 }
 
 void MainComponent::showPreferencesDialog()
@@ -926,6 +925,12 @@ void MainComponent::closeTutorial()
 void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
     
+}
+
+void MainComponent::historyUpdated()
+{
+    historyTable_->setList(dataSource_->history_);
+    historyTable_->selectRow(0);
 }
 
 void MainComponent::fileDoubleClicked(const File& file)
@@ -1115,20 +1120,6 @@ void MainComponent::saveMemo()
     song->setProperty("memo", memoTextEditor_->getText());
     songs->addIfNotAlreadyThere(song);
      */
-}
-
-void MainComponent::addToHistory(String filePath)
-{
-#warning todo
-    /*
-    history_->removeFirstMatchingValue(filePath);
-    history_->insert(0, filePath);
-    if (history_->size() >= kMaxSizeOfHistoryList)
-    {
-        history_->resize(kMaxSizeOfHistoryList);
-    }
-     */
-    historyTable_->selectRow(0);
 }
 
 void MainComponent::updateAButtonLabel()
