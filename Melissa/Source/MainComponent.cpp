@@ -941,7 +941,8 @@ void MainComponent::exitSignalSent()
     dataSource_->global_.rootDir_ = File::getCurrentWorkingDirectory().getFullPathName();
     dataSource_->global_.width_   = getWidth();
     dataSource_->global_.height_  = getHeight();
-    dataSource_->global_.device_  = deviceManager.createStateXml()->toString();
+    const auto stateXml = deviceManager.createStateXml();
+    if (stateXml != nullptr) dataSource_->global_.device_  = stateXml->toString();
     
     dataSource_->saveSettingsFile();
 }
