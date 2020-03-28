@@ -30,6 +30,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (g->hasProperty("root_dir")) global_.rootDir_ = g->getProperty("root_dir");
         if (g->hasProperty("width"))    global_.width_   = g->getProperty("width");
         if (g->hasProperty("height"))   global_.height_  = g->getProperty("height");
+        if (g->hasProperty("device"))   global_.device_  = g->getProperty("device");
     }
     
     if (settings.hasProperty("previous"))
@@ -117,6 +118,7 @@ void MelissaDataSource::saveSettingsFile()
     global->setProperty("root_dir", global_.rootDir_);
     global->setProperty("width",    global_.width_);
     global->setProperty("height",   global_.height_);
+    global->setProperty("device",   global_.device_);
     settings->setProperty("global", global);
     
     auto previous = new DynamicObject();
