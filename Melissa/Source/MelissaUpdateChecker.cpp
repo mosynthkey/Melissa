@@ -1,5 +1,7 @@
 #include "MelissaUpdateChecker.h"
 
+MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::status_ = kUpdateStatus_NotChecked;
+
 String MelissaUpdateChecker::getLatestVersionNumberString()
 {
     URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa/releases/latest");
@@ -21,18 +23,22 @@ String MelissaUpdateChecker::getLatestVersionNumberString()
 
 MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::getUpdateStatus()
 {
+    if (status_ != kUpdateStatus_NotChecked) return status_;
+    
     const String latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString();
     
     if (latestVersionNumberString.isEmpty())
     {
-        return kUpdateStatus_Failed;
+        status_ = kUpdateStatus_Failed;
     }
     else if (latestVersionNumberString == (String("v") + ProjectInfo::versionString))
     {
-        return kUpdateStatus_IsLatest;
+        status_ = kUpdateStatus_IsLatest;
     }
     else
     {
-        return kUpdateStatus_UpdateExists;
+        status_ = kUpdateStatus_UpdateExists;
     }
+    
+    return status_;
 }

@@ -832,7 +832,6 @@ void MainComponent::showTutorial()
 
 void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)
 {
-    const String latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString();
     const auto updateStatus = MelissaUpdateChecker::getUpdateStatus();
     
     if (updateStatus == MelissaUpdateChecker::kUpdateStatus_IsLatest)
