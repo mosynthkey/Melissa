@@ -556,10 +556,14 @@ void MainComponent::releaseResources()
 void MainComponent::paint(Graphics& g)
 {
     const int w = getWidth();
+    const int h = getHeight();
     const int center = w / 2;
     const auto gradationColour = MelissaUISettings::backGroundGradationColour();
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, 0.f, Colour(gradationColour.second), center, getHeight(), false));
-    g.fillAll();
+    const int playButtonCenterY = playPauseButton_->getY() + playPauseButton_->getHeight() / 2;
+    g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, playButtonCenterY, Colour(gradationColour.second), 0, getHeight(), true));
+    g.fillRect(0, 0, w / 2, h);
+    g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, playButtonCenterY, Colour(gradationColour.second), w, getHeight(), true));
+    g.fillRect(w / 2, 0, w / 2, h);
     
     constexpr int interval = 6;
     bool offset = true;
