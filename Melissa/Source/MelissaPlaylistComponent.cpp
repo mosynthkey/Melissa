@@ -3,12 +3,6 @@
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
 
-MelissaPlaylistComponent::MelissaPlaylistComponent(MelissaHost* host) :
-host_(host)
-{
-    createUI();
-}
-
 enum
 {
     kMenuID_New = 1,
@@ -22,14 +16,20 @@ enum
     kMenuIDAddToList_Current
 };
 
+MelissaPlaylistComponent::MelissaPlaylistComponent() :
+dataSource_(MelissaDataSource::getInstance())
+{
+    createUI();
+    dataSource_->addListener(this);
+    
+    updateComboBox();
+    updateList();
+}
+
 void MelissaPlaylistComponent::createUI()
 {
     playlistComboBox_ = std::make_unique<ComboBox>();
-    playlistComboBox_->onChange = [&]()
-    {
-        auto list = getCurrentSongList();
-        if (list != nullptr) listBox_->setList(*list);
-    };
+    playlistComboBox_->onChange = [&]() { updateList(); };
     addAndMakeVisible(playlistComboBox_.get());
     
     menuButton_ = std::make_unique<MelissaMenuButton>();
@@ -44,23 +44,23 @@ void MelissaPlaylistComponent::createUI()
         const auto result = menu.show();
         if (result == kMenuID_New)
         {
-            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "New playlist", [&](const String& text) {
-                if (text == "") return;
-                host_->createPlaylist(text);
+            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "New playlist", [&](const String& name) {
+                if (name.isEmpty()) return;
+                const size_t index = dataSource_->createPlaylist(name);
+                select(index);
                 MelissaModalDialog::close();
             });
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("create_playlist"));
         }
         else if (result == kMenuID_Rename)
         {
-            const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
-            if (selectedIndex < 0) return;
-            const String currentName = data_[selectedIndex].getDynamicObject()->getProperty("name").toString();
-            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), currentName, [&, selectedIndex](const String& text) {
-                if (text == "") return;
-                data_[selectedIndex].getDynamicObject()->setProperty("name", text);
+            const int index = playlistComboBox_->getSelectedItemIndex();
+            if (index < 0) return;
+            const String currentName = dataSource_->getPlaylistName(index);
+            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), currentName, [&, index](const String& name) {
+                if (name.isEmpty()) return;
+                dataSource_->setPlaylistName(index, name);
                 MelissaModalDialog::close();
-                update();
             });
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("rename_playlist"));
         }
@@ -68,11 +68,11 @@ void MelissaPlaylistComponent::createUI()
         {
             if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, TRANS("remove_playlist"), TRANS("are_you_sure")) == 0) return;
             
-            const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
-            data_.remove(selectedIndex);
-            update();
+            const int index = playlistComboBox_->getSelectedItemIndex();
+            if (index < 0) return;
+            dataSource_->removePlaylist(index);
             
-            int indexToSelect = selectedIndex - 1;
+            int indexToSelect = index - 1;
             if (indexToSelect < 0) indexToSelect = 0;
             select(indexToSelect);
         }
@@ -98,7 +98,8 @@ void MelissaPlaylistComponent::createUI()
                 if (fileUrl.isLocalFile())
                 {
                     auto filePath = fileUrl.getLocalFile().getFullPathName();
-                    addToCurrentPlaylist(filePath);
+                    const int index = playlistComboBox_->getSelectedItemIndex();
+                    dataSource_->addToPlaylist(index, filePath);
                     chooser.getResult().getParentDirectory().setAsCurrentWorkingDirectory();
                 }
             });
@@ -110,72 +111,47 @@ void MelissaPlaylistComponent::createUI()
     };
     addAndMakeVisible(addToPlaylistButton_.get());
     
-    listBox_ = std::make_unique<MelissaFileListBox>(host_);
+    listBox_ = std::make_unique<MelissaFileListBox>();
     addAndMakeVisible(listBox_.get());
 }
 
-const Array<var>& MelissaPlaylistComponent::getData()
+void MelissaPlaylistComponent::updateComboBox()
 {
-    return data_;
-}
-
-void MelissaPlaylistComponent::setData(const Array<var>& data)
-{
-    data_ = data;
-    update();
-    select(0);
-}
-
-void MelissaPlaylistComponent::update()
-{
-    // update combobox
-    
-    const int selectedId = playlistComboBox_->getSelectedId();
-    
+    auto index = playlistComboBox_->getSelectedItemIndex();
     playlistComboBox_->clear();
-    for (int iItemId = 0; iItemId < data_.size(); ++iItemId)
+    
+    int id = 1;
+    const auto numOfLists = dataSource_->getNumOfPlaylists();
+    for (size_t index = 0; index < numOfLists; ++index)
     {
-        playlistComboBox_->addItem(data_[iItemId].getDynamicObject()->getProperty("name").toString(), iItemId + 1);
+        const auto name = dataSource_->getPlaylistName(index);
+        playlistComboBox_->addItem(name, id++);
     }
     
-    select(selectedId - 1);
-}
-
-void MelissaPlaylistComponent::select(int index)
-{
-    if (index < 0 ||  data_.size() < index) return;
-    
-    playlistComboBox_->setSelectedId(index + 1);
-    
-    auto list = getCurrentSongList();
-    if (list != nullptr) listBox_->setList(*list);
-}
-
-void MelissaPlaylistComponent::createPlaylist(const String& name, bool shouldSelect)
-{
-    auto object = new DynamicObject();
-    object->setProperty("name", String(name));
-    object->setProperty("songs", Array<var>());
-    data_.add(object);
-    update();
-
-    if (shouldSelect) select(data_.size() - 1);
-}
-
-void MelissaPlaylistComponent::addToPlaylist(const String& filePath, int index)
-{
-    if (index == kIndex_Current)
+    if (dataSource_->getNumOfPlaylists() <= index)
     {
-        getCurrentSongList()->add(filePath);
+        index = static_cast<int>(dataSource_->getNumOfPlaylists()) - 1;
     }
-    else if (0 <= index && index < data_.size())
-    {
-        data_[index].getDynamicObject()->getProperty("songs").getArray()->add(filePath);
-        
-    }
-    update();
+    
+    select(index);
 }
 
+void MelissaPlaylistComponent::updateList()
+{
+    const auto index = playlistComboBox_->getSelectedItemIndex();
+    if (index < 0) return;
+    
+    MelissaDataSource::FilePathList list;
+    dataSource_->getPlaylist(index, list);
+    
+    listBox_->setList(list);
+}
+
+void MelissaPlaylistComponent::select(size_t index)
+{
+    playlistComboBox_->setSelectedItemIndex(static_cast<int>(index));
+    updateList();
+}
 
 void MelissaPlaylistComponent::resized()
 {
@@ -192,43 +168,8 @@ void MelissaPlaylistComponent::resized()
     addToPlaylistButton_->setBounds(w - controlWidth, h - controlHeight, controlWidth, controlHeight);
 }
 
-Array<var>* MelissaPlaylistComponent::getCurrentSongList()
+void MelissaPlaylistComponent::playlistUpdated(size_t index)
 {
-    const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
-    
-    if (0 <= selectedIndex && selectedIndex < data_.size())
-    {
-        auto array = data_[selectedIndex].getDynamicObject()->getProperty("songs").getArray();
-        if (array == nullptr)
-        {
-            data_[selectedIndex].getDynamicObject()->setProperty("songs", Array<var>());
-        }
-        return data_[selectedIndex].getDynamicObject()->getProperty("songs").getArray();
-    }
-    
-    return nullptr;
-}
-
-void MelissaPlaylistComponent::addToCurrentPlaylist(const String& filePath)
-{
-    if (filePath.isEmpty()) return;
-    
-    const int selectedIndex = playlistComboBox_->getSelectedId() - 1;
-    if (selectedIndex < 0)
-    {
-        auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "new", [&, filePath](const String& text) {
-            if (text == "") return;
-            createPlaylist(text, true);
-            getCurrentSongList()->add(filePath);
-            MelissaModalDialog::close();
-        });
-        MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("new_playlist"));
-    }
-    else
-    {
-        auto list = getCurrentSongList();
-        if (list == nullptr) list->add(Array<var>());
-        list->add(filePath);
-        update();
-    }
+    updateComboBox();
+    updateList();
 }

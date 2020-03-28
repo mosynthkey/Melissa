@@ -335,6 +335,7 @@ public:
     
     // MelissaDataSourceListener
     void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) override;
+    void historyUpdated() override;
     
     // MenuBarModel
     StringArray getMenuBarNames() override;
@@ -368,7 +369,6 @@ public:
     void toHead();
     void resetLoop();
     void addToPracticeList(String name);
-    void addToHistory(String filePath);
     void saveMemo();
     
     void updateAButtonLabel();
