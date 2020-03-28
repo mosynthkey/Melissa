@@ -108,6 +108,10 @@
             file="Source/MelissaPlaylistComponent.cpp"/>
       <FILE id="myIy6s" name="MelissaPlaylistComponent.h" compile="0" resource="0"
             file="Source/MelissaPlaylistComponent.h"/>
+      <FILE id="PxHcit" name="MelissaPracticeTableListBox.cpp" compile="1"
+            resource="0" file="Source/MelissaPracticeTableListBox.cpp"/>
+      <FILE id="qWwyU6" name="MelissaPracticeTableListBox.h" compile="0"
+            resource="0" file="Source/MelissaPracticeTableListBox.h"/>
       <FILE id="pkYjHS" name="MelissaPreferencesComponent.cpp" compile="1"
             resource="0" file="Source/MelissaPreferencesComponent.cpp"/>
       <FILE id="MiPpg3" name="MelissaPreferencesComponent.h" compile="0"

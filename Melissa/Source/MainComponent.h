@@ -15,6 +15,7 @@
 #include "MelissaModel.h"
 #include "MelissaOkCancelDialog.h"
 #include "MelissaPlaylistComponent.h"
+#include "MelissaPracticeTableListBox.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaToHeadButton.h"
@@ -22,7 +23,6 @@
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
-
 
 #define SHOW_BOTTOM
 
@@ -38,200 +38,6 @@ enum PracticeMemoTab
 {
     kPracticeMemoTab_Practice,
     kPracticeMemoTab_Memo
-};
-
-class MelissaPracticeTableListBox : public TableListBox,
-                                    public TableListBoxModel
-{
-public:
-    enum Column
-    {
-        kColumn_Name,
-        kColumn_LoopRange,
-        kColumn_Speed,
-        kNumOfColumn
-    };
-    
-    MelissaPracticeTableListBox(MelissaHost* host, const String& componentName = String()) :
-    TableListBox(componentName, this), host_(host)
-    {
-        String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed" };
-        for (int i = 0; i < kNumOfColumn; ++i)
-        {
-            getHeader().addColumn(headerTitles[i], i + 1, 50);
-        }
-        popupMenu_ = std::make_shared<PopupMenu>();
-    }
-    
-    void resized() override
-    {
-        TableListBox::resized();
-        autoSizeAllColumns();
-    }
-    
-    int getNumRows() override
-    {
-        return list_.size();
-    }
-    
-    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override
-    {
-        const auto colour = Colour(MelissaUISettings::MainColour()).withAlpha(rowIsSelected ? 0.06f : 0.f);
-        g.fillAll(colour);
-    }
-    
-    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override
-    {
-        String text = "";
-        if (rowNumber < list_.size())
-        {
-            auto prac = list_[rowNumber];
-            switch (columnId)
-            {
-                case kColumn_Name + 1:
-                {
-                    text = prac.getProperty("name", "").toString();
-                    break;
-                }
-                case kColumn_Speed + 1:
-                {
-                    text = String(static_cast<int32_t>(prac.getProperty("speed", 0))) + " %";
-                    break;
-                }
-                default:
-                {
-                    return;
-                }
-            }
-        }
-        
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(MelissaUISettings::FontSizeMain());
-        constexpr int xMargin = 10;
-        g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
-    }
-    
-    Component* refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate) override
-    {
-        class LoopRangeComponent : public Component
-        {
-        public:
-            LoopRangeComponent(float aRatio, float bRatio) : aRatio_(aRatio), bRatio_(bRatio)
-            {
-                setInterceptsMouseClicks(false, false);
-            };
-            void paint(Graphics& g) override
-            {
-                constexpr float lineWidth = 8.f;
-                constexpr float xMargin = 10.f;
-                const auto w = getWidth();
-                const auto h = getHeight();
-                const float aX = (w - lineWidth - xMargin * 2) * aRatio_ + xMargin;
-                const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + xMargin + lineWidth;
-                
-                g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.1f));
-                g.fillRoundedRectangle(xMargin, (h - lineWidth) / 2.f, w - xMargin * 2, lineWidth, lineWidth / 2);
-                g.setColour(Colour(MelissaUISettings::MainColour()).withAlpha(0.4f));
-                g.fillRoundedRectangle(aX,      (h - lineWidth) / 2.f, bX - aX,         lineWidth, lineWidth / 2);
-            }
-            
-        private:
-            float aRatio_, bRatio_;
-        };
-        
-        if (rowNumber < list_.size() && columnId == kColumn_LoopRange + 1)
-        {
-            auto prac = list_[rowNumber];
-            if (existingComponentToUpdate == nullptr)
-            {
-                const float aRatio = prac.getProperty("a", 0);
-                const float bRatio = prac.getProperty("b", 0);
-                return dynamic_cast<Component*>(new LoopRangeComponent(aRatio, bRatio));
-            }
-            else
-            {
-                return existingComponentToUpdate;
-            }
-        }
-        
-        return nullptr;
-    }
-    
-    int getColumnAutoSizeWidth(int columnId) override
-    {
-        const std::vector<int> widthRatio = { 3, 5, 2 };
-        const float sum = std::accumulate(widthRatio.begin(), widthRatio.end(), 0);
-        return widthRatio[columnId - 1] / sum * getWidth();
-    }
-    
-    void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override
-    {
-        bool shouldRefresh = false;
-        if (e.mods.isRightButtonDown())
-        {
-            enum
-            {
-                kMenuId_Erase = 1,
-                kMenuId_Overwrite,
-            };
-            popupMenu_->clear();
-            popupMenu_->setLookAndFeel(&lookAndFeel_);
-            popupMenu_->addItem(kMenuId_Erase, TRANS("erase"), true);
-            popupMenu_->addItem(kMenuId_Overwrite, TRANS("overwrite"), true);
-            auto result = popupMenu_->show();
-            if (result == kMenuId_Erase)
-            {
-                list_.remove(rowNumber);
-                shouldRefresh = true;
-            }
-            else if (result == kMenuId_Overwrite)
-            {
-                float a, b;
-                int speed;
-                auto model = MelissaModel::getInstance();
-                a = model->getLoopAPosRatio();
-                b = model->getLoopBPosRatio();
-                speed = model->getSpeed();
-                list_[rowNumber].getDynamicObject()->setProperty("a", a);
-                list_[rowNumber].getDynamicObject()->setProperty("b", b);
-                list_[rowNumber].getDynamicObject()->setProperty("speed", speed);
-                shouldRefresh = true;
-            }
-        }
-        
-        if (shouldRefresh)
-        {
-            host_->updatePracticeList(list_);
-            updateContent();
-            repaint();
-        }
-    }
-    
-    void cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& e) override
-    {
-        auto prac = list_[rowNumber];
-        float a = prac.getProperty("a", 0);
-        float b = prac.getProperty("b", 1);
-        float speed = prac.getProperty("speed", 1.f);
-        auto model = MelissaModel::getInstance();
-        model->setLoopPosRatio(a, b);
-        model->setSpeed(speed);
-    }
-    
-    void setList(const Array<var>& list, float totalLengthMSec)
-    {
-        list_ = list;
-        totalLengthMSec_ = totalLengthMSec;
-        
-        updateContent();
-    }
-    
-private:
-    Array<var> list_;
-    float totalLengthMSec_;
-    MelissaHost* host_;
-    std::shared_ptr<PopupMenu> popupMenu_;
-    MelissaLookAndFeel lookAndFeel_;
 };
 
 class MelissaTieComponent : public Component
@@ -329,8 +135,6 @@ public:
     bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
     
     // Melissa
-    void updatePracticeList(const Array<var>& list) override;
-    void createPlaylist(const String& name) override;
     void closeTutorial() override;
     
     // MelissaDataSourceListener
@@ -378,9 +182,6 @@ public:
     void updateBpm();
     void updateMetronomeOffset();
     void updateVolume();
-    
-    void createSettingsFile();
-    void saveSettings();
     
     var getSongSetting(String fileName);
     void showPreferencesDialog();
@@ -518,7 +319,6 @@ private:
     void pitchChanged(int semitone) override;
     void speedChanged(int speed) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
-    void playingPosChanged(float time, float ratio) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
 static constexpr float lineThickness = 1.4;
