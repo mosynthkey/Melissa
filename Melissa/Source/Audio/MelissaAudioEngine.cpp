@@ -1,5 +1,5 @@
 //
-//  Melissa.cpp
+//  MelissaAudioEngine.cpp
 //  Melissa
 //
 //  Created by Masaki on 2019/07/29.
@@ -11,13 +11,13 @@
 #include <iostream>
 #include <limits.h>
 #include <sstream>
-#include "Melissa.h"
+#include "MelissaAudioEngine.h"
 #include "MelissaModel.h"
 #include "MelissaUtility.h"
 
 using std::make_unique;
 
-Melissa::Melissa() :
+MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
 {
@@ -27,7 +27,7 @@ aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.
     }
 }
 
-void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate)
+void MelissaAudioEngine::setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
     reset();
     
@@ -54,7 +54,7 @@ void Melissa::setBuffer(const float* buffer[], size_t bufferLength, int32_t samp
     needToReset_ = true;
 }
 
-void Melissa::setOutputSampleRate(int32_t sampleRate)
+void MelissaAudioEngine::setOutputSampleRate(int32_t sampleRate)
 {
     if (outputSampleRate_ == sampleRate) return;
     
@@ -62,18 +62,18 @@ void Melissa::setOutputSampleRate(int32_t sampleRate)
     needToReset_ = true;
 }
 
-float Melissa::getPlayingPosMSec() const
+float MelissaAudioEngine::getPlayingPosMSec() const
 {
     return playingPosMSec_;
 }
 
-float Melissa::getPlayingPosRatio() const
+float MelissaAudioEngine::getPlayingPosRatio() const
 {
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
 
-void Melissa::setSpeedIncPer(int32_t speedIncPer)
+void MelissaAudioEngine::setSpeedIncPer(int32_t speedIncPer)
 {
     if (speedIncPer < 0) speedIncPer = 0;
     if (speedIncPer > 100) speedIncPer = 100;
@@ -81,7 +81,7 @@ void Melissa::setSpeedIncPer(int32_t speedIncPer)
     count_ = 0;
 }
 
-void Melissa::setSpeedIncValue(int32_t speedIncValue)
+void MelissaAudioEngine::setSpeedIncValue(int32_t speedIncValue)
 {
     if (speedIncValue < 0) speedIncValue = 0;
     if (speedIncValue > 10) speedIncValue = 10;
@@ -89,14 +89,14 @@ void Melissa::setSpeedIncValue(int32_t speedIncValue)
     count_ = 0;
 }
 
-void Melissa::setSpeedIncMax(int32_t speedIncMax)
+void MelissaAudioEngine::setSpeedIncMax(int32_t speedIncMax)
 {
     if (speedIncMax > 200) speedIncMax = 200;
     if (speedIncMax < speed_) speed_ = speedIncMax;
     speedIncMax_ = speedIncMax;
 }
 
-void Melissa::render(float* bufferToRender[], size_t bufferLength)
+void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 {
     if (!isOriginalBufferPrepared_) return;
     
@@ -151,7 +151,7 @@ void Melissa::render(float* bufferToRender[], size_t bufferLength)
     }
 }
 
-void Melissa::process()
+void MelissaAudioEngine::process()
 {
     if (!isOriginalBufferPrepared_) return;
     if (needToReset_) resetProcessedBuffer();
@@ -202,17 +202,17 @@ void Melissa::process()
     mutex_.unlock();
 }
 
-bool Melissa::needToProcess() const
+bool MelissaAudioEngine::needToProcess() const
 {
     return (processedBufferQue_.size() < queLength_);
 }
 
-bool Melissa::isBufferSet() const
+bool MelissaAudioEngine::isBufferSet() const
 {
     return originalBufferLength_ != 0;
 }
 
-void Melissa::reset()
+void MelissaAudioEngine::reset()
 {
     needToReset_ = true;
     isOriginalBufferPrepared_  = false;
@@ -227,7 +227,7 @@ void Melissa::reset()
     mutex_.unlock();
 }
 
-void Melissa::resetProcessedBuffer()
+void MelissaAudioEngine::resetProcessedBuffer()
 {
     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
     
@@ -251,7 +251,7 @@ void Melissa::resetProcessedBuffer()
     count_ = 0;
 }
 
-std::string Melissa::getStatusString() const
+std::string MelissaAudioEngine::getStatusString() const
 {
     std::stringstream ss;
     
@@ -277,7 +277,7 @@ std::string Melissa::getStatusString() const
     return ss.str();
 }
 
-void Melissa::analyzeBpm()
+void MelissaAudioEngine::analyzeBpm()
 {
     // Ref : http://hp.vector.co.jp/authors/VA046927/tempo/tempo.html
     //if (!isOriginalBufferPrepared_) return;
@@ -349,19 +349,19 @@ void Melissa::analyzeBpm()
     std::cout << metronome_.offsetSec_ << " sec" << std::endl;
 }
 
-void Melissa::volumeChanged(float volume)
+void MelissaAudioEngine::volumeChanged(float volume)
 {
     volume_ = volume;
 }
 
-void Melissa::pitchChanged(int semitone)
+void MelissaAudioEngine::pitchChanged(int semitone)
 {
     semitone_ = semitone;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
 }
 
-void Melissa::speedChanged(int speed)
+void MelissaAudioEngine::speedChanged(int speed)
 {
     speed_ = speed;
     currentSpeed_ = speed;
@@ -369,7 +369,7 @@ void Melissa::speedChanged(int speed)
     needToReset_ = true;
 }
 
-void Melissa::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
+void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
     if (!(0 <= aRatio && aRatio < bRatio && bRatio <= 1.f)) return;
     
@@ -380,7 +380,7 @@ void Melissa::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, flo
     needToReset_ = true;
 }
 
-void Melissa::playingPosChanged(float time, float ratio)
+void MelissaAudioEngine::playingPosChanged(float time, float ratio)
 {
     processStartIndex_ = static_cast<size_t>((originalBufferLength_ - 1) * ratio);
     if (processStartIndex_ < aIndex_) processStartIndex_ = aIndex_;

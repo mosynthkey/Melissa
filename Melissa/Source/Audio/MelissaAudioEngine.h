@@ -15,11 +15,11 @@
 
 class MelissaModel;
 
-class Melissa : public MelissaModelListener
+class MelissaAudioEngine : public MelissaModelListener
 {
 public:
-    Melissa();
-    virtual ~Melissa() {};
+    MelissaAudioEngine();
+    virtual ~MelissaAudioEngine() {};
     
     void setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate);
     void setOutputSampleRate(int32_t sampleRate);

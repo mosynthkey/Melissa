@@ -2,7 +2,7 @@
 
 #include <numeric>
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "Melissa.h"
+#include "MelissaAudioEngine.h"
 #include "MelissaBottomControlComponent.h"
 #include "MelissaButtons.h"
 #include "MelissaDataSource.h"
@@ -191,7 +191,7 @@ public:
     void showUpdateDialog(bool showIfThereIsNoUpdate = false);
 
 private:
-    std::unique_ptr<Melissa> melissa_;
+    std::unique_ptr<MelissaAudioEngine> audioEngine_;
     MelissaModel* model_;
     MelissaDataSource* dataSource_;
     
