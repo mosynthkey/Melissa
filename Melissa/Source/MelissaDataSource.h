@@ -119,7 +119,7 @@ public:
 private:
     // Singleton
     MelissaDataSource();
-    ~MelissaDataSource() { saveSettingsFile(); }
+    ~MelissaDataSource() {}
     static MelissaDataSource instance_;
     
     // History

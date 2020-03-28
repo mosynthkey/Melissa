@@ -52,7 +52,7 @@ public:
         }
         else
         {
-            return isJa ? "Meiryo UI" : "";
+            return isJa ? "Meiryo UI" : "Segoe UI";
         }
     }
     
