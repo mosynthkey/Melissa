@@ -47,6 +47,7 @@ status_(kStatus_Stop), shouldExit_(false)
     
     dataSource_ = MelissaDataSource::getInstance();
     dataSource_->setMelissa(melissa_.get());
+    dataSource_->addListener(this);
     
     MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
     MelissaUISettings::isMac = isMac;
@@ -128,11 +129,7 @@ status_(kStatus_Stop), shouldExit_(false)
     
     deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
     
-#warning todo
-    // playlistComponent_->setData(*playlist_);
-    
     dataSource_->restorePreviousState();
-    
     deviceManager.addMidiInputCallback("", this);
     
 #if defined(ENABLE_TUTORIAL)
@@ -150,9 +147,6 @@ MainComponent::~MainComponent()
 {
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
-    
-    
-    saveSettings();
     
     setLookAndFeel(nullptr);
     historyTable_->setLookAndFeel(nullptr);
@@ -293,6 +287,7 @@ void MainComponent::createUI()
     
     volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
     volumeSlider_->setRange(0.01f, 2.0f);
+    volumeSlider_->setDoubleClickReturnValue(true, 1.f);
     volumeSlider_->setValue(0.f);
     volumeSlider_->onValueChange = [this]()
     {
@@ -426,7 +421,7 @@ void MainComponent::createUI()
     historyTable_->setLookAndFeel(&lookAndFeel_);
     addAndMakeVisible(historyTable_.get());
 
-    practiceTable_ = make_unique<MelissaPracticeTableListBox>(this);
+    practiceTable_ = make_unique<MelissaPracticeTableListBox>();
     addAndMakeVisible(practiceTable_.get());
 
     memoTextEditor_ = make_unique<TextEditor>();
@@ -436,7 +431,7 @@ void MainComponent::createUI()
     memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
     memoTextEditor_->onFocusLost = [&]()
     {
-        saveMemo();
+        dataSource_->saveMemo(memoTextEditor_->getText());
     };
     memoTextEditor_->setReturnKeyStartsNewLine(true);
     addAndMakeVisible(memoTextEditor_.get());
@@ -466,17 +461,8 @@ void MainComponent::createUI()
             String name(text);
             if (name.isEmpty()) name = defaultName;
             
-#warning refactor
             dataSource_->addPracticeList(name);
-            /*
-            addToPracticeList(name);
-            if (auto songs = setting_["songs"].getArray())
-            {
-                auto song = getSongSetting(fileFullPath_);
-                practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
-                MelissaModalDialog::close();
-            }
-             */
+            MelissaModalDialog::close();
         });
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
@@ -798,12 +784,6 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
     else
     {
         MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
-            
-#warning todo
-            /*
-            createPlaylist(playlistName);
-            for (auto&& file : files) playlistComponent_->addToPlaylist(file);
-             */
             dataSource_->loadFile(files[0]);
             MelissaModalDialog::close();
         }), TRANS("new_playlist"));
@@ -840,24 +820,6 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
     }
     
     return false;
-}
-
-void MainComponent::updatePracticeList(const Array<var>& list)
-{
-#warning todo
-    /*
-    if (auto songs = setting_["songs"].getArray())
-    {
-        auto song = getSongSetting(fileFullPath_);
-        song.getDynamicObject()->setProperty("list", list);
-    }
-     */
-}
-
-void MainComponent::createPlaylist(const String& name)
-{
-#warning todo
-    // playlistComponent_->createPlaylist(name, true);
 }
 
 void MainComponent::showPreferencesDialog()
@@ -924,7 +886,7 @@ void MainComponent::closeTutorial()
 
 void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
-    
+    fileNameLabel_->setName(dataSource_->getCurrentSongFilePath());
 }
 
 void MainComponent::historyUpdated()
@@ -1050,76 +1012,6 @@ void MainComponent::toHead()
 void MainComponent::resetLoop()
 {
     model_->setLoopPosRatio(0.f, 1.f);
-    updateAButtonLabel();
-    updateBButtonLabel();
-}
-
-void MainComponent::addToPracticeList(String name)
-{
-#warning todo
-    /*
-    auto addToList = [this, name](Array<var>* list)
-    {
-        auto prac = new DynamicObject();
-        prac->setProperty("name", name);
-        prac->setProperty("a", model_->getLoopAPosRatio());
-        prac->setProperty("b", model_->getLoopBPosRatio());
-        prac->setProperty("speed", model_->getSpeed());
-        list->addIfNotAlreadyThere(prac);
-    };
-    
-    auto songs = setting_.getProperty("songs", Array<var>()).getArray();
-    for (auto& song : *songs)
-    {
-        if (song.getProperty("file", "").toString() == fileFullPath_)
-        {
-            auto list = song.getProperty("list", Array<var>()).getArray();
-            addToList(list);
-            return;
-        }
-    }
-    
-    auto song = new DynamicObject();
-    song->setProperty("file", fileFullPath_);
-    song->setProperty("volume", model_->getVolume());
-#if defined(ENABLE_METRONOME)
-    song->setProperty("bpm", static_cast<float>(model_->getBpm()));
-    song->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
-#endif
-    song->setProperty("pitch", model_->getPitch());
-    song->setProperty("list", Array<var>());
-    song->setProperty("memo", memoTextEditor_->getText());
-    addToList(song->getProperty("list").getArray());
-    songs->addIfNotAlreadyThere(song);
-     */
-}
-
-void MainComponent::saveMemo()
-{
-#warning todo
-    /*
-    auto songs = setting_.getProperty("songs", Array<var>()).getArray();
-    for (auto& song : *songs)
-    {
-        if (song.getProperty("file", "").toString() == fileFullPath_)
-        {
-            song.getDynamicObject()->setProperty("memo", memoTextEditor_->getText());
-            return;
-        }
-    }
-    
-    auto song = new DynamicObject();
-    song->setProperty("file", fileFullPath_);
-    song->setProperty("volume", model_->getVolume());
-#if defined(ENABLE_METRONOME)
-    song->setProperty("bpm", static_cast<float>(model_->getBpm()));
-    song->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
-#endif
-    song->setProperty("pitch", model_->getPitch());
-    song->setProperty("list", Array<var>());
-    song->setProperty("memo", memoTextEditor_->getText());
-    songs->addIfNotAlreadyThere(song);
-     */
 }
 
 void MainComponent::updateAButtonLabel()
@@ -1173,59 +1065,6 @@ void MainComponent::updateMetronomeOffset()
 void MainComponent::updateVolume()
 {
     volumeSlider_->setValue(model_->getVolume());
-}
-
-void MainComponent::createSettingsFile()
-{
-    auto all = new DynamicObject();
-    
-    auto global = new DynamicObject();
-    global->setProperty("version", 1);
-    all->setProperty("global", var(global));
-    
-    auto current = new DynamicObject();
-    current->setProperty("file", fileFullPath_);
-    current->setProperty("volume", model_->getVolume());
-#if defined(ENABLE_METRONOME)
-    current->setProperty("bpm", static_cast<float>(model_->getBpm()));
-    current->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
-#endif
-    current->setProperty("a", model_->getLoopAPosRatio());
-    current->setProperty("b", model_->getLoopBPosRatio());
-    current->setProperty("speed", model_->getSpeed());
-    current->setProperty("pitch", model_->getPitch());
-    all->setProperty("current", var(current));
-    all->setProperty("history", Array<var>());
-    Array<var> playlist;
-    auto newPlaylist = new DynamicObject();
-    newPlaylist->setProperty("name", "New playlist");
-    newPlaylist->setProperty("list", Array<var>());
-    playlist.add(newPlaylist);
-    all->setProperty("playlist", playlist);
-    all->setProperty("songs", Array<var>());
-    
-    settingsFile_.replaceWithText(JSON::toString(all));
-}
-
-void MainComponent::saveSettings()
-{
-    saveMemo();
-    
-    dataSource_->saveSettingsFile();
-}
-
-var MainComponent::getSongSetting(String fileName)
-{
-#warning todo
-    /*
-    auto songs = setting_["songs"].getArray();
-    for (auto& song : *songs)
-    {
-        if (song.getProperty("file", "").toString() == fileName) return song;
-    }
-    */
-     
-    return var();
 }
 
 void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
@@ -1288,8 +1127,3 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
     updateAButtonLabel();
     updateBButtonLabel();
 }
-
-void MainComponent::playingPosChanged(float time, float ratio)
-{
-}
-

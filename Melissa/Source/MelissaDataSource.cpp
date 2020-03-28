@@ -360,9 +360,9 @@ void MelissaDataSource::removePracticeList(size_t index)
             if (index < song.practiceList_.size())
             {
                 song.practiceList_.erase(song.practiceList_.begin() + index);
+                for (auto l : listeners_) l->practiceListUpdated();
+                return;
             }
-            for (auto l : listeners_) l->practiceListUpdated();
-            return;
         }
     }
 }
@@ -379,8 +379,8 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name, 
                 song.practiceList_[index].aRatio_ = aRatio;
                 song.practiceList_[index].bRatio_ = bRatio;
                 song.practiceList_[index].speed_  = speed;
+                for (auto l : listeners_) l->practiceListUpdated();
             }
-            for (auto l : listeners_) l->practiceListUpdated();
             return;
         }
     }

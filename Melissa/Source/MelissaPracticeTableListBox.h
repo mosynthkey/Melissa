@@ -1,0 +1,46 @@
+#pragma once
+
+#include <vector>
+#include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDataSource.h"
+#include "MelissaLookAndFeel.h"
+
+class MelissaPracticeTableListBox : public MelissaDataSourceListener,
+                                    public TableListBox,
+                                    public TableListBoxModel
+{
+public:
+    enum Column
+    {
+        kColumn_Name,
+        kColumn_LoopRange,
+        kColumn_Speed,
+        kNumOfColumn
+    };
+    
+    MelissaPracticeTableListBox(const String& componentName = "");
+    ~MelissaPracticeTableListBox();
+    
+    void updatePracticeList();
+    
+    void resized() override;
+    int getNumRows() override;
+    
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
+    Component* refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate) override;
+    int  getColumnAutoSizeWidth(int columnId) override;
+    void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override;
+    void cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& e) override;
+    
+    // MelissaDataSourceListener
+    void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) override;
+    void practiceListUpdated() override;
+    
+private:
+    MelissaLookAndFeel lookAndFeel_;
+    MelissaDataSource* dataSource_;
+    std::vector<MelissaDataSource::Song::PracticeList> practiceList_;
+    float totalLengthMSec_;
+    std::shared_ptr<PopupMenu> popupMenu_;
+};
