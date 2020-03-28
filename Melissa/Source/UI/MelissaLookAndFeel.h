@@ -321,7 +321,8 @@ public:
             g.setColour(Colours::black/* Colour(MelissaUISettings::dialogBackgoundColour())*/);
             g.fillRoundedRectangle(1, 1, width - 2, height - 2, (height - 2) / 2);
         }
-        g.fillAll(Colour(0xff2B2D31));
+        g.setGradientFill(ColourGradient(Colour(0xFF1A1A1A), 0, height, Colour(0xFF1C222B), width, 0, true));
+        g.fillAll();
         g.setColour(Colours::white.withAlpha(0.8f));
         g.setFont(Font(MelissaUISettings::fontSizeSub()));
         g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
