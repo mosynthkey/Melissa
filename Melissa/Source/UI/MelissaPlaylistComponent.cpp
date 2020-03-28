@@ -106,7 +106,8 @@ void MelissaPlaylistComponent::createUI()
         }
         else if (result == kMenuIDAddToList_Current)
         {
-            //addToCurrentPlaylist();
+            const int index = playlistComboBox_->getSelectedItemIndex();
+            dataSource_->addToPlaylist(index, dataSource_->getCurrentSongFilePath());
         }
     };
     addAndMakeVisible(addToPlaylistButton_.get());

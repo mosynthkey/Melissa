@@ -18,3 +18,21 @@ String MelissaUpdateChecker::getLatestVersionNumberString()
 
     return versionString;
 }
+
+MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::getUpdateStatus()
+{
+    const String latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString();
+    
+    if (latestVersionNumberString.isEmpty())
+    {
+        return kUpdateStatus_Failed;
+    }
+    else if (latestVersionNumberString == (String("v") + ProjectInfo::versionString))
+    {
+        return kUpdateStatus_IsLatest;
+    }
+    else
+    {
+        return kUpdateStatus_UpdateExists;
+    }
+}

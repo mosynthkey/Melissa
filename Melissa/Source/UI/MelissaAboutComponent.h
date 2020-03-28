@@ -17,20 +17,20 @@ public:
         
         copyrightLabel_ = std::make_unique<Label>();
         copyrightLabel_->setJustificationType(Justification::right);
-        copyrightLabel_->setFont(MelissaUISettings::FontSizeMain());
+        copyrightLabel_->setFont(MelissaUISettings::fontSizeMain());
         copyrightLabel_->setText("Copyright (c) 2020 Masaki Ono. All rights reserved.", dontSendNotification);
         copyrightLabel_->setBounds(0, 200, 600, 30);
         addAndMakeVisible(copyrightLabel_.get());
         
         versionLabel_ = std::make_unique<Label>();
         versionLabel_->setJustificationType(Justification::right);
-        versionLabel_->setFont(MelissaUISettings::FontSizeMain());
+        versionLabel_->setFont(MelissaUISettings::fontSizeMain());
         versionLabel_->setText(String("Version ") + ProjectInfo::versionString, dontSendNotification);
         versionLabel_->setBounds(0, 230, 600, 30);
         addAndMakeVisible(versionLabel_.get());
         
         linkButton_ = std::make_unique<HyperlinkButton>("Open GitHub page", URL("https://github.com/mosynthkey/Melissa"));
-        linkButton_->setFont(MelissaUISettings::FontSizeMain(), false, Justification::right);
+        linkButton_->setFont(MelissaUISettings::fontSizeMain(), false, Justification::right);
         linkButton_->setBounds(0, 260, 600, 30);
         addAndMakeVisible(linkButton_.get());
     }

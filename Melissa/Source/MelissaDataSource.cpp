@@ -153,7 +153,8 @@ void MelissaDataSource::saveSettingsFile()
         auto obj = new DynamicObject();
         obj->setProperty("file",   song.filePath_);
         obj->setProperty("volume", song.volume_);
-        obj->setProperty("pitch",   song.pitch_);
+        obj->setProperty("pitch",  song.pitch_);
+        obj->setProperty("memo",   song.memo_);
         Array<var> list;
         for (auto l : song.practiceList_)
         {
@@ -317,6 +318,21 @@ void MelissaDataSource::saveMemo(const String& memo)
             return;
         }
     }
+}
+
+String MelissaDataSource::getMemo() const
+{
+    if (currentSongFilePath_.isEmpty()) return "";
+    
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            return song.memo_;
+        }
+    }
+    
+    return "";
 }
 
 void MelissaDataSource::getPracticeList(std::vector<MelissaDataSource::Song::PracticeList>& list)
