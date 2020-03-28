@@ -9,7 +9,7 @@ class MelissaUISettings
 public:
     static std::pair<uint32_t, uint32_t> backGroundGradationColour()
     {
-        return { 0xFF252F41, 0xFF1F2024 };
+        return { 0xFF1D2534, 0xFF090C10 };
     }
     
     static uint32_t mainColour()
