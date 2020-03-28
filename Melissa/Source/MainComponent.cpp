@@ -763,7 +763,12 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
     else
     {
         MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
-            dataSource_->loadFile(files[0]);
+            if (!playlistName.isEmpty())
+            {
+                const auto index = dataSource_->createPlaylist(playlistName);
+                for (auto file : files) dataSource_->addToPlaylist(index, file);
+                playlistComponent_->select(index);
+            }
             MelissaModalDialog::close();
         }), TRANS("new_playlist"));
     }
