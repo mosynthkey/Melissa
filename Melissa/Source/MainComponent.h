@@ -24,8 +24,6 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
-#define SHOW_BOTTOM
-
 enum FileChooserTab
 {
     kFileChooserTab_Browse,
@@ -204,9 +202,7 @@ private:
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<Label> controlComponent_;
-#if defined(SHOW_BOTTOM)
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
-#endif
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
     std::unique_ptr<MelissaToHeadButton> toHeadButton_;

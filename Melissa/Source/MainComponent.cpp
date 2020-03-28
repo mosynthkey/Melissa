@@ -223,11 +223,9 @@ void MainComponent::createUI()
     controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::MainColour()).withAlpha(0.06f));
     addAndMakeVisible(controlComponent_.get());
     
-#if defined(SHOW_BOTTOM)
     bottomComponent_ = make_unique<MelissaBottomControlComponent>();
     lookAndFeel_.setBottomComponent(bottomComponent_.get());
     addAndMakeVisible(bottomComponent_.get());
-#endif
     
     playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
     playPauseButton_->onClick = [this]() { if (status_ == kStatus_Playing) { pause(); } else { play(); } };
@@ -575,11 +573,7 @@ void MainComponent::paint(Graphics& g)
     g.setColour(Colours::white.withAlpha(0.08f));
     for (int y_i = 0; y_i < getHeight(); y_i += interval)
     {
-#if defined(SHOW_BOTTOM)
         if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i && y_i < bottomComponent_->getY()))
-#else
-        if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i))
-#endif
         {
             for (int x_i = offset ? interval / 2 : 0; x_i < getWidth(); x_i += interval)
             {
@@ -599,11 +593,9 @@ void MainComponent::paint(Graphics& g)
     g.setGradientFill(ColourGradient(colours[1], center, y, colours[0], center, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
     
-#if defined(SHOW_BOTTOM)
     y = bottomComponent_->getY() - kGradationHeight;
     g.setGradientFill(ColourGradient(colours[0], center, y, colours[1], center, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
-#endif
 }
 
 void MainComponent::resized()
@@ -642,32 +634,22 @@ void MainComponent::resized()
         
         y += 40;
         {
-#if defined(SHOW_BOTTOM)
             const int32_t h = getHeight() - 40 - y;
-#else
-            const int32_t h = getHeight() - 40 - y + 20;
-#endif
             fileBrowserComponent_->setBounds(20, y, browserWidth, h);
             playlistComponent_->setBounds(20, y, browserWidth, h);
             historyTable_->setBounds(20, y, browserWidth, h);
         }
         
         {
-#if defined(SHOW_BOTTOM)
             const int32_t h = getHeight() - 80 - y;
-#else
-            const int32_t h = getHeight() - 80 - y + 20;
-#endif
             practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
             addToListButton_->setBounds(getWidth() - 30 - 20, practiceTable_->getBottom() + 10, 30, 30);
             memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
         }
     }
     
-#if defined(SHOW_BOTTOM)
     // Bottom
     bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
-#endif
     
     // Section
     const int32_t marginSideX = 40;
