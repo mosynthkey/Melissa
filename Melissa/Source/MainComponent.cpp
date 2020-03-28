@@ -38,15 +38,15 @@ enum
 MainComponent::MainComponent() : Thread("MelissaProcessThread"),
 status_(kStatus_Stop), shouldExit_(false)
 {
-    melissa_ = std::make_unique<Melissa>();
+    audioEngine_ = std::make_unique<MelissaAudioEngine>();
     
     model_ = MelissaModel::getInstance();
-    model_->setMelissa(melissa_.get());
-    model_->addListener(dynamic_cast<MelissaModelListener*>(melissa_.get()));    
+    model_->setMelissaAudioEngine(audioEngine_.get());
+    model_->addListener(dynamic_cast<MelissaModelListener*>(audioEngine_.get()));    
     model_->addListener(this);
     
     dataSource_ = MelissaDataSource::getInstance();
-    dataSource_->setMelissa(melissa_.get());
+    dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
     MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
@@ -542,7 +542,7 @@ void MainComponent::createUI()
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    melissa_->setOutputSampleRate(sampleRate);
+    audioEngine_->setOutputSampleRate(sampleRate);
 }
 
 void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
@@ -551,7 +551,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
     
     if (model_ == nullptr || status_ != kStatus_Playing) return;
     float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
-    melissa_->render(buffer, bufferToFill.numSamples);
+    audioEngine_->render(buffer, bufferToFill.numSamples);
 }
 
 void MainComponent::releaseResources()
@@ -942,9 +942,9 @@ void MainComponent::run()
 {
     while (!shouldExit_)
     {
-        if (model_ != nullptr && melissa_->isBufferSet() && melissa_->needToProcess())
+        if (model_ != nullptr && audioEngine_->isBufferSet() && audioEngine_->needToProcess())
         {
-            melissa_->process();
+            audioEngine_->process();
         }
         else
         {

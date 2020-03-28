@@ -77,7 +77,7 @@ public:
     };
     std::vector<Song> songs_;
     
-    void setMelissa(Melissa* melissa) { melissa_ = melissa; }
+    void setMelissaAudioEngine(MelissaAudioEngine* audioEngine) { audioEngine_ = audioEngine; }
     void addListener(MelissaDataSourceListener* listener) { listeners_.emplace_back(listener); }
     
     void loadSettingsFile(const File& file);
@@ -124,7 +124,7 @@ private:
     // History
     void addToHistory(const String& filePath);
     
-    Melissa* melissa_;
+    MelissaAudioEngine* audioEngine_;
     MelissaModel* model_;
     File settingsFile_;
     String currentSongFilePath_;

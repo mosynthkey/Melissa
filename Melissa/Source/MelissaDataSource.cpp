@@ -192,7 +192,7 @@ bool MelissaDataSource::loadFile(const File& file)
     currentSongFilePath_ = file.getFullPathName();
     
     const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
-    melissa_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    audioEngine_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
     for (auto l : listeners_) l->songChanged(currentSongFilePath_, buffer, lengthInSamples, reader->sampleRate);
     
     bool found = false;

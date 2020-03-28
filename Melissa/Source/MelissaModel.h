@@ -2,13 +2,13 @@
 
 #include <vector>
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "Melissa.h"
+#include "MelissaAudioEngine.h"
 #include "MelissaModelListener.h"
 
 class MelissaModel
 {
 public:
-    void setMelissa(Melissa* melissa) { melissa_ = melissa; }
+    void setMelissaAudioEngine(MelissaAudioEngine* audioEngine) { audioEngine_ = audioEngine; }
     
     void setLengthMSec(float lengthMSec);
     float getLengthMSec() const { return lengthMSec_; }
@@ -59,7 +59,7 @@ private:
     MelissaModel();
     ~MelissaModel() {};
     
-    Melissa* melissa_;
+    MelissaAudioEngine* audioEngine_;
     
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;

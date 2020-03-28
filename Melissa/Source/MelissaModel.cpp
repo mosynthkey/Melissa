@@ -89,7 +89,7 @@ void MelissaModel::setPlayingPosRatio(float playingPosRatio)
 
 float MelissaModel::getPlayingPosRatio() const
 {
-    return melissa_->getPlayingPosRatio();
+    return audioEngine_->getPlayingPosRatio();
 }
 
 void MelissaModel::setPlayingPosMSec(float playingPosMSec)
@@ -102,7 +102,7 @@ void MelissaModel::setPlayingPosMSec(float playingPosMSec)
 
 float MelissaModel::getPlayingPosMSec() const
 {
-    return melissa_->getPlayingPosMSec();
+    return audioEngine_->getPlayingPosMSec();
 }
 
 void MelissaModel::synchronize()
