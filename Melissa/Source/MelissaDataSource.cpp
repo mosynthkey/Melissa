@@ -26,15 +26,15 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (g->hasProperty("height"))   global_.height_  = g->getProperty("height");
     }
     
-    if (settings.hasProperty("current"))
+    if (settings.hasProperty("previous"))
     {
-        auto c = settings["current"].getDynamicObject();
-        if (c->hasProperty("file"))   current_.filePath_ = c->getProperty("file");
-        if (c->hasProperty("volume")) current_.volume_   = c->getProperty("volume");
-        if (c->hasProperty("a"))      current_.aRatio_   = c->getProperty("a");
-        if (c->hasProperty("b"))      current_.bRatio_   = c->getProperty("b");
-        if (c->hasProperty("speed"))  current_.speed_    = c->getProperty("speed");
-        if (c->hasProperty("pitch"))  current_.pitch_    = c->getProperty("pitch");
+        auto p = settings["previous"].getDynamicObject();
+        if (p->hasProperty("file"))   previous_.filePath_ = p->getProperty("file");
+        if (p->hasProperty("volume")) previous_.volume_   = p->getProperty("volume");
+        if (p->hasProperty("a"))      previous_.aRatio_   = p->getProperty("a");
+        if (p->hasProperty("b"))      previous_.bRatio_   = p->getProperty("b");
+        if (p->hasProperty("speed"))  previous_.speed_    = p->getProperty("speed");
+        if (p->hasProperty("pitch"))  previous_.pitch_    = p->getProperty("pitch");
     }
     
     if (settings.hasProperty("history"))
@@ -107,14 +107,14 @@ void MelissaDataSource::saveSettingsFile()
     global->setProperty("height",   global_.height_);
     settings->setProperty("global", global);
     
-    auto current = new DynamicObject();
-    current->setProperty("file",   current_.filePath_);
-    current->setProperty("volume", current_.volume_);
-    current->setProperty("a",      current_.aRatio_);
-    current->setProperty("b",      current_.bRatio_);
-    current->setProperty("speed",  current_.speed_);
-    current->setProperty("pitch",  current_.pitch_);
-    settings->setProperty("current", current);
+    auto previous = new DynamicObject();
+    previous->setProperty("file",   previous_.filePath_);
+    previous->setProperty("volume", previous_.volume_);
+    previous->setProperty("a",      previous_.aRatio_);
+    previous->setProperty("b",      previous_.bRatio_);
+    previous->setProperty("speed",  previous_.speed_);
+    previous->setProperty("pitch",  previous_.pitch_);
+    settings->setProperty("current", previous);
     
     Array<var> history;
     for (auto h : history_)
@@ -189,6 +189,22 @@ bool MelissaDataSource::loadFile(const File& file)
     delete reader;
     
     return true;
+}
+
+void MelissaDataSource::restorePreviousState()
+{
+    File file(previous_.filePath_);
+    if (!file.existsAsFile()) return;
+    
+    model_->setVolume(previous_.volume_);
+    model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
+    model_->setSpeed(previous_.speed_);
+    model_->setPitch(previous_.pitch_);
+}
+
+void MelissaDataSource::addToCurrentPracticeList(const String& name)
+{
+    
 }
 
 void MelissaDataSource::addListener(MelissaDataSourceListener* listener)

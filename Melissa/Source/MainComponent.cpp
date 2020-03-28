@@ -113,72 +113,30 @@ status_(kStatus_Stop), shouldExit_(false)
         if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
         
         settingsFile_ = settingsDir_.getChildFile("Settings.json");
-        dataSource_->loadSettingsFile(settingsFile_);
-        
         if (!settingsFile_.existsAsFile())
         {
             isFirstLaunch = true;
-            createSettingsFile();
         }
-        
-        setting_ = JSON::parse(settingsFile_.loadFileAsString());
-        if (!isSettingValid())
-        {
-            isFirstLaunch = true;
-            createSettingsFile();
-            setting_ = JSON::parse(settingsFile_.loadFileAsString());
-        }
-        
-        auto global = setting_["global"];
+        dataSource_->loadSettingsFile(settingsFile_);
         
         auto rootDir = File::getSpecialLocation(File::userHomeDirectory);
-        if (global.hasProperty("root_dir"))
-        {
-            rootDir = File(global.getProperty("root_dir", ""));
-            rootDir.setAsCurrentWorkingDirectory();
-            fileBrowserComponent_->setRoot(rootDir);
-        }
+        rootDir = File(dataSource_->global_.rootDir_);
+        rootDir.setAsCurrentWorkingDirectory();
+        fileBrowserComponent_->setRoot(rootDir);
         
-        auto width = static_cast<int>(global.getProperty("width", 1400));
-        auto height = static_cast<int>(global.getProperty("height", 860));
+        auto width  = dataSource_->global_.width_;
+        auto height = dataSource_->global_.height_;
         setSize(width, height);
         
-        if (global.hasProperty("device"))
-        {
-            deviceManager.initialise(0, 2, XmlDocument::parse(global.getProperty("device", "")).get(), true);
-        }
+        deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
         
-        if (setting_.hasProperty("history"))
-        {
-            history_ = setting_["history"].getArray();
-        }
-        else
-        {
-            history_ = new Array<var>();
-        }
-        historyTable_->setList(*history_);
+#warning todo
+        //historyTable_->setList(*history_);
         
-        if (setting_.hasProperty("playlist"))
-        {
-            playlist_ = setting_["playlist"].getArray();
-            playlistComponent_->setData(*playlist_);
-        }
+#warning todo
+        // playlistComponent_->setData(*playlist_);
         
-        if (setting_.hasProperty("current"))
-        {
-            auto current = setting_["current"];
-            File file(current["file"].toString());
-            if (file.existsAsFile())
-            {
-                dataSource_->loadFile(file);
-                
-                model_->setVolume(static_cast<float>(current.getProperty("volume", 1.f)));
-                model_->setLoopAPosRatio(static_cast<float>(current.getProperty("a", 0.f)));
-                model_->setLoopBPosRatio(static_cast<float>(current.getProperty("b", 1.f)));
-                model_->setSpeed(static_cast<float>(current.getProperty("speed", 100)));
-                model_->setPitch(static_cast<float>(current.getProperty("pitch", 0.f)));
-            }
-        }
+        dataSource_->restorePreviousState();
     }
     
     deviceManager.addMidiInputCallback("", this);
@@ -513,6 +471,10 @@ void MainComponent::createUI()
         auto dialog = std::make_shared<MelissaInputDialog>(TRANS("enter_loop_name"), defaultName, [&](const String& text) {
             String name(text);
             if (name.isEmpty()) name = defaultName;
+            
+#warning refactor
+            dataSource_->addToCurrentPracticeList(name);
+            /*
             addToPracticeList(name);
             if (auto songs = setting_["songs"].getArray())
             {
@@ -520,6 +482,7 @@ void MainComponent::createUI()
                 practiceTable_->setList(*(song.getProperty("list", Array<var>()).getArray()), model_->getLengthMSec());
                 MelissaModalDialog::close();
             }
+             */
         });
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
@@ -883,11 +846,14 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
 
 void MainComponent::updatePracticeList(const Array<var>& list)
 {
+#warning todo
+    /*
     if (auto songs = setting_["songs"].getArray())
     {
         auto song = getSongSetting(fileFullPath_);
         song.getDynamicObject()->setProperty("list", list);
     }
+     */
 }
 
 void MainComponent::createPlaylist(const String& name)
@@ -1085,6 +1051,8 @@ void MainComponent::resetLoop()
 
 void MainComponent::addToPracticeList(String name)
 {
+#warning todo
+    /*
     auto addToList = [this, name](Array<var>* list)
     {
         auto prac = new DynamicObject();
@@ -1118,10 +1086,13 @@ void MainComponent::addToPracticeList(String name)
     song->setProperty("memo", memoTextEditor_->getText());
     addToList(song->getProperty("list").getArray());
     songs->addIfNotAlreadyThere(song);
+     */
 }
 
 void MainComponent::saveMemo()
 {
+#warning todo
+    /*
     auto songs = setting_.getProperty("songs", Array<var>()).getArray();
     for (auto& song : *songs)
     {
@@ -1143,16 +1114,20 @@ void MainComponent::saveMemo()
     song->setProperty("list", Array<var>());
     song->setProperty("memo", memoTextEditor_->getText());
     songs->addIfNotAlreadyThere(song);
+     */
 }
 
 void MainComponent::addToHistory(String filePath)
 {
+#warning todo
+    /*
     history_->removeFirstMatchingValue(filePath);
     history_->insert(0, filePath);
     if (history_->size() >= kMaxSizeOfHistoryList)
     {
         history_->resize(kMaxSizeOfHistoryList);
     }
+     */
     historyTable_->selectRow(0);
 }
 
@@ -1245,40 +1220,20 @@ void MainComponent::saveSettings()
 {
     saveMemo();
     
-    auto global = setting_["global"].getDynamicObject();
-    global->setProperty("version", "1.0");
-    global->setProperty("root_dir", fileBrowserComponent_->getRoot().getFullPathName());
-    global->setProperty("width", getWidth());
-    global->setProperty("height", getHeight());
-    
-    auto xml = deviceManager.createStateXml();
-    if (xml != nullptr) global->setProperty("device", xml->toString());
-    
-    auto current = setting_["current"].getDynamicObject();
-    current->setProperty("file", fileFullPath_);
-    current->setProperty("volume", model_->getVolume());
-#if defined(ENABLE_METRONOME)
-    current->setProperty("bpm", static_cast<float>(model_->getBpm()));
-    current->setProperty("metronome_offset", model_->getMetronomeOffsetSec());
-#endif
-    current->setProperty("a", model_->getLoopAPosRatio());
-    current->setProperty("b", model_->getLoopBPosRatio());
-    current->setProperty("speed", model_->getSpeed());
-    current->setProperty("pitch", model_->getPitch());
-    
-    setting_.getDynamicObject()->setProperty("playlist", playlistComponent_->getData());
-    
-    settingsFile_.replaceWithText(JSON::toString(setting_));
+    dataSource_->saveSettingsFile();
 }
 
 var MainComponent::getSongSetting(String fileName)
 {
+#warning todo
+    /*
     auto songs = setting_["songs"].getArray();
     for (auto& song : *songs)
     {
         if (song.getProperty("file", "").toString() == fileName) return song;
     }
-    
+    */
+     
     return var();
 }
 
@@ -1320,11 +1275,6 @@ void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::
             x += (marginWide - marginNarrow);
         }
     }
-}
-
-bool MainComponent::isSettingValid() const
-{
-    return (setting_.hasProperty("global") && setting_.hasProperty("current") &&setting_.hasProperty("history") &&setting_.hasProperty("playlist") &&setting_.hasProperty("songs"));
 }
 
 void MainComponent::volumeChanged(float volume)
