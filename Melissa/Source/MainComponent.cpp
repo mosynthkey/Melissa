@@ -938,6 +938,12 @@ void MainComponent::run()
 void MainComponent::exitSignalSent()
 {
     shouldExit_ = true;
+    dataSource_->global_.rootDir_ = File::getCurrentWorkingDirectory().getFullPathName();
+    dataSource_->global_.width_   = getWidth();
+    dataSource_->global_.height_  = getHeight();
+    dataSource_->global_.device_  = deviceManager.createStateXml()->toString();
+    
+    dataSource_->saveSettingsFile();
 }
 
 void MainComponent::timerCallback()
