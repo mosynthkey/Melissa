@@ -102,6 +102,7 @@ public:
     
     // Song (Current)
     void saveSongState();
+    String getMemo() const;
     void saveMemo(const String& memo);
     void getPracticeList(std::vector<Song::PracticeList>& list);
     void addPracticeList(const String& name);

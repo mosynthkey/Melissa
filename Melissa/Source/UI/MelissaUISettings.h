@@ -7,22 +7,22 @@
 class MelissaUISettings
 {
 public:
-    static std::pair<uint32_t, uint32_t> BackGroundGradationColour()
+    static std::pair<uint32_t, uint32_t> backGroundGradationColour()
     {
         return { 0xFF252F41, 0xFF1F2024 };
     }
     
-    static uint32_t MainColour()
+    static uint32_t mainColour()
     {
         return 0xffddeaff;
     }
     
-    static uint32_t DialogBackgoundColour()
+    static uint32_t dialogBackgoundColour()
     {
         return 0xFF1B1F25;
     }
     
-    static int FontSizeMain()
+    static int fontSizeMain()
     {
         if (isMac)
         {
@@ -34,19 +34,17 @@ public:
         }
     }
     
-    static int FontSizeSub()
+    static int fontSizeSub()
     {
-        if (isMac)
-        {
-            return isJa ? 14 : 15;
-        }
-        else
-        {
-            return isJa ? 20 : 20;
-        }
+        return fontSizeMain() - 2;
     }
     
-    static String FontName()
+    static int fontSizeSmall()
+    {
+        return fontSizeMain() - 5;
+    }
+    
+    static String fontName()
     {
         if (isMac)
         {

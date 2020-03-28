@@ -11,12 +11,6 @@
 
 using std::make_unique;
 
-#if defined(JUCE_MAC)
-constexpr bool isMac = true;
-#else
-constexpr bool isMac = false;
-#endif
-
 enum
 {
     kFileChooserTabGroup = 1001,
@@ -49,9 +43,8 @@ status_(kStatus_Stop), shouldExit_(false)
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
-    MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP");
-    MelissaUISettings::isMac = isMac;
-    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::FontName());
+    MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP");
+    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::fontName());
     
     String localizedStrings = "";
     if (MelissaUISettings::isJa)
@@ -220,7 +213,7 @@ void MainComponent::createUI()
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
-    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::MainColour()).withAlpha(0.06f));
+    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::mainColour()).withAlpha(0.06f));
     addAndMakeVisible(controlComponent_.get());
     
     bottomComponent_ = make_unique<MelissaBottomControlComponent>();
@@ -238,7 +231,7 @@ void MainComponent::createUI()
     timeLabel_ = make_unique<Label>();
     timeLabel_->setJustificationType(Justification::centred);
     timeLabel_->setText("-:--", dontSendNotification);
-    timeLabel_->setFont(MelissaUISettings::FontSizeMain());
+    timeLabel_->setFont(MelissaUISettings::fontSizeMain());
     addAndMakeVisible(timeLabel_.get());
     
     fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
@@ -424,7 +417,7 @@ void MainComponent::createUI()
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
-    memoTextEditor_->setFont(Font(MelissaUISettings::FontSizeMain()));
+    memoTextEditor_->setFont(Font(MelissaUISettings::fontSizeMain()));
     memoTextEditor_->setMultiLine(true, false);
     memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
     memoTextEditor_->onFocusLost = [&]()
@@ -502,7 +495,7 @@ void MainComponent::createUI()
             auto l = make_unique<Label>();
             l->setLookAndFeel(nullptr);
             l->setText(labelTitles[label_i], dontSendNotification);
-            l->setFont(Font(MelissaUISettings::FontSizeSub()));
+            l->setFont(Font(MelissaUISettings::fontSizeSub()));
             l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
             l->setJustificationType(Justification::centredTop);
             addAndMakeVisible(l.get());
@@ -564,7 +557,7 @@ void MainComponent::paint(Graphics& g)
 {
     const int w = getWidth();
     const int center = w / 2;
-    const auto gradationColour = MelissaUISettings::BackGroundGradationColour();
+    const auto gradationColour = MelissaUISettings::backGroundGradationColour();
     g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, 0.f, Colour(gradationColour.second), center, getHeight(), false));
     g.fillAll();
     
@@ -836,15 +829,16 @@ void MainComponent::showTutorial()
 void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)
 {
     const String latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString();
+    const auto updateStatus = MelissaUpdateChecker::getUpdateStatus();
     
-    if (latestVersionNumberString == (String("v") + ProjectInfo::versionString))
+    if (updateStatus == MelissaUpdateChecker::kUpdateStatus_IsLatest)
     {
         if (showIfThereIsNoUpdate)
         {
             NativeMessageBox::showMessageBox(AlertWindow::NoIcon, TRANS("update"), TRANS("there_is_no_update"), this);
         }
     }
-    else if (latestVersionNumberString == "")
+    else if (updateStatus == MelissaUpdateChecker::kUpdateStatus_Failed)
     {
         if (showIfThereIsNoUpdate)
         {
@@ -868,7 +862,9 @@ void MainComponent::closeTutorial()
 
 void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
-    fileNameLabel_->setName(dataSource_->getCurrentSongFilePath());
+    File file(dataSource_->getCurrentSongFilePath());
+    fileNameLabel_->setText(file.getFileName());
+    memoTextEditor_->setText(dataSource_->getMemo());
 }
 
 void MainComponent::historyUpdated()
@@ -944,7 +940,7 @@ void MainComponent::timerCallback()
 {
     if (model_ == nullptr) return;
     
-    timeLabel_->setText(MelissaUtility::getFormattedTimeSec(model_->getPlayingPosMSec() / 1000), dontSendNotification);
+    timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
 }
 

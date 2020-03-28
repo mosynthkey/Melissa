@@ -30,7 +30,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        Colour colour(MelissaUISettings::MainColour());
+        Colour colour(MelissaUISettings::mainColour());
         for (size_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
         {
             const int32_t height = previewBuffer_[iStrip] * getHeight();

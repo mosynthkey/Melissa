@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.7"
-              cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\AudioLib"
+              cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\UI"
               version="1.0.0" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono "
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="">
@@ -115,10 +115,6 @@
               file="Source/UI/MelissaUISettings.cpp"/>
         <FILE id="FUEDk0" name="MelissaUISettings.h" compile="0" resource="0"
               file="Source/UI/MelissaUISettings.h"/>
-        <FILE id="D3ViP4" name="MelissaUpdateChecker.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaUpdateChecker.cpp"/>
-        <FILE id="f9UQf3" name="MelissaUpdateChecker.h" compile="0" resource="0"
-              file="Source/UI/MelissaUpdateChecker.h"/>
         <FILE id="aIEwhW" name="MelissaWaveformControlComponent.cpp" compile="1"
               resource="0" file="Source/UI/MelissaWaveformControlComponent.cpp"/>
         <FILE id="PgEvCR" name="MelissaWaveformControlComponent.h" compile="0"
@@ -142,6 +138,10 @@
       <FILE id="k5pm9b" name="MelissaModel.h" compile="0" resource="0" file="Source/MelissaModel.h"/>
       <FILE id="ll23ca" name="MelissaModelListener.h" compile="0" resource="0"
             file="Source/MelissaModelListener.h"/>
+      <FILE id="TIObTL" name="MelissaUpdateChecker.cpp" compile="1" resource="0"
+            file="Source/MelissaUpdateChecker.cpp"/>
+      <FILE id="CE0xXj" name="MelissaUpdateChecker.h" compile="0" resource="0"
+            file="Source/MelissaUpdateChecker.h"/>
       <FILE id="SSXSfQ" name="MelissaUtility.h" compile="0" resource="0"
             file="Source/MelissaUtility.h"/>
       <FILE id="Jf7QQv" name="soundtouch_config.h" compile="0" resource="0"

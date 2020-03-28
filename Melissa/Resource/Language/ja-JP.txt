@@ -36,3 +36,4 @@ countries: ja
 "remove_playlist" = "playlistの削除"
 "addtolist_select" = "ファイルを選択"
 "addtolist_current" = "現在再生されているファイルを追加"
+"update_available" = "アップデートがあります"
