@@ -32,7 +32,7 @@ public:
         }
     } global_;
     
-    struct Current
+    struct Previous
     {
         String filePath_;
         float volume_;
@@ -41,8 +41,8 @@ public:
         int speed_;
         int pitch_;
         
-        Current() : filePath_(""), volume_(1.f), aRatio_(0.f), bRatio_(1.f), speed_(100), pitch_(0) {}
-    } current_;
+        Previous() : filePath_(""), volume_(1.f), aRatio_(0.f), bRatio_(1.f), speed_(100), pitch_(0) {}
+    } previous_;
     
     FilePathList history_;
     
@@ -83,6 +83,10 @@ public:
     
     bool loadFile(const File& file);
     bool loadFile(const String& filePath) { return loadFile(File(filePath)); }
+    
+    void restorePreviousState();
+    
+    void addToCurrentPracticeList(const String& name);
     
     void addListener(MelissaDataSourceListener* listener);
     

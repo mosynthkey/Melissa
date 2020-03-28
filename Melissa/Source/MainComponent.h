@@ -504,9 +504,6 @@ private:
     String fileName_, fileFullPath_;
     
     File settingsDir_, settingsFile_;
-    var setting_;
-    Array<var>* history_;
-    Array<var>* playlist_;
     
     bool shouldExit_;
     
@@ -515,7 +512,6 @@ private:
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     
     void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
-    bool isSettingValid() const;
     
     // MelissaModelListener
     void volumeChanged(float volume) override;
