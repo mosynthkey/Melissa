@@ -92,8 +92,8 @@ public:
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
-    void loadFileAsync(const File& file);
-    void loadFileAsync(const String& filePath) { loadFileAsync(File(filePath)); }
+    void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
+    void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
     
     // Previous
     void restorePreviousState();
@@ -141,6 +141,7 @@ private:
     File settingsFile_;
     String currentSongFilePath_;
     File fileToload_;
+    std::function<void()> functionToCallAfterFileLoad_;
     std::vector<MelissaDataSourceListener*> listeners_;
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
 };
