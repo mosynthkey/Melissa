@@ -3,6 +3,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaModel.h"
 
+enum FileLoadStatus
+{
+    kFileLoadStatus_Success,
+    kFileLoadStatus_Failed,
+    kFileLoadStatus_Loading,
+};
+
 class MelissaDataSourceListener
 {
 public:
@@ -12,9 +19,10 @@ public:
     virtual void historyUpdated() { }
     virtual void playlistUpdated(size_t index) { }
     virtual void practiceListUpdated() { }
+    virtual void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) { }
 };
 
-class MelissaDataSource
+class MelissaDataSource : public AsyncUpdater
 {
 public:
     typedef Array<String> FilePathList;
@@ -84,8 +92,8 @@ public:
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
-    bool loadFile(const File& file);
-    bool loadFile(const String& filePath) { return loadFile(File(filePath)); }
+    void loadFileAsync(const File& file);
+    void loadFileAsync(const String& filePath) { loadFileAsync(File(filePath)); }
     
     // Previous
     void restorePreviousState();
@@ -109,6 +117,9 @@ public:
     void removePracticeList(size_t index);
     void overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed);
     
+    // AsyncUpdater
+    void handleAsyncUpdate() override;
+    
     // Singleton
     static MelissaDataSource* getInstance() { return &instance_; }
     MelissaDataSource(const MelissaDataSource&) = delete;
@@ -129,6 +140,7 @@ private:
     MelissaModel* model_;
     File settingsFile_;
     String currentSongFilePath_;
+    File fileToload_;
     std::vector<MelissaDataSourceListener*> listeners_;
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
 };

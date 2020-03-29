@@ -138,6 +138,7 @@ public:
     // MelissaDataSourceListener
     void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) override;
     void historyUpdated() override;
+    void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) override;
     
     // MenuBarModel
     StringArray getMenuBarNames() override;

@@ -175,54 +175,19 @@ void MelissaDataSource::saveSettingsFile()
     settingsFile_.replaceWithText(JSON::toString(settings));
 }
 
-bool MelissaDataSource::loadFile(const File& file)
+void MelissaDataSource::loadFileAsync(const File& file)
 {
-    if (!file.existsAsFile()) return false;
-    
-    saveSongState();
-    
-    AudioFormatManager formatManager;
-    formatManager.registerBasicFormats();
-    
-    auto* reader = formatManager.createReaderFor(file);
-    if (reader == nullptr) return false;
-    
-    // read audio data from reader
-    const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
-    audioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-    reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
-    
-    currentSongFilePath_ = file.getFullPathName();
-    
-    const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
-    audioEngine_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
-    for (auto l : listeners_) l->songChanged(currentSongFilePath_, buffer, lengthInSamples, reader->sampleRate);
-    
-    bool found = false;
-    for (auto&& song : songs_)
+    if (!file.existsAsFile())
     {
-        if (song.filePath_ == currentSongFilePath_)
-        {
-            found = true;
-            model_->setVolume(song.volume_);
-            model_->setPitch(song.pitch_);
-        }
+        for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, file.getFullPathName());
     }
-    if (!found)
+    else
     {
-        model_->setVolume(1.f);
-        model_->setPitch(0);
+        fileToload_ = file;
+        for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Loading, file.getFullPathName());
+        cancelPendingUpdate();
+        triggerAsyncUpdate();
     }
-    model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
-    model_->setLoopPosRatio(0.f, 1.f);
-    model_->setPlayingPosRatio(0.f);
-    
-    addToHistory(currentSongFilePath_);
-    saveSongState();
-    
-    audioSampleBuf_ = nullptr;
-    delete reader;
-    return true;
 }
 
 void MelissaDataSource::restorePreviousState()
@@ -230,7 +195,7 @@ void MelissaDataSource::restorePreviousState()
     File file(previous_.filePath_);
     if (!file.existsAsFile()) return;
     
-    loadFile(file);
+    loadFileAsync(file);
     model_->setVolume(previous_.volume_);
     model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
     model_->setSpeed(previous_.speed_);
@@ -402,6 +367,59 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name, 
             return;
         }
     }
+}
+
+void MelissaDataSource::handleAsyncUpdate()
+{
+    // load file asynchronously
+    
+    saveSongState();
+    
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+    
+    auto* reader = formatManager.createReaderFor(fileToload_);
+    if (reader == nullptr) return;
+    
+    // read audio data from reader
+    const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
+    audioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
+    reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
+    
+    currentSongFilePath_ = fileToload_.getFullPathName();
+    
+    const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
+    audioEngine_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    for (auto l : listeners_)
+    {
+        l->fileLoadStatusChanged(kFileLoadStatus_Success, currentSongFilePath_);
+        l->songChanged(currentSongFilePath_, buffer, lengthInSamples, reader->sampleRate);
+    }
+    
+    bool found = false;
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            found = true;
+            model_->setVolume(song.volume_);
+            model_->setPitch(song.pitch_);
+        }
+    }
+    if (!found)
+    {
+        model_->setVolume(1.f);
+        model_->setPitch(0);
+    }
+    model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
+    model_->setLoopPosRatio(0.f, 1.f);
+    model_->setPlayingPosRatio(0.f);
+    
+    addToHistory(currentSongFilePath_);
+    saveSongState();
+    
+    audioSampleBuf_ = nullptr;
+    delete reader;
 }
 
 void MelissaDataSource::addToHistory(const String& filePath)
