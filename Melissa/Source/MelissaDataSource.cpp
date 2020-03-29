@@ -175,8 +175,9 @@ void MelissaDataSource::saveSettingsFile()
     settingsFile_.replaceWithText(JSON::toString(settings));
 }
 
-void MelissaDataSource::loadFileAsync(const File& file)
+void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad)
 {
+    functionToCallAfterFileLoad_ = functionToCallAfterFileLoad;
     if (!file.existsAsFile())
     {
         for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, file.getFullPathName());
@@ -195,11 +196,12 @@ void MelissaDataSource::restorePreviousState()
     File file(previous_.filePath_);
     if (!file.existsAsFile()) return;
     
-    loadFileAsync(file);
-    model_->setVolume(previous_.volume_);
-    model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
-    model_->setSpeed(previous_.speed_);
-    model_->setPitch(previous_.pitch_);
+    loadFileAsync(file, [&]() {
+        model_->setVolume(previous_.volume_);
+        model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
+        model_->setSpeed(previous_.speed_);
+        model_->setPitch(previous_.pitch_);
+    });
 }
 
 String MelissaDataSource::getPlaylistName(size_t index) const
@@ -417,6 +419,8 @@ void MelissaDataSource::handleAsyncUpdate()
     
     addToHistory(currentSongFilePath_);
     saveSongState();
+    
+    if (functionToCallAfterFileLoad_ != nullptr) functionToCallAfterFileLoad_();
     
     audioSampleBuf_ = nullptr;
     delete reader;
