@@ -758,7 +758,7 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
 {
     if (files.size() == 1)
     {
-        dataSource_->loadFile(files[0]);
+        dataSource_->loadFileAsync(files[0]);
     }
     else
     {
@@ -870,8 +870,6 @@ void MainComponent::closeTutorial()
 
 void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
-    File file(dataSource_->getCurrentSongFilePath());
-    fileNameLabel_->setText(file.getFileName());
     memoTextEditor_->setText(dataSource_->getMemo());
 }
 
@@ -881,9 +879,21 @@ void MainComponent::historyUpdated()
     historyTable_->selectRow(0);
 }
 
+void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String& filePath)
+{
+    if (status == kFileLoadStatus_Success)
+    {
+        fileNameLabel_->setText(File(filePath).getFileNameWithoutExtension());
+    }
+    else if (status == kFileLoadStatus_Loading)
+    {
+        fileNameLabel_->setText("Loading...");
+    }
+}
+
 void MainComponent::fileDoubleClicked(const File& file)
 {
-    dataSource_->loadFile(file);
+    dataSource_->loadFileAsync(file);
 }
 
 StringArray MainComponent::getMenuBarNames()
@@ -913,7 +923,7 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
             auto fileUrl = chooser.getURLResult();
             if (fileUrl.isLocalFile())
             {
-                dataSource_->loadFile(fileUrl.getLocalFile().getFullPathName());
+                dataSource_->loadFileAsync(fileUrl.getLocalFile().getFullPathName());
             }
         });
     }
@@ -942,6 +952,8 @@ void MainComponent::run()
 void MainComponent::exitSignalSent()
 {
     shouldExit_ = true;
+    dataSource_->saveMemo(memoTextEditor_->getText());
+    dataSource_->saveSongState();
     dataSource_->global_.rootDir_ = File::getCurrentWorkingDirectory().getFullPathName();
     dataSource_->global_.width_   = getWidth();
     dataSource_->global_.height_  = getHeight();

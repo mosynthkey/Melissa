@@ -27,7 +27,7 @@ public:
     
     void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
     {
-        MelissaDataSource::getInstance()->loadFile(list_[row]);
+        MelissaDataSource::getInstance()->loadFileAsync(list_[row]);
     }
     
     void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override
