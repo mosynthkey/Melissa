@@ -249,7 +249,8 @@ size_t MelissaDataSource::createPlaylist(const String& name)
 
 void MelissaDataSource::removePlaylist(size_t index)
 {
-    if (playlists_.size() <= index) return;
+    const auto numOfPlaylists = playlists_.size();
+    if (numOfPlaylists <= 1 || numOfPlaylists <= index) return;
     playlists_.erase(playlists_.begin() + index);
     for (auto l : listeners_) l->playlistUpdated(index);
 }
