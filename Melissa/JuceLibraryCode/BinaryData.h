@@ -9,19 +9,16 @@
 namespace BinaryData
 {
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 1841;
+    const int            enUS_txtSize = 1879;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 2139;
-
-    extern const char*   icon_png;
-    const int            icon_pngSize = 352351;
+    const int            jaJP_txtSize = 2178;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 121456;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 4;
+    const int namedResourceListSize = 3;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

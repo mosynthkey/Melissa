@@ -10,7 +10,7 @@ countries: us
 "add_practice_list" = "Add to this practice list"
 "erase" = "Erase"
 "overwrite" = "Overwrite"
-"detect_multifiles_drop" = " Multiple files were dropped. Do you want to make a playlist with these filesw?"
+"detect_multifiles_drop" = " Multiple files were dropped. Do you want to make a playlist with these files?"
 "cancel" = "Cancel"
 "there_is_update" = "There is an update. Do you want to check it?"
 "there_is_no_update" = "You are using the latest version."
