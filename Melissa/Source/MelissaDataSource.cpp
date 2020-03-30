@@ -204,6 +204,13 @@ void MelissaDataSource::restorePreviousState()
     });
 }
 
+void MelissaDataSource::removeFromHistory(size_t index)
+{
+    if (history_.size() <= index) return;
+    history_.remove(static_cast<int>(index));
+    for (auto l : listeners_) l->historyUpdated();
+}
+
 String MelissaDataSource::getPlaylistName(size_t index) const
 {
     if (playlists_.size() <= index) return "Out of range";
@@ -234,6 +241,14 @@ void MelissaDataSource::addToPlaylist(size_t index, const String& filePath)
 {
     if (playlists_.size() <= index) return;
     playlists_[index].list_.addIfNotAlreadyThere(filePath);
+    for (auto l : listeners_) l->playlistUpdated(index);
+}
+
+void MelissaDataSource::removeFromPlaylist(size_t playlistIndex, size_t index)
+{
+    if (playlists_.size() <= playlistIndex) return;
+    if (playlists_[playlistIndex].list_.size() <= index) return;
+    playlists_[playlistIndex].list_.remove(static_cast<int>(index));
     for (auto l : listeners_) l->playlistUpdated(index);
 }
 

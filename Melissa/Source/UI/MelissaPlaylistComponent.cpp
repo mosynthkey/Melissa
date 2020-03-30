@@ -142,10 +142,7 @@ void MelissaPlaylistComponent::updateList()
     const auto index = playlistComboBox_->getSelectedItemIndex();
     if (index < 0) return;
     
-    MelissaDataSource::FilePathList list;
-    dataSource_->getPlaylist(index, list);
-    
-    listBox_->setList(list);
+    listBox_->setTarget(static_cast<MelissaFileListBox::Target>(index));
 }
 
 void MelissaPlaylistComponent::select(size_t index)

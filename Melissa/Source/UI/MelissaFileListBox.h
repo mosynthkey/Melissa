@@ -4,14 +4,39 @@
 
 #include "MelissaDataSource.h"
 #include "MelissaHost.h"
+#include "MelissaLookAndFeel.h"
 #include "MelissaUISettings.h"
 
-class MelissaFileListBox : public ListBox, public ListBoxModel
+class MelissaFileListBox : public ListBox,
+                           public ListBoxModel,
+                           public MelissaDataSourceListener
 {
 public:
-    MelissaFileListBox(const String& componentName = String()) :
-    ListBox(componentName, this)
+    enum Target
     {
+        kTarget_History = -1,
+        kTarget_Playlist,
+    };
+    
+    MelissaFileListBox(const String& componentName = "") :
+    ListBox(componentName, this),
+    target_(kTarget_History),
+    dataSource_(MelissaDataSource::getInstance())
+    {
+        dataSource_->addListener(this);
+        popupMenu_ = std::make_unique<PopupMenu>();
+        popupMenu_->setLookAndFeel(&lookAndFeel_);
+    }
+    
+    ~MelissaFileListBox()
+    {
+        popupMenu_->setLookAndFeel(nullptr);
+    }
+    
+    void setTarget(Target target)
+    {
+        target_ = target;
+        updateList();
     }
     
     void paint(Graphics& g) override
@@ -25,9 +50,31 @@ public:
         return list_.size();
     }
     
+    void listBoxItemClicked(int row, const MouseEvent& e) override
+    {
+        if (e.mods.isRightButtonDown())
+        {
+            enum { kMenuId_Erase = 1 };
+            popupMenu_->clear();
+            popupMenu_->addItem(kMenuId_Erase, TRANS("erase"), true);
+            if (popupMenu_->show() == kMenuId_Erase)
+            {
+                if (target_ == kTarget_History)
+                {
+                    dataSource_->removeFromHistory(row);
+                }
+                else
+                {
+                    const size_t index = static_cast<size_t>(target_);
+                    dataSource_->removeFromPlaylist(index, row);
+                }
+            }
+        }
+    }
+    
     void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
     {
-        MelissaDataSource::getInstance()->loadFileAsync(list_[row]);
+        dataSource_->loadFileAsync(list_[row]);
     }
     
     void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override
@@ -43,13 +90,36 @@ public:
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     
-    void setList(const Array<String>& list)
+    void updateList()
     {
-        list_ = list;
+        if (target_ == kTarget_History)
+        {
+            list_ = dataSource_->history_;
+        }
+        else
+        {
+            const size_t index = static_cast<size_t>(target_);
+            list_ = dataSource_->playlists_[index].list_;
+        }
         updateContent();
         repaint();
     }
     
+    void historyUpdated() override
+    {
+        updateList();
+        selectRow(0);
+    }
+    
+    void playlistUpdated(size_t index) override
+    {
+        updateList();
+    }
+    
 private:
-    Array<String> list_;
+    std::unique_ptr<PopupMenu> popupMenu_;
+    Target target_;
+    MelissaDataSource* dataSource_;
+    MelissaDataSource::FilePathList list_;
+    MelissaLookAndFeel lookAndFeel_;
 };
