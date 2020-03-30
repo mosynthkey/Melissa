@@ -37,3 +37,4 @@ countries: ja
 "addtolist_select" = "ファイルを選択"
 "addtolist_current" = "現在再生されているファイルを追加"
 "update_available" = "アップデートがあります"
+"volume" = "音量"

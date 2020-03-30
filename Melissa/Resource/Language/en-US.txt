@@ -37,3 +37,4 @@ countries: us
 "addtolist_select" = "Choose a file"
 "addtolist_current" = "Add current file"
 "update_available" = "Update available"
+"volume" = "Volume"
