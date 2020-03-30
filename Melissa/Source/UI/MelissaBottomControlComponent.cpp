@@ -1,4 +1,6 @@
 #include "MelissaBottomControlComponent.h"
+#include "MelissaModalDialog.h"
+#include "MelissaOptionDialog.h"
 #include "MelissaUpdateChecker.h"
 
 MelissaBottomControlComponent::MelissaBottomControlComponent()
@@ -8,10 +10,7 @@ MelissaBottomControlComponent::MelissaBottomControlComponent()
     updateButton_->setLookAndFeel(&lookAndFeel_);
     updateButton_->onClick = []()
     {
-        if (NativeMessageBox::showYesNoBox(AlertWindow::NoIcon, TRANS("update"), TRANS("there_is_update")) == 1)
-        {
-            URL("https://github.com/mosynthkey/Melissa/releases").launchInDefaultBrowser();
-        }
+        MelissaUpdateChecker::showUpdateDialog();
     };
     addChildComponent(updateButton_.get());
     

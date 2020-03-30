@@ -2,6 +2,7 @@
 #include "MainComponent.h"
 #include "MelissaAboutComponent.h"
 #include "MelissaUISettings.h"
+#include "MelissaOptionDialog.h"
 #include "MelissaInputDialog.h"
 #include "MelissaUtility.h"
 
@@ -225,7 +226,6 @@ void MainComponent::createUI()
     
     timeLabel_ = make_unique<Label>();
     timeLabel_->setJustificationType(Justification::centred);
-    timeLabel_->setText("-:--", dontSendNotification);
     timeLabel_->setFont(MelissaUISettings::fontSizeMain());
     addAndMakeVisible(timeLabel_.get());
     
@@ -476,7 +476,6 @@ void MainComponent::createUI()
             if (name.isEmpty()) name = defaultName;
             
             dataSource_->addPracticeList(name);
-            MelissaModalDialog::close();
         });
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
@@ -792,7 +791,6 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
                 for (auto file : files) dataSource_->addToPlaylist(index, file);
                 playlistComponent_->select(index);
             }
-            MelissaModalDialog::close();
         }), TRANS("new_playlist"));
     }
 }
@@ -859,24 +857,25 @@ void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)
     {
         if (showIfThereIsNoUpdate)
         {
-            NativeMessageBox::showMessageBox(AlertWindow::NoIcon, TRANS("update"), TRANS("there_is_no_update"), this);
+            const std::vector<String> options = { TRANS("ok") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("there_is_no_update"), options, [&](size_t index){ });
+            MelissaModalDialog::show(dialog, TRANS("update"));
         }
     }
     else if (updateStatus == MelissaUpdateChecker::kUpdateStatus_Failed)
     {
         if (showIfThereIsNoUpdate)
         {
-            NativeMessageBox::showMessageBox(AlertWindow::NoIcon, TRANS("update"), TRANS("failed_to_get_update"), this);
+            const std::vector<String> options = { TRANS("ok") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("failed_to_get_update"), options, [&](size_t index){ });
+            MelissaModalDialog::show(dialog, TRANS("update"));
         }
     }
     else
     {
-        const auto result = NativeMessageBox::showYesNoBox(AlertWindow::NoIcon, TRANS("update"), TRANS("there_is_update"), this);
-        if (result == 1)
-        {
-            URL("https://github.com/mosynthkey/Melissa/releases").launchInDefaultBrowser();
-        }
+        MelissaUpdateChecker::showUpdateDialog();
     }
+    
 }
 
 void MainComponent::closeTutorial()

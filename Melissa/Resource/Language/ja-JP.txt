@@ -38,3 +38,7 @@ countries: ja
 "addtolist_current" = "現在再生されているファイルを追加"
 "update_available" = "アップデートがあります"
 "volume" = "音量"
+"remove" = "削除する"
+"ok" = "OK"
+"cancel" = "Cancel"
+"visit" = "開く"

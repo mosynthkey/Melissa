@@ -1,6 +1,7 @@
 #include "MelissaInputDialog.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
+#include "MelissaOptionDialog.h"
 #include "MelissaPlaylistComponent.h"
 
 enum
@@ -48,7 +49,6 @@ void MelissaPlaylistComponent::createUI()
                 if (name.isEmpty()) return;
                 const size_t index = dataSource_->createPlaylist(name);
                 select(index);
-                MelissaModalDialog::close();
             });
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("create_playlist"));
         }
@@ -60,21 +60,26 @@ void MelissaPlaylistComponent::createUI()
             auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), currentName, [&, index](const String& name) {
                 if (name.isEmpty()) return;
                 dataSource_->setPlaylistName(index, name);
-                MelissaModalDialog::close();
             });
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("rename_playlist"));
         }
         else if (result == kMenuID_Remove)
         {
-            if (NativeMessageBox::showYesNoBox(AlertWindow::WarningIcon, TRANS("remove_playlist"), TRANS("are_you_sure")) == 0) return;
+            const std::vector<String> options = { TRANS("remove"), TRANS("cancel") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("are_you_sure"), options, [&](size_t yesno) {
+                if (yesno == 1 /* no */ ) return;
+                
+                const int index = playlistComboBox_->getSelectedItemIndex();
+                if (index < 0) return;
+                dataSource_->removePlaylist(index);
+                
+                int indexToSelect = index - 1;
+                if (indexToSelect < 0) indexToSelect = 0;
+                select(indexToSelect);
+            });
+            MelissaModalDialog::show(dialog, TRANS("remove_playlist"));
             
-            const int index = playlistComboBox_->getSelectedItemIndex();
-            if (index < 0) return;
-            dataSource_->removePlaylist(index);
-            
-            int indexToSelect = index - 1;
-            if (indexToSelect < 0) indexToSelect = 0;
-            select(indexToSelect);
+
         }
     };
     addAndMakeVisible(menuButton_.get());

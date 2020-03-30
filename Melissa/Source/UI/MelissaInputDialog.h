@@ -10,7 +10,7 @@ public:
     MelissaInputDialog(const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) : onClick_(onClick)
     {
         constexpr int textEditorWidth = 440;
-        constexpr int buttonWidth = 100;
+        constexpr int buttonWidth = 120;
         constexpr int controlHeight = 30;
         constexpr int margin = 10;
         
@@ -37,6 +37,7 @@ public:
         okButton_->onClick = [&]() {
             const String text = textEditor_->getText();
             onClick_(text);
+            MelissaModalDialog::close();
         };
         addAndMakeVisible(okButton_.get());
         
