@@ -43,16 +43,24 @@ public:
 class MelissaIncDecButton : public Component
 {
 public:
+    enum ClickEvent
+    {
+        kClickEvent_Dec,
+        kClickEvent_Inc,
+        kClickEvent_Double
+    };
+    
     MelissaIncDecButton(const String& decTooltipStr = "", const String& incTooltipStr = "")
     {
         label_ = std::make_unique<MelissaLabel>();
+        label_->setInterceptsMouseClicks(false, true);
         addAndMakeVisible(label_.get());
         
-        decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClick_ != nullptr) onClick_(false, b); });
+        decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClick_ != nullptr) onClick_(kClickEvent_Dec, b); });
         decButton_->setTooltip(decTooltipStr);
         addAndMakeVisible(decButton_.get());
         
-        incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton, [this](bool b) { if (onClick_ != nullptr) onClick_(true, b); });
+        incButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_IncButton, [this](bool b) { if (onClick_ != nullptr) onClick_(kClickEvent_Inc, b); });
         incButton_->setTooltip(incTooltipStr);
         addAndMakeVisible(incButton_.get());
     }
@@ -66,12 +74,17 @@ public:
         incButton_->setBounds(getWidth() - size, 0, size, size);
     }
     
+    void mouseDoubleClick(const MouseEvent& event) override
+    {
+        onClick_(kClickEvent_Double, false);
+    }
+    
     void setText(String str)
     {
         label_->setText(str);
     }
     
-    std::function<void(bool, bool)> onClick_;
+    std::function<void(ClickEvent, bool)> onClick_;
     
 private:
     std::unique_ptr<MelissaLabel> label_;

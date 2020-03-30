@@ -5,10 +5,6 @@
 #include "MelissaInputDialog.h"
 #include "MelissaUtility.h"
 
-#ifdef WIN32
-#include <Windows.h>
-#endif
-
 using std::make_unique;
 
 enum
@@ -285,13 +281,20 @@ void MainComponent::createUI()
         model_->setVolume(volumeSlider_->getValue());
     };
     addAndMakeVisible(volumeSlider_.get());
-
+    
     aButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
     aButton_->setText("-:--");
-    aButton_->onClick_= [this](bool inc, bool b)
+    aButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
-        const int sign = inc ? 1 : -1;
-        model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
+        if (event == MelissaIncDecButton::kClickEvent_Double)
+        {
+            model_->setLoopAPosRatio(0.f);
+        }
+        else
+        {
+            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
+        }
     };
     addAndMakeVisible(aButton_.get());
 
@@ -307,10 +310,17 @@ void MainComponent::createUI()
     bButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
     bButton_->setText("-:--");
     bButton_->setBounds(0, 240, 140, 34);
-    bButton_->onClick_= [this](bool inc, bool b)
+    bButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
-        const int sign = inc ? 1 : -1;
-        model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
+        if (event == MelissaIncDecButton::kClickEvent_Double)
+        {
+            model_->setLoopBPosRatio(1.f);
+        }
+        else
+        {
+            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
+        }
     };
     addAndMakeVisible(bButton_.get());
 
@@ -336,10 +346,17 @@ void MainComponent::createUI()
 
     speedButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
     speedButton_->setText("100 %");
-    speedButton_->onClick_= [this](bool inc, bool b)
+    speedButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
-        const int sign = inc ? 1 : -1;
-        model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
+        if (event == MelissaIncDecButton::kClickEvent_Double)
+        {
+            model_->setSpeed(100);
+        }
+        else
+        {
+            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
+        }
     };
     speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
     addAndMakeVisible(speedButton_.get());
@@ -375,11 +392,17 @@ void MainComponent::createUI()
     
     pitchButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
     pitchButton_->setText("Original");
-    pitchButton_->onClick_= [this](bool inc, bool b)
+    pitchButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
-        const int sign = inc ? 1 : -1;
-        model_->setPitch(model_->getPitch() + sign);
-        updatePitchButtonLabel();
+        if (event == MelissaIncDecButton::kClickEvent_Double)
+        {
+            model_->setPitch(0);
+        }
+        else
+        {
+            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            model_->setPitch(model_->getPitch() + sign);
+        }
     };
     pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
     addAndMakeVisible(pitchButton_.get());
@@ -1014,40 +1037,6 @@ void MainComponent::resetLoop()
     model_->setLoopPosRatio(0.f, 1.f);
 }
 
-void MainComponent::updateAButtonLabel()
-{
-    const auto LoopAPosMSec = model_->getLoopAPosMSec();
-    aButton_->setText(MelissaUtility::getFormattedTimeMSec(LoopAPosMSec));
-}
-
-void MainComponent::updateBButtonLabel()
-{
-    const auto LoopBPosMSec = model_->getLoopBPosMSec();
-    bButton_->setText(MelissaUtility::getFormattedTimeMSec(LoopBPosMSec));
-}
-
-void MainComponent::updateSpeedButtonLabel()
-{
-    const int32_t speed = model_->getSpeed();
-    speedButton_->setText(String(speed) + "%");
-    
-#if defined(ENABLE_SPEEDTRAINER)
-    const int32_t incPer = model_->getSpeedIncPer();
-    speedIncPerButton_->setText(String(incPer));
-    
-    const int32_t incValue = model_->getSpeedIncValue();
-    speedIncValueButton_->setText(String(incValue) + " %");
-    
-    const int32_t incMax = model_->getSpeedIncMax();
-    speedIncMaxButton_->setText(String(incMax) + " %");
-#endif
-}
-
-void MainComponent::updatePitchButtonLabel()
-{
-    pitchButton_->setText(MelissaUtility::getFormattedPitch(model_->getPitch()));
-}
-
 void MainComponent::updateBpm()
 {
 #if defined(ENABLE_SPEEDTRAINER)
@@ -1062,10 +1051,6 @@ void MainComponent::updateMetronomeOffset()
 #endif
 }
 
-void MainComponent::updateVolume()
-{
-    volumeSlider_->setValue(model_->getVolume());
-}
 
 void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
 {
@@ -1109,21 +1094,24 @@ void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::
 
 void MainComponent::volumeChanged(float volume)
 {
-    updateVolume();
+    volumeSlider_->setValue(volume);
+    const float db = 20 * log10(volume);
+    String dbStr = String::formatted("%+1.1f dB", db);
+    volumeSlider_->setTooltip(TRANS("volume") + " : " + dbStr);
 }
 
 void MainComponent::pitchChanged(int semitone)
 {
-    updatePitchButtonLabel();
+    pitchButton_->setText(MelissaUtility::getFormattedPitch(semitone));
 }
 
 void MainComponent::speedChanged(int speed)
 {
-    updateSpeedButtonLabel();
+    speedButton_->setText(String(speed) + "%");
 }
 
 void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
-    updateAButtonLabel();
-    updateBButtonLabel();
+    aButton_->setText(MelissaUtility::getFormattedTimeMSec(aTimeMSec));
+    bButton_->setText(MelissaUtility::getFormattedTimeMSec(bTimeMSec));
 }

@@ -173,13 +173,8 @@ public:
     void addToPracticeList(String name);
     void saveMemo();
     
-    void updateAButtonLabel();
-    void updateBButtonLabel();
-    void updateSpeedButtonLabel();
-    void updatePitchButtonLabel();
     void updateBpm();
     void updateMetronomeOffset();
-    void updateVolume();
     
     var getSongSetting(String fileName);
     void showPreferencesDialog();
