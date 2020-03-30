@@ -98,6 +98,9 @@ public:
     // Previous
     void restorePreviousState();
     
+    // History
+    void removeFromHistory(size_t index);
+    
     // Playlist
     size_t getNumOfPlaylists() { return playlists_.size(); }
     String getPlaylistName(size_t index) const;
@@ -105,6 +108,7 @@ public:
     void   getPlaylist(size_t index, FilePathList& list) const;
     void   setPlaylist(size_t index, const FilePathList& list);
     void   addToPlaylist(size_t index, const String& filePath);
+    void   removeFromPlaylist(size_t playlistIndex, size_t index);
     size_t createPlaylist(const String& name);
     void   removePlaylist(size_t index);
     

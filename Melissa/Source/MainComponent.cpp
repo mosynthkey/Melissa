@@ -409,6 +409,7 @@ void MainComponent::createUI()
     addAndMakeVisible(historyToggleButton_.get());
 
     historyTable_ = make_unique<MelissaFileListBox>();
+    historyTable_->setTarget(MelissaFileListBox::kTarget_History);
     historyTable_->setLookAndFeel(&lookAndFeel_);
     addAndMakeVisible(historyTable_.get());
 
@@ -871,12 +872,6 @@ void MainComponent::closeTutorial()
 void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
 {
     memoTextEditor_->setText(dataSource_->getMemo());
-}
-
-void MainComponent::historyUpdated()
-{
-    historyTable_->setList(dataSource_->history_);
-    historyTable_->selectRow(0);
 }
 
 void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String& filePath)
