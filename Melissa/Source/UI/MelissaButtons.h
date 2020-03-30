@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaModel.h"
+#include "MelissaModelListener.h"
 #include "MelissaUISettings.h"
 
 class MelissaMenuButton : public Button
@@ -45,24 +47,18 @@ public:
     }
 };
 
-class MelissaPlayPauseButton : public Button
+class MelissaPlayPauseButton : public Button, public MelissaModelListener
 {
 public:
     MelissaPlayPauseButton(const String& name = "") :
-    Button(name), mode_(kMode_Play)
+    Button(name), drawPlayIcon_(true)
     {
-        setOpaque(false);
+        MelissaModel::getInstance()->addListener(this);
     }
     
-    enum Mode
+    void playbackStatusChanged(PlaybackStatus status) override
     {
-        kMode_Play,
-        kMode_Pause
-    } mode_;
-    
-    void setMode(Mode mode)
-    {
-        mode_ = mode;
+        drawPlayIcon_ = (status != kPlaybackStatus_Playing);
         repaint();
     }
     
@@ -81,7 +77,7 @@ private:
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, on ? 0.8f : 0.4f));
         g.drawEllipse(t / 2, t / 2, w - t - 1, h - t - 1, t);
         
-        if (mode_ == kMode_Play)
+        if (drawPlayIcon_)
         {
             const int x0 = (w - triW) * 4.f / 7.f;
             const int y0 = (h - triH) / 2;
@@ -99,6 +95,8 @@ private:
             g.fillRect(w / 2 + w0 * 0.5, (h - l0) / 2, w0, l0);
         }
     }
+    
+    bool drawPlayIcon_;
 };
 
 class CloseButton : public Button
