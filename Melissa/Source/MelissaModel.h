@@ -13,6 +13,10 @@ public:
     void setLengthMSec(float lengthMSec);
     float getLengthMSec() const { return lengthMSec_; }
     
+    void setPlaybackStatus(PlaybackStatus status);
+    void togglePlaybackStatus();
+    PlaybackStatus getPlaybackStatus() const { return playbackStatus_; }
+    
     void setVolume(float volume);
     float getVolume() const { return volume_; }
     
@@ -61,6 +65,7 @@ private:
     
     MelissaAudioEngine* audioEngine_;
     
+    PlaybackStatus playbackStatus_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
     float volume_;

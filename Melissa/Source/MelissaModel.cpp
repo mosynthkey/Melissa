@@ -9,6 +9,24 @@ void MelissaModel::setLengthMSec(float lengthMSec)
     lengthMSec_ = lengthMSec;
 }
 
+void MelissaModel::setPlaybackStatus(PlaybackStatus playbackStatus)
+{
+    playbackStatus_ = playbackStatus;
+    for (auto l : listeners_) l->playbackStatusChanged(playbackStatus);
+}
+
+void MelissaModel::togglePlaybackStatus()
+{
+    if (playbackStatus_ == kPlaybackStatus_Playing)
+    {
+        setPlaybackStatus(kPlaybackStatus_Pause);
+    }
+    else
+    {
+        setPlaybackStatus(kPlaybackStatus_Playing);
+    }
+}
+
 void MelissaModel::setVolume(float volume)
 {
     if (volume < 0.f || 2.f < volume) return;
@@ -142,7 +160,7 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f), filePath_("")
+playbackStatus_(kPlaybackStatus_Stop), lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f), filePath_("")
 {
     
 }

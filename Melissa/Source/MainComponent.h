@@ -159,15 +159,6 @@ public:
     void updateFileChooserTab(FileChooserTab tab);
     void updatePracticeMemo(PracticeMemoTab tab);
     
-    enum Status
-    {
-        kStatus_Playing,
-        kStatus_Pause,
-        kStatus_Stop
-    } status_;
-    void play();
-    void pause();
-    void stop();
     void toHead();
     void resetLoop();
     void addToPracticeList(String name);

@@ -25,8 +25,7 @@ enum
     kMenuID_FileOpen = 2000,
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"),
-status_(kStatus_Stop), shouldExit_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), shouldExit_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     
@@ -217,7 +216,7 @@ void MainComponent::createUI()
     addAndMakeVisible(bottomComponent_.get());
     
     playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
-    playPauseButton_->onClick = [this]() { if (status_ == kStatus_Playing) { pause(); } else { play(); } };
+    playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
     addAndMakeVisible(playPauseButton_.get());
     
     toHeadButton_ = make_unique<MelissaToHeadButton>("ToHeadButton");
@@ -564,7 +563,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
 {
     bufferToFill.clearActiveBufferRegion();
     
-    if (model_ == nullptr || status_ != kStatus_Playing) return;
+    if (model_->getPlaybackStatus() != kPlaybackStatus_Playing) return;
     float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
     audioEngine_->render(buffer, bufferToFill.numSamples);
 }
@@ -802,16 +801,9 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
 {
     const auto keyCode = key.getKeyCode();
     
-    if (keyCode == 32) // space
+     if (keyCode == 32) // space
     {
-        if (status_ == kStatus_Playing)
-        {
-            pause();
-        }
-        else
-        {
-            play();
-        }
+        model_->togglePlaybackStatus();
         return true;
     }
     else if (keyCode == 63234)
@@ -1001,29 +993,6 @@ void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
     practiceTable_->setVisible(tab == kPracticeMemoTab_Practice);
     addToListButton_->setVisible(tab == kPracticeMemoTab_Practice);
     memoTextEditor_->setVisible(tab == kPracticeMemoTab_Memo);
-}
-
-
-void MainComponent::play()
-{
-    if (model_ == nullptr) return;
-    status_ = kStatus_Playing;
-    playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Pause);
-}
-
-void MainComponent::pause()
-{
-    if (model_ == nullptr) return;
-    status_ = kStatus_Pause;
-    playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Play);
-}
-
-void MainComponent::stop()
-{
-    if (model_ == nullptr) return;
-    status_ = kStatus_Stop;
-    model_->setPlayingPosMSec(0);
-    playPauseButton_->setMode(MelissaPlayPauseButton::kMode_Play);
 }
 
 void MainComponent::toHead()
