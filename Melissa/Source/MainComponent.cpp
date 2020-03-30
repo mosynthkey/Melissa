@@ -482,7 +482,7 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(addToListButton_.get());
 
-    wildCardFilter_ = make_unique<WildcardFileFilter>("*.mp3;*.wav;*.m4a;*.flac;*.ogg;*.w", "*", "Music Files");
+    wildCardFilter_ = make_unique<WildcardFileFilter>(MelissaDataSource::getCompatibleFileExtensions(), "*", "Music Files");
     fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
                                                               File::getSpecialLocation(File::userHomeDirectory),
                                                               wildCardFilter_.get(),
@@ -927,7 +927,7 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 {
     if (menuItemID == kMenuID_FileOpen)
     {
-        fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
+        fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
         fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser) {
             auto fileUrl = chooser.getURLResult();
             if (fileUrl.isLocalFile())

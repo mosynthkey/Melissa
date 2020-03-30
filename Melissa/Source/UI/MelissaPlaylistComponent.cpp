@@ -96,7 +96,7 @@ void MelissaPlaylistComponent::createUI()
         const auto result = menu.show();
         if (result == kMenuIDAddToList_Select)
         {
-            fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_playlist"), File::getCurrentWorkingDirectory(), "*.mp3;*.wav;*.m4a", true);
+            fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_playlist"), File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
             fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser)
             {
                 auto fileUrl = chooser.getURLResult();
