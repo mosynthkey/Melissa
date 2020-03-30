@@ -87,8 +87,8 @@
               file="Source/UI/MelissaModalDialog.cpp"/>
         <FILE id="vNDLTs" name="MelissaModalDialog.h" compile="0" resource="0"
               file="Source/UI/MelissaModalDialog.h"/>
-        <FILE id="wlZaGC" name="MelissaOkCancelDialog.h" compile="0" resource="0"
-              file="Source/UI/MelissaOkCancelDialog.h"/>
+        <FILE id="wlZaGC" name="MelissaOptionDialog.h" compile="0" resource="0"
+              file="Source/UI/MelissaOptionDialog.h"/>
         <FILE id="xOs5Jf" name="MelissaPlaylistComponent.cpp" compile="1" resource="0"
               file="Source/UI/MelissaPlaylistComponent.cpp"/>
         <FILE id="nWUw5R" name="MelissaPlaylistComponent.h" compile="0" resource="0"

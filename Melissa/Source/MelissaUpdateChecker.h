@@ -16,4 +16,7 @@ public:
     static UpdateStatus status_;
     static String getLatestVersionNumberString();
     static UpdateStatus getUpdateStatus();
+    
+    // UI
+    static void showUpdateDialog();
 };

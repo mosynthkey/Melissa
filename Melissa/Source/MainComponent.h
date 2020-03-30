@@ -13,7 +13,6 @@
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
-#include "MelissaOkCancelDialog.h"
 #include "MelissaPlaylistComponent.h"
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaPreferencesComponent.h"

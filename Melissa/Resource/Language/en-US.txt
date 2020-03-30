@@ -38,3 +38,7 @@ countries: us
 "addtolist_current" = "Add current file"
 "update_available" = "Update available"
 "volume" = "Volume"
+"remove" = "Remove"
+"ok" = "OK"
+"cancel" = "Cancel"
+"visit" = "Visit"
