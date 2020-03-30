@@ -92,6 +92,7 @@ public:
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
+    static String getCompatibleFileExtensions() { return "*.mp3;*.wav;*.m4a;*.flac;*.ogg"; }
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
     
