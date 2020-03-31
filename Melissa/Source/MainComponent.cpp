@@ -799,23 +799,56 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
 {
     const auto keyCode = key.getKeyCode();
     
-     if (keyCode == 32) // space
+    switch (keyCode)
     {
-        model_->togglePlaybackStatus();
-        return true;
-    }
-    else if (keyCode == 63234)
-    {
-        auto currentMSec = model_->getPlayingPosMSec();
-        model_->setPlayingPosMSec(currentMSec - 1000);
-        return true;
-    }
-    else if (keyCode == 63235)
-    {
-        auto currentMSec = model_->getPlayingPosMSec();
-        model_->setPlayingPosMSec(currentMSec + 1000);
-        return true;
-    }
+        case 32: // space
+        {
+            model_->togglePlaybackStatus();
+            return true;
+        }
+        case 44: // ,
+        {
+            model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+            return true;
+        }
+        case 65: // a
+        {
+            model_->setLoopAPosRatio(model_->getPlayingPosRatio());
+            return true;
+        }
+        case 66: // b
+        {
+            model_->setLoopBPosRatio(model_->getPlayingPosRatio());
+            return true;
+        }
+        case 127: // delete
+        {
+            model_->setLoopPosRatio(0.f, 1.f);
+            return true;
+        }
+        case 63232: // up
+        {
+            model_->setSpeed(model_->getSpeed() + 1);
+            return true;
+        }
+        case 63233: // down
+        {
+            model_->setSpeed(model_->getSpeed() - 1);
+            return true;
+        }
+        case 63234: // left
+        {
+            auto currentMSec = model_->getPlayingPosMSec();
+            model_->setPlayingPosMSec(currentMSec - 1000);
+            return true;
+        }
+        case 63235: // right
+        {
+            auto currentMSec = model_->getPlayingPosMSec();
+            model_->setPlayingPosMSec(currentMSec + 1000);
+            return true;
+        }
+    };
     
     return false;
 }
