@@ -821,28 +821,33 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
             model_->setLoopBPosRatio(model_->getPlayingPosRatio());
             return true;
         }
-        case 127: // delete
+        case 8: // delete
+        case 127:
         {
             model_->setLoopPosRatio(0.f, 1.f);
             return true;
         }
         case 63232: // up
+        case 65574:
         {
             model_->setSpeed(model_->getSpeed() + 1);
             return true;
         }
         case 63233: // down
+        case 65576:
         {
             model_->setSpeed(model_->getSpeed() - 1);
             return true;
         }
         case 63234: // left
+        case 65573:
         {
             auto currentMSec = model_->getPlayingPosMSec();
             model_->setPlayingPosMSec(currentMSec - 1000);
             return true;
         }
         case 63235: // right
+        case 65575:
         {
             auto currentMSec = model_->getPlayingPosMSec();
             model_->setPlayingPosMSec(currentMSec + 1000);
