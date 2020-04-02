@@ -97,15 +97,18 @@ void MelissaPlaylistComponent::createUI()
         if (result == kMenuIDAddToList_Select)
         {
             fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_playlist"), File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
-            fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser)
+            fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::canSelectMultipleItems, [&] (const FileChooser& chooser)
             {
-                auto fileUrl = chooser.getURLResult();
-                if (fileUrl.isLocalFile())
+                const int playlistIndex = playlistComboBox_->getSelectedItemIndex();
+                auto results = chooser.getResults();
+                results.sort();
+                for (auto fileUrl : results)
                 {
-                    auto filePath = fileUrl.getLocalFile().getFullPathName();
-                    const int index = playlistComboBox_->getSelectedItemIndex();
-                    dataSource_->addToPlaylist(index, filePath);
-                    chooser.getResult().getParentDirectory().setAsCurrentWorkingDirectory();
+                    if (fileUrl.existsAsFile())
+                    {
+                        auto filePath = fileUrl.getFullPathName();
+                        dataSource_->addToPlaylist(playlistIndex, filePath);
+                    }
                 }
             });
         }
