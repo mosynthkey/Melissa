@@ -274,7 +274,7 @@ void MainComponent::createUI()
     volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
     volumeSlider_->setRange(0.01f, 2.0f);
     volumeSlider_->setDoubleClickReturnValue(true, 1.f);
-    volumeSlider_->setValue(0.f);
+    volumeSlider_->setValue(1.f);
     volumeSlider_->onValueChange = [this]()
     {
         model_->setVolume(volumeSlider_->getValue());
