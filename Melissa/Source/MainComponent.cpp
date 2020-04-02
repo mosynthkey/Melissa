@@ -413,7 +413,7 @@ void MainComponent::createUI()
     addAndMakeVisible(pitchButton_.get());
     
     browseToggleButton_ = make_unique<ToggleButton>();
-    browseToggleButton_->setButtonText("Browse");
+    browseToggleButton_->setButtonText("File browser");
     browseToggleButton_->setLookAndFeel(&lookAndFeelTab_);
     browseToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     browseToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
