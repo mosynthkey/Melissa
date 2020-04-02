@@ -42,3 +42,4 @@ countries: us
 "ok" = "OK"
 "cancel" = "Cancel"
 "visit" = "Visit"
+"open_manual" = "manual"

@@ -20,9 +20,10 @@ enum
 enum
 {
     kMenuID_MainAbout = 1000,
-    kMenuID_MainVersionCheck = 1001,
-    kMenuID_MainPreferences = 1002,
-    kMenuID_MainTutorial = 1003,
+    kMenuID_Manual,
+    kMenuID_MainVersionCheck,
+    kMenuID_MainPreferences,
+    kMenuID_MainTutorial,
     kMenuID_FileOpen = 2000,
 };
 
@@ -179,6 +180,7 @@ void MainComponent::createUI()
         PopupMenu menu;
         menu.setLookAndFeel(&lookAndFeel_);
         menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
+        menu.addItem(kMenuID_Manual, TRANS("open_manual"));
         menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
         menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
 #if defined(ENABLE_TUTORIAL)
@@ -188,6 +190,10 @@ void MainComponent::createUI()
         if (result == kMenuID_MainAbout)
         {
             showAboutDialog();
+        }
+        else if (result == kMenuID_Manual)
+        {
+            URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
         }
         else if (result == kMenuID_MainVersionCheck)
         {
@@ -292,7 +298,7 @@ void MainComponent::createUI()
         else
         {
             const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
-            model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
+            model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 1000 : 100));
         }
     };
     addAndMakeVisible(aButton_.get());
@@ -318,7 +324,7 @@ void MainComponent::createUI()
         else
         {
             const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
-            model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
+            model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 1000 : 100));
         }
     };
     addAndMakeVisible(bButton_.get());
@@ -354,7 +360,7 @@ void MainComponent::createUI()
         else
         {
             const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
-            model_->setSpeed(model_->getSpeed() + sign * (b ? 1 : 10));
+            model_->setSpeed(model_->getSpeed() + sign * (b ? 10 : 1));
         }
     };
     speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));

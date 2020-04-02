@@ -45,7 +45,7 @@ void MelissaPlaylistComponent::createUI()
         const auto result = menu.show();
         if (result == kMenuID_New)
         {
-            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "New playlist", [&](const String& name) {
+            auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "Playlist", [&](const String& name) {
                 if (name.isEmpty()) return;
                 const size_t index = dataSource_->createPlaylist(name);
                 select(index);
