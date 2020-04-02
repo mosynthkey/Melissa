@@ -40,5 +40,5 @@ countries: ja
 "volume" = "音量"
 "remove" = "削除する"
 "ok" = "OK"
-"cancel" = "Cancel"
+"cancel" = "キャンセル"
 "visit" = "開く"
