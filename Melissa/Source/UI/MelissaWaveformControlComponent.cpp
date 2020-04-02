@@ -98,6 +98,7 @@ public:
     
     void mouseUp(const MouseEvent& event) override
     {
+        auto model = MelissaModel::getInstance();
         auto distX = abs(event.getMouseDownX() - event.x);
         auto distY = abs(event.getMouseDownY() - event.y);
         if (isMouseDown_)
@@ -106,8 +107,37 @@ public:
             {
                 // Click
                 clickedStripIndex_ = -1;
+                const float clickPosRatio = static_cast<float>(event.getPosition().getX()) / getWidth();
                 
-                MelissaModel::getInstance()->setPlayingPosRatio(static_cast<float>(event.getPosition().getX()) / getWidth());
+                if (event.mods.isShiftDown())
+                {
+                    const auto aRatio = model->getLoopAPosRatio();
+                    const auto bRatio = model->getLoopBPosRatio();
+                    if (clickPosRatio < aRatio)
+                    {
+                        model->setLoopAPosMSec(model->getLoopAPosMSec() - 1000);
+                    }
+                    else if (aRatio <= clickPosRatio && clickPosRatio <= bRatio)
+                    {
+                        const bool aIsNear = (clickPosRatio - aRatio) < (bRatio - clickPosRatio);
+                        if (aIsNear)
+                        {
+                            model->setLoopAPosMSec(model->getLoopAPosMSec() + 1000);
+                        }
+                        else
+                        {
+                            model->setLoopBPosMSec(model->getLoopBPosMSec() - 1000);
+                        }
+                    }
+                    else if (bRatio < clickPosRatio)
+                    {
+                        model->setLoopBPosMSec(model->getLoopBPosMSec() + 1000);
+                    }
+                }
+                else
+                {
+                    model->setPlayingPosRatio(clickPosRatio);
+                }
             }
             else
             {
@@ -129,7 +159,7 @@ public:
                 if (1.f < aRatio) aRatio = 1.f;
                 float bRatio = static_cast<float>(loopBStripIndex_) / numOfStrip_;
                 if (1.f < bRatio) bRatio = 1.f;
-                MelissaModel::getInstance()->setLoopPosRatio(aRatio, bRatio);
+                model->setLoopPosRatio(aRatio, bRatio);
             }
         }
         isMouseDown_ = false;
