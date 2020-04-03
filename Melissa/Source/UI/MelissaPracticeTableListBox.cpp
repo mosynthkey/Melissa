@@ -178,7 +178,7 @@ void MelissaPracticeTableListBox::cellDoubleClicked(int rowNumber, int columnId,
     model->setSpeed(prac.speed_);
 }
 
-void MelissaPracticeTableListBox::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
+void MelissaPracticeTableListBox::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     totalLengthMSec_ = static_cast<float>(bufferLength) / sampleRate * 1000.f;
     updatePracticeList();

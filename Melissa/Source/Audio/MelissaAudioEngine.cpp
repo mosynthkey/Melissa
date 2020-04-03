@@ -12,37 +12,24 @@
 #include <limits.h>
 #include <sstream>
 #include "MelissaAudioEngine.h"
+#include "MelissaDataSource.h"
 #include "MelissaModel.h"
 #include "MelissaUtility.h"
 
 using std::make_unique;
 
 MelissaAudioEngine::MelissaAudioEngine() :
-model_(MelissaModel::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), isOriginalBufferPrepared_(false), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
+model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
 {
-    for (int iCh = 0; iCh < 2; ++iCh)
-    {
-        originalBuffer_[iCh].clear();
-    }
 }
 
-void MelissaAudioEngine::setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate)
+void MelissaAudioEngine::updateBuffer()
 {
     reset();
     
-    originalSampleRate_ = sampleRate;
-    
-    for (int iCh = 0; iCh < 2; ++iCh)
-    {
-        originalBuffer_[iCh].resize(bufferLength);
-        for (int iSample = 0; iSample < bufferLength; ++iSample)
-        {
-            originalBuffer_[iCh][iSample] = buffer[iCh][iSample];
-        }
-    }
-    
-    originalBufferLength_ = bufferLength;
+    originalSampleRate_ = dataSource_->getSampleRate();
+    originalBufferLength_ = dataSource_->getBufferLength();
     
     processStartIndex_ = 0;
     
@@ -50,7 +37,6 @@ void MelissaAudioEngine::setBuffer(const float* buffer[], size_t bufferLength, i
     model_->setPitch(0);
     model_->setSpeed(100);
    
-    isOriginalBufferPrepared_ = true;
     needToReset_ = true;
 }
 
@@ -98,8 +84,6 @@ void MelissaAudioEngine::setSpeedIncMax(int32_t speedIncMax)
 
 void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 {
-    if (!isOriginalBufferPrepared_) return;
-    
     bool triggerMetronome = false;
 
     
@@ -153,7 +137,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 
 void MelissaAudioEngine::process()
 {
-    if (!isOriginalBufferPrepared_) return;
+    if (dataSource_->getBufferLength() == 0) return;
     if (needToReset_) resetProcessedBuffer();
     
     size_t sampleIndex[processLength_];
@@ -178,8 +162,8 @@ void MelissaAudioEngine::process()
 
             }
             sampleIndex[iSample] = readIndex_;
-            bufferForSoundTouch_[iSample * 2 + 0] = originalBuffer_[0][readIndex_];
-            bufferForSoundTouch_[iSample * 2 + 1] = originalBuffer_[1][readIndex_];
+            bufferForSoundTouch_[iSample * 2 + 0] = dataSource_->readBuffer(0, readIndex_);
+            bufferForSoundTouch_[iSample * 2 + 1] = dataSource_->readBuffer(1, readIndex_);
             ++readIndex_;
         }
         
@@ -215,14 +199,9 @@ bool MelissaAudioEngine::isBufferSet() const
 void MelissaAudioEngine::reset()
 {
     needToReset_ = true;
-    isOriginalBufferPrepared_  = false;
-    
-    for (int iCh = 0; iCh < 2; ++iCh)
-    {
-        originalBuffer_[iCh].clear();
-    }
     
     mutex_.lock();
+    soundTouch_->clear();
     processedBufferQue_.clear();
     mutex_.unlock();
 }
@@ -294,7 +273,7 @@ void MelissaAudioEngine::analyzeBpm()
             // stereo -> monoral
             size_t sampleIndex = iFrame * frameLength + iSample;
             if (sampleIndex > originalBufferLength_) break;
-            const float sig = (originalBuffer_[0][sampleIndex] + originalBuffer_[1][sampleIndex]);
+            const float sig = (dataSource_->readBuffer(0, sampleIndex) + dataSource_->readBuffer(1, sampleIndex));
             amp += sig * sig;
         }
         frameAmp[iFrame] =  sqrt(amp / frameLength);

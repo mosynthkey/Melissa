@@ -13,6 +13,7 @@
 #include "MelissaModelListener.h"
 #include "SoundTouch.h"
 
+class MelissaDataSource;
 class MelissaModel;
 
 class MelissaAudioEngine : public MelissaModelListener
@@ -21,7 +22,7 @@ public:
     MelissaAudioEngine();
     virtual ~MelissaAudioEngine() {};
     
-    void setBuffer(const float* buffer[], size_t bufferLength, int32_t sampleRate);
+    void updateBuffer();
     void setOutputSampleRate(int32_t sampleRate);
     
     float getPlayingPosMSec() const;
@@ -59,13 +60,12 @@ public:
     
 private:
     MelissaModel* model_;
+    MelissaDataSource* dataSource_;
     static constexpr size_t processLength_ = 4096;
     static constexpr size_t queLength_ = 10 * processLength_ * 2 /* Stereo */;
     
     std::unique_ptr<soundtouch::SoundTouch> soundTouch_;
     
-    bool isOriginalBufferPrepared_;
-    std::vector<float> originalBuffer_[2 /* Stereo */];
     int32_t originalSampleRate_;
     size_t originalBufferLength_;
     
@@ -74,7 +74,7 @@ private:
     int32_t outputSampleRate_;
     
     size_t aIndex_, bIndex_, processStartIndex_;
-    size_t readIndex_; // from originalBuffer_
+    size_t readIndex_; // from buffer_
     float playingPosMSec_;
     
     int32_t speed_;

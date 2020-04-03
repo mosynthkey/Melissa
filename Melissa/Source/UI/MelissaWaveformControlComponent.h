@@ -22,7 +22,7 @@ public:
     void showTimeTooltip(float posRatio);
     
     // MelissaDataSourceListener
-    void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) override;
+    void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
     
 private:
     class WaveformView;

@@ -177,17 +177,6 @@ public:
         update_();
     }
     
-    void setBuffer(const float* buffer[], size_t bufferLength)
-    {
-        originalMonoralBuffer_.resize(bufferLength);
-        for (size_t iBufIndex = 0; iBufIndex < bufferLength; ++iBufIndex)
-        {
-            originalMonoralBuffer_[iBufIndex] = ((buffer[0][iBufIndex] * buffer[0][iBufIndex]) + (buffer[1][iBufIndex] * buffer[1][iBufIndex])) / 2.f;
-        }
-        
-        update(true);
-    }
-    
     void update(bool immediately = false)
     {
         stopTimer();
@@ -210,9 +199,10 @@ public:
     
     void update_()
     {
-        if (numOfStrip_ <= 0 || originalMonoralBuffer_.size() == 0 || previewBuffer_.size() == 0) return;
+        auto dataSource = MelissaDataSource::getInstance();
+        const size_t bufferLength = dataSource->getBufferLength();
         
-        const size_t bufferLength = originalMonoralBuffer_.size();
+        if (numOfStrip_ <= 0 || bufferLength == 0 || previewBuffer_.size() == 0) return;
         
         float preview, previewMax = 0.f;
         for (int32_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
@@ -222,7 +212,9 @@ public:
             {
                 const size_t bufIndex = iStrip * (bufferLength / numOfStrip_) + iBuffer;
                 if (bufIndex >= bufferLength) break;
-                preview += originalMonoralBuffer_[bufIndex];
+                const auto l = dataSource->readBuffer(0, bufIndex);
+                const auto r = dataSource->readBuffer(1, bufIndex);
+                preview += (l * l + r * r);
             }
             preview /= (bufferLength / numOfStrip_);
             if (preview >= 1.f) preview = 1.f;
@@ -282,7 +274,6 @@ private:
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
     std::vector<float> previewBuffer_;
-    std::vector<float> originalMonoralBuffer_;
 };
 
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
@@ -336,8 +327,8 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
     }
 }
 
-void MelissaWaveformControlComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
+void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
-    waveformView_->setBuffer(buffer, bufferLength);
     timeSec_ = static_cast<float>(bufferLength) / sampleRate;
+    waveformView_->update(true);
 }
