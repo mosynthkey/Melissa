@@ -43,6 +43,7 @@ countries: ja
 "cancel" = "キャンセル"
 "visit" = "開く"
 "open_manual" = "マニュアルを開く"
+"first_launch" = "Melissaをダウンロードしていただきありがとうございます。\nまずはじめに、曲を開いてみましょう！"
 
 
 "Go up to parent directory" = "上のディレクトリへ"

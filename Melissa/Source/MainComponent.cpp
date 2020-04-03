@@ -121,6 +121,13 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), shouldExit_(fal
     dataSource_->restorePreviousState();
     deviceManager.addMidiInputCallback("", this);
     
+    if (isFirstLaunch)
+    {
+        const std::vector<String> options = { TRANS("ok") };
+        auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("first_launch"), options, [&](size_t yesno) { showFileChooser(); });
+        MelissaModalDialog::show(dialog, "Melissa", false);
+    }
+    
 #if defined(ENABLE_TUTORIAL)
     if (isFirstLaunch)
     {
@@ -558,6 +565,18 @@ void MainComponent::createUI()
     updateFileChooserTab(kFileChooserTab_Browse);
 }
 
+void MainComponent::showFileChooser()
+{
+    fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
+    fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser) {
+        auto fileUrl = chooser.getURLResult();
+        if (fileUrl.isLocalFile())
+        {
+            dataSource_->loadFileAsync(fileUrl.getLocalFile().getFullPathName());
+        }
+    });
+}
+
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
     audioEngine_->setOutputSampleRate(sampleRate);
@@ -929,6 +948,9 @@ void MainComponent::closeTutorial()
 void MainComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     memoTextEditor_->setText(dataSource_->getMemo());
+    auto parentDir = File(filePath).getParentDirectory();
+    parentDir.setAsCurrentWorkingDirectory();
+    fileBrowserComponent_->setRoot(parentDir);
 }
 
 void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String& filePath)
@@ -967,23 +989,12 @@ PopupMenu MainComponent::getMenuForIndex(int topLevelMenuIndex, const String& me
         menu.addItem(kMenuID_FileOpen, "Open");
     }
     
-    
     return menu;
 }
 
 void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 {
-    if (menuItemID == kMenuID_FileOpen)
-    {
-        fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
-        fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser) {
-            auto fileUrl = chooser.getURLResult();
-            if (fileUrl.isLocalFile())
-            {
-                dataSource_->loadFileAsync(fileUrl.getLocalFile().getFullPathName());
-            }
-        });
-    }
+    if (menuItemID == kMenuID_FileOpen) showFileChooser();
 }
 
 void MainComponent::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)

@@ -43,3 +43,4 @@ countries: us
 "cancel" = "Cancel"
 "visit" = "Visit"
 "open_manual" = "manual"
+"first_launch" = "Thank you for downloading Melissa!\nFirst of all, let's open a song."
