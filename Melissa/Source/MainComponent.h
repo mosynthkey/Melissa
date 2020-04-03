@@ -126,7 +126,7 @@ public:
     void selectionChanged() override {};
     void fileClicked(const File& file, const MouseEvent& e) override {}
     void fileDoubleClicked(const File& file) override;
-    void browserRootChanged(const File& newRoot) override {};
+    void browserRootChanged(const File& newRoot) override;
     
     // KeyListener
     bool keyPressed(const KeyPress& key, Component* originatingComponent) override;

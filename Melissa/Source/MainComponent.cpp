@@ -948,6 +948,11 @@ void MainComponent::fileDoubleClicked(const File& file)
     dataSource_->loadFileAsync(file);
 }
 
+void MainComponent::browserRootChanged(const File& newRoot)
+{
+    newRoot.setAsCurrentWorkingDirectory();
+}
+
 StringArray MainComponent::getMenuBarNames()
 {
     return { "File" };
