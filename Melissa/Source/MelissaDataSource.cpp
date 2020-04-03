@@ -10,6 +10,7 @@ MelissaDataSource MelissaDataSource::instance_;
 
 MelissaDataSource::MelissaDataSource() :
 model_(MelissaModel::getInstance()),
+sampleRate_(0.f),
 currentSongFilePath_("")
 {
 }
@@ -178,17 +179,24 @@ void MelissaDataSource::saveSettingsFile()
 void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad)
 {
     functionToCallAfterFileLoad_ = functionToCallAfterFileLoad;
-    if (!file.existsAsFile())
-    {
-        for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, file.getFullPathName());
-    }
-    else
+    if (file.existsAsFile())
     {
         fileToload_ = file;
         for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Loading, file.getFullPathName());
         cancelPendingUpdate();
         triggerAsyncUpdate();
     }
+    else
+    {
+        for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, file.getFullPathName());
+    }
+}
+
+float MelissaDataSource::readBuffer(size_t ch, size_t index)
+{
+    if (2 <= ch || buffer_[0].size() <= index) return 0.f;
+    const float result = buffer_[ch][index];
+    return result;
 }
 
 void MelissaDataSource::restorePreviousState()
@@ -403,15 +411,25 @@ void MelissaDataSource::handleAsyncUpdate()
     const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
     audioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
     reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
+    sampleRate_ = reader->sampleRate;
     
     currentSongFilePath_ = fileToload_.getFullPathName();
     
     const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
-    audioEngine_->setBuffer(buffer, lengthInSamples, reader->sampleRate);
+    
+    for (int iCh = 0; iCh < 2; ++iCh)
+    {
+        buffer_[iCh].resize(lengthInSamples);
+        for (int iSample = 0; iSample < lengthInSamples; ++iSample) buffer_[iCh][iSample] = buffer[iCh][iSample];
+    }
+    audioSampleBuf_->clear();
+    audioSampleBuf_ = nullptr;
+    audioEngine_->updateBuffer();
+    
     for (auto l : listeners_)
     {
         l->fileLoadStatusChanged(kFileLoadStatus_Success, currentSongFilePath_);
-        l->songChanged(currentSongFilePath_, buffer, lengthInSamples, reader->sampleRate);
+        l->songChanged(currentSongFilePath_, lengthInSamples, sampleRate_);
     }
     
     bool found = false;
@@ -438,7 +456,6 @@ void MelissaDataSource::handleAsyncUpdate()
     
     if (functionToCallAfterFileLoad_ != nullptr) functionToCallAfterFileLoad_();
     
-    audioSampleBuf_ = nullptr;
     delete reader;
 }
 

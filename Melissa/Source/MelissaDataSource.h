@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaAudioEngine.h"
 #include "MelissaModel.h"
 
 enum FileLoadStatus
@@ -15,7 +16,7 @@ class MelissaDataSourceListener
 public:
     virtual ~MelissaDataSourceListener() { }
     
-    virtual void songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate) { }
+    virtual void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) { }
     virtual void historyUpdated() { }
     virtual void playlistUpdated(size_t index) { }
     virtual void practiceListUpdated() { }
@@ -95,6 +96,9 @@ public:
     static String getCompatibleFileExtensions() { return "*.mp3;*.wav;*.m4a;*.flac;*.ogg"; }
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
+    float readBuffer(size_t ch, size_t index);
+    double getSampleRate() const { return sampleRate_; }
+    size_t getBufferLength() const { return buffer_[0].size(); }
     
     // Previous
     void restorePreviousState();
@@ -143,6 +147,8 @@ private:
     
     MelissaAudioEngine* audioEngine_;
     MelissaModel* model_;
+    std::vector<float> buffer_[2 /* Stereo */];
+    double sampleRate_;
     File settingsFile_;
     String currentSongFilePath_;
     File fileToload_;

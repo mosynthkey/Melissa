@@ -108,8 +108,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), shouldExit_(fal
     }
     dataSource_->loadSettingsFile(settingsFile_);
     
-    auto rootDir = File::getSpecialLocation(File::userHomeDirectory);
-    rootDir = File(dataSource_->global_.rootDir_);
+    auto rootDir = File(dataSource_->global_.rootDir_);
     rootDir.setAsCurrentWorkingDirectory();
     fileBrowserComponent_->setRoot(rootDir);
     
@@ -927,7 +926,7 @@ void MainComponent::closeTutorial()
     tutorialComponent_ = nullptr;
 }
 
-void MainComponent::songChanged(const String& filePath, const float* buffer[], size_t bufferLength, int32_t sampleRate)
+void MainComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     memoTextEditor_->setText(dataSource_->getMemo());
 }
