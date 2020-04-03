@@ -110,6 +110,7 @@ public:
     ~MainComponent();
     
     void createUI();
+    void showFileChooser();
     
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
