@@ -959,6 +959,12 @@ void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String& f
     {
         fileNameLabel_->setText(File(filePath).getFileNameWithoutExtension());
     }
+    else if (status == kFileLoadStatus_Failed)
+    {
+        fileNameLabel_->setText(File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension());
+        const std::vector<String> options = { TRANS("ok") };
+        MelissaModalDialog::show(std::make_shared<MelissaOptionDialog>(TRANS("load_failed") + "\n" + filePath, options, [&](size_t) {}), "Melissa", false);
+    }
     else if (status == kFileLoadStatus_Loading)
     {
         fileNameLabel_->setText("Loading...");
@@ -1029,6 +1035,7 @@ void MainComponent::exitSignalSent()
     if (stateXml != nullptr) dataSource_->global_.device_  = stateXml->toString();
     
     dataSource_->saveSettingsFile();
+    dataSource_->disposeBuffer();
 }
 
 void MainComponent::timerCallback()

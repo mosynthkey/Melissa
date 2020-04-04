@@ -94,12 +94,13 @@ public:
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
-    static String getCompatibleFileExtensions() { return "*.mp3;*.wav;*.m4a;*.flac;*.ogg"; }
+    static String getCompatibleFileExtensions();
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
     float readBuffer(size_t ch, size_t index);
     double getSampleRate() const { return sampleRate_; }
     size_t getBufferLength() const { return (audioSampleBuf_ == nullptr ? 0 : audioSampleBuf_->getNumSamples()); }
+    void disposeBuffer();
     
     // Previous
     void restorePreviousState();
@@ -140,7 +141,7 @@ public:
 private:
     // Singleton
     MelissaDataSource();
-    ~MelissaDataSource() {}
+    ~MelissaDataSource();
     static MelissaDataSource instance_;
     
     // History
@@ -155,4 +156,5 @@ private:
     std::function<void()> functionToCallAfterFileLoad_;
     std::vector<MelissaDataSourceListener*> listeners_;
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
+    bool wasPlaying_;
 };

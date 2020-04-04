@@ -11,9 +11,14 @@ MelissaDataSource MelissaDataSource::instance_;
 MelissaDataSource::MelissaDataSource() :
 model_(MelissaModel::getInstance()),
 sampleRate_(0.f),
-currentSongFilePath_("")
+currentSongFilePath_(""),
+wasPlaying_(false)
 {
     validateSettings();
+}
+
+MelissaDataSource::~MelissaDataSource()
+{
 }
 
 void MelissaDataSource::loadSettingsFile(const File& file)
@@ -186,12 +191,25 @@ void MelissaDataSource::saveSettingsFile()
     settingsFile_.replaceWithText(JSON::toString(settings));
 }
 
+
+
+String MelissaDataSource::getCompatibleFileExtensions()
+{
+#ifdef JUCE_MAC
+    return "*.mp3;*.wav;*.m4a;*.flac;*.ogg";
+#else
+    return "*.mp3;*.wav;*.flac;*.ogg";
+#endif
+}
+
 void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad)
 {
     functionToCallAfterFileLoad_ = functionToCallAfterFileLoad;
     if (file.existsAsFile())
     {
         fileToload_ = file;
+        wasPlaying_ = (model_->getPlaybackStatus() == kPlaybackStatus_Playing);
+        model_->setPlaybackStatus(kPlaybackStatus_Stop);
         for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Loading, file.getFullPathName());
         cancelPendingUpdate();
         triggerAsyncUpdate();
@@ -213,6 +231,12 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index)
     if (bufferSize <= index) return 0.f;
     
     return audioSampleBuf_->getSample(ch, index);
+}
+
+void MelissaDataSource::disposeBuffer()
+{
+    audioSampleBuf_->clear();
+    audioSampleBuf_ = nullptr;
 }
 
 void MelissaDataSource::restorePreviousState()
@@ -346,6 +370,7 @@ String MelissaDataSource::getMemo() const
 
 void MelissaDataSource::getPracticeList(std::vector<MelissaDataSource::Song::PracticeList>& list)
 {
+    list.clear();
     for (auto&& song : songs_)
     {
         if (song.filePath_ == currentSongFilePath_)
@@ -421,7 +446,11 @@ void MelissaDataSource::handleAsyncUpdate()
     formatManager.registerBasicFormats();
     
     auto* reader = formatManager.createReaderFor(fileToload_);
-    if (reader == nullptr) return;
+    if (reader == nullptr)
+    {
+        for (auto l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, fileToload_.getFullPathName());
+        return;
+    }
     
     // read audio data from reader
     const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
@@ -461,6 +490,8 @@ void MelissaDataSource::handleAsyncUpdate()
     saveSongState();
     
     if (functionToCallAfterFileLoad_ != nullptr) functionToCallAfterFileLoad_();
+
+    if (wasPlaying_) model_->setPlaybackStatus(kPlaybackStatus_Playing);
     
     delete reader;
 }
