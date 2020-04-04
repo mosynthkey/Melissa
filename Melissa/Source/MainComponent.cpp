@@ -193,6 +193,7 @@ void MainComponent::createUI()
         menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
 #endif
         const auto result = menu.show();
+        model_->setPlaybackStatus(kPlaybackStatus_Stop);
         if (result == kMenuID_MainAbout)
         {
             showAboutDialog();

@@ -147,15 +147,15 @@ void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const
     {
         enum
         {
-            kMenuId_Erase = 1,
+            kMenuId_Remove = 1,
             kMenuId_Overwrite,
         };
         popupMenu_->clear();
-        popupMenu_->addItem(kMenuId_Erase, TRANS("erase"), true);
+        popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
         popupMenu_->addItem(kMenuId_Overwrite, TRANS("overwrite"), true);
         auto result = popupMenu_->show();
 
-        if (result == kMenuId_Erase)
+        if (result == kMenuId_Remove)
         {
             dataSource_->removePracticeList(rowNumber);
         }

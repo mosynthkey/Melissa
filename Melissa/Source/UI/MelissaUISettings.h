@@ -30,7 +30,7 @@ public:
         }
         else
         {
-            return isJa ? 21 : 21;
+            return isJa ? 21 : 20;
         }
     }
     
@@ -52,7 +52,7 @@ public:
         }
         else
         {
-            return isJa ? "Meiryo UI" : "Segoe UI";
+            return isJa ? "Meiryo UI" : "Arial";
         }
     }
     
