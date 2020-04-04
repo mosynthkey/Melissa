@@ -37,3 +37,4 @@ Melissa/Builds/*
 # Installer
 *.dmg
 *.exe
+Installer/macOS/Makefile
