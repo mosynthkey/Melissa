@@ -98,7 +98,7 @@ public:
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
     float readBuffer(size_t ch, size_t index);
     double getSampleRate() const { return sampleRate_; }
-    size_t getBufferLength() const { return buffer_[0].size(); }
+    size_t getBufferLength() const { return (audioSampleBuf_ == nullptr ? 0 : audioSampleBuf_->getNumSamples()); }
     
     // Previous
     void restorePreviousState();
@@ -147,7 +147,6 @@ private:
     
     MelissaAudioEngine* audioEngine_;
     MelissaModel* model_;
-    std::vector<float> buffer_[2 /* Stereo */];
     double sampleRate_;
     File settingsFile_;
     String currentSongFilePath_;

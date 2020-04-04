@@ -194,9 +194,15 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
 
 float MelissaDataSource::readBuffer(size_t ch, size_t index)
 {
-    if (2 <= ch || buffer_[0].size() <= index) return 0.f;
-    const float result = buffer_[ch][index];
-    return result;
+    if (audioSampleBuf_ == nullptr) return 0.f;
+    
+    const int numOfChs   = audioSampleBuf_->getNumChannels();
+    const int bufferSize = audioSampleBuf_->getNumSamples();
+    
+    if (2 <= ch || numOfChs <= ch) ch = 0;
+    if (bufferSize <= index) return 0.f;
+    
+    return audioSampleBuf_->getSample(ch, index);
 }
 
 void MelissaDataSource::restorePreviousState()
@@ -414,16 +420,6 @@ void MelissaDataSource::handleAsyncUpdate()
     sampleRate_ = reader->sampleRate;
     
     currentSongFilePath_ = fileToload_.getFullPathName();
-    
-    const float* buffer[] = { audioSampleBuf_->getReadPointer(0), audioSampleBuf_->getReadPointer(1) };
-    
-    for (int iCh = 0; iCh < 2; ++iCh)
-    {
-        buffer_[iCh].resize(lengthInSamples);
-        for (int iSample = 0; iSample < lengthInSamples; ++iSample) buffer_[iCh][iSample] = buffer[iCh][iSample];
-    }
-    audioSampleBuf_->clear();
-    audioSampleBuf_ = nullptr;
     audioEngine_->updateBuffer();
     
     for (auto l : listeners_)
