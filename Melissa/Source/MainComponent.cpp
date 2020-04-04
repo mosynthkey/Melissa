@@ -294,7 +294,7 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(volumeSlider_.get());
     
-    aButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
+    aButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
     aButton_->setText("-:--");
     aButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
@@ -319,7 +319,7 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(aSetButton_.get());
 
-    bButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
+    bButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
     bButton_->setText("-:--");
     bButton_->setBounds(0, 240, 140, 34);
     bButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
@@ -356,7 +356,7 @@ void MainComponent::createUI()
     tie_[1] = std::make_unique<MelissaTieComponent>(bSetButton_.get(), bButton_.get());
     addAndMakeVisible(tie_[1].get());
 
-    speedButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
+    speedButton_ = make_unique<MelissaIncDecButton>(2, TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
     speedButton_->setText("100 %");
     speedButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
@@ -402,7 +402,7 @@ void MainComponent::createUI()
     addAndMakeVisible(speedIncMaxButton_.get());
 #endif
     
-    pitchButton_ = make_unique<MelissaIncDecButton>(TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
+    pitchButton_ = make_unique<MelissaIncDecButton>(16, TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
     pitchButton_->setText("Original");
     pitchButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {

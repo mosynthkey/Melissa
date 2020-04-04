@@ -50,7 +50,11 @@ public:
         kClickEvent_Double
     };
     
-    MelissaIncDecButton(const String& decTooltipStr = "", const String& incTooltipStr = "")
+    MelissaIncDecButton(int dragStep, const String& decTooltipStr = "", const String& incTooltipStr = "") :
+    dragStep_(dragStep),
+    prevMouseY_(0),
+    diffY_(0)
+    
     {
         label_ = std::make_unique<MelissaLabel>();
         label_->setInterceptsMouseClicks(false, true);
@@ -74,6 +78,30 @@ public:
         incButton_->setBounds(getWidth() - size, 0, size, size);
     }
     
+    void mouseDown(const MouseEvent& event) override
+    {
+        prevMouseY_ = event.getMouseDownY();
+    }
+    
+    void mouseDrag(const MouseEvent& event) override
+    {
+        diffY_ += (event.getScreenY() - prevMouseY_);
+        prevMouseY_ = event.getScreenY();
+        
+        if (diffY_ > dragStep_)
+        {
+            diffY_ = 0;
+            onClick_(kClickEvent_Dec, false);
+            
+        }
+        else if (diffY_ < -1 * dragStep_)
+        {
+            diffY_ = 0;
+            onClick_(kClickEvent_Inc, false);
+        }
+        
+    }
+    
     void mouseDoubleClick(const MouseEvent& event) override
     {
         onClick_(kClickEvent_Double, false);
@@ -90,4 +118,8 @@ private:
     std::unique_ptr<MelissaLabel> label_;
     std::unique_ptr<IncDecButton> decButton_;
     std::unique_ptr<IncDecButton> incButton_;
+    
+    int dragStep_;
+    int prevMouseY_;
+    int diffY_;
 };
