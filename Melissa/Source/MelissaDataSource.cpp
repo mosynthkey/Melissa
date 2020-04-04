@@ -13,6 +13,7 @@ model_(MelissaModel::getInstance()),
 sampleRate_(0.f),
 currentSongFilePath_("")
 {
+    validateSettings();
 }
 
 void MelissaDataSource::loadSettingsFile(const File& file)
@@ -45,6 +46,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (p->hasProperty("pitch"))  previous_.pitch_    = p->getProperty("pitch");
     }
     
+    history_.clear();
     if (settings.hasProperty("history"))
     {
         auto array = settings["history"].getArray();
@@ -57,6 +59,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         }
     }
     
+    playlists_.clear();
     if (settings.hasProperty("playlist"))
     {
         auto playlists = settings["playlist"].getArray();
@@ -75,13 +78,8 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             }
         }
     }
-    if (playlists_.size() == 0)
-    {
-        Playlist playlist;
-        playlists_.emplace_back(playlist);
-    }
-    for (auto l : listeners_) l->playlistUpdated(0);
     
+    songs_.clear();
     if (settings.hasProperty("songs"))
     {
         auto songs = settings["songs"].getArray();
@@ -108,6 +106,18 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             }
         }
     }
+
+    validateSettings();
+}
+
+void MelissaDataSource::validateSettings()
+{
+    if (playlists_.size() == 0)
+    {
+        Playlist playlist;
+        playlists_.emplace_back(playlist);
+    }
+    for (auto l : listeners_) l->playlistUpdated(0);
 }
 
 void MelissaDataSource::saveSettingsFile()

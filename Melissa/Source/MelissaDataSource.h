@@ -90,6 +90,7 @@ public:
     void addListener(MelissaDataSourceListener* listener) { listeners_.emplace_back(listener); }
     
     void loadSettingsFile(const File& file);
+    void validateSettings();
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
