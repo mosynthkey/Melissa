@@ -54,10 +54,10 @@ public:
     {
         if (e.mods.isRightButtonDown())
         {
-            enum { kMenuId_Erase = 1 };
+            enum { kMenuId_Remove = 1 };
             popupMenu_->clear();
-            popupMenu_->addItem(kMenuId_Erase, TRANS("erase"), true);
-            if (popupMenu_->show() == kMenuId_Erase)
+            popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
+            if (popupMenu_->show() == kMenuId_Remove)
             {
                 if (target_ == kTarget_History)
                 {
