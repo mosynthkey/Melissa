@@ -44,6 +44,7 @@ countries: ja
 "visit" = "開く"
 "open_manual" = "マニュアルを開く"
 "first_launch" = "Melissaをダウンロードしていただきありがとうございます。\nまずはじめに、曲を開いてみましょう！"
+"load_failed" = "ファイルの読み込みに失敗しました。"
 
 
 "Go up to parent directory" = "上のディレクトリへ"

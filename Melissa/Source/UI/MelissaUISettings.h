@@ -30,7 +30,7 @@ public:
         }
         else
         {
-            return isJa ? 22 : 22;
+            return isJa ? 21 : 21;
         }
     }
     
