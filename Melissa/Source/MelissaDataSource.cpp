@@ -1,3 +1,10 @@
+//
+//  MelissaDataSource.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
 

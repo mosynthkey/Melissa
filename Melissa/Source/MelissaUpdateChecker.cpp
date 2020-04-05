@@ -1,3 +1,10 @@
+//
+//  MelissaUpdateChecker.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaModalDialog.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaUpdateChecker.h"

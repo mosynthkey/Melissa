@@ -1,3 +1,10 @@
+//
+//  MelissaBottomControlComponent.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaBottomControlComponent.h"
 #include "MelissaModalDialog.h"
 #include "MelissaOptionDialog.h"

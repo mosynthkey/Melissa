@@ -1,3 +1,10 @@
+//
+//  MelissaLookAndFeel.h
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #pragma once
 
 #define _USE_MATH_DEFINES

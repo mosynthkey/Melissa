@@ -1,3 +1,10 @@
+//
+//  MelissaTutorialComponent.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include <tuple>
 #include "MelissaTutorialComponent.h"
 #include "MelissaUISettings.h"

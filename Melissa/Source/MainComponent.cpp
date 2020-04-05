@@ -1,3 +1,10 @@
+//
+//  MainComponent.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include <sstream>
 #include "MainComponent.h"
 #include "MelissaAboutComponent.h"

@@ -2,7 +2,7 @@
 //  MelissaAudioEngine.cpp
 //  Melissa
 //
-//  Created by Masaki on 2019/07/29.
+//  Copyright(c) 2020 Masaki Ono
 //
 
 #define _USE_MATH_DEFINES

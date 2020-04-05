@@ -1,3 +1,10 @@
+//
+//  MelissaWaveformControlComponent.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"

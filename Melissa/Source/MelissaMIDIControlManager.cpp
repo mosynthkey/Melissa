@@ -1,3 +1,10 @@
+//
+//  MelissaMIDIControlManager.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaMIDIControlManager.h"
 
 MelissaMIDIControlManager::MelissaMIDIControlManager()
