@@ -106,6 +106,12 @@ public:
     {
         onClick_(kClickEvent_Double, false);
     }
+
+
+    void mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel) override
+    {
+        onClick_((wheel.deltaY > 0) ? kClickEvent_Inc : kClickEvent_Dec, false);
+    }
     
     void setText(String str)
     {
