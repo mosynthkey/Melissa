@@ -1,3 +1,10 @@
+//
+//  MelissaModalDialog.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaModalDialog.h"
 
 enum

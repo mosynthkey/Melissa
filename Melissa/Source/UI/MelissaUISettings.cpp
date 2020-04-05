@@ -1,3 +1,10 @@
+//
+//  MelissaUISettings.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaUISettings.h"
 
 bool MelissaUISettings::isJa = false;

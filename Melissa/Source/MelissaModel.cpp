@@ -1,3 +1,10 @@
+//
+//  MelissaModel.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaModel.h"
 
 MelissaModel MelissaModel::instance_;

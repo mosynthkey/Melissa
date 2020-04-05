@@ -1,3 +1,10 @@
+//
+//  MelissaPreferencesComponent.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaUISettings.h"
 #include "MelissaPreferencesComponent.h"
 

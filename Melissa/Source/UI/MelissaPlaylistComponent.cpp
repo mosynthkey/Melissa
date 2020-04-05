@@ -1,3 +1,10 @@
+//
+//  MelissaPlaylistComponent.cpp
+//  Melissa
+//
+//  Copyright(c) 2020 Masaki Ono
+//
+
 #include "MelissaInputDialog.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"

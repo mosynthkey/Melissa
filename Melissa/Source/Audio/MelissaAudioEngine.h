@@ -1,8 +1,8 @@
 //
-//  Melissa.h
+//  MelissaAudioEngine.h
 //  Melissa
 //
-//  Created by Masaki on 2019/07/29.
+//  Copyright(c) 2020 Masaki Ono
 //
 
 #pragma once
