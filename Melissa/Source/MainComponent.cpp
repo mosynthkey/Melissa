@@ -40,8 +40,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), shouldExit_(fal
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
-    MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP");
-    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::fontName());
+    MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
+    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
     
     String localizedStrings = "";
     if (MelissaUISettings::isJa)
@@ -222,7 +222,7 @@ void MainComponent::createUI()
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
-    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::mainColour()).withAlpha(0.06f));
+    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::getMainColour()).withAlpha(0.06f));
     addAndMakeVisible(controlComponent_.get());
     
     bottomComponent_ = make_unique<MelissaBottomControlComponent>();
@@ -239,7 +239,7 @@ void MainComponent::createUI()
     
     timeLabel_ = make_unique<Label>();
     timeLabel_->setJustificationType(Justification::centred);
-    timeLabel_->setFont(MelissaUISettings::fontSizeMain());
+    timeLabel_->setFont(MelissaUISettings::getFontSizeMain());
     addAndMakeVisible(timeLabel_.get());
     
     fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
@@ -453,7 +453,7 @@ void MainComponent::createUI()
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
-    memoTextEditor_->setFont(Font(MelissaUISettings::fontSizeMain()));
+    memoTextEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
     memoTextEditor_->setMultiLine(true, false);
     memoTextEditor_->setLookAndFeel(&lookAndFeelMemo_);
     memoTextEditor_->onFocusLost = [&]()
@@ -530,7 +530,7 @@ void MainComponent::createUI()
             auto l = make_unique<Label>();
             l->setLookAndFeel(nullptr);
             l->setText(labelTitles[label_i], dontSendNotification);
-            l->setFont(Font(MelissaUISettings::fontSizeSub()));
+            l->setFont(Font(MelissaUISettings::getFontSizeSub()));
             l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
             l->setJustificationType(Justification::centredTop);
             addAndMakeVisible(l.get());
@@ -605,7 +605,7 @@ void MainComponent::paint(Graphics& g)
     const int w = getWidth();
     const int h = getHeight();
     const int center = w / 2;
-    const auto gradationColour = MelissaUISettings::backGroundGradationColour();
+    const auto gradationColour = MelissaUISettings::getBackGroundGradationColour();
     const int playButtonCenterY = playPauseButton_->getY() + playPauseButton_->getHeight() / 2;
     g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, playButtonCenterY, Colour(gradationColour.second), 0, getHeight(), true));
     g.fillRect(0, 0, w / 2, h);

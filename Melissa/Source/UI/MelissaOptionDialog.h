@@ -12,7 +12,7 @@ public:
         constexpr int controlHeight = 30;
         constexpr int margin = 10;
         const size_t numOfControls = options.size();
-        auto labelSize = MelissaUtility::getStringSize(Font(MelissaUISettings::fontSizeMain()), labelString);
+        auto labelSize = MelissaUtility::getStringSize(Font(MelissaUISettings::getFontSizeMain()), labelString);
         const int minimumWidth = static_cast<int>(buttonWidth * numOfControls + margin * (numOfControls - 1));
         if (labelSize.first < minimumWidth) labelSize.first = minimumWidth;
         const int width = labelSize.first + margin * 2;
@@ -21,7 +21,7 @@ public:
         setSize(width, height);
         
         label_ = std::make_unique<Label>();
-        label_->setFont(Font(MelissaUISettings::fontSizeMain()));
+        label_->setFont(Font(MelissaUISettings::getFontSizeMain()));
         label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, labelSize.first, labelSize.second);
         addAndMakeVisible(label_.get());

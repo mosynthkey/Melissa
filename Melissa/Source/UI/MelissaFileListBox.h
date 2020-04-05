@@ -82,11 +82,11 @@ public:
         const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
         const String fileName = File(fullPath).getFileName();
         
-        g.setColour(Colour(MelissaUISettings::mainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
+        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
         g.fillAll();
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(MelissaUISettings::fontSizeMain());
+        g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     

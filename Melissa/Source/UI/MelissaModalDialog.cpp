@@ -17,7 +17,7 @@ closeOnClickingOutside_(closeOnClickingOutside)
     titleLabel_ = std::make_unique<Label>();
     titleLabel_->setJustificationType(Justification::centred);
     titleLabel_->setText(title, dontSendNotification);
-    titleLabel_->setFont(Font(MelissaUISettings::fontSizeMain()));
+    titleLabel_->setFont(Font(MelissaUISettings::getFontSizeMain()));
     addAndMakeVisible(titleLabel_.get());
     
     closeButton_ = std::make_unique<CloseButton>();
@@ -35,7 +35,7 @@ void MelissaDialog::paint(Graphics& g)
     const int dialogWidth  = kMargin + contentComponent_->getWidth()  + kMargin;
     const int dialogHeight = kMargin + kCloseButtonSize + kMargin + contentComponent_->getHeight() + kMargin;
     
-    g.setColour(Colour(MelissaUISettings::dialogBackgoundColour()));
+    g.setColour(Colour(MelissaUISettings::getDialogBackgoundColour()));
     g.fillRoundedRectangle((getWidth() - dialogWidth) / 2, (getHeight() - dialogHeight) / 2, dialogWidth, dialogHeight, 4);
 }
 
