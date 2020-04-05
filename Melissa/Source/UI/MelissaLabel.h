@@ -10,7 +10,7 @@ public:
     {
         label_ = std::make_unique<Label>();
         label_->setJustificationType(Justification::centred);
-        label_->setFont(Font(MelissaUISettings::fontSizeSub()));
+        label_->setFont(Font(MelissaUISettings::getFontSizeSub()));
         label_->setColour(Label::textColourId, Colour(0xddffffff));
         label_->setInterceptsMouseClicks(false, true);
         addAndMakeVisible(label_.get());

@@ -16,7 +16,7 @@ public:
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlighted ? 0.8f : 0.4f));
-        g.setFont(MelissaUISettings::fontSizeSmall());
+        g.setFont(MelissaUISettings::getFontSizeSmall());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::right);
     }
 };

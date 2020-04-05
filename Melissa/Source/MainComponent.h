@@ -64,7 +64,7 @@ public:
         label_->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
         label_->setText(title, dontSendNotification);
         label_->setJustificationType(Justification::centred);
-        label_->setFont(Font(MelissaUISettings::fontSizeMain()));
+        label_->setFont(Font(MelissaUISettings::getFontSizeMain()));
         addAndMakeVisible(label_.get());
         
         labelWidth_ = label_->getFont().getStringWidth(title);

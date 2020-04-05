@@ -235,6 +235,7 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index)
 
 void MelissaDataSource::disposeBuffer()
 {
+    if (audioSampleBuf_ == nullptr) return;
     audioSampleBuf_->clear();
     audioSampleBuf_ = nullptr;
 }

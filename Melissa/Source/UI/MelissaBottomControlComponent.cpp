@@ -19,7 +19,7 @@ MelissaBottomControlComponent::MelissaBottomControlComponent()
 
 void MelissaBottomControlComponent::paint(Graphics& g)
 {
-    g.setColour(Colour(MelissaUISettings::mainColour()).withAlpha(0.06f));
+    g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.06f));
     g.fillAll();
 }
 

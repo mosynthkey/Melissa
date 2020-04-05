@@ -63,7 +63,7 @@ void MelissaTutorialComponent::update()
     
     const auto targetRect = targetComponent->getBounds().expanded(4, 4);
     explanationLabel_->setText(explanation, dontSendNotification);
-    explanationLabel_->setFont(MelissaUISettings::fontSizeMain());
+    explanationLabel_->setFont(MelissaUISettings::getFontSizeMain());
     const auto labelSize = MelissaUtility::getStringSize(explanationLabel_->getFont(), explanation);
     explanationLabel_->setSize(labelSize.first + 10, labelSize.second);
     
