@@ -230,7 +230,7 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index)
     if (2 <= ch || numOfChs <= ch) ch = 0;
     if (bufferSize <= index) return 0.f;
     
-    return audioSampleBuf_->getSample(ch, index);
+    return audioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
 }
 
 void MelissaDataSource::disposeBuffer()
