@@ -6,12 +6,15 @@
 
 ## Latest releases
 ### macOS
-[Version 1.0.0](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1_0_0.dmg)
+- [Version 1.0.0](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1_0_0.dmg)
 
 ### Windows
-[Version 1.0.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1.0.0_64.zip)
+- [Version 1.0.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1.0.0_64.zip)
+- [Version 1.0.0 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1.0.0_32.zip)
 
-[Version 1.0.0 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1.0.0_32.zip)
+## Manual
+- [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
+- [日本語](https://github.com/mosynthkey/Melissa/wiki/Manual-(Japanese))
 
 
 ## How to build
