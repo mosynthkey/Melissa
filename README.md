@@ -19,9 +19,12 @@
 2. Install submodules
 ```
 git submodule update --init
-```<a name="1"></a>
+```
 3. Open [Melissa/Melissa.jucer](Melissa/Melissa.jucer) with Projucer
 4. Create and open a Xcode project file or Visual Studio solution on Projucer
+
+## Contact
+[Twitter](https://twitter.com/Melissa__Player)
 
 ## License
 [LGPL-2.1 (c) 2020 Masaki Ono](LICENSE)
