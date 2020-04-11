@@ -205,6 +205,7 @@ private:
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
+    std::unique_ptr<TextButton> tapButton_;
     std::unique_ptr<TextButton> analyzeButton_;
     
     std::unique_ptr<Slider> volumeSlider_;

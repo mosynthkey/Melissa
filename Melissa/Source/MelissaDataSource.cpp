@@ -501,6 +501,8 @@ void MelissaDataSource::handleAsyncUpdate()
 
     if (wasPlaying_) model_->setPlaybackStatus(kPlaybackStatus_Playing);
     
+    saveSongState();
+    
     delete reader;
 }
 

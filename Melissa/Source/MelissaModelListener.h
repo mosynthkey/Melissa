@@ -14,6 +14,13 @@ enum PlaybackStatus
     kPlaybackStatus_Stop
 };
 
+enum MetronomeStatus
+{
+    kMetronomeStatus_On_Sync,
+    kMetronomeStatus_On_Free,
+    kMetronomeStatus_Off,
+};
+
 class MelissaModelListener
 {
 public:
@@ -25,7 +32,9 @@ public:
     virtual void speedChanged(int speed) {}
     virtual void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) {}
     virtual void playingPosChanged(float time, float ratio) {}
+    virtual void metronomeStatusChanged(MetronomeStatus status) {}
     virtual void bpmChanged(float bpm) {}
     virtual void beatPositionChanged(float beatPositionMSec) {}
+    virtual void accentUpdated(int accent) {}
 };
 
