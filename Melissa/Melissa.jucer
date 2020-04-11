@@ -64,6 +64,10 @@
               file="Source/Audio/MelissaAudioEngine.cpp"/>
         <FILE id="l6mtHh" name="MelissaAudioEngine.h" compile="0" resource="0"
               file="Source/Audio/MelissaAudioEngine.h"/>
+        <FILE id="DK4Xfb" name="MelissaBPMDetector.cpp" compile="1" resource="0"
+              file="Source/Audio/MelissaBPMDetector.cpp"/>
+        <FILE id="cfJH2n" name="MelissaBPMDetector.h" compile="0" resource="0"
+              file="Source/Audio/MelissaBPMDetector.h"/>
       </GROUP>
       <GROUP id="{F9FED507-2C82-58A1-F717-3A3962290515}" name="UI">
         <FILE id="QJVtXb" name="MelissaAboutComponent.h" compile="0" resource="0"

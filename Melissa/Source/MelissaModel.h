@@ -53,7 +53,11 @@ public:
     void setPlayingPosMSec(float playbackPosMSec);
     float getPlayingPosMSec() const;
     
-    void synchronize();
+    // Metronome
+    void  setBpm(float bpm);
+    float getBpm() { return bpm_; }
+    void  setBeatPositionMSec(float beatPositionMSec);
+    float getBeatPositionMSec() { return beatPositionMSec_; }
     
     // Listener
     void addListener(MelissaModelListener* listener);
@@ -80,6 +84,7 @@ private:
     int speed_;
     float aPosRatio_, bPosRatio_;
     float playingPosRatio_;
+    float bpm_, beatPositionMSec_;
     String filePath_;
     
     // Singleton

@@ -11,6 +11,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaAudioEngine.h"
 #include "MelissaBottomControlComponent.h"
+#include "MelissaBPMDetector.h"
 #include "MelissaButtons.h"
 #include "MelissaDataSource.h"
 #include "MelissaFileListBox.h"
@@ -171,9 +172,6 @@ public:
     void addToPracticeList(String name);
     void saveMemo();
     
-    void updateBpm();
-    void updateMetronomeOffset();
-    
     var getSongSetting(String fileName);
     void showPreferencesDialog();
     void showAboutDialog();
@@ -185,6 +183,7 @@ private:
     std::unique_ptr<MelissaAudioEngine> audioEngine_;
     MelissaModel* model_;
     MelissaDataSource* dataSource_;
+    std::unique_ptr<MelissaBPMDetector> bpmDetector_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
@@ -202,13 +201,11 @@ private:
     
     std::unique_ptr<Label> timeLabel_;
     std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
-    
-#if defined(ENABLE_METRONOME)
+
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
-    std::unique_ptr<MelissaIncDecButton> metronomeOffsetButton_;
+    std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
     std::unique_ptr<TextButton> analyzeButton_;
-#endif
     
     std::unique_ptr<Slider> volumeSlider_;
     
@@ -252,11 +249,9 @@ private:
     
     enum
     {
-#if defined(ENABLE_METRONOME)
         kLabel_MetronomeSw,
         kLabel_MetronomeBpm,
         kLabel_MetronomeOffset,
-#endif
         kLabel_Volume,
         kLabel_Pitch,
         
@@ -280,9 +275,7 @@ private:
 #if defined(ENABLE_SPEEDTRAINER)
         kSectionTitle_Speed,
 #endif
-#if defined(ENABLE_METRONOME)
         kSectionTitle_Metronome,
-#endif
         kNumOfSectionTitles
     };
     std::unique_ptr<MelissaSectionTitleComponent> sectionTitles_[kNumOfSectionTitles];
@@ -308,6 +301,8 @@ private:
     void pitchChanged(int semitone) override;
     void speedChanged(int speed) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
+    void bpmChanged(float bpm) override;
+    void beatPositionChanged(float beatPositionMSec) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

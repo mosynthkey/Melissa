@@ -47,6 +47,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), shouldExit_(fal
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
+    bpmDetector_ = std::make_unique<MelissaBPMDetector>();
+    
     MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
     
@@ -252,44 +254,48 @@ void MainComponent::createUI()
     fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
     addAndMakeVisible(fileNameLabel_.get());
     
-#if defined(ENABLE_METRONOME)
     metronomeOnOffButton_ = make_unique<ToggleButton>();
     metronomeOnOffButton_->setClickingTogglesState(true);
     metronomeOnOffButton_->onClick = [this]()
     {
-        model_->setMetoronome(metronomeOnOffButton_->getToggleState());
+        //model_->setMetoronome(metronomeOnOffButton_->getToggleState());
     };
     metronomeOnOffButton_->setButtonText("On");
     addAndMakeVisible(metronomeOnOffButton_.get());
     
-    bpmButton_ = make_unique<MelissaIncDecButton>();
-    bpmButton_->onClick_ = [this](bool inc, bool b)
+    bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
+    bpmButton_->onClick_ = [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
-        const int sign = inc ? 1 : -1;
-        model_->setBpm(model_->getBpm() + sign * (b ? 10 : 1));
-        updateBpm();
+        if (event == MelissaIncDecButton::kClickEvent_Double)
+        {
+        }
+        else
+        {
+            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+        }
     };
     addAndMakeVisible(bpmButton_.get());
     
-    metronomeOffsetButton_ = make_unique<MelissaIncDecButton>();
-    metronomeOffsetButton_->onClick_= [this](bool inc, bool b)
+    beatPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome"), TRANS("metronome"));
+    beatPositionButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
     {
-        const int sign = inc ? 1 : -1;
-        model_->setMetronomeOffsetSec(model_->getMetronomeOffsetSec() + sign);
-        updateMetronomeOffset();
+        if (event == MelissaIncDecButton::kClickEvent_Double)
+        {
+        }
+        else
+        {
+            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+        }
     };
-    addAndMakeVisible(metronomeOffsetButton_.get());
+    addAndMakeVisible(beatPositionButton_.get());
     
     analyzeButton_ = make_unique<TextButton>();
     analyzeButton_->setButtonText("Analyze");
     analyzeButton_->onClick = [this]()
     {
-        model_->analyzeBpm();
-        updateBpm();
-        updateMetronomeOffset();
+        bpmDetector_->start();
     };
     addAndMakeVisible(analyzeButton_.get());
-#endif
     
     volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
     volumeSlider_->setRange(0.01f, 2.0f);
@@ -514,11 +520,9 @@ void MainComponent::createUI()
     // Labels
     {
         const String labelTitles[kNumOfLabels] = {
-#if defined(ENABLE_METRONOME)
             "Switch",
             "BPM",
             "Timing",
-#endif
             "Volume",
             "Pitch",
             
@@ -557,9 +561,7 @@ void MainComponent::createUI()
 #if defined(ENABLE_SPEEDTRAINER)
             "Speed",
 #endif
-#if defined(ENABLE_METRONOME)
             "Metronome",
-#endif
         };
         auto sectionTitle = make_unique<MelissaSectionTitleComponent>(titles_[sectionTitle_i], 0.4f);
         addAndMakeVisible(sectionTitle.get());
@@ -655,7 +657,7 @@ void MainComponent::resized()
     
     waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
     
-    controlComponent_->setBounds(0, 220, getWidth(), 180 /* 240 */);
+    controlComponent_->setBounds(0, 220, getWidth(), 240);
     playPauseButton_->setBounds((getWidth() - 90) / 2, 240, 90, 90);
     toHeadButton_->setBounds(playPauseButton_->getX() - 60 , playPauseButton_->getY() + playPauseButton_->getHeight() / 2 - 15, 30, 30);
     
@@ -711,41 +713,12 @@ void MainComponent::resized()
         sec->setSize(sectionWidth, 30);
     }
     
-    int y = 260; // 260;
+    int y = 240;
     
     // Song Settings
     sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginSideX, y);
     volumeSlider_->setSize(200, 30);
     pitchButton_->setSize(200, 30);
-    
-    // A-B Loop
-    sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginSideX, y);
-    aSetButton_->setSize(80, 30);
-    aButton_->setSize(200, 30);
-    bSetButton_->setSize(80, 30);
-    bButton_->setSize(200, 30);
-    resetButton_->setSize(100, 30);
-    arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
-        { aSetButton_.get(), aButton_.get() },
-        { bSetButton_.get(), bButton_.get() },
-        { resetButton_.get() }
-    });
-    
-    // Metronome
-#if defined(ENABLE_METRONOME)
-    y = 360;
-    sectionTitles_[kSectionTitle_Metronome]->setTopLeftPosition(marginX, y);
-    metronomeOnOffButton_->setSize(80, 30);
-    bpmButton_->setSize(140, 30);
-    metronomeOffsetButton_->setSize(140, 30);
-    analyzeButton_->setSize(80, 30);
-    arrangeEvenly({ marginX, y + 60, sectionWidth, 30 }, {
-        { metronomeOnOffButton_.get() },
-        { bpmButton_.get() },
-        { metronomeOffsetButton_.get() },
-        { analyzeButton_.get()}
-    });
-#endif
     
 #if defined(ENABLE_SPEEDTRAINER)
     // Speed
@@ -767,14 +740,40 @@ void MainComponent::resized()
     });
 #endif
     
+    // Metronome
+    y += 100;
+    sectionTitles_[kSectionTitle_Metronome]->setTopLeftPosition(marginSideX, y);
+    metronomeOnOffButton_->setSize(80, 30);
+    bpmButton_->setSize(140, 30);
+    beatPositionButton_->setSize(140, 30);
+    analyzeButton_->setSize(80, 30);
+    arrangeEvenly({ marginSideX, y + 60, sectionWidth, 30 }, {
+        { metronomeOnOffButton_.get() },
+        { bpmButton_.get() },
+        { beatPositionButton_.get() },
+        { analyzeButton_.get()}
+    });
+    
+    // A-B Loop
+    y = 260;
+    sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginSideX, y);
+    aSetButton_->setSize(80, 30);
+    aButton_->setSize(200, 30);
+    bSetButton_->setSize(80, 30);
+    bButton_->setSize(200, 30);
+    resetButton_->setSize(100, 30);
+    arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
+        { aSetButton_.get(), aButton_.get() },
+        { bSetButton_.get(), bButton_.get() },
+        { resetButton_.get() }
+    });
+    
     // Labels
     const Component* components[kNumOfLabels]
     {
-#if defined(ENABLE_METRONOME)
         dynamic_cast<Component*>(metronomeOnOffButton_.get()),
         dynamic_cast<Component*>(bpmButton_.get()),
-        dynamic_cast<Component*>(metronomeOffsetButton_.get()),
-#endif
+        dynamic_cast<Component*>(beatPositionButton_.get()),
         dynamic_cast<Component*>(volumeSlider_.get()),
         dynamic_cast<Component*>(pitchButton_.get()),
         
@@ -1079,21 +1078,6 @@ void MainComponent::resetLoop()
     model_->setLoopPosRatio(0.f, 1.f);
 }
 
-void MainComponent::updateBpm()
-{
-#if defined(ENABLE_SPEEDTRAINER)
-    bpmButton_->setText(String(static_cast<uint32_t>(model_->getBpm())));
-#endif
-}
-
-void MainComponent::updateMetronomeOffset()
-{
-#if defined(ENABLE_SPEEDTRAINER)
-    metronomeOffsetButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getMetronomeOffsetSec() * 1000.f));
-#endif
-}
-
-
 void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
 {
     // measure
@@ -1156,4 +1140,14 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
 {
     aButton_->setText(MelissaUtility::getFormattedTimeMSec(aTimeMSec));
     bButton_->setText(MelissaUtility::getFormattedTimeMSec(bTimeMSec));
+}
+
+void MainComponent::bpmChanged(float bpm)
+{
+    bpmButton_->setText(String(static_cast<uint32_t>(model_->getBpm())));
+}
+
+void MainComponent::beatPositionChanged(float beatPositionMSec)
+{
+    beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec() * 1000.f));
 }
