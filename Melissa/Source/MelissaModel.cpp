@@ -130,13 +130,16 @@ float MelissaModel::getPlayingPosMSec() const
     return audioEngine_->getPlayingPosMSec();
 }
 
-void MelissaModel::synchronize()
+void MelissaModel::setBpm(float bpm)
 {
-    setLengthMSec(lengthMSec_);
-    setVolume(volume_);
-    setPitch(semitone_);
-    setSpeed(speed_);
-    setLoopPosRatio(aPosRatio_, bPosRatio_);
+    bpm_ = bpm;
+    for (auto&& l : listeners_) l->bpmChanged(bpm);
+}
+
+void MelissaModel::setBeatPositionMSec(float beatPositionMSec)
+{
+    beatPositionMSec_ = beatPositionMSec;
+    for (auto&& l : listeners_) l->beatPositionChanged(beatPositionMSec);
 }
 
 void MelissaModel::addListener(MelissaModelListener* listener)
@@ -167,7 +170,8 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-playbackStatus_(kPlaybackStatus_Stop), lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f), filePath_("")
+playbackStatus_(kPlaybackStatus_Stop), lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
+bpm_(120.f), beatPositionMSec_(0.f), filePath_("")
 {
     
 }

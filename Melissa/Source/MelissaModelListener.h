@@ -25,5 +25,7 @@ public:
     virtual void speedChanged(int speed) {}
     virtual void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) {}
     virtual void playingPosChanged(float time, float ratio) {}
+    virtual void bpmChanged(float bpm) {}
+    virtual void beatPositionChanged(float beatPositionMSec) {}
 };
 

@@ -38,12 +38,7 @@ public:
     int32_t getCurrentSpeed() const { return speed_ + speedIncValue_; }
     
     bool isMetoronomeOn() const { return metronome_.on_ ;};
-    uint32_t getBpm() const { return metronome_.bpm_; }
-    float getMetronomeOffsetSec() const { return metronome_.offsetSec_; }
-    
     void setMetoronome(bool on) { metronome_.on_ = on; };
-    void setBpm(uint32_t bpm) { metronome_.bpm_ = bpm; }
-    void setMetronomeOffsetSec(float offsetSec) { metronome_.offsetSec_ = offsetSec; }
     void analyzeBpm();
     
     void render(float* bufferToRender[], size_t bufferLength);
@@ -95,13 +90,13 @@ private:
     // metronome
     struct Metronome
     {
-        Metronome() : on_(false), volume_(1.f), offsetSec_(0.f), bpm_(120), count_(0),
-        amp_(0.f), osc_(-1.f) { }
+        Metronome() : on_(true), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), prevBeatSection_(0), amp_(0.f), osc_(-1.f) { }
         bool on_;
         float volume_;
-        float offsetSec_;
-        uint32_t bpm_;
-        int32_t count_;
+        float beatPositionMSec_;
+        float bpm_;
+        
+        int32_t prevBeatSection_;
         
         // for beep
         float amp_;
@@ -114,4 +109,6 @@ private:
     void speedChanged(int speed) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void playingPosChanged(float time, float ratio) override;
+    void bpmChanged(float bpm) override;
+    void beatPositionChanged(float beatPositionMSec) override;
 };

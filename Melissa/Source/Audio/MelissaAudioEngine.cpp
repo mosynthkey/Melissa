@@ -84,9 +84,8 @@ void MelissaAudioEngine::setSpeedIncMax(int32_t speedIncMax)
 
 void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 {
-    bool triggerMetronome = false;
+    bool triggerMetronome = true;
 
-    
     for (int iSample = 0; iSample < bufferLength; ++iSample)
     {
         metronome_.osc_ += 2.f / (outputSampleRate_ / 880.f);
@@ -105,33 +104,26 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
                 playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
                 timeQue_.pop_front();
             }
+            
         }
-
         mutex_.unlock();
         
-        if (--metronome_.count_ < 0)
+        const int beatSection = (playingPosMSec_ - metronome_.beatPositionMSec_) / ((60.f / metronome_.bpm_) * 1000.f);
+        if (beatSection != metronome_.prevBeatSection_)
         {
-            metronome_.count_ += 1.f / (static_cast<float>(metronome_.bpm_) / 60.f) * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
             metronome_.amp_ = 1.f;
         }
+        metronome_.prevBeatSection_ = beatSection;
         
         if (metronome_.amp_ > 0.f)
         {
-            metronome_.amp_ -= 1.f / static_cast<float>(outputSampleRate_) * 10;
+            metronome_.amp_ -= 1.f / static_cast<float>(outputSampleRate_) * 20.f;
         }
         else if (metronome_.amp_ < 0.f)
         {
             metronome_.amp_ = 0.f;
         }
-    }
-    
-    if (triggerMetronome)
-    {
-        metronome_.amp_ = 1.f;
-    }
-    else if (metronome_.amp_ > 0.f)
-    {
-        metronome_.amp_ -= 1.f / static_cast<float>(outputSampleRate_) * bufferLength * 10;
+        
     }
 }
 
@@ -226,7 +218,6 @@ void MelissaAudioEngine::resetProcessedBuffer()
     if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
     readIndex_ = processStartIndex_;
     needToReset_ = false;
-    metronome_.count_ = metronome_.offsetSec_ * originalSampleRate_ * soundTouch_->getInputOutputSampleRatio();
     count_ = 0;
 }
 
@@ -322,10 +313,10 @@ void MelissaAudioEngine::analyzeBpm()
     
     float theta = atan2(bMax, aMax);
     if (theta < 0) theta += 2.f * M_PI;
-    metronome_.offsetSec_ = theta / (2 * M_PI * (estimatedBpm / 60.f));
+    metronome_.beatPositionMSec_ = theta / (2 * M_PI * (estimatedBpm / 60.f));
     
     std::cout << "BPM = " << metronome_.bpm_ << std::endl;
-    std::cout << metronome_.offsetSec_ << " sec" << std::endl;
+    std::cout << metronome_.beatPositionMSec_ << " sec" << std::endl;
 }
 
 void MelissaAudioEngine::volumeChanged(float volume)
@@ -365,4 +356,15 @@ void MelissaAudioEngine::playingPosChanged(float time, float ratio)
     if (processStartIndex_ < aIndex_) processStartIndex_ = aIndex_;
     if (bIndex_ < processStartIndex_) processStartIndex_ = bIndex_;
     needToReset_ = true;
+}
+
+void MelissaAudioEngine::bpmChanged(float bpm)
+{
+    metronome_.bpm_ = bpm;
+    printf("BPM : %f", metronome_.bpm_);
+}
+
+void MelissaAudioEngine::beatPositionChanged(float beatPositionMSec)
+{
+    metronome_.beatPositionMSec_ = 0;//beatPositionMSec;
 }
