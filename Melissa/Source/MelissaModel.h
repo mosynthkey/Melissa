@@ -54,10 +54,13 @@ public:
     float getPlayingPosMSec() const;
     
     // Metronome
+    void  setMetronomeState(MetronomeStatus status);
     void  setBpm(float bpm);
     float getBpm() { return bpm_; }
     void  setBeatPositionMSec(float beatPositionMSec);
     float getBeatPositionMSec() { return beatPositionMSec_; }
+    void  setAccent(int accent);
+    int   getAccent() { return accent_; }
     
     // Listener
     void addListener(MelissaModelListener* listener);
@@ -77,6 +80,7 @@ private:
     MelissaAudioEngine* audioEngine_;
     
     PlaybackStatus playbackStatus_;
+    MetronomeStatus metronomeStatus_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
     float volume_;
@@ -85,6 +89,7 @@ private:
     float aPosRatio_, bPosRatio_;
     float playingPosRatio_;
     float bpm_, beatPositionMSec_;
+    int accent_;
     String filePath_;
     
     // Singleton

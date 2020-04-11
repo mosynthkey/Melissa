@@ -90,17 +90,18 @@ private:
     // metronome
     struct Metronome
     {
-        Metronome() : on_(true), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), prevBeatSection_(0), amp_(0.f), osc_(-1.f) { }
+        Metronome() : on_(true), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), accent_(4), accentCounter_(0), prevBeatSection_(0), amp_(0.f), osc_(-1.f), pitch_(880) { }
         bool on_;
         float volume_;
         float beatPositionMSec_;
         float bpm_;
-        
+        int accent_, accentCounter_;
         int32_t prevBeatSection_;
         
         // for beep
         float amp_;
         float osc_;
+        float pitch_;
     } metronome_;
     
     // MelissaModelListener
@@ -109,6 +110,8 @@ private:
     void speedChanged(int speed) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void playingPosChanged(float time, float ratio) override;
+    void metronomeStatusChanged(MetronomeStatus status) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
+    void accentUpdated(int accent) override;
 };

@@ -258,7 +258,8 @@ void MainComponent::createUI()
     metronomeOnOffButton_->setClickingTogglesState(true);
     metronomeOnOffButton_->onClick = [this]()
     {
-        //model_->setMetoronome(metronomeOnOffButton_->getToggleState());
+        const auto on = metronomeOnOffButton_->getToggleState();
+        model_->setMetronomeState(on ? kMetronomeStatus_On_Sync : kMetronomeStatus_Off);
     };
     metronomeOnOffButton_->setButtonText("On");
     addAndMakeVisible(metronomeOnOffButton_.get());
@@ -272,6 +273,7 @@ void MainComponent::createUI()
         else
         {
             const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            model_->setBpm(model_->getBpm() + sign);
         }
     };
     addAndMakeVisible(bpmButton_.get());
@@ -285,9 +287,19 @@ void MainComponent::createUI()
         else
         {
             const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
         }
     };
     addAndMakeVisible(beatPositionButton_.get());
+    
+    tapButton_ = make_unique<TextButton>();
+    tapButton_->setButtonText("Tap");
+    tapButton_->setTooltip(TRANS("tap"));
+    tapButton_->onClick = [this]()
+    {
+        model_->setBeatPositionMSec(model_->getPlayingPosMSec());
+    };
+    addAndMakeVisible(tapButton_.get());
     
     analyzeButton_ = make_unique<TextButton>();
     analyzeButton_->setButtonText("Analyze");
@@ -744,13 +756,15 @@ void MainComponent::resized()
     y += 100;
     sectionTitles_[kSectionTitle_Metronome]->setTopLeftPosition(marginSideX, y);
     metronomeOnOffButton_->setSize(80, 30);
-    bpmButton_->setSize(140, 30);
-    beatPositionButton_->setSize(140, 30);
+    bpmButton_->setSize(120, 30);
+    beatPositionButton_->setSize(120, 30);
+    tapButton_->setSize(120, 30);
     analyzeButton_->setSize(80, 30);
     arrangeEvenly({ marginSideX, y + 60, sectionWidth, 30 }, {
         { metronomeOnOffButton_.get() },
         { bpmButton_.get() },
         { beatPositionButton_.get() },
+        { tapButton_.get() },
         { analyzeButton_.get()}
     });
     
