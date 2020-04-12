@@ -2,9 +2,10 @@
 
 <h1 align="center">A music player for musical instrument practice<br>for macOS and Windows</h1>
 
-![uiimage](Images/screenshot.png)
+![uiimage](docs/Images/screenshot_small.png)
+<div align="center"> <a href="https://mosynthkey.github.io/Melissa/">Official site (Japanese)</a></div>
 
-## Latest releases
+## Downloads
 ### macOS
 - [Version 1.0.0](https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1_0_0.dmg)
 
@@ -28,6 +29,10 @@ git submodule update --init
 
 ## Contact
 [Twitter](https://twitter.com/Melissa__Player)
+
+## Libraries
+- [JUCE](https://juce.com) 
+- [SoundTouch](https://www.surina.net/soundtouch/)
 
 ## License
 [LGPL-2.1 (c) 2020 Masaki Ono](LICENSE)
