@@ -1,7 +1,238 @@
-<html>
+<!DOCTYPE html>
+<html class="no-js" lang="jp">
 
 <head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
     <title>Melissa</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/vendor.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/my.css">
+
+    <!-- script
+    ================================================== -->
+    <script src="js/modernizr.js"></script>
+    <script src="js/pace.min.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
 </head>
 
-</html>
+<body id="top">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-jump">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+
+    <!-- header 
+    ================================================== -->
+    <header class="s-header">
+
+        <div class="row">
+            <div class="header-logo">
+                <a class="site-logo" href="index.html">
+                    <img src="images/logo.svg" alt="Homepage">
+                </a>
+            </div>
+
+            <nav class="header-nav-wrap">
+                <ul class="header-main-nav">
+                    <li class="current"><a class="smoothscroll" href="#home" title="intro">About</a></li>
+                    <li><a class="smoothscroll" href="#about" title="features">Features</a></li>
+                    <li><a class="smoothscroll" href="#download" title="download">Dowload</a></li>
+                </ul>
+
+                <div class="header-cta">
+                    <a href="#download" class="btn btn--primary header-cta__btn smoothscroll">Download</a>
+                </div>
+            </nav> <!-- end header-nav-wrap -->
+
+            <a class="header-menu-toggle" href="#"><span>Menu</span></a>
+        </div>
+
+    </header> <!-- end header -->
+
+
+    <!-- home
+    ================================================== -->
+    <section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="" data-natural-width=3000
+        data-natural-height=2000 data-position-y=center>
+
+        <div class=" shadow-overlay">
+        </div>
+
+        <div class="home-content">
+
+            <div class="row home-content__main">
+                <h1>
+                    Melissa<br>
+                </h1>
+                <h3>
+                    <b>楽器練習/耳コピ用のミュージックプレイヤー</b> (macOS / Windows 対応)<br>
+                    無料 & オープンソース (LGPL-2.1)
+                </h3>
+
+                <img src="images/screenshot_large.png"
+                    srcset="images/screenshot_small.png 1x, images/screenshot_large.png 2x">
+
+            </div> <!-- end home-content__main -->
+
+            <ul class="home-content__social">
+                <li><a href="https://github.com/mosynthkey/Melissa">GitHub</a></li>
+                <li><a href="https://twitter.com/Melissa__Player">twitter</a></li>
+            </ul>
+
+        </div> <!-- end home-content -->
+
+        <a href="#about" class="home-scroll smoothscroll">
+            <span class="home-scroll__text">Scroll</span>
+            <span class="home-scroll__icon"></span>
+        </a>
+
+    </section> <!-- end s-home -->
+
+    <!-- features (as about)
+    ================================================== -->
+    <section id="about" class="s-about target-section">
+
+        <div class="row section-header has-bottom-sep" data-aos="fade-up">
+            <div class="col-full">
+                <h1 class="display-1">
+                    楽器練習をもっと効率的に、より楽しく。<br>
+                    あなたの練習を強力にサポートします。
+                </h1>
+            </div>
+        </div> <!-- end section-header -->
+
+        <div class="row features block-1-3 block-m-1-2">
+
+            <div class="col-block item-feature" data-aos="fade-up">
+                <div class="item-feature__text">
+                    <h3 class="item-title"></i>反復練習のサポート</h3>
+                    <p>
+                        <b>上達の鍵となる反復練習を効率的に行うことができます。</b>
+                        <br>
+                        <br>
+                        <ul>
+                            <li>音程を変えずに<b>再生速度を変更</b>することができます。</li>
+                            <li>リピートする範囲は<b>波形をドラッグすることで簡単に設定</b>できます。</li>
+                            <li>設定した範囲は<b>保存することができ、簡単に呼び戻す</b>ことができます。</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-block item-feature" data-aos="fade-up">
+                <div class="item-feature__text">
+                    <h3 class="item-title">ファイル管理機能</h3>
+                    <p>
+                        <b>「練習曲が増えると、面倒になるファイル探し…」あなたに変わって練習曲のファイル管理をします。</b>
+                        <ul>
+                            <li>ライブのセットリストの曲を入れておくと便利な<b>プレイリスト機能</b></li>
+                            <li><b>一度開いたファイルを簡単に探し出せる</b>Historyリスト</li>
+                            <li><b>同じフォルダにある曲を簡単に読み出せる</b>ファイルブラウザ</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-block item-feature" data-aos="fade-up">
+                <div class="item-feature__text">
+                    <h3 class="item-title">モダンで直感的なUI</h3>
+                    <p>
+                        <b>1画面で構成されており、すべての機能に数クリックでアクセスできます。</b>
+                    </p>
+                </div>
+            </div>
+
+        </div> <!-- end features -->
+
+        <div class="testimonials-wrap" data-aos="fade-up">
+
+
+        </div> <!-- end testimonials-wrap -->
+
+    </section> <!-- end s-features -->
+
+    <!-- download
+    ================================================== -->
+    <section id="download" class="s-download target-section">
+
+        <div class="row section-header align-center" data-aos="fade-up">
+            <div class="col-full">
+                <h1 class="display-1">
+                    Download
+                </h1>
+                <p class="lead">
+                    Melissaを手に入れて今すぐ練習を始めましょう。<br>
+                    (最新バージョン 1.0.0)
+                </p>
+            </div>
+        </div> <!-- end section-header -->
+
+        <div class="row" align="center">
+            <div class="inline-block_download">
+                <a href="https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1_0_0.dmg">
+                    <img src="images/apple.svg" width="100px" height="100px" /><br>
+                    <b>macOS</b>
+                </a>
+                <br>
+            </div>
+
+            <div class="inline-block_download">
+                <a href="https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1.0.0_64.zip">
+                    <img src="images/Windows.svg" width="100px" height="100px" /><br>
+                    <b>Windows 64bit</b></a>
+                <a href="https://github.com/mosynthkey/Melissa/releases/download/v1.0.0/Melissa_1.0.0_32.zip">
+                    32bit</a><br>
+            </div>
+        </div>
+
+    </section> <!-- end s-download -->
+
+    <!-- footer
+    ================================================== -->
+    <footer class="s-footer footer">
+        <div class="row footer__bottom">
+            <div class="col-full ss-copyright">
+                <span>&copy; Copyright(c) Masaki Ono 2020</span>
+                <span>Design by <a href="https://www.styleshout.com/">styleshout</a></span>
+            </div>
+
+        </div> <!-- end footer__bottom -->
+
+        <div class="go-top">
+            <a class="smoothscroll" title="Back to Top" href="#top"></a>
+        </div>
+
+    </footer> <!-- end s-footer -->
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
