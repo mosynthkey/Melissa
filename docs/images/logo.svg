@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="292px" height="70px" viewBox="0 0 292 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>logo</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M18.5881677,-7.50984223e-16 L43.4118323,7.50984223e-16 C49.8753432,-4.3634346e-16 52.2191684,0.672985681 54.5821314,1.9367121 C56.9450943,3.20043852 58.7995615,5.05490569 60.0632879,7.41786865 C61.3270143,9.78083161 62,12.1246568 62,18.5881677 L62,43.4118323 C62,49.8753432 61.3270143,52.2191684 60.0632879,54.5821314 C58.7995615,56.9450943 56.9450943,58.7995615 54.5821314,60.0632879 C52.2191684,61.3270143 49.8753432,62 43.4118323,62 L18.5881677,62 C12.1246568,62 9.78083161,61.3270143 7.41786865,60.0632879 C5.05490569,58.7995615 3.20043852,56.9450943 1.9367121,54.5821314 C0.672985681,52.2191684 2.9089564e-16,49.8753432 -5.00656149e-16,43.4118323 L5.00656149e-16,18.5881677 C-2.9089564e-16,12.1246568 0.672985681,9.78083161 1.9367121,7.41786865 C3.20043852,5.05490569 5.05490569,3.20043852 7.41786865,1.9367121 C9.78083161,0.672985681 12.1246568,4.3634346e-16 18.5881677,-7.50984223e-16 Z" id="path-1"></path>
+        <filter x="-11.3%" y="-8.1%" width="122.6%" height="122.6%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#252F41" offset="0%"></stop>
+            <stop stop-color="#000000" offset="100%"></stop>
+        </linearGradient>
+        <path d="M46,15 C47.6568542,15 49,16.3431458 49,18 L49,45 L43,45 L43,21 L11,21 L11,15 L46,15 Z M17,25 L17,45 L11,45 L11,25 L17,25 Z M33,25 L33,45 L27,45 L27,25 L33,25 Z" id="path-4"></path>
+        <filter x="-15.8%" y="-20.0%" width="131.6%" height="140.0%" filterUnits="objectBoundingBox" id="filter-5">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <text id="text-6" font-family="HelveticaNeue, Helvetica Neue" font-size="60" font-weight="normal" fill="#FFFFFF">
+            <tspan x="84.33" y="57">Melissa</tspan>
+        </text>
+        <filter x="-3.4%" y="-10.7%" width="106.8%" height="121.4%" filterUnits="objectBoundingBox" id="filter-7">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.0509803922   0 0 0 0 0.0549019608   0 0 0 0 0.0666666667  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon" transform="translate(4.000000, 2.000000)">
+            <g id="App-Icon" opacity="0.799246652">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+            <g id="Icon" transform="translate(1.000000, 1.000000)">
+                <path d="M17.3062251,-6.99192208e-16 L42.6937749,6.99192208e-16 C48.7115264,-4.06250808e-16 50.8937085,0.626572875 53.0937085,1.80314575 C55.2937085,2.97971863 57.0202814,4.7062915 58.1968542,6.9062915 C59.3734271,9.1062915 60,11.2884736 60,17.3062251 L60,42.6937749 C60,48.7115264 59.3734271,50.8937085 58.1968542,53.0937085 C57.0202814,55.2937085 55.2937085,57.0202814 53.0937085,58.1968542 C50.8937085,59.3734271 48.7115264,60 42.6937749,60 L17.3062251,60 C11.2884736,60 9.1062915,59.3734271 6.9062915,58.1968542 C4.7062915,57.0202814 2.97971863,55.2937085 1.80314575,53.0937085 C0.626572875,50.8937085 2.70833872e-16,48.7115264 -4.66128138e-16,42.6937749 L4.66128138e-16,17.3062251 C-2.70833872e-16,11.2884736 0.626572875,9.1062915 1.80314575,6.9062915 C2.97971863,4.7062915 4.7062915,2.97971863 6.9062915,1.80314575 C9.1062915,0.626572875 11.2884736,4.06250808e-16 17.3062251,-6.99192208e-16 Z" id="App-Icon" fill="url(#linearGradient-3)"></path>
+                <path d="M17.3062251,-6.99192208e-16 L42.6937749,6.99192208e-16 C48.7115264,-4.06250808e-16 50.8937085,0.626572875 53.0937085,1.80314575 C55.2937085,2.97971863 57.0202814,4.7062915 58.1968542,6.9062915 C59.3734271,9.1062915 60,11.2884736 60,17.3062251 L60,42.6937749 C60,48.7115264 59.3734271,50.8937085 58.1968542,53.0937085 C57.0202814,55.2937085 55.2937085,57.0202814 53.0937085,58.1968542 C50.8937085,59.3734271 48.7115264,60 42.6937749,60 L17.3062251,60 C11.2884736,60 9.1062915,59.3734271 6.9062915,58.1968542 C4.7062915,57.0202814 2.97971863,55.2937085 1.80314575,53.0937085 C0.626572875,50.8937085 2.70833872e-16,48.7115264 -4.66128138e-16,42.6937749 L4.66128138e-16,17.3062251 C-2.70833872e-16,11.2884736 0.626572875,9.1062915 1.80314575,6.9062915 C2.97971863,4.7062915 4.7062915,2.97971863 6.9062915,1.80314575 C9.1062915,0.626572875 11.2884736,4.06250808e-16 17.3062251,-6.99192208e-16 Z" id="App-Icon" fill="#FFFFFF" opacity="0.0367606027"></path>
+                <g id="Combined-Shape" opacity="0.896809896">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-4"></use>
+                </g>
+            </g>
+        </g>
+        <g id="Melissa" fill="#FFFFFF" fill-opacity="1">
+            <use filter="url(#filter-7)" xlink:href="#text-6"></use>
+            <use xlink:href="#text-6"></use>
+        </g>
+    </g>
+</svg>
