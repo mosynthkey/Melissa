@@ -2,7 +2,7 @@
 
 <h1 align="center">A music player for musical instrument practice<br>for macOS and Windows</h1>
 
-![uiimage](docs/Images/screenshot_small.png)
+![uiimage](docs/images/screenshot_small.png)
 <div align="center"> <a href="https://mosynthkey.github.io/Melissa/">Official site (Japanese)</a></div>
 
 ## Downloads
