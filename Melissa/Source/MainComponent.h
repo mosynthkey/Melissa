@@ -240,6 +240,8 @@ private:
     std::unique_ptr<MelissaAddButton> addToListButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
+    std::unique_ptr<ComboBox> oututModeComboBox_;
+    
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     std::unique_ptr<MelissaPlaylistComponent> playlistComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
@@ -255,6 +257,7 @@ private:
         kLabel_MetronomeOffset,
         kLabel_Volume,
         kLabel_Pitch,
+        kLabel_OutputMode,
         
         kLabel_ATime,
         kLabel_BTime,
@@ -304,6 +307,7 @@ private:
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
+    void outputModeChanged(OutputMode outputMode) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

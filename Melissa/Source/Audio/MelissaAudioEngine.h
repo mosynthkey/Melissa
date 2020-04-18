@@ -87,6 +87,8 @@ private:
     int32_t speedIncMax_;
     int32_t currentSpeed_;
     
+    OutputMode outputMode_;
+    
     // metronome
     struct Metronome
     {
@@ -114,4 +116,5 @@ private:
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
     void accentUpdated(int accent) override;
+    void outputModeChanged(OutputMode outputMode) override;
 };

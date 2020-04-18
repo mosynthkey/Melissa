@@ -50,12 +50,14 @@ void MelissaDataSource::loadSettingsFile(const File& file)
     if (settings.hasProperty("previous"))
     {
         auto p = settings["previous"].getDynamicObject();
-        if (p->hasProperty("file"))   previous_.filePath_ = p->getProperty("file");
-        if (p->hasProperty("volume")) previous_.volume_   = p->getProperty("volume");
-        if (p->hasProperty("a"))      previous_.aRatio_   = p->getProperty("a");
-        if (p->hasProperty("b"))      previous_.bRatio_   = p->getProperty("b");
-        if (p->hasProperty("speed"))  previous_.speed_    = p->getProperty("speed");
-        if (p->hasProperty("pitch"))  previous_.pitch_    = p->getProperty("pitch");
+        if (p->hasProperty("file"))   previous_.filePath_   = p->getProperty("file");
+        if (p->hasProperty("volume")) previous_.volume_     = p->getProperty("volume");
+        if (p->hasProperty("a"))      previous_.aRatio_     = p->getProperty("a");
+        if (p->hasProperty("b"))      previous_.bRatio_     = p->getProperty("b");
+        if (p->hasProperty("speed"))  previous_.speed_      = p->getProperty("speed");
+        if (p->hasProperty("pitch"))  previous_.pitch_      = p->getProperty("pitch");
+        const int outputMode = p->getProperty("output");
+        if (p->hasProperty("output")) previous_.outputMode_ = static_cast<OutputMode>(outputMode);
     }
     
     history_.clear();
@@ -108,10 +110,12 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                 for (auto l : *(obj->getProperty("list").getArray()))
                 {
                     Song::PracticeList list;
-                    list.name_   = l.getProperty("name", "");
-                    list.aRatio_ = l.getProperty("a", 0.f);
-                    list.bRatio_ = l.getProperty("b", 1.f);
-                    list.speed_  = l.getProperty("speed", 100);
+                    list.name_       = l.getProperty("name", "");
+                    list.aRatio_     = l.getProperty("a", 0.f);
+                    list.bRatio_     = l.getProperty("b", 1.f);
+                    list.speed_      = l.getProperty("speed", 100);
+                    const int outputMode = l.getProperty("output", kOutputMode_LR);
+                    list.outputMode_ = static_cast<OutputMode>(outputMode);
                     song.practiceList_.emplace_back(list);
                 }
                 songs_.emplace_back(song);
@@ -151,6 +155,7 @@ void MelissaDataSource::saveSettingsFile()
     previous->setProperty("b",      model_->getLoopBPosRatio());
     previous->setProperty("speed",  model_->getSpeed());
     previous->setProperty("pitch",  model_->getPitch());
+    previous->setProperty("output", model_->getOutputMode());
     settings->setProperty("previous", previous);
     
     Array<var> history;
@@ -184,10 +189,11 @@ void MelissaDataSource::saveSettingsFile()
         for (auto l : song.practiceList_)
         {
             auto obj = new DynamicObject();
-            obj->setProperty("name",  l.name_);
-            obj->setProperty("a",     l.aRatio_);
-            obj->setProperty("b",     l.bRatio_);
-            obj->setProperty("speed", l.speed_);
+            obj->setProperty("name",   l.name_);
+            obj->setProperty("a",      l.aRatio_);
+            obj->setProperty("b",      l.bRatio_);
+            obj->setProperty("speed",  l.speed_);
+            obj->setProperty("output", l.outputMode_);
             list.add(obj);
         }
         obj->setProperty("list", list);
@@ -425,7 +431,7 @@ void MelissaDataSource::removePracticeList(size_t index)
     }
 }
 
-void MelissaDataSource::overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed)
+void MelissaDataSource::overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed, OutputMode outputMode)
 {
     for (auto&& song : songs_)
     {
@@ -433,10 +439,11 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name, 
         {
             if (index < song.practiceList_.size())
             {
-                song.practiceList_[index].name_   = name;
-                song.practiceList_[index].aRatio_ = aRatio;
-                song.practiceList_[index].bRatio_ = bRatio;
-                song.practiceList_[index].speed_  = speed;
+                song.practiceList_[index].name_       = name;
+                song.practiceList_[index].aRatio_     = aRatio;
+                song.practiceList_[index].bRatio_     = bRatio;
+                song.practiceList_[index].speed_      = speed;
+                song.practiceList_[index].outputMode_ = outputMode;
                 for (auto l : listeners_) l->practiceListUpdated();
             }
             return;

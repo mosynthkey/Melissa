@@ -172,7 +172,8 @@ void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const
             const float a = model->getLoopAPosRatio();
             const float b = model->getLoopBPosRatio();
             const int   speed = model->getSpeed();
-            dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_, a, b, speed);
+            const OutputMode output = model->getOutputMode();
+            dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_, a, b, speed, output);
         }
     }
 }
@@ -183,6 +184,7 @@ void MelissaPracticeTableListBox::cellDoubleClicked(int rowNumber, int columnId,
     auto model = MelissaModel::getInstance();
     model->setLoopPosRatio(prac.aRatio_, prac.bRatio_);
     model->setSpeed(prac.speed_);
+    model->setOutputMode(prac.outputMode_);
 }
 
 void MelissaPracticeTableListBox::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)

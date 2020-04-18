@@ -93,8 +93,20 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
         mutex_.lock();
         if (processedBufferQue_.size() > 0)
         {
-            bufferToRender[0][iSample] = processedBufferQue_[0] * volume_ + metronomeOsc;
-            bufferToRender[1][iSample] = processedBufferQue_[1] * volume_ + metronomeOsc;
+            float l = processedBufferQue_[0] * volume_;
+            float r = processedBufferQue_[1] * volume_;
+            
+            if (outputMode_ == kOutputMode_LL)
+            {
+                r = l;
+            }
+            else if (outputMode_ == kOutputMode_RR)
+            {
+                l = r;
+            }
+            
+            bufferToRender[0][iSample] = l + metronomeOsc;
+            bufferToRender[1][iSample] = r + metronomeOsc;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
             if (timeQue_.size() > 0)
@@ -386,4 +398,9 @@ void MelissaAudioEngine::beatPositionChanged(float beatPositionMSec)
 void MelissaAudioEngine::accentUpdated(int accent)
 {
     metronome_.accent_ = accent;
+}
+
+void MelissaAudioEngine::outputModeChanged(OutputMode outputMode)
+{
+    outputMode_ = outputMode;
 }

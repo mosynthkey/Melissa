@@ -519,6 +519,18 @@ void MainComponent::createUI()
         
     };
     addAndMakeVisible(addToListButton_.get());
+    
+    oututModeComboBox_ = make_unique<ComboBox>();
+    oututModeComboBox_->addItem("L - R", kOutputMode_LR + 1);
+    oututModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
+    oututModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
+    oututModeComboBox_->onChange = [&]()
+    {
+        OutputMode mode = static_cast<OutputMode>(oututModeComboBox_->getSelectedId() - 1);
+        model_->setOutputMode(mode);
+    };
+    oututModeComboBox_->setSelectedId(kOutputMode_LR + 1);
+    addAndMakeVisible(oututModeComboBox_.get());
 
     wildCardFilter_ = make_unique<WildcardFileFilter>(MelissaDataSource::getCompatibleFileExtensions(), "*", "Music Files");
     fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
@@ -537,6 +549,7 @@ void MainComponent::createUI()
             "Timing",
             "Volume",
             "Pitch",
+            "Output",
             
             "Start",
             "End",
@@ -729,8 +742,9 @@ void MainComponent::resized()
     
     // Song Settings
     sectionTitles_[kSectionTitle_Settings]->setTopLeftPosition(marginSideX, y);
-    volumeSlider_->setSize(200, 30);
-    pitchButton_->setSize(200, 30);
+    volumeSlider_->setSize(180, 30);
+    pitchButton_->setSize(180, 30);
+    oututModeComboBox_->setSize(180, 30);
     
 #if defined(ENABLE_SPEEDTRAINER)
     // Speed
@@ -747,6 +761,7 @@ void MainComponent::resized()
     speedButton_->setSize(200, 30);
     arrangeEvenly({ marginSideX, y + 60, sectionWidth, 30 }, {
         { volumeSlider_.get() },
+        { oututModeComboBox_.get() },
         { pitchButton_.get() },
         { speedButton_.get() },
     });
@@ -790,6 +805,7 @@ void MainComponent::resized()
         dynamic_cast<Component*>(beatPositionButton_.get()),
         dynamic_cast<Component*>(volumeSlider_.get()),
         dynamic_cast<Component*>(pitchButton_.get()),
+        dynamic_cast<Component*>(oututModeComboBox_.get()),
         
         dynamic_cast<Component*>(aButton_.get()),
         dynamic_cast<Component*>(bButton_.get()),
@@ -1164,4 +1180,9 @@ void MainComponent::bpmChanged(float bpm)
 void MainComponent::beatPositionChanged(float beatPositionMSec)
 {
     beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec() * 1000.f));
+}
+
+void MainComponent::outputModeChanged(OutputMode outputMode)
+{
+    oututModeComboBox_->setSelectedId(outputMode + 1);
 }
