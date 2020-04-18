@@ -119,18 +119,16 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
         mutex_.unlock();
         
         const int beatSection = (playingPosMSec_ - metronome_.beatPositionMSec_) / ((60.f / metronome_.bpm_) * 1000.f);
-        if (beatSection != metronome_.prevBeatSection_)
+        const int accentBeatSection = beatSection / metronome_.accent_;
+        if (accentBeatSection != metronome_.prevBeatSection_ / metronome_.accent_)
         {
             metronome_.amp_ = 1.f;
-            if (--metronome_.accentCounter_ <= 0)
-            {
-                metronome_.accentCounter_ = metronome_.accent_;
-                metronome_.pitch_ = 880 * 2;
-            }
-            else
-            {
-                metronome_.pitch_ = 880;
-            }
+            metronome_.pitch_ = 880 * 2;
+        }
+        else if (beatSection != metronome_.prevBeatSection_)
+        {
+            metronome_.amp_ = 1.f;
+            metronome_.pitch_ = 880;
         }
         metronome_.prevBeatSection_ = beatSection;
         
@@ -269,7 +267,6 @@ std::string MelissaAudioEngine::getStatusString() const
 void MelissaAudioEngine::analyzeBpm()
 {
     // Ref : http://hp.vector.co.jp/authors/VA046927/tempo/tempo.html
-    //if (!isOriginalBufferPrepared_) return;
     
     constexpr size_t frameLength = 32;
     const size_t numOfFrames = originalBufferLength_ / frameLength;
@@ -325,17 +322,19 @@ void MelissaAudioEngine::analyzeBpm()
         {
             correlationMax = c;
             estimatedBpm = iBpm;
-            std::cout << "estimatedBpm might be " << estimatedBpm << " (" << correlationMax << ")" << std::endl;
+            std::cout << "Bpm might be " << estimatedBpm << " (" << correlationMax << ")" << std::endl;
         }
     }
-    metronome_.bpm_ = estimatedBpm;
+    
+    model_->setBpm(estimatedBpm);
     
     float theta = atan2(bMax, aMax);
     if (theta < 0) theta += 2.f * M_PI;
-    metronome_.beatPositionMSec_ = theta / (2 * M_PI * (estimatedBpm / 60.f));
+    const float beatPositionMSec = theta / (2 * M_PI * (estimatedBpm / 60.f));
+    model_->setBeatPositionMSec(beatPositionMSec);
     
-    std::cout << "BPM = " << metronome_.bpm_ << std::endl;
-    std::cout << metronome_.beatPositionMSec_ << " sec" << std::endl;
+    std::cout << "BPM = " << estimatedBpm << std::endl;
+    std::cout << beatPositionMSec << " sec" << std::endl;
 }
 
 void MelissaAudioEngine::volumeChanged(float volume)
@@ -392,7 +391,6 @@ void MelissaAudioEngine::bpmChanged(float bpm)
 void MelissaAudioEngine::beatPositionChanged(float beatPositionMSec)
 {
     metronome_.beatPositionMSec_ = beatPositionMSec;
-    metronome_.accentCounter_ = 0;
 }
 
 void MelissaAudioEngine::accentUpdated(int accent)

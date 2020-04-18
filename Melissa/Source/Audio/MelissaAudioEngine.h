@@ -92,13 +92,14 @@ private:
     // metronome
     struct Metronome
     {
-        Metronome() : on_(true), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), accent_(4), accentCounter_(0), prevBeatSection_(0), amp_(0.f), osc_(-1.f), pitch_(880) { }
+        Metronome() : on_(true), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), accent_(4), prevBeatSection_(0), prevAccentBeatSection_(0), amp_(0.f), osc_(-1.f), pitch_(880) { }
         bool on_;
         float volume_;
         float beatPositionMSec_;
         float bpm_;
-        int accent_, accentCounter_;
-        int32_t prevBeatSection_;
+        int accent_;
+        int prevBeatSection_;
+        int prevAccentBeatSection_;
         
         // for beep
         float amp_;
