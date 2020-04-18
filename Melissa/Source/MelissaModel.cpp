@@ -154,6 +154,13 @@ void MelissaModel::setAccent(int accent)
     for (auto&& l : listeners_) l->accentUpdated(accent);
 }
 
+void MelissaModel::setOutputMode(OutputMode outputMode)
+{
+    if (outputMode < 0 || kNumOfOutputModes <= outputMode) return;
+    outputMode_ = outputMode;
+    for (auto&& l : listeners_) l->outputModeChanged(outputMode);
+}
+
 void MelissaModel::addListener(MelissaModelListener* listener)
 {
     for (auto&& l : listeners_)
@@ -183,7 +190,7 @@ MelissaModel* MelissaModel::getInstance()
 
 MelissaModel::MelissaModel() :
 playbackStatus_(kPlaybackStatus_Stop), metronomeStatus_(kMetronomeStatus_Off), lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
-bpm_(120.f), beatPositionMSec_(0.f), filePath_("")
+bpm_(120.f), beatPositionMSec_(0.f), filePath_(""), outputMode_(kOutputMode_LR)
 {
     
 }

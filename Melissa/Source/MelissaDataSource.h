@@ -57,8 +57,9 @@ public:
         float bRatio_;
         int speed_;
         int pitch_;
+        OutputMode outputMode_;
         
-        Previous() : filePath_(""), volume_(1.f), aRatio_(0.f), bRatio_(1.f), speed_(100), pitch_(0) {}
+        Previous() : filePath_(""), volume_(1.f), aRatio_(0.f), bRatio_(1.f), speed_(100), pitch_(0), outputMode_(kOutputMode_LR) {}
     } previous_;
     
     FilePathList history_;
@@ -84,8 +85,9 @@ public:
             float aRatio_;
             float bRatio_;
             int speed_;
+            OutputMode outputMode_;
             
-            PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f), speed_(100) {}
+            PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f), speed_(100), outputMode_(kOutputMode_LR) {}
         };
         std::vector<PracticeList> practiceList_;
         
@@ -133,7 +135,7 @@ public:
     void getPracticeList(std::vector<Song::PracticeList>& list);
     void addPracticeList(const String& name);
     void removePracticeList(size_t index);
-    void overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed);
+    void overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed, OutputMode outputMode);
     
     // AsyncUpdater
     void handleAsyncUpdate() override;

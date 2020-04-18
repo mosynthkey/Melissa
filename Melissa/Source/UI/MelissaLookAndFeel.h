@@ -163,7 +163,7 @@ public:
         g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
     }
     
-    Font getComboBoxFont (ComboBox &) override
+    Font getComboBoxFont(ComboBox &) override
     {
         return Font(MelissaUISettings::getFontSizeMain());
     }

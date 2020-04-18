@@ -21,6 +21,14 @@ enum MetronomeStatus
     kMetronomeStatus_Off,
 };
 
+enum OutputMode : int
+{
+    kOutputMode_LR,
+    kOutputMode_LL,
+    kOutputMode_RR,
+    kNumOfOutputModes
+};
+
 class MelissaModelListener
 {
 public:
@@ -36,5 +44,6 @@ public:
     virtual void bpmChanged(float bpm) {}
     virtual void beatPositionChanged(float beatPositionMSec) {}
     virtual void accentUpdated(int accent) {}
+    virtual void outputModeChanged(OutputMode outputMode) {}
 };
 

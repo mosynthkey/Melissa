@@ -62,6 +62,10 @@ public:
     void  setAccent(int accent);
     int   getAccent() { return accent_; }
     
+    // Output
+    void setOutputMode(OutputMode outputMode);
+    OutputMode getOutputMode() const { return outputMode_; }
+    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);
@@ -91,6 +95,7 @@ private:
     float bpm_, beatPositionMSec_;
     int accent_;
     String filePath_;
+    OutputMode outputMode_;
     
     // Singleton
     static MelissaModel instance_;
