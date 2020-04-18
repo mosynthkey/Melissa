@@ -500,6 +500,7 @@ void MelissaDataSource::handleAsyncUpdate()
     model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
     model_->setLoopPosRatio(0.f, 1.f);
     model_->setPlayingPosRatio(0.f);
+    model_->setOutputMode(kOutputMode_LR);
     
     addToHistory(currentSongFilePath_);
     saveSongState();
