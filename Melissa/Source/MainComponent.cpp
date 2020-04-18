@@ -490,7 +490,7 @@ void MainComponent::createUI()
 
     practiceListToggleButton_ = make_unique<ToggleButton>();
     practiceListToggleButton_ = make_unique<ToggleButton>();
-    practiceListToggleButton_->setButtonText("Practice List");
+    practiceListToggleButton_->setButtonText("Practice list");
     practiceListToggleButton_->setLookAndFeel(&lookAndFeelTab_);
     practiceListToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
     practiceListToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Practice); };
@@ -521,6 +521,7 @@ void MainComponent::createUI()
     addAndMakeVisible(addToListButton_.get());
     
     oututModeComboBox_ = make_unique<ComboBox>();
+    oututModeComboBox_->setJustificationType(Justification::centred);
     oututModeComboBox_->addItem("L - R", kOutputMode_LR + 1);
     oututModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
     oututModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
