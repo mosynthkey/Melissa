@@ -265,28 +265,28 @@ void MainComponent::createUI()
     addAndMakeVisible(metronomeOnOffButton_.get());
     
     bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
-    bpmButton_->onClick_ = [this](MelissaIncDecButton::ClickEvent event, bool b)
+    bpmButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kClickEvent_Double)
+        if (event == MelissaIncDecButton::kEvent_Double)
         {
         }
         else
         {
-            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
             model_->setBpm(model_->getBpm() + sign);
         }
     };
     addAndMakeVisible(bpmButton_.get());
     
     beatPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome"), TRANS("metronome"));
-    beatPositionButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
+    beatPositionButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kClickEvent_Double)
+        if (event == MelissaIncDecButton::kEvent_Double)
         {
         }
         else
         {
-            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
             model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
         }
     };
@@ -321,54 +321,46 @@ void MainComponent::createUI()
     
     aButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
     aButton_->setText("-:--");
-    aButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
+    aButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "A", TRANS("tooltip_loop_start_set"));
+    aButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kClickEvent_Double)
+        if (event == MelissaIncDecButton::kEvent_Double)
         {
             model_->setLoopAPosRatio(0.f);
         }
+        else if (event == MelissaIncDecButton::kEvent_Func)
+        {
+            model_->setLoopAPosMSec(model_->getPlayingPosMSec());
+        }
         else
         {
-            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
             model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 1000 : 100));
         }
     };
     addAndMakeVisible(aButton_.get());
 
-    aSetButton_ = make_unique<TextButton>();
-    aSetButton_->setButtonText("A");
-    aSetButton_->setTooltip(TRANS("tooltip_loop_start_set"));
-    aSetButton_->onClick = [this]()
-    {
-        model_->setLoopAPosMSec(model_->getPlayingPosMSec());
-    };
-    addAndMakeVisible(aSetButton_.get());
-
     bButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
     bButton_->setText("-:--");
+    bButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "B", TRANS("tooltip_loop_end_set"));
     bButton_->setBounds(0, 240, 140, 34);
-    bButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
+    bButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kClickEvent_Double)
+        if (event == MelissaIncDecButton::kEvent_Double)
         {
             model_->setLoopBPosRatio(1.f);
         }
+        else if (event == MelissaIncDecButton::kEvent_Func)
+        {
+            model_->setLoopBPosMSec(model_->getPlayingPosMSec());
+        }
         else
         {
-            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
             model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 1000 : 100));
         }
     };
     addAndMakeVisible(bButton_.get());
-
-    bSetButton_ = make_unique<TextButton>();
-    bSetButton_->setButtonText("B");
-    bSetButton_->setTooltip(TRANS("tooltip_loop_end_set"));
-    bSetButton_->onClick = [this]()
-    {
-        model_->setLoopBPosMSec(model_->getPlayingPosMSec());
-    };
-    addAndMakeVisible(bSetButton_.get());
 
     resetButton_ = make_unique<TextButton>();
     resetButton_->setButtonText("Reset");
@@ -376,22 +368,17 @@ void MainComponent::createUI()
     resetButton_->onClick = [this]() { resetLoop(); };
     addAndMakeVisible(resetButton_.get());
 
-    tie_[0] = std::make_unique<MelissaTieComponent>(aSetButton_.get(), aButton_.get());
-    addAndMakeVisible(tie_[0].get());
-    tie_[1] = std::make_unique<MelissaTieComponent>(bSetButton_.get(), bButton_.get());
-    addAndMakeVisible(tie_[1].get());
-
     speedButton_ = make_unique<MelissaIncDecButton>(2, TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
     speedButton_->setText("100 %");
-    speedButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
+    speedButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kClickEvent_Double)
+        if (event == MelissaIncDecButton::kEvent_Double)
         {
             model_->setSpeed(100);
         }
         else
         {
-            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
             model_->setSpeed(model_->getSpeed() + sign * (b ? 10 : 1));
         }
     };
@@ -429,15 +416,15 @@ void MainComponent::createUI()
     
     pitchButton_ = make_unique<MelissaIncDecButton>(16, TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
     pitchButton_->setText("Original");
-    pitchButton_->onClick_= [this](MelissaIncDecButton::ClickEvent event, bool b)
+    pitchButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kClickEvent_Double)
+        if (event == MelissaIncDecButton::kEvent_Double)
         {
             model_->setPitch(0);
         }
         else
         {
-            const int sign = (event == MelissaIncDecButton::kClickEvent_Inc) ? 1 : -1;
+            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
             model_->setPitch(model_->getPitch() + sign);
         }
     };
@@ -787,14 +774,12 @@ void MainComponent::resized()
     // A-B Loop
     y = 260;
     sectionTitles_[kSectionTitle_Loop]->setTopRightPosition(getWidth() - marginSideX, y);
-    aSetButton_->setSize(80, 30);
-    aButton_->setSize(200, 30);
-    bSetButton_->setSize(80, 30);
-    bButton_->setSize(200, 30);
+    aButton_->setSize(300, 30);
+    bButton_->setSize(300, 30);
     resetButton_->setSize(100, 30);
     arrangeEvenly({ sectionTitles_[kSectionTitle_Loop]->getX(), y + 60, sectionWidth, 30 }, {
-        { aSetButton_.get(), aButton_.get() },
-        { bSetButton_.get(), bButton_.get() },
+        { aButton_.get() },
+        { bButton_.get() },
         { resetButton_.get() }
     });
     
@@ -825,10 +810,8 @@ void MainComponent::resized()
         auto b = components[label_i]->getBoundsInParent();
         labels_[label_i]->setBounds(b.getX(), b.getY() - 24, b.getWidth(), 24);
     }
-    labels_[kLabel_ATime]->setBounds(aSetButton_->getX(), aSetButton_->getY() - 24, aButton_->getRight() - aSetButton_->getX(), 24);
-    labels_[kLabel_BTime]->setBounds(bSetButton_->getX(), bSetButton_->getY() - 24, bButton_->getRight() - bSetButton_->getX(), 24);
-    
-    for (auto&& tie : tie_) tie->updatePosition();
+    labels_[kLabel_ATime]->setBounds(aButton_->getX(), aButton_->getY() - 24, aButton_->getRight() - aButton_->getX(), 24);
+    labels_[kLabel_BTime]->setBounds(bButton_->getX(), bButton_->getY() - 24, bButton_->getRight() - bButton_->getX(), 24);
     
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
 }

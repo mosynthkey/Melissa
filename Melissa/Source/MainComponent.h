@@ -45,23 +45,6 @@ enum PracticeMemoTab
     kPracticeMemoTab_Memo
 };
 
-class MelissaTieComponent : public Component
-{
-public:
-    MelissaTieComponent(Component* a, Component* b) : a_(a), b_(b) { }
-    void paint(Graphics& g) override { g.fillAll(Colours::white.withAlpha(0.4f)); }
-    void updatePosition()
-    {
-        constexpr int lightHeight = 2;
-        int x = a_->getRight() - 1;
-        int y = a_->getY() + a_->getHeight() / 2;
-        setBounds(x, y - lightHeight / 2, b_->getX() - x, lightHeight);
-    }
-    
-private:
-    Component *a_, *b_;
-};
-
 class MelissaSectionTitleComponent : public Component
 {
 public:
@@ -210,12 +193,9 @@ private:
     
     std::unique_ptr<Slider> volumeSlider_;
     
-    std::unique_ptr<TextButton> aSetButton_;
     std::unique_ptr<MelissaIncDecButton> aButton_;
-    std::unique_ptr<TextButton> bSetButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
     std::unique_ptr<TextButton> resetButton_;
-    std::unique_ptr<MelissaTieComponent> tie_[2];
     
     std::unique_ptr<MelissaIncDecButton> speedButton_;
 

@@ -20,8 +20,8 @@ public:
     {
         constexpr int lineHeight = 2;
         
-        const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(highlighted ? 1.f : 0.6f));
         
         const int w = getWidth();
         const int h = getHeight();
@@ -140,4 +140,24 @@ public:
     BackgroundButton() : Button("")  { }
     ~BackgroundButton() { }
     void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override { }
+};
+
+class MelissaRoundButton : public Button
+{
+public:
+    MelissaRoundButton(const String& title) : Button(""), title_(title) { }
+    
+    void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        
+        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 0.8f : 0.6f));
+        g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
+        
+        g.setColour(Colours::white);
+        g.drawText(title_, 0, 0, getWidth(), getHeight(), Justification::centred);
+    }
+    
+private:
+    String title_;
 };
