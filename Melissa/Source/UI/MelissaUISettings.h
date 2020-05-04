@@ -24,6 +24,11 @@ public:
         return 0xffddeaff;
     }
     
+    static uint32_t getAccentColour()
+    {
+        return 0xffB8D4FF;
+    }
+    
     static uint32_t getDialogBackgoundColour()
     {
         return 0xFF1B1F25;

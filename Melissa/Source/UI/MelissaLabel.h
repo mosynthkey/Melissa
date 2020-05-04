@@ -30,10 +30,10 @@ public:
     
     void paint(Graphics& g) override
     {
-        const auto& b = getLocalBounds();
-        constexpr float t = 1.4; // thickness
+        constexpr float t = 1.f; // thickness
+        const auto b = getLocalBounds().reduced(t, t);
         g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, isMouseIn_ ? 0.6f : 0.4f));
-        g.drawRoundedRectangle(t / 2, t / 2, b.getWidth() - t - 1, b.getHeight() - t - 1, (b.getHeight() - t) / 2, t);
+        g.drawRoundedRectangle(b.toFloat(), b.getHeight() / 2, t);
     }
     
     void mouseEnter(const MouseEvent& e) override
