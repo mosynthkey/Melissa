@@ -32,7 +32,7 @@ public:
     {
         dataSource_->addListener(this);
         popupMenu_ = std::make_unique<PopupMenu>();
-        popupMenu_->setLookAndFeel(&lookAndFeel_);
+        popupMenu_->setLookAndFeel(&laf_);
     }
     
     ~MelissaFileListBox()
@@ -128,5 +128,5 @@ private:
     Target target_;
     MelissaDataSource* dataSource_;
     MelissaDataSource::FilePathList list_;
-    MelissaLookAndFeel lookAndFeel_;
+    MelissaLookAndFeel laf_;
 };

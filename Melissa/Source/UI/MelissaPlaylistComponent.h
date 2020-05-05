@@ -38,5 +38,5 @@ private:
     std::unique_ptr<MelissaMenuButton> menuButton_;
     std::unique_ptr<MelissaAddButton> addToPlaylistButton_;
     std::unique_ptr<MelissaFileListBox> listBox_;
-    MelissaLookAndFeel lookAndFeel_;
+    MelissaLookAndFeel laf_;
 };

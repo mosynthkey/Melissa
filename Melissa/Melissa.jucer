@@ -107,6 +107,10 @@
               resource="0" file="Source/UI/MelissaPreferencesComponent.h"/>
         <FILE id="o7R50o" name="MelissaScrollLabel.h" compile="0" resource="0"
               file="Source/UI/MelissaScrollLabel.h"/>
+        <FILE id="o9CA46" name="MelissaSectionComponent.cpp" compile="1" resource="0"
+              file="Source/UI/MelissaSectionComponent.cpp"/>
+        <FILE id="aOumRK" name="MelissaSectionComponent.h" compile="0" resource="0"
+              file="Source/UI/MelissaSectionComponent.h"/>
         <FILE id="g3JdDU" name="MelissaSimpleTextButton.h" compile="0" resource="0"
               file="Source/UI/MelissaSimpleTextButton.h"/>
         <FILE id="zkvBy8" name="MelissaToHeadButton.h" compile="0" resource="0"

@@ -395,3 +395,146 @@ public:
         }
     }
 };
+
+class MelissaLookAndFeel_SlideToggleButton : public LookAndFeel_V4
+{
+     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const bool on = tb.getToggleState();
+        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        
+        const auto colour = Colour(MelissaUISettings::getAccentColour());
+        
+        auto outsideRect = tb.getLocalBounds().reduced(lineThickness, lineThickness).toFloat();
+        g.setColour(colour);
+        g.drawRoundedRectangle(outsideRect, outsideRect.getHeight() / 2, lineThickness);
+        
+        auto insideRect = outsideRect.reduced(3, 3);
+        g.setColour(colour.withAlpha((highlighted ? 0.2f : 0.1f) + (on ? 0.4f : 0.f)));
+        g.fillRoundedRectangle(insideRect, insideRect.getHeight() / 2);
+        
+        const auto circleSize = insideRect.getHeight();
+        const auto circleXPos = on ? insideRect.getRight() - circleSize : insideRect.getX();
+        g.setColour(colour);
+        g.fillRoundedRectangle(insideRect.withX(circleXPos).withWidth(circleSize), insideRect.getHeight() / 2);
+    }
+};
+
+class MelissaLookAndFeel_CircleToggleButton : public LookAndFeel_V4
+{
+     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const bool on = tb.getToggleState();
+        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        
+        const auto colour = Colour(MelissaUISettings::getAccentColour());
+        
+        auto outsideRect = tb.getLocalBounds().reduced(lineThickness, lineThickness).toFloat();
+        g.setColour(colour);
+        g.drawRoundedRectangle(outsideRect, outsideRect.getHeight() / 2, lineThickness);
+        
+        auto insideRect = outsideRect.reduced(1, 1);
+        g.setColour(colour.withAlpha(highlighted ? 0.2f : 0.f));
+        g.fillRoundedRectangle(insideRect, insideRect.getHeight() / 2);
+        
+        if (on)
+        {
+            auto circleRect = insideRect.reduced(2, 2);
+            g.setColour(colour);
+            g.fillRoundedRectangle(circleRect, circleRect.getHeight() / 2);
+        }
+    }
+};
+
+class MelissaLookAndFeel_SelectorToggleButton : public LookAndFeel_V4
+{
+public:
+    virtual ~MelissaLookAndFeel_SelectorToggleButton() {};
+    
+    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        float alpha = 0.2f;
+        if (tb.getToggleState())
+        {
+            alpha = 0.8f;
+        }
+        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            alpha = 0.6f;
+        }
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
+        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        
+        if (tb.getToggleState())
+        {
+            // draw triangle
+            const float triSize = 10;
+            const float x0 = 0;
+            const float y0 = (tb.getHeight() - triSize) / 2;
+            const float x1 = triSize;
+            const float y1 = y0 + triSize / 2;
+            const float x2 = 0;
+            const float y2 = y0 + triSize;
+            
+            Path path;
+            path.startNewSubPath(x0, y0);
+            path.lineTo(x1, y1);
+            path.lineTo(x2, y2);
+            path.closeSubPath();
+            
+            g.setColour(Colour(MelissaUISettings::getAccentColour()));
+            g.fillPath(path);
+        }
+    }
+};
+
+class MelissaLookAndFeel_CrossFader : public LookAndFeel_V4
+{
+public:
+    virtual ~MelissaLookAndFeel_CrossFader() { }
+    
+    void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
+    {
+        if (style != Slider::LinearHorizontal) return;
+        
+        const auto& c = s.getLocalBounds();
+        
+        const int lineThickness = 4;
+        const int faderThickness = 8;
+        
+        g.setColour(Colours::white.withAlpha(0.4f));
+        g.fillRoundedRectangle(0, (c.getHeight() - lineThickness) / 2, c.getWidth(), lineThickness, lineThickness / 2);
+        
+        const float ratio = (sliderPos - x) / width;
+        const float faderXPos = (c.getWidth() - faderThickness) * ratio;
+        g.setColour(Colours::white.withAlpha(1.f));
+        g.fillRoundedRectangle(faderXPos, 0, faderThickness, c.getHeight(), lineThickness / 2);
+    }
+};
+
+class MelissaLookAndFeel_SimpleTextButton : public LookAndFeel_V4
+{
+public:
+    MelissaLookAndFeel_SimpleTextButton(int fontSize, const Justification& justification = Justification::centred) :
+    fontSize_(fontSize),
+    justification_(justification)
+    {
+        
+    }
+    
+    virtual ~MelissaLookAndFeel_SimpleTextButton() { }
+    
+    void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override {}
+    
+    void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        g.setColour(Colours::white.withAlpha(shouldDrawButtonAsHighlighted ? 0.8f : 0.6f));
+        g.setFont(fontSize_);
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), justification_);
+    }
+    
+private:
+    int fontSize_;
+    Justification justification_;
+};
