@@ -44,5 +44,5 @@ public:
     
 private:
     std::unique_ptr<TextButton> updateButton_;
-    UpdateButtonLookAndFeel lookAndFeel_;
+    UpdateButtonLookAndFeel laf_;
 };

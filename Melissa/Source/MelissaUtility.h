@@ -75,4 +75,28 @@ public:
         }
         return std::make_pair(maxWidth + 10, stringArray.size() * font.getHeight());
     };
+    
+    static void fillRoundRectangle(Graphics& g, int x0, int y0, int w, int h, int r0, int r1, int r2, int r3)
+    {
+        const int x1 = x0 + r0;
+        const int x2 = (x0 + w) - r1;
+        const int x3 = (x0 + w) - r2;
+        const int x4 = x0 + r3;
+        const int y1 = y0 + r0;
+        const int y2 = y0 + r1;
+        const int y3 = y0 + h - r2;
+        const int y4 = y0 + h - r3;
+        
+        Path path;
+        path.startNewSubPath(x1, y0);
+        path.lineTo(x2, y0);
+        path.addArc(x2 - r1, y2 - r1, r1 * 2, r1 * 2, 0, M_PI / 2);
+        path.lineTo(x0 + w, y3);
+        path.addArc(x3 - r2, y0 + h - r2 * 2, r2 * 2, r2 * 2, M_PI / 2, M_PI);
+        path.lineTo(x4, y0 + h);
+        path.addArc(x0, y4 - r3, r3 * 2, r3 * 2, M_PI, M_PI / 2 * 3);
+        path.lineTo(x0, y1);
+        path.addArc(x0, y0, r0 * 2, r0 * 2, M_PI / 2 * 3, M_PI * 2);
+        g.fillPath(path);
+    }
 };

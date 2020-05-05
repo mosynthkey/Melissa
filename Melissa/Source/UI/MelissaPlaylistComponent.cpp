@@ -44,7 +44,7 @@ void MelissaPlaylistComponent::createUI()
     menuButton_->onClick = [&]()
     {
         PopupMenu menu;
-        menu.setLookAndFeel(&lookAndFeel_);
+        menu.setLookAndFeel(&laf_);
         menu.addItem(kMenuID_New, TRANS("create_playlist"));
         menu.addItem(kMenuID_Rename, TRANS("rename_playlist"));
         menu.addItem(kMenuID_Remove, TRANS("remove_playlist"));
@@ -96,7 +96,7 @@ void MelissaPlaylistComponent::createUI()
     addToPlaylistButton_->onClick = [&]()
     {
         PopupMenu menu;
-        menu.setLookAndFeel(&lookAndFeel_);
+        menu.setLookAndFeel(&laf_);
         menu.addItem(kMenuID_New, TRANS("addtolist_select"));
         menu.addItem(kMenuID_Rename, TRANS("addtolist_current"));
         

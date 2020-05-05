@@ -151,7 +151,7 @@ public:
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
-        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 0.8f : 0.6f));
+        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 1.f : 0.8f));
         g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
         
         g.setColour(Colours::white);

@@ -37,7 +37,7 @@ private:
     AudioDeviceManager* audioDeviceManager_;
     std::unique_ptr<AudioDeviceSelectorComponent> deviceComponent_;
     
-    MelissaLookAndFeel lookAndFeel_;
-    MelissaLookAndFeel_Tab lookAndFeelTab_;
+    MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_Tab tabLaf_;
 };
 

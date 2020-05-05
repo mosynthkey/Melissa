@@ -45,7 +45,7 @@ public:
     void practiceListUpdated() override;
     
 private:
-    MelissaLookAndFeel lookAndFeel_;
+    MelissaLookAndFeel laf_;
     MelissaDataSource* dataSource_;
     std::vector<MelissaDataSource::Song::PracticeList> practiceList_;
     float totalLengthMSec_;

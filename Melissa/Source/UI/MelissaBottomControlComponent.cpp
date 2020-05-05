@@ -14,7 +14,7 @@ MelissaBottomControlComponent::MelissaBottomControlComponent()
 {
     updateButton_ = std::make_unique<TextButton>();
     updateButton_->setButtonText(TRANS("update_available"));
-    updateButton_->setLookAndFeel(&lookAndFeel_);
+    updateButton_->setLookAndFeel(&laf_);
     updateButton_->onClick = []()
     {
         MelissaUpdateChecker::showUpdateDialog();

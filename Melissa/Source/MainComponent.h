@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <array>
 #include <numeric>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaAudioEngine.h"
@@ -25,6 +26,7 @@
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaPreferencesComponent.h"
 #include "MelissaScrollLabel.h"
+#include "MelissaSectionComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
@@ -43,44 +45,6 @@ enum PracticeMemoTab
 {
     kPracticeMemoTab_Practice,
     kPracticeMemoTab_Memo
-};
-
-class MelissaSectionTitleComponent : public Component
-{
-public:
-    MelissaSectionTitleComponent(const String& title, float lineRatio) :
-    lineRatio_(lineRatio)
-    {
-        label_ = std::make_unique<Label>();
-        label_->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
-        label_->setText(title, dontSendNotification);
-        label_->setJustificationType(Justification::centred);
-        label_->setFont(Font(MelissaUISettings::getFontSizeMain()));
-        addAndMakeVisible(label_.get());
-        
-        labelWidth_ = label_->getFont().getStringWidth(title);
-    }
-    
-    void resized() override
-    {
-        label_->setBounds(getLocalBounds());
-    }
-    
-    void paint(Graphics& g) override
-    {
-        labelWidth_ = label_->getFont().getStringWidth(label_->getText());
-        constexpr int lineHeight = 1;
-        g.setColour(Colours::white.withAlpha(0.4f));
-        
-        const int lineWidth = getWidth() * lineRatio_;
-        g.fillRect(0, (getHeight() - lineHeight) / 2, lineWidth, lineHeight);
-        g.fillRect(getWidth() - lineWidth, (getHeight() - lineHeight) / 2, lineWidth, lineHeight);
-    }
-
-private:
-    std::unique_ptr<Label> label_;
-    int labelWidth_;
-    float lineRatio_;
 };
 
 class MainComponent   : public AudioAppComponent,
@@ -188,7 +152,6 @@ private:
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
-    std::unique_ptr<TextButton> tapButton_;
     std::unique_ptr<TextButton> analyzeButton_;
     
     std::unique_ptr<Slider> volumeSlider_;
@@ -228,11 +191,21 @@ private:
     
     std::unique_ptr<FileChooser> fileChooser_;
     
+    enum
+    {
+        kSection_Song,
+        kSection_Loop,
+        kSection_Output,
+        kSection_Metronome,
+        kSection_Speed,
+        kNumOfSections
+    };
+    std::array<std::unique_ptr<MelissaSectionComponent>, kNumOfSections> sectionComponents_;
+    
     std::unique_ptr<MelissaTutorialComponent> tutorialComponent_;
     
     enum
     {
-        kLabel_MetronomeSw,
         kLabel_MetronomeBpm,
         kLabel_MetronomeOffset,
         kLabel_Volume,
@@ -252,21 +225,14 @@ private:
     };
     std::unique_ptr<Label> labels_[kNumOfLabels];
     
-    enum
-    {
-        kSectionTitle_Settings,
-        kSectionTitle_Loop,
-#if defined(ENABLE_SPEEDTRAINER)
-        kSectionTitle_Speed,
-#endif
-        kSectionTitle_Metronome,
-        kNumOfSectionTitles
-    };
-    std::unique_ptr<MelissaSectionTitleComponent> sectionTitles_[kNumOfSectionTitles];
-    
-    MelissaLookAndFeel lookAndFeel_;
-    MelissaLookAndFeel_Tab lookAndFeelTab_;
-    MelissaLookAndFeel_Memo lookAndFeelMemo_;
+    MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_Tab tabLaf_;
+    MelissaLookAndFeel_Memo memoLaf_;
+    MelissaLookAndFeel_SlideToggleButton slideToggleLaf_;
+    MelissaLookAndFeel_CircleToggleButton circleToggleLaf_;
+    MelissaLookAndFeel_SelectorToggleButton selectorLaf_;
+    MelissaLookAndFeel_CrossFader crossFaderLaf_;
+    MelissaLookAndFeel_SimpleTextButton simpleTextButtonLaf_;
     
     String fileName_, fileFullPath_;
     

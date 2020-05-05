@@ -58,7 +58,7 @@ dataSource_(MelissaDataSource::getInstance())
     }
     
     popupMenu_ = std::make_shared<PopupMenu>();
-    popupMenu_->setLookAndFeel(&lookAndFeel_);
+    popupMenu_->setLookAndFeel(&laf_);
 }
 
 MelissaPracticeTableListBox::~MelissaPracticeTableListBox()

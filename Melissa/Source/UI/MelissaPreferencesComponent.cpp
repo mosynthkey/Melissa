@@ -22,7 +22,7 @@ audioDeviceManager_(audioDeviceManager)
         {
             auto b = std::make_unique<ToggleButton>();
             b->setButtonText(title);
-            b->setLookAndFeel(&lookAndFeelTab_);
+            b->setLookAndFeel(&tabLaf_);
             b->setRadioGroupId(2001);
             b->setToggleState(toggleState, dontSendNotification);
             b->onClick = [&]() { updateTab(); };
@@ -42,7 +42,7 @@ audioDeviceManager_(audioDeviceManager)
     setSize(800, 300);
 #endif
     
-    setLookAndFeel(&lookAndFeel_);
+    setLookAndFeel(&laf_);
 
 }
 
