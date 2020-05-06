@@ -17,8 +17,9 @@ using std::make_unique;
 
 enum
 {
-    kFileChooserTabGroup = 1001,
-    kPracticeMemoTabGroup = 1002,
+    kFileChooserTabGroup = 1000,
+    kPracticeMemoTabGroup = 2000,
+    kSpeedModeTabGroup = 3000,
     
     // UI
     kGradationHeight = 20,
@@ -164,6 +165,7 @@ MainComponent::~MainComponent()
     practiceTable_->setLookAndFeel(nullptr);
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
+    crossFaderSlider_->setLookAndFeel(nullptr);
     
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(nullptr);
@@ -239,7 +241,6 @@ void MainComponent::createUI()
     laf_.setBottomComponent(bottomComponent_.get());
     addAndMakeVisible(bottomComponent_.get());
     
-
     String sectionTitles[kNumOfSections] =
     {
         "Song",
@@ -255,150 +256,238 @@ void MainComponent::createUI()
         sectionComponents_[sectionIndex] = std::move(s);
     }
     
-    playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
-    playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
-    addAndMakeVisible(playPauseButton_.get());
-    
-    toHeadButton_ = make_unique<MelissaToHeadButton>("ToHeadButton");
-    toHeadButton_->onClick = [this]() { toHead(); };
-    addAndMakeVisible(toHeadButton_.get());
-    
-    timeLabel_ = make_unique<Label>();
-    timeLabel_->setJustificationType(Justification::centred);
-    timeLabel_->setFont(MelissaUISettings::getFontSizeMain());
-    addAndMakeVisible(timeLabel_.get());
-    
-    fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
-    addAndMakeVisible(fileNameLabel_.get());
-    
-    metronomeOnOffButton_ = make_unique<ToggleButton>();
-    metronomeOnOffButton_->setClickingTogglesState(true);
-    metronomeOnOffButton_->setLookAndFeel(&slideToggleLaf_);
-    metronomeOnOffButton_->onClick = [this]()
     {
-        const auto on = metronomeOnOffButton_->getToggleState();
-        model_->setMetronomeState(on ? kMetronomeStatus_On_Sync : kMetronomeStatus_Off);
-    };
-    addAndMakeVisible(metronomeOnOffButton_.get());
+        auto section = sectionComponents_[kSection_Song].get();
     
-    bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
-    bpmButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
-    {
-        if (event == MelissaIncDecButton::kEvent_Double)
+        playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
+        playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
+        section->addAndMakeVisible(playPauseButton_.get());
+        
+        toHeadButton_ = make_unique<MelissaToHeadButton>("ToHeadButton");
+        toHeadButton_->onClick = [this]() { toHead(); };
+        section->addAndMakeVisible(toHeadButton_.get());
+        
+        timeLabel_ = make_unique<Label>();
+        timeLabel_->setJustificationType(Justification::centred);
+        timeLabel_->setFont(MelissaUISettings::getFontSizeMain());
+        section->addAndMakeVisible(timeLabel_.get());
+        
+        fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
+        section->addAndMakeVisible(fileNameLabel_.get());
+        
+        pitchButton_ = make_unique<MelissaIncDecButton>(16, TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
+        pitchButton_->setText("Original");
+        pitchButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
-        }
-        else
-        {
-            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-            model_->setBpm(model_->getBpm() + sign);
-        }
-    };
-    addAndMakeVisible(bpmButton_.get());
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+                model_->setPitch(0);
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setPitch(model_->getPitch() + sign);
+            }
+        };
+        pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        section->addAndMakeVisible(pitchButton_.get());
+    }
     
-    beatPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome"), TRANS("metronome"));
-    beatPositionButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Set", TRANS("todo"));
-    beatPositionButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
     {
-        if (event == MelissaIncDecButton::kEvent_Double)
+        auto section = sectionComponents_[kSection_Loop].get();
+        
+        aButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
+        aButton_->setText("-:--");
+        aButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "A", TRANS("tooltip_loop_start_set"));
+        aButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
-        }
-        else if (event == MelissaIncDecButton::kEvent_Func)
-        {
-            model_->setBeatPositionMSec(model_->getPlayingPosMSec());
-        }
-        else
-        {
-            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-            model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
-        }
-    };
-    addAndMakeVisible(beatPositionButton_.get());
-    
-    analyzeButton_ = make_unique<TextButton>();
-    analyzeButton_->setLookAndFeel(&simpleTextButtonLaf_);
-    analyzeButton_->setButtonText("Auto detect");
-    analyzeButton_->onClick = [this]()
-    {
-        bpmDetector_->start();
-    };
-    addAndMakeVisible(analyzeButton_.get());
-    
-    volumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
-    volumeSlider_->setRange(0.01f, 2.0f);
-    volumeSlider_->setDoubleClickReturnValue(true, 1.f);
-    volumeSlider_->setValue(1.f);
-    volumeSlider_->onValueChange = [this]()
-    {
-        model_->setVolume(volumeSlider_->getValue());
-    };
-    addAndMakeVisible(volumeSlider_.get());
-    
-    aButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
-    aButton_->setText("-:--");
-    aButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "A", TRANS("tooltip_loop_start_set"));
-    aButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
-    {
-        if (event == MelissaIncDecButton::kEvent_Double)
-        {
-            model_->setLoopAPosRatio(0.f);
-        }
-        else if (event == MelissaIncDecButton::kEvent_Func)
-        {
-            model_->setLoopAPosMSec(model_->getPlayingPosMSec());
-        }
-        else
-        {
-            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-            model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 1000 : 100));
-        }
-    };
-    addAndMakeVisible(aButton_.get());
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+                model_->setLoopAPosRatio(0.f);
+            }
+            else if (event == MelissaIncDecButton::kEvent_Func)
+            {
+                model_->setLoopAPosMSec(model_->getPlayingPosMSec());
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 1000 : 100));
+            }
+        };
+        section->addAndMakeVisible(aButton_.get());
 
-    bButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
-    bButton_->setText("-:--");
-    bButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "B", TRANS("tooltip_loop_end_set"));
-    bButton_->setBounds(0, 240, 140, 34);
-    bButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
-    {
-        if (event == MelissaIncDecButton::kEvent_Double)
+        bButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
+        bButton_->setText("-:--");
+        bButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "B", TRANS("tooltip_loop_end_set"));
+        bButton_->setBounds(0, 240, 140, 34);
+        bButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
-            model_->setLoopBPosRatio(1.f);
-        }
-        else if (event == MelissaIncDecButton::kEvent_Func)
-        {
-            model_->setLoopBPosMSec(model_->getPlayingPosMSec());
-        }
-        else
-        {
-            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-            model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 1000 : 100));
-        }
-    };
-    addAndMakeVisible(bButton_.get());
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+                model_->setLoopBPosRatio(1.f);
+            }
+            else if (event == MelissaIncDecButton::kEvent_Func)
+            {
+                model_->setLoopBPosMSec(model_->getPlayingPosMSec());
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 1000 : 100));
+            }
+        };
+        section->addAndMakeVisible(bButton_.get());
 
-    resetButton_ = make_unique<TextButton>();
-    resetButton_->setButtonText("Reset");
-    resetButton_->setTooltip(TRANS("tooltip_loop_reset"));
-    resetButton_->onClick = [this]() { resetLoop(); };
-    resetButton_->setLookAndFeel(&simpleTextButtonLaf_);
-    addAndMakeVisible(resetButton_.get());
-
-    speedButton_ = make_unique<MelissaIncDecButton>(2, TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
-    speedButton_->setText("100 %");
-    speedButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        resetButton_ = make_unique<TextButton>();
+        resetButton_->setButtonText("Reset");
+        resetButton_->setTooltip(TRANS("tooltip_loop_reset"));
+        resetButton_->onClick = [this]() { resetLoop(); };
+        resetButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        section->addAndMakeVisible(resetButton_.get());
+    }
+    
     {
-        if (event == MelissaIncDecButton::kEvent_Double)
+        auto section = sectionComponents_[kSection_Output].get();
+        
+        oututModeComboBox_ = make_unique<ComboBox>();
+        oututModeComboBox_->setJustificationType(Justification::centred);
+        oututModeComboBox_->addItem("L - R", kOutputMode_LR + 1);
+        oututModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
+        oututModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
+        oututModeComboBox_->onChange = [&]()
         {
-            model_->setSpeed(100);
-        }
-        else
+            OutputMode mode = static_cast<OutputMode>(oututModeComboBox_->getSelectedId() - 1);
+            model_->setOutputMode(mode);
+        };
+        oututModeComboBox_->setSelectedId(kOutputMode_LR + 1);
+        section->addAndMakeVisible(oututModeComboBox_.get());
+    
+        musicVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        musicVolumeSlider_->setRange(0.01f, 2.0f);
+        musicVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
+        musicVolumeSlider_->setValue(1.f);
+        musicVolumeSlider_->onValueChange = [this]()
         {
-            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-            model_->setSpeed(model_->getSpeed() + sign * (b ? 10 : 1));
-        }
-    };
-    speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-    addAndMakeVisible(speedButton_.get());
+            model_->setVolume(musicVolumeSlider_->getValue());
+        };
+        section->addAndMakeVisible(musicVolumeSlider_.get());
+        
+        crossFaderSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        crossFaderSlider_->setRange(0.f, 1.0f);
+        crossFaderSlider_->setDoubleClickReturnValue(true, 0.5f);
+        crossFaderSlider_->setValue(0.5);
+        crossFaderSlider_->setLookAndFeel(&crossFaderLaf_);
+        crossFaderSlider_->onValueChange = [this]()
+        {
+            // to do
+        };
+        section->addAndMakeVisible(crossFaderSlider_.get());
+        
+        metronomeVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        metronomeVolumeSlider_->setRange(0.01f, 2.0f);
+        metronomeVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
+        metronomeVolumeSlider_->setValue(1.f);
+        metronomeVolumeSlider_->onValueChange = [this]()
+        {
+            // to do
+        };
+        section->addAndMakeVisible(metronomeVolumeSlider_.get());
+    }
+    
+    {
+        auto section = sectionComponents_[kSection_Metronome].get();
+        
+        metronomeOnOffButton_ = make_unique<ToggleButton>();
+        metronomeOnOffButton_->setClickingTogglesState(true);
+        metronomeOnOffButton_->setLookAndFeel(&slideToggleLaf_);
+        metronomeOnOffButton_->onClick = [this]()
+        {
+            const auto on = metronomeOnOffButton_->getToggleState();
+            model_->setMetronomeState(on ? kMetronomeStatus_On_Sync : kMetronomeStatus_Off);
+        };
+        section->addAndMakeVisible(metronomeOnOffButton_.get());
+        
+        bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
+        bpmButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
+        {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setBpm(model_->getBpm() + sign);
+            }
+        };
+        section->addAndMakeVisible(bpmButton_.get());
+        
+        beatPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome"), TRANS("metronome"));
+        beatPositionButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Set", TRANS("todo"));
+        beatPositionButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else if (event == MelissaIncDecButton::kEvent_Func)
+            {
+                model_->setBeatPositionMSec(model_->getPlayingPosMSec());
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
+            }
+        };
+        section->addAndMakeVisible(beatPositionButton_.get());
+        
+        analyzeButton_ = make_unique<TextButton>();
+        analyzeButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        analyzeButton_->setButtonText("Auto detect");
+        analyzeButton_->onClick = [this]()
+        {
+            bpmDetector_->start();
+        };
+        section->addAndMakeVisible(analyzeButton_.get());
+    }
+    
+    {
+        auto section = sectionComponents_[kSection_Speed].get();
+        
+        speedModeNormalToggleButton_ = make_unique<ToggleButton>();
+        speedModeNormalToggleButton_->setButtonText("Basic");
+        speedModeNormalToggleButton_->setLookAndFeel(&selectorLaf_);
+        speedModeNormalToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
+        //speedModeNormalToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
+        speedModeNormalToggleButton_->setToggleState(true, dontSendNotification);
+        section->addAndMakeVisible(speedModeNormalToggleButton_.get());
+        
+        speedModeTrainingToggleButton_ = make_unique<ToggleButton>();
+        speedModeTrainingToggleButton_->setButtonText("Training");
+        speedModeTrainingToggleButton_->setLookAndFeel(&selectorLaf_);
+        speedModeTrainingToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
+        //speedModeNormalToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
+        speedModeTrainingToggleButton_->setToggleState(false, dontSendNotification);
+        section->addAndMakeVisible(speedModeTrainingToggleButton_.get());
+
+        speedButton_ = make_unique<MelissaIncDecButton>(2, TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
+        speedButton_->setText("100 %");
+        speedButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+                model_->setSpeed(100);
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setSpeed(model_->getSpeed() + sign * (b ? 10 : 1));
+            }
+        };
+        speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        section->addAndMakeVisible(speedButton_.get());
+    }
+
     
 #if defined(ENABLE_SPEEDTRAINER)
     speedIncPerButton_ = make_unique<MelissaIncDecButton>();
@@ -428,23 +517,6 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(speedIncMaxButton_.get());
 #endif
-    
-    pitchButton_ = make_unique<MelissaIncDecButton>(16, TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
-    pitchButton_->setText("Original");
-    pitchButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
-    {
-        if (event == MelissaIncDecButton::kEvent_Double)
-        {
-            model_->setPitch(0);
-        }
-        else
-        {
-            const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-            model_->setPitch(model_->getPitch() + sign);
-        }
-    };
-    pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-    addAndMakeVisible(pitchButton_.get());
     
     browseToggleButton_ = make_unique<ToggleButton>();
     browseToggleButton_->setButtonText("File browser");
@@ -522,18 +594,7 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(addToListButton_.get());
     
-    oututModeComboBox_ = make_unique<ComboBox>();
-    oututModeComboBox_->setJustificationType(Justification::centred);
-    oututModeComboBox_->addItem("L - R", kOutputMode_LR + 1);
-    oututModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
-    oututModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
-    oututModeComboBox_->onChange = [&]()
-    {
-        OutputMode mode = static_cast<OutputMode>(oututModeComboBox_->getSelectedId() - 1);
-        model_->setOutputMode(mode);
-    };
-    oututModeComboBox_->setSelectedId(kOutputMode_LR + 1);
-    addAndMakeVisible(oututModeComboBox_.get());
+
 
     wildCardFilter_ = make_unique<WildcardFileFilter>(MelissaDataSource::getCompatibleFileExtensions(), "*", "Music Files");
     fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
@@ -544,36 +605,32 @@ void MainComponent::createUI()
     fileBrowserComponent_->addListener(this);
     addAndMakeVisible(fileBrowserComponent_.get());
     
-    // Labels
-    {
-        const String labelTitles[kNumOfLabels] = {
-            "BPM",
-            "Timing",
-            "Volume",
-            "Pitch",
-            "Output",
-            
-            "Start",
-            "End",
-            
-            "Speed",
+    
+    labelInfo_[kLabel_MetronomeBpm]     = { "BPM",           bpmButton_.get() };
+    labelInfo_[kLabel_MetronomeOffset]  = { "Beat position", beatPositionButton_.get() };
+    labelInfo_[kLabel_MusicVolume]      = { "Music",         musicVolumeSlider_.get() };
+    labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",     metronomeVolumeSlider_.get() };
+    labelInfo_[kLabel_Pitch]            = { "Pitch",         pitchButton_.get() };
+    labelInfo_[kLabel_OutputMode]       = { "Output",        oututModeComboBox_.get() };
+    labelInfo_[kLabel_ATime]            = { "Start",         aButton_.get() };
+    labelInfo_[kLabel_BTime]            = { "End",           bButton_.get() };
+    labelInfo_[kLabel_Speed]            = { "Speed",         speedButton_.get() };
 #if defined(ENABLE_SPEEDTRAINER)
-            "+",
-            "Per",
-            "Max",
+    labelInfo_[kLabel_SpeedPlus]        = { "+",             speedIncValueButton_.get() };
+    labelInfo_[kLabel_SpeedPer]         = { "Per",           speedIncPerButton_.get() };
+    labelInfo_[kLabel_SpeedMax]         = { "Max",           speedIncMaxButton_.get() };
 #endif
-        };
-        for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
-        {
-            auto l = make_unique<Label>();
-            l->setLookAndFeel(nullptr);
-            l->setText(labelTitles[label_i], dontSendNotification);
-            l->setFont(Font(MelissaUISettings::getFontSizeSub()));
-            l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
-            l->setJustificationType(Justification::centredTop);
-            addAndMakeVisible(l.get());
-            labels_[label_i] = std::move(l);
-        }
+    
+    for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
+    {
+        auto l = make_unique<Label>();
+        l->setLookAndFeel(nullptr);
+        l->setText(labelInfo_[label_i].first, dontSendNotification);
+        l->setFont(Font(MelissaUISettings::getFontSizeSub()));
+        l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
+        l->setJustificationType(Justification::centredTop);
+        labelInfo_[label_i].second->getParentComponent()->addAndMakeVisible(l.get());
+        labels_[label_i] = std::move(l);
     }
     
     // Set List
@@ -716,8 +773,8 @@ void MainComponent::resized()
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
     const int songWidth = 700;
-    const int loopWidth = 400;
-    const int outputWidth = 400;
+    const int loopWidth = 440;
+    const int outputWidth = 440;
     const int metronomeWidth = songWidth;
     const int speedWidth = loopWidth + sectionMarginX + outputWidth;
     
@@ -728,19 +785,19 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Song].get();
         section->setBounds(10, y, songWidth, 100);
         
-        int x = section->getX() + 20;
-        const int centerY = (section->getY() + 30) + (section->getHeight() - 30) / 2;
+        int x = 20;
+        const int centerY = 30 + (section->getHeight() - 30) / 2;
         
         toHeadButton_->setSize(16, 16);
         x += (toHeadButton_->getWidth() / 2);
         toHeadButton_->setCentrePosition(x, centerY);
         
         x += 20;
-        playPauseButton_->setSize(46, 46);
+        playPauseButton_->setSize(52, 52);
         x += (playPauseButton_->getWidth() / 2);
         playPauseButton_->setCentrePosition(x, centerY);
         
-        x = section->getRight() - 20;
+        x = section->getWidth() - 20;
         pitchButton_->setSize(140, controlHeight);
         x -= pitchButton_->getWidth() / 2;
         pitchButton_->setCentrePosition(x, centerY + 14);
@@ -757,17 +814,17 @@ void MainComponent::resized()
         section->setBounds(sectionComponents_[kSection_Song]->getRight() + sectionMarginX, y, loopWidth, 100);
         
         const int buttonWidth = (section->getWidth() - 20 - 10 - 20) / 2;
-        const int y = (section->getY() + 30) + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
         aButton_->setSize(buttonWidth, controlHeight);
-        aButton_->setTopLeftPosition(section->getX() + 20, y);
+        aButton_->setTopLeftPosition(20, y);
         
         bButton_->setSize(buttonWidth, controlHeight);
-        bButton_->setTopRightPosition(section->getRight() - 20, y);
+        bButton_->setTopRightPosition(section->getWidth() - 20, y);
         
         const int resetButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), resetButton_->getButtonText()).first;
         resetButton_->setSize(resetButtonWidth, 30);
-        resetButton_->setTopRightPosition(section->getRight() - 10, section->getY());
+        resetButton_->setTopRightPosition(section->getWidth() - 10, 0);
     }
     
     // Output
@@ -775,11 +832,13 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Output].get();
         section->setBounds(sectionComponents_[kSection_Loop]->getRight() + sectionMarginX, y, outputWidth, 100);
         
-        const int sliderWidth = 140;
-        const int y = (section->getY() + 30) + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        volumeSlider_->setBounds(section->getX() + 20, y, sliderWidth, controlHeight);
+        const int sliderWidth = (section->getWidth() - 20 - 10 - 10 - 20) / 4;
+        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
-        oututModeComboBox_->setBounds(volumeSlider_->getRight() + 10, y, sliderWidth, controlHeight);
+        oututModeComboBox_->setBounds(20, y, sliderWidth, controlHeight);
+        musicVolumeSlider_->setBounds(oututModeComboBox_->getRight() + 10, y, sliderWidth, controlHeight);
+        crossFaderSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, sliderWidth, controlHeight);
+        metronomeVolumeSlider_->setBounds(crossFaderSlider_->getRight() + 10, y, sliderWidth, controlHeight);
     }
     
     y = sectionComponents_[kSection_Song]->getBottom() + sectionMarginY;
@@ -789,14 +848,14 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Metronome].get();
         section->setBounds(10, y, metronomeWidth, 100);
         
-        const int y = (section->getY() + 30) + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
-        metronomeOnOffButton_->setBounds(section->getX() + 5, section->getY() + 5, 40, 20);
+        metronomeOnOffButton_->setBounds(5, 5, 40, 20);
         const int analyzeButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), analyzeButton_->getButtonText()).first;
         analyzeButton_->setSize(analyzeButtonWidth, 30);
-        analyzeButton_->setTopRightPosition(section->getRight() - 10, section->getY());
+        analyzeButton_->setTopRightPosition(section->getWidth() - 10, section->getY());
         
-        bpmButton_->setBounds(section->getX() + 20, y, 180, controlHeight);
+        bpmButton_->setBounds(20, y, 180, controlHeight);
         beatPositionButton_->setBounds(bpmButton_->getRight() + 20, y, 180, controlHeight);
     }
     
@@ -805,8 +864,13 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Speed].get();
         section->setBounds(sectionComponents_[kSection_Metronome]->getRight() + sectionMarginX, y, speedWidth, 100);
         
-        const int y = (section->getY() + 30) + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        speedButton_->setBounds(section->getX() + 20, y, 180, controlHeight);
+        const auto x = 20;
+        int y = 30 + (section->getHeight() - 30) / 2;
+        speedModeNormalToggleButton_->setBounds(x, y - 30, 100, controlHeight);
+        speedModeTrainingToggleButton_->setBounds(x, y, 100, controlHeight);
+        
+        y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        speedButton_->setBounds(speedModeNormalToggleButton_->getRight() + 10, y, 180, controlHeight);
     }
     
 #if defined(ENABLE_SPEEDTRAINER)
@@ -821,31 +885,11 @@ void MainComponent::resized()
         { speedIncValueButton_.get(), speedIncPerButton_.get(), speedIncMaxButton_.get() }
     });
 #endif
-
-    // Labels
-    const Component* components[kNumOfLabels]
-    {
-        dynamic_cast<Component*>(bpmButton_.get()),
-        dynamic_cast<Component*>(beatPositionButton_.get()),
-        dynamic_cast<Component*>(volumeSlider_.get()),
-        dynamic_cast<Component*>(pitchButton_.get()),
-        dynamic_cast<Component*>(oututModeComboBox_.get()),
-        
-        dynamic_cast<Component*>(aButton_.get()),
-        dynamic_cast<Component*>(bButton_.get()),
-        
-        dynamic_cast<Component*>(speedButton_.get()),
-#if defined(ENABLE_SPEEDTRAINER)
-        dynamic_cast<Component*>(speedIncValueButton_.get()),
-        dynamic_cast<Component*>(speedIncPerButton_.get()),
-        dynamic_cast<Component*>(speedIncMaxButton_.get()),
-#endif
-    };
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
     {
         if (label_i == kLabel_ATime || label_i == kLabel_BTime) continue;
-        auto b = components[label_i]->getBoundsInParent();
+        auto b = labelInfo_[label_i].second->getBoundsInParent();
         labels_[label_i]->setBounds(b.getX(), b.getY() - 24, b.getWidth(), 24);
     }
     labels_[kLabel_ATime]->setBounds(aButton_->getX(), aButton_->getY() - 24, aButton_->getRight() - aButton_->getX(), 24);
@@ -960,7 +1004,7 @@ void MainComponent::showTutorial()
     tutorialComponent_->setPages({
         { dynamic_cast<Component*>(menuButton_.get()), TRANS("explanation_menu") },
         { dynamic_cast<Component*>(waveformComponent_.get()), TRANS("explanation_waveform") },
-        { dynamic_cast<Component*>(volumeSlider_.get()), TRANS("explanation_volume") },
+        { dynamic_cast<Component*>(musicVolumeSlider_.get()), TRANS("explanation_volume") },
         { dynamic_cast<Component*>(pitchButton_.get()), TRANS("explanation_pitch") },
         { dynamic_cast<Component*>(speedButton_.get()), TRANS("explanation_speed") },
         { dynamic_cast<Component*>(fileBrowserComponent_.get()), TRANS("explanation_browser") },
@@ -1172,10 +1216,10 @@ void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::
 
 void MainComponent::volumeChanged(float volume)
 {
-    volumeSlider_->setValue(volume);
+    musicVolumeSlider_->setValue(volume);
     const float db = 20 * log10(volume);
     String dbStr = String::formatted("%+1.1f dB", db);
-    volumeSlider_->setTooltip(TRANS("volume") + " : " + dbStr);
+    musicVolumeSlider_->setTooltip(TRANS("volume") + " : " + dbStr);
 }
 
 void MainComponent::pitchChanged(int semitone)
@@ -1201,7 +1245,7 @@ void MainComponent::bpmChanged(float bpm)
 
 void MainComponent::beatPositionChanged(float beatPositionMSec)
 {
-    beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec() * 1000.f));
+    beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec()));
 }
 
 void MainComponent::outputModeChanged(OutputMode outputMode)

@@ -154,11 +154,16 @@ private:
     std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
     std::unique_ptr<TextButton> analyzeButton_;
     
-    std::unique_ptr<Slider> volumeSlider_;
+    std::unique_ptr<Slider> musicVolumeSlider_;
+    std::unique_ptr<Slider> crossFaderSlider_;
+    std::unique_ptr<Slider> metronomeVolumeSlider_;
     
     std::unique_ptr<MelissaIncDecButton> aButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
     std::unique_ptr<TextButton> resetButton_;
+    
+    std::unique_ptr<ToggleButton> speedModeNormalToggleButton_;
+    std::unique_ptr<ToggleButton> speedModeTrainingToggleButton_;
     
     std::unique_ptr<MelissaIncDecButton> speedButton_;
 
@@ -208,7 +213,8 @@ private:
     {
         kLabel_MetronomeBpm,
         kLabel_MetronomeOffset,
-        kLabel_Volume,
+        kLabel_MusicVolume,
+        kLabel_MetronomeVolume,
         kLabel_Pitch,
         kLabel_OutputMode,
         
@@ -223,6 +229,8 @@ private:
 #endif
         kNumOfLabels
     };
+    
+    std::array<std::pair<String, Component*>, kNumOfLabels> labelInfo_;
     std::unique_ptr<Label> labels_[kNumOfLabels];
     
     MelissaLookAndFeel laf_;
