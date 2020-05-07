@@ -113,6 +113,10 @@
               file="Source/UI/MelissaSectionComponent.h"/>
         <FILE id="g3JdDU" name="MelissaSimpleTextButton.h" compile="0" resource="0"
               file="Source/UI/MelissaSimpleTextButton.h"/>
+        <FILE id="ObcVyH" name="MelissaSpeedTrainingProgressComponent.cpp"
+              compile="1" resource="0" file="Source/UI/MelissaSpeedTrainingProgressComponent.cpp"/>
+        <FILE id="zwolRj" name="MelissaSpeedTrainingProgressComponent.h" compile="0"
+              resource="0" file="Source/UI/MelissaSpeedTrainingProgressComponent.h"/>
         <FILE id="zkvBy8" name="MelissaToHeadButton.h" compile="0" resource="0"
               file="Source/UI/MelissaToHeadButton.h"/>
         <FILE id="R9fqkj" name="MelissaTutorialComponent.cpp" compile="1" resource="0"

@@ -408,6 +408,12 @@ void MainComponent::createUI()
         };
         section->addAndMakeVisible(metronomeOnOffButton_.get());
         
+        metronomeSyncButton_ = make_unique<ToggleButton>();
+        metronomeSyncButton_->setButtonText("Sync");
+        metronomeSyncButton_->setClickingTogglesState(true);
+        metronomeSyncButton_->setLookAndFeel(&circleToggleLaf_);
+        section->addAndMakeVisible(metronomeSyncButton_.get());
+        
         bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
         bpmButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
@@ -441,6 +447,20 @@ void MainComponent::createUI()
         };
         section->addAndMakeVisible(beatPositionButton_.get());
         
+        accentButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        accentButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setAccent(model_->getAccent() + sign);
+            }
+        };
+        section->addAndMakeVisible(accentButton_.get());
+        
         analyzeButton_ = make_unique<TextButton>();
         analyzeButton_->setLookAndFeel(&simpleTextButtonLaf_);
         analyzeButton_->setButtonText("Auto detect");
@@ -454,11 +474,17 @@ void MainComponent::createUI()
     {
         auto section = sectionComponents_[kSection_Speed].get();
         
+        speedModeNormalComponent_ = make_unique<Component>();
+        section->addAndMakeVisible(speedModeNormalComponent_.get());
+        
+        speedModeTrainingComponent_ = make_unique<Component>();
+        section->addAndMakeVisible(speedModeTrainingComponent_.get());
+        
         speedModeNormalToggleButton_ = make_unique<ToggleButton>();
         speedModeNormalToggleButton_->setButtonText("Basic");
         speedModeNormalToggleButton_->setLookAndFeel(&selectorLaf_);
         speedModeNormalToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
-        //speedModeNormalToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
+        speedModeNormalToggleButton_->onClick = [&]() { updateSpeedModeTab(kSpeedModeTab_Normal); };
         speedModeNormalToggleButton_->setToggleState(true, dontSendNotification);
         section->addAndMakeVisible(speedModeNormalToggleButton_.get());
         
@@ -466,7 +492,7 @@ void MainComponent::createUI()
         speedModeTrainingToggleButton_->setButtonText("Training");
         speedModeTrainingToggleButton_->setLookAndFeel(&selectorLaf_);
         speedModeTrainingToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
-        //speedModeNormalToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
+        speedModeTrainingToggleButton_->onClick = [&]() { updateSpeedModeTab(kSpeedModeTab_Training); };
         speedModeTrainingToggleButton_->setToggleState(false, dontSendNotification);
         section->addAndMakeVisible(speedModeTrainingToggleButton_.get());
 
@@ -485,38 +511,32 @@ void MainComponent::createUI()
             }
         };
         speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        section->addAndMakeVisible(speedButton_.get());
-    }
+        speedModeNormalComponent_->addAndMakeVisible(speedButton_.get());
+        
+        speedIncBeginButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncBeginButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+        };
+        speedModeTrainingComponent_->addAndMakeVisible(speedIncBeginButton_.get());
 
-    
-#if defined(ENABLE_SPEEDTRAINER)
-    speedIncPerButton_ = make_unique<MelissaIncDecButton>();
-    speedIncPerButton_->onClick_= [this](bool inc, bool b)
-    {
-        const int sign = inc ? 1 : -1;
-        model_->setSpeedIncPer(model_->getSpeedIncPer() + sign);
-        updateSpeedButtonLabel();
-    };
-    addAndMakeVisible(speedIncPerButton_.get());
-    
-    speedIncValueButton_ = make_unique<MelissaIncDecButton>();
-    speedIncValueButton_->onClick_= [this](bool inc, bool b)
-    {
-        const int sign = inc ? 1 : -1;
-        model_->setSpeedIncValue(model_->getSpeedIncValue() + sign);
-        updateSpeedButtonLabel();
-    };
-    addAndMakeVisible(speedIncValueButton_.get());
-    
-    speedIncMaxButton_ = make_unique<MelissaIncDecButton>();
-    speedIncMaxButton_->onClick_= [this](bool inc, bool b)
-    {
-        const int sign = inc ? 1 : -1;
-        model_->setSpeedIncMax(model_->getSpeedIncMax() + sign);
-        updateSpeedButtonLabel();
-    };
-    addAndMakeVisible(speedIncMaxButton_.get());
-#endif
+        speedIncPerButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncPerButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+        };
+        speedModeTrainingComponent_->addAndMakeVisible(speedIncPerButton_.get());
+        
+        speedIncValueButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncValueButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+        };
+        speedModeTrainingComponent_->addAndMakeVisible(speedIncValueButton_.get());
+        
+        speedIncEndButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncEndButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+        };
+        speedModeTrainingComponent_->addAndMakeVisible(speedIncEndButton_.get());
+    }
     
     browseToggleButton_ = make_unique<ToggleButton>();
     browseToggleButton_->setButtonText("File browser");
@@ -567,14 +587,14 @@ void MainComponent::createUI()
     practiceListToggleButton_->setButtonText("Practice list");
     practiceListToggleButton_->setLookAndFeel(&tabLaf_);
     practiceListToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
-    practiceListToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Practice); };
+    practiceListToggleButton_->onClick = [&]() { updatePracticeMemoTab(kPracticeMemoTab_Practice); };
     addAndMakeVisible(practiceListToggleButton_.get());
     
     memoToggleButton_ = make_unique<ToggleButton>();
     memoToggleButton_->setButtonText("Memo");
     memoToggleButton_->setLookAndFeel(&tabLaf_);
     memoToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
-    memoToggleButton_->onClick = [&]() { updatePracticeMemo(kPracticeMemoTab_Memo); };
+    memoToggleButton_->onClick = [&]() { updatePracticeMemoTab(kPracticeMemoTab_Memo); };
     addAndMakeVisible(memoToggleButton_.get());
     
     practiceListToggleButton_->setToggleState(true, dontSendNotification);
@@ -608,6 +628,7 @@ void MainComponent::createUI()
     
     labelInfo_[kLabel_MetronomeBpm]     = { "BPM",           bpmButton_.get() };
     labelInfo_[kLabel_MetronomeOffset]  = { "Beat position", beatPositionButton_.get() };
+    labelInfo_[kLabel_MetronomeAccent]  = { "Accent",        accentButton_.get() };
     labelInfo_[kLabel_MusicVolume]      = { "Music",         musicVolumeSlider_.get() };
     labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",     metronomeVolumeSlider_.get() };
     labelInfo_[kLabel_Pitch]            = { "Pitch",         pitchButton_.get() };
@@ -615,11 +636,11 @@ void MainComponent::createUI()
     labelInfo_[kLabel_ATime]            = { "Start",         aButton_.get() };
     labelInfo_[kLabel_BTime]            = { "End",           bButton_.get() };
     labelInfo_[kLabel_Speed]            = { "Speed",         speedButton_.get() };
-#if defined(ENABLE_SPEEDTRAINER)
+    
+    labelInfo_[kLabel_SpeedBegin]       = { "Begin",         speedIncBeginButton_.get() };
     labelInfo_[kLabel_SpeedPlus]        = { "+",             speedIncValueButton_.get() };
     labelInfo_[kLabel_SpeedPer]         = { "Per",           speedIncPerButton_.get() };
-    labelInfo_[kLabel_SpeedMax]         = { "Max",           speedIncMaxButton_.get() };
-#endif
+    labelInfo_[kLabel_SpeedEnd]         = { "End",           speedIncEndButton_.get() };
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
     {
@@ -640,7 +661,8 @@ void MainComponent::createUI()
     tooltipWindow_ = std::make_unique<TooltipWindow>(bottomComponent_.get(), 0);
     tooltipWindow_->setLookAndFeel(&laf_);
     
-    updatePracticeMemo(kPracticeMemoTab_Practice);
+    updateSpeedModeTab(kSpeedModeTab_Normal);
+    updatePracticeMemoTab(kPracticeMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
 }
 
@@ -853,16 +875,20 @@ void MainComponent::resized()
         metronomeOnOffButton_->setBounds(5, 5, 40, 20);
         const int analyzeButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), analyzeButton_->getButtonText()).first;
         analyzeButton_->setSize(analyzeButtonWidth, 30);
-        analyzeButton_->setTopRightPosition(section->getWidth() - 10, section->getY());
+        analyzeButton_->setTopRightPosition(section->getWidth() - 10, 0);
         
         bpmButton_->setBounds(20, y, 180, controlHeight);
-        beatPositionButton_->setBounds(bpmButton_->getRight() + 20, y, 180, controlHeight);
+        metronomeSyncButton_->setBounds(bpmButton_->getRight() + 10, y, 80, controlHeight);
+        accentButton_->setBounds(metronomeSyncButton_->getRight() + 10, y, 180, controlHeight);
+        beatPositionButton_->setBounds(accentButton_->getRight() + 10, y, 180, controlHeight);
     }
     
     // Speed
     {
         auto section = sectionComponents_[kSection_Speed].get();
         section->setBounds(sectionComponents_[kSection_Metronome]->getRight() + sectionMarginX, y, speedWidth, 100);
+        speedModeNormalComponent_->setBounds(section->getLocalBounds());
+        speedModeTrainingComponent_->setBounds(section->getLocalBounds());
         
         const auto x = 20;
         int y = 30 + (section->getHeight() - 30) / 2;
@@ -871,6 +897,11 @@ void MainComponent::resized()
         
         y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         speedButton_->setBounds(speedModeNormalToggleButton_->getRight() + 10, y, 180, controlHeight);
+        
+        speedIncBeginButton_->setBounds(speedModeNormalToggleButton_->getRight() + 10, y, 120, controlHeight);
+        speedIncPerButton_->setBounds(speedIncBeginButton_->getRight() + 20, y, 120, controlHeight);
+        speedIncValueButton_->setBounds(speedIncPerButton_->getRight() + 20, y, 120, controlHeight);
+        speedIncEndButton_->setBounds(speedIncValueButton_->getRight() + 20, y, 120, controlHeight);
     }
     
 #if defined(ENABLE_SPEEDTRAINER)
@@ -1149,6 +1180,12 @@ void MainComponent::timerCallback()
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
 }
 
+void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
+{
+    speedModeNormalComponent_->setVisible(tab == kSpeedModeTab_Normal);
+    speedModeTrainingComponent_->setVisible(tab == kSpeedModeTab_Training);
+}
+
 void MainComponent::updateFileChooserTab(FileChooserTab tab)
 {
     fileBrowserComponent_->setVisible(tab == kFileChooserTab_Browse);
@@ -1156,7 +1193,7 @@ void MainComponent::updateFileChooserTab(FileChooserTab tab)
     historyTable_->setVisible(tab == kFileChooserTab_History);
 }
 
-void MainComponent::updatePracticeMemo(PracticeMemoTab tab)
+void MainComponent::updatePracticeMemoTab(PracticeMemoTab tab)
 {
     practiceTable_->setVisible(tab == kPracticeMemoTab_Practice);
     addToListButton_->setVisible(tab == kPracticeMemoTab_Practice);
@@ -1246,6 +1283,11 @@ void MainComponent::bpmChanged(float bpm)
 void MainComponent::beatPositionChanged(float beatPositionMSec)
 {
     beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec()));
+}
+
+void MainComponent::accentUpdated(int accent)
+{
+    accentButton_->setText(String(accent));
 }
 
 void MainComponent::outputModeChanged(OutputMode outputMode)
