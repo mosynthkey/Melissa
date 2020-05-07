@@ -150,6 +150,7 @@ void MelissaModel::setBeatPositionMSec(float beatPositionMSec)
 
 void MelissaModel::setAccent(int accent)
 {
+    if (accent < 0 || 16 <= accent) return;
     accent_ = accent;
     for (auto&& l : listeners_) l->accentUpdated(accent);
 }

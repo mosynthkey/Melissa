@@ -33,6 +33,13 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
+enum SpeedModeTab
+{
+    kSpeedModeTab_Normal,
+    kSpeedModeTab_Training,
+    kNumOfSpeedModeTabs
+};
+
 enum FileChooserTab
 {
     kFileChooserTab_Browse,
@@ -111,8 +118,9 @@ public:
     // Timer
     void timerCallback() override;
     
+    void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
-    void updatePracticeMemo(PracticeMemoTab tab);
+    void updatePracticeMemoTab(PracticeMemoTab tab);
     
     void toHead();
     void resetLoop();
@@ -150,8 +158,10 @@ private:
     std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
 
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
+    std::unique_ptr<ToggleButton> metronomeSyncButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
+    std::unique_ptr<MelissaIncDecButton> accentButton_;
     std::unique_ptr<TextButton> analyzeButton_;
     
     std::unique_ptr<Slider> musicVolumeSlider_;
@@ -165,13 +175,14 @@ private:
     std::unique_ptr<ToggleButton> speedModeNormalToggleButton_;
     std::unique_ptr<ToggleButton> speedModeTrainingToggleButton_;
     
+    std::unique_ptr<Component> speedModeNormalComponent_;
+    std::unique_ptr<Component> speedModeTrainingComponent_;
     std::unique_ptr<MelissaIncDecButton> speedButton_;
 
-#if defined(ENABLE_SPEEDTRAINER)
+    std::unique_ptr<MelissaIncDecButton> speedIncBeginButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
-    std::unique_ptr<MelissaIncDecButton> speedIncMaxButton_;
-#endif
+    std::unique_ptr<MelissaIncDecButton> speedIncEndButton_;
     
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
@@ -213,6 +224,7 @@ private:
     {
         kLabel_MetronomeBpm,
         kLabel_MetronomeOffset,
+        kLabel_MetronomeAccent,
         kLabel_MusicVolume,
         kLabel_MetronomeVolume,
         kLabel_Pitch,
@@ -222,11 +234,12 @@ private:
         kLabel_BTime,
         
         kLabel_Speed,
-#if defined(ENABLE_SPEEDTRAINER)
+        
+        kLabel_SpeedBegin,
         kLabel_SpeedPlus,
         kLabel_SpeedPer,
-        kLabel_SpeedMax,
-#endif
+        kLabel_SpeedEnd,
+        
         kNumOfLabels
     };
     
@@ -261,6 +274,7 @@ private:
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
+    void accentUpdated(int accent) override;
     void outputModeChanged(OutputMode outputMode) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

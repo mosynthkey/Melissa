@@ -429,13 +429,18 @@ class MelissaLookAndFeel_CircleToggleButton : public LookAndFeel_V4
         
         const auto colour = Colour(MelissaUISettings::getAccentColour());
         
-        auto outsideRect = tb.getLocalBounds().reduced(lineThickness, lineThickness).toFloat();
+        const int circleSize = 18;
+        auto outsideRect = Rectangle<int>(0, (tb.getHeight() - circleSize) / 2, circleSize, circleSize).reduced(lineThickness, lineThickness).toFloat();
         g.setColour(colour);
         g.drawRoundedRectangle(outsideRect, outsideRect.getHeight() / 2, lineThickness);
         
         auto insideRect = outsideRect.reduced(1, 1);
         g.setColour(colour.withAlpha(highlighted ? 0.2f : 0.f));
         g.fillRoundedRectangle(insideRect, insideRect.getHeight() / 2);
+        
+        const auto textX = outsideRect.getRight() + 8;
+        g.setColour(Colours::white);
+        g.drawText(tb.getButtonText(), textX, 0, tb.getWidth() - textX, tb.getHeight(), Justification::left);
         
         if (on)
         {
