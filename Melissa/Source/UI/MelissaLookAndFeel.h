@@ -297,7 +297,7 @@ public:
         }
     }
     
-    Rectangle<int> getTooltipBounds(const String& tipText, Point<int> screenPos, Rectangle<int> parentArea) override
+    Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
     {
         if (bottomComponent_ == nullptr)
         {

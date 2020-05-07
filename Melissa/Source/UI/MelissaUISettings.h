@@ -33,11 +33,11 @@ public:
     {
         if (isMac)
         {
-            return useJapaneseFont_ ? 16 : 17;
+            return 17;
         }
         else
         {
-            return useJapaneseFont_ ? 21 : 21;
+            return 21;
         }
     }
     
