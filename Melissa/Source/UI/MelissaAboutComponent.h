@@ -36,15 +36,23 @@ public:
         versionLabel_->setBounds(0, 230, 600, 30);
         addAndMakeVisible(versionLabel_.get());
         
-        linkButton_ = std::make_unique<HyperlinkButton>("Open GitHub page", URL("https://github.com/mosynthkey/Melissa"));
-        linkButton_->setFont(MelissaUISettings::getFontSizeMain(), false, Justification::right);
-        linkButton_->setBounds(0, 260, 600, 30);
-        addAndMakeVisible(linkButton_.get());
+        gitHubLinkButton_ = std::make_unique<HyperlinkButton>("Open GitHub page", URL("https://github.com/mosynthkey/Melissa"));
+        gitHubLinkButton_->setFont(MelissaUISettings::getFontSizeMain(), false, Justification::right);
+        gitHubLinkButton_->setSize(160, 30);
+        gitHubLinkButton_->setTopRightPosition(600, 260);
+        addAndMakeVisible(gitHubLinkButton_.get());
+        
+        websiteLinkButton_ = std::make_unique<HyperlinkButton>("Visit official site", URL("https://mosynthkey.github.io/Melissa/"));
+        websiteLinkButton_->setFont(MelissaUISettings::getFontSizeMain(), false, Justification::right);
+        websiteLinkButton_->setSize(160, 30);
+        websiteLinkButton_->setTopRightPosition(gitHubLinkButton_->getX() - 10, 260);
+        addAndMakeVisible(websiteLinkButton_.get());
     }
     
 private:
     std::unique_ptr<ImageComponent> imageComponent_;
     std::unique_ptr<Label> copyrightLabel_;
     std::unique_ptr<Label> versionLabel_;
-    std::unique_ptr<HyperlinkButton> linkButton_;
+    std::unique_ptr<HyperlinkButton> websiteLinkButton_;
+    std::unique_ptr<HyperlinkButton> gitHubLinkButton_;
 };
