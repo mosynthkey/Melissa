@@ -55,8 +55,8 @@ MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::getUpdateStatus()
 void MelissaUpdateChecker::showUpdateDialog()
 {
     const std::vector<String> options = { TRANS("check"), TRANS("cancel") };
-    auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("there_is_update"), options, [&](size_t index){
-        if (index == 0) URL("https://github.com/mosynthkey/Melissa/releases").launchInDefaultBrowser();
+    auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("there_is_update"), options, [&](size_t index) {
+        if (index == 0) URL("https://mosynthkey.github.io/Melissa/#download").launchInDefaultBrowser();
     });
     MelissaModalDialog::show(dialog, TRANS("update"));
 }
