@@ -42,7 +42,7 @@ public:
         gitHubLinkButton_->setTopRightPosition(600, 260);
         addAndMakeVisible(gitHubLinkButton_.get());
         
-        websiteLinkButton_ = std::make_unique<HyperlinkButton>("Visit offlicial site", URL("https://mosynthkey.github.io/Melissa/"));
+        websiteLinkButton_ = std::make_unique<HyperlinkButton>("Visit official site", URL("https://mosynthkey.github.io/Melissa/"));
         websiteLinkButton_->setFont(MelissaUISettings::getFontSizeMain(), false, Justification::right);
         websiteLinkButton_->setSize(160, 30);
         websiteLinkButton_->setTopRightPosition(gitHubLinkButton_->getX() - 10, 260);
