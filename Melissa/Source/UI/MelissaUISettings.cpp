@@ -11,7 +11,7 @@ bool MelissaUISettings::isJa = false;
 
 #if defined(JUCE_MAC)
 bool MelissaUISettings::isMac = true;
-String MelissaUISettings::japaneseFontName_ = "Hiragino Kaku Gothic Pro";
+String MelissaUISettings::japaneseFontName_ = "YuGothic";
 String MelissaUISettings::latinFontName_    = "San Francisco";
 
 #else
