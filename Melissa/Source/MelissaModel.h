@@ -24,14 +24,24 @@ public:
     void togglePlaybackStatus();
     PlaybackStatus getPlaybackStatus() const { return playbackStatus_; }
     
-    void setVolume(float volume);
-    float getVolume() const { return volume_; }
+    void setMusicVolume(float volume);
+    float getMusicVolume() const { return musicVolume_; }
     
     void setPitch(int semitone);
     int getPitch() const  { return semitone_; }
     
+    void setSpeedMode(SpeedMode speedMode);
+    SpeedMode getSpeedMode() { return speedMode_; }
     void setSpeed(int speed);
     int getSpeed() const  { return speed_; }
+    void setSpeedIncStart(int speedIncStart);
+    int getSpeedIncStart() { return speedIncStart_; }
+    void setSpeedIncValue(int speedIncValue);
+    int getSpeedIncValue() { return speedIncValue_; }
+    void setSpeedIncPer(int speedIncPer);
+    int getSpeedIncPer() { return speedIncPer_; }
+    void setSpeedIncGoal(int speedIncGoal);
+    int getSpeedIncGoal() { return speedIncGoal_; }
     
     void setLoopPosRatio(float aRatio, float bRatio);
     
@@ -61,8 +71,12 @@ public:
     float getBeatPositionMSec() { return beatPositionMSec_; }
     void  setAccent(int accent);
     int   getAccent() { return accent_; }
+    void  setMetronomeVolume(float volume);
+    float getMetronomeVolume() { return metronomeVolume_; }
     
     // Output
+    void setMusicMetronomeBalance(float balance);
+    float getMusicMetronomeBalance() { return musicMetronomeBalance_; }
     void setOutputMode(OutputMode outputMode);
     OutputMode getOutputMode() const { return outputMode_; }
     
@@ -87,9 +101,16 @@ private:
     MetronomeStatus metronomeStatus_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
-    float volume_;
+    float musicVolume_;
+    float metronomeVolume_;
+    float musicMetronomeBalance_;
     int semitone_;
+    SpeedMode speedMode_;
     int speed_;
+    int speedIncStart_;
+    int speedIncValue_;
+    int speedIncPer_;
+    int speedIncGoal_;
     float aPosRatio_, bPosRatio_;
     float playingPosRatio_;
     float bpm_, beatPositionMSec_;

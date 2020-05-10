@@ -28,15 +28,6 @@ public:
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
-    void setSpeedIncPer(int32_t speedIncPer);
-    void setSpeedIncValue(int32_t speedIncValue);
-    void setSpeedIncMax(int32_t speedIncMax);
-    
-    int32_t getSpeedIncPer() const { return speedIncPer_; };
-    int32_t getSpeedIncValue() const  { return speedIncValue_; };
-    int32_t getSpeedIncMax() const { return speedIncMax_; }
-    int32_t getCurrentSpeed() const { return speed_ + speedIncValue_; }
-    
     bool isMetoronomeOn() const { return metronome_.on_ ;};
     void setMetoronome(bool on) { metronome_.on_ = on; };
     void analyzeBpm();
@@ -82,11 +73,13 @@ private:
     std::mutex mutex_;
     
     int32_t count_;
+    
     int32_t speedIncPer_;
     int32_t speedIncValue_;
-    int32_t speedIncMax_;
+    int32_t speedIncGoal_;
     int32_t currentSpeed_;
     
+    float volumeBalance_;
     OutputMode outputMode_;
     
     // metronome
@@ -108,14 +101,21 @@ private:
     } metronome_;
     
     // MelissaModelListener
-    void volumeChanged(float volume) override;
+    void musicVolumeChanged(float volume) override;
     void pitchChanged(int semitone) override;
+    void speedModeChanged(SpeedMode mode) override;
     void speedChanged(int speed) override;
+    void speedIncStartChanged(int speedIncStart) override;
+    void speedIncValueChanged(int speedIncValue) override;
+    void speedIncPerChanged(int speedIncPer) override;
+    void speedIncGoalChanged(int speedIncGoal) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void playingPosChanged(float time, float ratio) override;
     void metronomeStatusChanged(MetronomeStatus status) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
     void accentUpdated(int accent) override;
+    void metronomeVolumeUpdated(float volume) override;
+    void musicMetronomeBalanceUpdated(float balance) override;
     void outputModeChanged(OutputMode outputMode) override;
 };

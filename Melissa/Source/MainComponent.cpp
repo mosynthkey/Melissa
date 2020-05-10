@@ -165,7 +165,7 @@ MainComponent::~MainComponent()
     practiceTable_->setLookAndFeel(nullptr);
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
-    crossFaderSlider_->setLookAndFeel(nullptr);
+    volumeBalanceSlider_->setLookAndFeel(nullptr);
     
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(nullptr);
@@ -369,28 +369,28 @@ void MainComponent::createUI()
         musicVolumeSlider_->setValue(1.f);
         musicVolumeSlider_->onValueChange = [this]()
         {
-            model_->setVolume(musicVolumeSlider_->getValue());
+            model_->setMusicVolume(musicVolumeSlider_->getValue());
         };
         section->addAndMakeVisible(musicVolumeSlider_.get());
         
-        crossFaderSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
-        crossFaderSlider_->setRange(0.f, 1.0f);
-        crossFaderSlider_->setDoubleClickReturnValue(true, 0.5f);
-        crossFaderSlider_->setValue(0.5);
-        crossFaderSlider_->setLookAndFeel(&crossFaderLaf_);
-        crossFaderSlider_->onValueChange = [this]()
+        volumeBalanceSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        volumeBalanceSlider_->setRange(0.f, 1.0f);
+        volumeBalanceSlider_->setDoubleClickReturnValue(true, 0.5f);
+        volumeBalanceSlider_->setValue(0.5);
+        volumeBalanceSlider_->setLookAndFeel(&crossFaderLaf_);
+        volumeBalanceSlider_->onValueChange = [this]()
         {
-            // to do
+            model_->setMusicMetronomeBalance(volumeBalanceSlider_->getValue());
         };
-        section->addAndMakeVisible(crossFaderSlider_.get());
+        section->addAndMakeVisible(volumeBalanceSlider_.get());
         
         metronomeVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
-        metronomeVolumeSlider_->setRange(0.01f, 2.0f);
+        metronomeVolumeSlider_->setRange(0.f, 1.0f);
         metronomeVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
         metronomeVolumeSlider_->setValue(1.f);
         metronomeVolumeSlider_->onValueChange = [this]()
         {
-            // to do
+            model_->setMetronomeVolume(metronomeVolumeSlider_->getValue());
         };
         section->addAndMakeVisible(metronomeVolumeSlider_.get());
     }
@@ -480,19 +480,27 @@ void MainComponent::createUI()
         speedModeTrainingComponent_ = make_unique<Component>();
         section->addAndMakeVisible(speedModeTrainingComponent_.get());
         
-        speedModeNormalToggleButton_ = make_unique<ToggleButton>();
-        speedModeNormalToggleButton_->setButtonText("Basic");
-        speedModeNormalToggleButton_->setLookAndFeel(&selectorLaf_);
-        speedModeNormalToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
-        speedModeNormalToggleButton_->onClick = [&]() { updateSpeedModeTab(kSpeedModeTab_Normal); };
-        speedModeNormalToggleButton_->setToggleState(true, dontSendNotification);
-        section->addAndMakeVisible(speedModeNormalToggleButton_.get());
+        speedModeBasicToggleButton_ = make_unique<ToggleButton>();
+        speedModeBasicToggleButton_->setButtonText("Basic");
+        speedModeBasicToggleButton_->setLookAndFeel(&selectorLaf_);
+        speedModeBasicToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
+        speedModeBasicToggleButton_->onClick = [&]()
+        {
+            model_->setSpeedMode(kSpeedMode_Basic);
+            updateSpeedModeTab(kSpeedModeTab_Basic);
+        };
+        speedModeBasicToggleButton_->setToggleState(true, dontSendNotification);
+        section->addAndMakeVisible(speedModeBasicToggleButton_.get());
         
         speedModeTrainingToggleButton_ = make_unique<ToggleButton>();
         speedModeTrainingToggleButton_->setButtonText("Training");
         speedModeTrainingToggleButton_->setLookAndFeel(&selectorLaf_);
         speedModeTrainingToggleButton_->setRadioGroupId(kSpeedModeTabGroup);
-        speedModeTrainingToggleButton_->onClick = [&]() { updateSpeedModeTab(kSpeedModeTab_Training); };
+        speedModeTrainingToggleButton_->onClick = [&]()
+        {
+            model_->setSpeedMode(kSpeedMode_Training);
+            updateSpeedModeTab(kSpeedModeTab_Training);
+        };
         speedModeTrainingToggleButton_->setToggleState(false, dontSendNotification);
         section->addAndMakeVisible(speedModeTrainingToggleButton_.get());
 
@@ -513,29 +521,75 @@ void MainComponent::createUI()
         speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         speedModeNormalComponent_->addAndMakeVisible(speedButton_.get());
         
-        speedIncBeginButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
-        speedIncBeginButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        speedPresetComponent_ = make_unique<Component>();
+        speedModeNormalComponent_->addAndMakeVisible(speedPresetComponent_.get());
+        const int speedPresets[kNumOfSpeedPresets] = { 50, 60, 70, 75, 80, 85, 90, 95, 100 };
+        for (size_t speedPresetIndex = 0; speedPresetIndex < kNumOfSpeedPresets; ++speedPresetIndex)
         {
+            auto b = make_unique<TextButton>();
+            b->setLookAndFeel(&simpleTextButtonLaf_);
+            const int speed = speedPresets[speedPresetIndex];
+            b->setButtonText(String(speed) + "%");
+            b->onClick = [&, speed]() { model_->setSpeed(speed); };
+            speedPresetComponent_->addAndMakeVisible(b.get());
+            speedPresetButtons_[speedPresetIndex] = std::move(b);
+        }
+        
+        speedIncStartButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncStartButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setSpeedIncStart(model_->getSpeedIncStart() + sign * (b ? 10 : 1));
+            }
         };
-        speedModeTrainingComponent_->addAndMakeVisible(speedIncBeginButton_.get());
+        speedModeTrainingComponent_->addAndMakeVisible(speedIncStartButton_.get());
 
         speedIncPerButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
         speedIncPerButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setSpeedIncPer(model_->getSpeedIncPer() + sign * (b ? 10 : 1));
+            }
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncPerButton_.get());
         
         speedIncValueButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
         speedIncValueButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setSpeedIncValue(model_->getSpeedIncValue() + sign * (b ? 10 : 1));
+            }
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncValueButton_.get());
         
-        speedIncEndButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
-        speedIncEndButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        speedIncGoalButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncGoalButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
+            if (event == MelissaIncDecButton::kEvent_Double)
+            {
+            }
+            else
+            {
+                const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
+                model_->setSpeedIncGoal(model_->getSpeedIncGoal() + sign * (b ? 10 : 1));
+            }
         };
-        speedModeTrainingComponent_->addAndMakeVisible(speedIncEndButton_.get());
+        speedModeTrainingComponent_->addAndMakeVisible(speedIncGoalButton_.get());
     }
     
     browseToggleButton_ = make_unique<ToggleButton>();
@@ -636,11 +690,11 @@ void MainComponent::createUI()
     labelInfo_[kLabel_ATime]            = { "Start",         aButton_.get() };
     labelInfo_[kLabel_BTime]            = { "End",           bButton_.get() };
     labelInfo_[kLabel_Speed]            = { "Speed",         speedButton_.get() };
-    
-    labelInfo_[kLabel_SpeedBegin]       = { "Begin",         speedIncBeginButton_.get() };
+    labelInfo_[kLabel_SpeedPresets]     = { "Presets",       speedPresetComponent_.get() };
+    labelInfo_[kLabel_SpeedBegin]       = { "Begin",         speedIncStartButton_.get() };
     labelInfo_[kLabel_SpeedPlus]        = { "+",             speedIncValueButton_.get() };
     labelInfo_[kLabel_SpeedPer]         = { "Per",           speedIncPerButton_.get() };
-    labelInfo_[kLabel_SpeedEnd]         = { "End",           speedIncEndButton_.get() };
+    labelInfo_[kLabel_SpeedEnd]         = { "End",           speedIncGoalButton_.get() };
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
     {
@@ -661,7 +715,7 @@ void MainComponent::createUI()
     tooltipWindow_ = std::make_unique<TooltipWindow>(bottomComponent_.get(), 0);
     tooltipWindow_->setLookAndFeel(&laf_);
     
-    updateSpeedModeTab(kSpeedModeTab_Normal);
+    updateSpeedModeTab(kSpeedModeTab_Basic);
     updatePracticeMemoTab(kPracticeMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
 }
@@ -859,8 +913,8 @@ void MainComponent::resized()
         
         oututModeComboBox_->setBounds(20, y, sliderWidth, controlHeight);
         musicVolumeSlider_->setBounds(oututModeComboBox_->getRight() + 10, y, sliderWidth, controlHeight);
-        crossFaderSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, sliderWidth, controlHeight);
-        metronomeVolumeSlider_->setBounds(crossFaderSlider_->getRight() + 10, y, sliderWidth, controlHeight);
+        volumeBalanceSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, sliderWidth, controlHeight);
+        metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, sliderWidth, controlHeight);
     }
     
     y = sectionComponents_[kSection_Song]->getBottom() + sectionMarginY;
@@ -890,32 +944,31 @@ void MainComponent::resized()
         speedModeNormalComponent_->setBounds(section->getLocalBounds());
         speedModeTrainingComponent_->setBounds(section->getLocalBounds());
         
-        const auto x = 20;
+        int x = 20;
         int y = 30 + (section->getHeight() - 30) / 2;
-        speedModeNormalToggleButton_->setBounds(x, y - 30, 100, controlHeight);
+        speedModeBasicToggleButton_->setBounds(x, y - 30, 100, controlHeight);
         speedModeTrainingToggleButton_->setBounds(x, y, 100, controlHeight);
         
+        x = speedModeBasicToggleButton_->getRight() + 10;
         y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        speedButton_->setBounds(speedModeNormalToggleButton_->getRight() + 10, y, 180, controlHeight);
+        speedButton_->setBounds(x, y, 180, controlHeight);
         
-        speedIncBeginButton_->setBounds(speedModeNormalToggleButton_->getRight() + 10, y, 120, controlHeight);
-        speedIncPerButton_->setBounds(speedIncBeginButton_->getRight() + 20, y, 120, controlHeight);
+        x = speedButton_->getRight() + 10;
+        speedPresetComponent_->setBounds(x, y, 40 * kNumOfSpeedPresets + 10 * (kNumOfSpeedPresets - 1), controlHeight);
+        
+        int speedButtonX = 0;
+        for (auto&& b : speedPresetButtons_)
+        {
+            b->setBounds(speedButtonX, 0, 40, controlHeight);
+            speedButtonX = b->getRight() + 10;
+        }
+        
+        x = speedModeBasicToggleButton_->getRight() + 10;
+        speedIncStartButton_->setBounds(x, y, 120, controlHeight);
+        speedIncPerButton_->setBounds(speedIncStartButton_->getRight() + 20, y, 120, controlHeight);
         speedIncValueButton_->setBounds(speedIncPerButton_->getRight() + 20, y, 120, controlHeight);
-        speedIncEndButton_->setBounds(speedIncValueButton_->getRight() + 20, y, 120, controlHeight);
+        speedIncGoalButton_->setBounds(speedIncValueButton_->getRight() + 20, y, 120, controlHeight);
     }
-    
-#if defined(ENABLE_SPEEDTRAINER)
-    // Speed
-    sectionTitles_[kSectionTitle_Speed]->setTopRightPosition(getWidth() - marginX, y);
-    speedButton_->setSize(140, 30);
-    speedIncValueButton_->setSize(140, 30);
-    speedIncPerButton_->setSize(140, 30);
-    speedIncMaxButton_->setSize(140, 30);
-    arrangeEvenly({ sectionTitles_[kSectionTitle_Speed]->getX(), y + 60, sectionWidth, 30 }, {
-        { speedButton_.get() },
-        { speedIncValueButton_.get(), speedIncPerButton_.get(), speedIncMaxButton_.get() }
-    });
-#endif
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
     {
@@ -1182,7 +1235,7 @@ void MainComponent::timerCallback()
 
 void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
 {
-    speedModeNormalComponent_->setVisible(tab == kSpeedModeTab_Normal);
+    speedModeNormalComponent_->setVisible(tab == kSpeedModeTab_Basic);
     speedModeTrainingComponent_->setVisible(tab == kSpeedModeTab_Training);
 }
 
@@ -1251,7 +1304,7 @@ void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::
     }
 }
 
-void MainComponent::volumeChanged(float volume)
+void MainComponent::musicVolumeChanged(float volume)
 {
     musicVolumeSlider_->setValue(volume);
     const float db = 20 * log10(volume);
@@ -1264,9 +1317,34 @@ void MainComponent::pitchChanged(int semitone)
     pitchButton_->setText(MelissaUtility::getFormattedPitch(semitone));
 }
 
+void MainComponent::speedModeChanged(SpeedMode mode)
+{
+    updateSpeedModeTab((mode == kSpeedMode_Basic) ? kSpeedModeTab_Basic : kSpeedModeTab_Training);
+}
+
 void MainComponent::speedChanged(int speed)
 {
     speedButton_->setText(String(speed) + "%");
+}
+
+void MainComponent::speedIncStartChanged(int speedIncStart)
+{
+    speedIncStartButton_->setText(String(speedIncStart) + "%");
+}
+
+void MainComponent::speedIncValueChanged(int speedIncValue)
+{
+    speedIncValueButton_->setText(String("+") + String(speedIncValue));
+}
+
+void MainComponent::speedIncPerChanged(int speedIncPer)
+{
+    speedIncPerButton_->setText(String(speedIncPer));
+}
+
+void MainComponent::speedIncGoalChanged(int speedIncGoal)
+{
+    speedIncGoalButton_->setText(String(speedIncGoal) + "%");
 }
 
 void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)

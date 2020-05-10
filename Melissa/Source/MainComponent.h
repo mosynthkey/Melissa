@@ -35,7 +35,7 @@
 
 enum SpeedModeTab
 {
-    kSpeedModeTab_Normal,
+    kSpeedModeTab_Basic,
     kSpeedModeTab_Training,
     kNumOfSpeedModeTabs
 };
@@ -165,24 +165,28 @@ private:
     std::unique_ptr<TextButton> analyzeButton_;
     
     std::unique_ptr<Slider> musicVolumeSlider_;
-    std::unique_ptr<Slider> crossFaderSlider_;
+    std::unique_ptr<Slider> volumeBalanceSlider_;
     std::unique_ptr<Slider> metronomeVolumeSlider_;
     
     std::unique_ptr<MelissaIncDecButton> aButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
     std::unique_ptr<TextButton> resetButton_;
     
-    std::unique_ptr<ToggleButton> speedModeNormalToggleButton_;
+    std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
     std::unique_ptr<ToggleButton> speedModeTrainingToggleButton_;
     
     std::unique_ptr<Component> speedModeNormalComponent_;
     std::unique_ptr<Component> speedModeTrainingComponent_;
+    
+    enum { kNumOfSpeedPresets = 9 };
     std::unique_ptr<MelissaIncDecButton> speedButton_;
+    std::unique_ptr<Component> speedPresetComponent_;
+    std::unique_ptr<TextButton> speedPresetButtons_[kNumOfSpeedPresets];
 
-    std::unique_ptr<MelissaIncDecButton> speedIncBeginButton_;
+    std::unique_ptr<MelissaIncDecButton> speedIncStartButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
-    std::unique_ptr<MelissaIncDecButton> speedIncEndButton_;
+    std::unique_ptr<MelissaIncDecButton> speedIncGoalButton_;
     
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
@@ -234,6 +238,7 @@ private:
         kLabel_BTime,
         
         kLabel_Speed,
+        kLabel_SpeedPresets,
         
         kLabel_SpeedBegin,
         kLabel_SpeedPlus,
@@ -268,9 +273,14 @@ private:
     void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
     
     // MelissaModelListener
-    void volumeChanged(float volume) override;
+    void musicVolumeChanged(float volume) override;
     void pitchChanged(int semitone) override;
+    void speedModeChanged(SpeedMode mode) override;
     void speedChanged(int speed) override;
+    void speedIncStartChanged(int speedIncStart) override;
+    void speedIncValueChanged(int speedIncValue) override;
+    void speedIncPerChanged(int speedIncPer) override;
+    void speedIncGoalChanged(int speedIncGoal) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
