@@ -34,12 +34,12 @@ void MelissaModel::togglePlaybackStatus()
     }
 }
 
-void MelissaModel::setVolume(float volume)
+void MelissaModel::setMusicVolume(float volume)
 {
     if (volume < 0.f || 2.f < volume) return;
     
-    volume_ = volume;
-    for (auto&& l : listeners_) l->volumeChanged(volume);
+    musicVolume_ = volume;
+    for (auto&& l : listeners_) l->musicVolumeChanged(volume);
 }
 
 void MelissaModel::setPitch(int semitone)
@@ -50,12 +50,50 @@ void MelissaModel::setPitch(int semitone)
     for (auto&& l : listeners_) l->pitchChanged(semitone);
 }
 
+void MelissaModel::setSpeedMode(SpeedMode speedMode)
+{
+    speedMode_ = speedMode;
+    for (auto&& l : listeners_) l->speedModeChanged(speedMode);
+}
+
 void MelissaModel::setSpeed(int speed)
 {
     if (speed < 20 || 200 < speed) return;
     
     speed_ = speed;
     for (auto&& l : listeners_) l->speedChanged(speed);
+}
+
+void MelissaModel::setSpeedIncStart(int speedIncStart)
+{
+    if (speedIncStart < 20 || 200 < speedIncStart || speedIncGoal_ <= speedIncStart) return;
+        
+    speedIncStart_ = speedIncStart;
+    for (auto&& l : listeners_) l->speedIncStartChanged(speedIncStart);
+}
+
+void MelissaModel::setSpeedIncValue(int speedIncValue)
+{
+    if (speedIncValue < 0 || 20 < speedIncValue) return;
+    
+    speedIncValue_ = speedIncValue;
+    for (auto&& l : listeners_) l->speedIncValueChanged(speedIncValue);
+}
+
+void MelissaModel::setSpeedIncPer(int speedIncPer)
+{
+    if (speedIncPer < 0 || 50 < speedIncPer) return;
+    
+    speedIncPer_ = speedIncPer;
+    for (auto&& l : listeners_) l->speedIncPerChanged(speedIncPer);
+}
+
+void MelissaModel::setSpeedIncGoal(int speedIncGoal)
+{
+    if (speedIncGoal < 20 || 200 < speedIncGoal || speedIncGoal <= speedIncStart_) return;
+    
+    speedIncGoal_ = speedIncGoal;
+    for (auto&& l : listeners_) l->speedIncGoalChanged(speedIncGoal);
 }
 
 void MelissaModel::setLoopPosRatio(float aPosRatio, float bPosRatio)
@@ -145,19 +183,38 @@ void MelissaModel::setBpm(float bpm)
 void MelissaModel::setBeatPositionMSec(float beatPositionMSec)
 {
     beatPositionMSec_ = beatPositionMSec;
+    
     for (auto&& l : listeners_) l->beatPositionChanged(beatPositionMSec);
 }
 
 void MelissaModel::setAccent(int accent)
 {
     if (accent < 0 || 16 <= accent) return;
+    
     accent_ = accent;
     for (auto&& l : listeners_) l->accentUpdated(accent);
+}
+
+void MelissaModel::setMetronomeVolume(float volume)
+{
+    if (volume < 0.f || 1.f < volume) return;
+    
+    metronomeVolume_ = volume;
+    for (auto&& l : listeners_) l->metronomeVolumeUpdated(volume);
+}
+
+void MelissaModel::setMusicMetronomeBalance(float balance)
+{
+    if (balance < 0.f || 1.f < balance) return;
+    
+    musicMetronomeBalance_ = balance;
+    for (auto&& l : listeners_) l->musicMetronomeBalanceUpdated(balance);
 }
 
 void MelissaModel::setOutputMode(OutputMode outputMode)
 {
     if (outputMode < 0 || kNumOfOutputModes <= outputMode) return;
+    
     outputMode_ = outputMode;
     for (auto&& l : listeners_) l->outputModeChanged(outputMode);
 }
@@ -190,8 +247,8 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-playbackStatus_(kPlaybackStatus_Stop), metronomeStatus_(kMetronomeStatus_Off), lengthMSec_(-1), volume_(1.f), semitone_(0), speed_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
-bpm_(120.f), beatPositionMSec_(0.f), filePath_(""), outputMode_(kOutputMode_LR)
+playbackStatus_(kPlaybackStatus_Stop), metronomeStatus_(kMetronomeStatus_Off), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
+speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
+bpm_(120.f), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR)
 {
-    
 }

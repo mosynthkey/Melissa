@@ -106,7 +106,7 @@ public:
         const auto w = getWidth();
         const auto h = getHeight();
         const auto incDecButtonSize = h;
-        const auto funcButtonWidth = w * 2 / 7;
+        const auto funcButtonWidth = 50;
         
         if (funcButtonPos_ == kButtonPosition_None)
         {

@@ -534,7 +534,7 @@ public:
     
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        g.setColour(Colours::white.withAlpha(shouldDrawButtonAsHighlighted ? 0.8f : 0.6f));
+        g.setColour(Colours::white.withAlpha(shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
         g.setFont(fontSize_);
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), justification_);
     }

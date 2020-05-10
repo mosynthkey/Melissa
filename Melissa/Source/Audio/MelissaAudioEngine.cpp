@@ -20,7 +20,7 @@ using std::make_unique;
 
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncMax_(100), currentSpeed_(100)
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f)
 {
 }
 
@@ -58,30 +58,6 @@ float MelissaAudioEngine::getPlayingPosRatio() const
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
-
-void MelissaAudioEngine::setSpeedIncPer(int32_t speedIncPer)
-{
-    if (speedIncPer < 0) speedIncPer = 0;
-    if (speedIncPer > 100) speedIncPer = 100;
-    speedIncPer_ = speedIncPer;
-    count_ = 0;
-}
-
-void MelissaAudioEngine::setSpeedIncValue(int32_t speedIncValue)
-{
-    if (speedIncValue < 0) speedIncValue = 0;
-    if (speedIncValue > 10) speedIncValue = 10;
-    speedIncValue_ = speedIncValue;
-    count_ = 0;
-}
-
-void MelissaAudioEngine::setSpeedIncMax(int32_t speedIncMax)
-{
-    if (speedIncMax > 200) speedIncMax = 200;
-    if (speedIncMax < speed_) speed_ = speedIncMax;
-    speedIncMax_ = speedIncMax;
-}
-
 void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 {
     for (int iSample = 0; iSample < bufferLength; ++iSample)
@@ -105,8 +81,8 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
                 l = r;
             }
             
-            bufferToRender[0][iSample] = l + metronomeOsc;
-            bufferToRender[1][iSample] = r + metronomeOsc;
+            bufferToRender[0][iSample] = l * cos(M_PI / 2.f * volumeBalance_) + metronomeOsc * sin(M_PI / 2.f * volumeBalance_);
+            bufferToRender[1][iSample] = r * cos(M_PI / 2.f * volumeBalance_) + metronomeOsc * sin(M_PI / 2.f * volumeBalance_);
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
             if (timeQue_.size() > 0)
@@ -165,7 +141,7 @@ void MelissaAudioEngine::process()
                 {
                     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
                     currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
-                    if (currentSpeed_ > speedIncMax_) currentSpeed_ = speedIncMax_;
+                    if (currentSpeed_ > speedIncGoal_) currentSpeed_ = speedIncGoal_;
                     soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
                 }
 
@@ -337,7 +313,7 @@ void MelissaAudioEngine::analyzeBpm()
     std::cout << beatPositionMSec << " sec" << std::endl;
 }
 
-void MelissaAudioEngine::volumeChanged(float volume)
+void MelissaAudioEngine::musicVolumeChanged(float volume)
 {
     volume_ = volume;
 }
@@ -349,12 +325,60 @@ void MelissaAudioEngine::pitchChanged(int semitone)
     needToReset_ = true;
 }
 
+void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
+{
+    if (mode == kSpeedMode_Basic)
+    {
+        speed_ = model_->getSpeed();
+        currentSpeed_  = speed_;
+        speedIncValue_ = 0;
+        speedIncPer_   = 0;
+        speedIncGoal_  = speed_;
+    }
+    else
+    {
+        speed_ = model_->getSpeedIncStart();
+        currentSpeed_  = speed_;
+        speedIncValue_ = model_->getSpeedIncValue();
+        speedIncPer_   = model_->getSpeedIncPer();
+        speedIncGoal_  = model_->getSpeedIncGoal();
+    }
+    
+    count_ = 0;
+    processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
+    needToReset_ = true;
+}
+
 void MelissaAudioEngine::speedChanged(int speed)
 {
     speed_ = speed;
     currentSpeed_ = speed;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
+}
+
+void MelissaAudioEngine::speedIncStartChanged(int speedIncStart)
+{
+    speed_ = speedIncStart;
+    count_ = 0;
+}
+
+void MelissaAudioEngine::speedIncValueChanged(int speedIncValue)
+{
+    speedIncValue_ = speedIncValue;
+    count_ = 0;
+}
+
+void MelissaAudioEngine::speedIncPerChanged(int speedIncPer)
+{
+    speedIncPer_ = speedIncPer;
+    count_ = 0;
+}
+
+void MelissaAudioEngine::speedIncGoalChanged(int speedIncGoal)
+{
+    speedIncGoal_ = speedIncGoal;
+    count_ = 0;
 }
 
 void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
@@ -396,6 +420,16 @@ void MelissaAudioEngine::beatPositionChanged(float beatPositionMSec)
 void MelissaAudioEngine::accentUpdated(int accent)
 {
     metronome_.accent_ = accent;
+}
+
+void MelissaAudioEngine::metronomeVolumeUpdated(float volume)
+{
+    metronome_.volume_ = volume;
+}
+
+void MelissaAudioEngine::musicMetronomeBalanceUpdated(float balance)
+{
+    volumeBalance_ = balance;
 }
 
 void MelissaAudioEngine::outputModeChanged(OutputMode outputMode)

@@ -150,7 +150,7 @@ void MelissaDataSource::saveSettingsFile()
     
     auto previous = new DynamicObject();
     previous->setProperty("file",   currentSongFilePath_);
-    previous->setProperty("volume", model_->getVolume());
+    previous->setProperty("volume", model_->getMusicVolume());
     previous->setProperty("a",      model_->getLoopAPosRatio());
     previous->setProperty("b",      model_->getLoopBPosRatio());
     previous->setProperty("speed",  model_->getSpeed());
@@ -259,7 +259,7 @@ void MelissaDataSource::restorePreviousState()
     if (!file.existsAsFile()) return;
     
     loadFileAsync(file, [&]() {
-        model_->setVolume(previous_.volume_);
+        model_->setMusicVolume(previous_.volume_);
         model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
         model_->setSpeed(previous_.speed_);
         model_->setPitch(previous_.pitch_);
@@ -340,7 +340,7 @@ void MelissaDataSource::saveSongState()
     {
         if (song.filePath_ == currentSongFilePath_)
         {
-            song.volume_ = model_->getVolume();
+            song.volume_ = model_->getMusicVolume();
             song.pitch_  = model_->getPitch();
             return;
         }
@@ -348,7 +348,7 @@ void MelissaDataSource::saveSongState()
     
     Song song;
     song.filePath_ = currentSongFilePath_;
-    song.volume_ = model_->getVolume();
+    song.volume_ = model_->getMusicVolume();
     song.pitch_  = model_->getPitch();
     songs_.emplace_back(song);
 }
@@ -488,13 +488,13 @@ void MelissaDataSource::handleAsyncUpdate()
         if (song.filePath_ == currentSongFilePath_)
         {
             found = true;
-            model_->setVolume(song.volume_);
+            model_->setMusicVolume(song.volume_);
             model_->setPitch(song.pitch_);
         }
     }
     if (!found)
     {
-        model_->setVolume(1.f);
+        model_->setMusicVolume(1.f);
         model_->setPitch(0);
     }
     model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
