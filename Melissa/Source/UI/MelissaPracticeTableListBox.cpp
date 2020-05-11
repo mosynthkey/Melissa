@@ -173,7 +173,7 @@ void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const
             const float b = model->getLoopBPosRatio();
             const int   speed = model->getSpeed();
             const OutputMode output = model->getOutputMode();
-            dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_, a, b, speed, output);
+            dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_);
         }
     }
 }

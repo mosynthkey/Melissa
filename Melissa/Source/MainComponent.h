@@ -158,7 +158,6 @@ private:
     std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
 
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
-    std::unique_ptr<ToggleButton> metronomeSyncButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
     std::unique_ptr<MelissaIncDecButton> accentButton_;
@@ -259,6 +258,7 @@ private:
     MelissaLookAndFeel_SelectorToggleButton selectorLaf_;
     MelissaLookAndFeel_CrossFader crossFaderLaf_;
     MelissaLookAndFeel_SimpleTextButton simpleTextButtonLaf_;
+    std::vector<Component*> lafList_;
     
     String fileName_, fileFullPath_;
     
@@ -282,9 +282,12 @@ private:
     void speedIncPerChanged(int speedIncPer) override;
     void speedIncGoalChanged(int speedIncGoal) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
+    void metronomeSwitchChanged(bool on) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
     void accentUpdated(int accent) override;
+    void metronomeVolumeUpdated(float volume) override;
+    void musicMetronomeBalanceUpdated(float balance) override;
     void outputModeChanged(OutputMode outputMode) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

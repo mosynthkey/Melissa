@@ -111,7 +111,7 @@ private:
     void speedIncGoalChanged(int speedIncGoal) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void playingPosChanged(float time, float ratio) override;
-    void metronomeStatusChanged(MetronomeStatus status) override;
+    void metronomeSwitchChanged(bool on) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
     void accentUpdated(int accent) override;

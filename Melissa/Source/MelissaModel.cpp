@@ -64,6 +64,14 @@ void MelissaModel::setSpeed(int speed)
     for (auto&& l : listeners_) l->speedChanged(speed);
 }
 
+void MelissaModel::setCurrentSpeed(int speed)
+{
+    if (speed < 20 || 200 < speed) return;
+    
+    currentSpeed_ = speed;
+    for (auto&& l : listeners_) l->currentSpeedChanged(speed);
+}
+
 void MelissaModel::setSpeedIncStart(int speedIncStart)
 {
     if (speedIncStart < 20 || 200 < speedIncStart || speedIncGoal_ <= speedIncStart) return;
@@ -168,10 +176,10 @@ float MelissaModel::getPlayingPosMSec() const
     return audioEngine_->getPlayingPosMSec();
 }
 
-void  MelissaModel::setMetronomeState(MetronomeStatus status)
+void  MelissaModel::setMetronomeSwitch(bool on)
 {
-    metronomeStatus_ = status;
-    for (auto&& l : listeners_) l->metronomeStatusChanged(status);
+    metronomeSwitch_ = on;
+    for (auto&& l : listeners_) l->metronomeSwitchChanged(on);
 }
 
 void MelissaModel::setBpm(float bpm)
@@ -247,8 +255,8 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-playbackStatus_(kPlaybackStatus_Stop), metronomeStatus_(kMetronomeStatus_Off), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
-speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
+playbackStatus_(kPlaybackStatus_Stop), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
+speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
 bpm_(120.f), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR)
 {
 }

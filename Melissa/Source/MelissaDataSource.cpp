@@ -50,14 +50,30 @@ void MelissaDataSource::loadSettingsFile(const File& file)
     if (settings.hasProperty("previous"))
     {
         auto p = settings["previous"].getDynamicObject();
-        if (p->hasProperty("file"))   previous_.filePath_   = p->getProperty("file");
-        if (p->hasProperty("volume")) previous_.volume_     = p->getProperty("volume");
-        if (p->hasProperty("a"))      previous_.aRatio_     = p->getProperty("a");
-        if (p->hasProperty("b"))      previous_.bRatio_     = p->getProperty("b");
-        if (p->hasProperty("speed"))  previous_.speed_      = p->getProperty("speed");
-        if (p->hasProperty("pitch"))  previous_.pitch_      = p->getProperty("pitch");
-        const int outputMode = p->getProperty("output");
-        if (p->hasProperty("output")) previous_.outputMode_ = static_cast<OutputMode>(outputMode);
+        if (p->hasProperty("file"))   previous_.filePath_    = p->getProperty("file");
+        if (p->hasProperty("pitch"))  previous_.pitch_       = p->getProperty("pitch");
+        
+        if (p->hasProperty("a"))      previous_.aRatio_      = p->getProperty("a");
+        if (p->hasProperty("b"))      previous_.bRatio_      = p->getProperty("b");
+        
+        const int outputMode = p->getProperty("output_mode");
+        if (p->hasProperty("output_mode"))     previous_.outputMode_       = static_cast<OutputMode>(outputMode);
+        if (p->hasProperty("volume"))           previous_.musicVolume_     = p->getProperty("volume");
+        if (p->hasProperty("metronome_volume")) previous_.metronomeVolume_ = p->getProperty("metronome_volume");
+        if (p->hasProperty("volume_balance"))   previous_.volumeBalance_   = p->getProperty("volume_balance");
+        
+        if (p->hasProperty("metronome_sw"))  previous_.metronomeSw_      = p->getProperty("metronome_sw");
+        if (p->hasProperty("bpm"))           previous_.bpm_              = p->getProperty("bpm");
+        if (p->hasProperty("accent"))        previous_.accent_           = p->getProperty("accent");
+        if (p->hasProperty("beat_position")) previous_.beatPositionMSec_ = p->getProperty("beat_position");
+        
+        const int speedMode = p->getProperty("speed_mode");
+        if (p->hasProperty("speed_mode"))      previous_.speedMode_     = static_cast<SpeedMode>(speedMode);
+        if (p->hasProperty("speed"))           previous_.speed_         = p->getProperty("speed");
+        if (p->hasProperty("speed_inc_start")) previous_.speedIncStart_ = p->getProperty("speed_inc_start");
+        if (p->hasProperty("speed_inc_value")) previous_.speedIncValue_ = p->getProperty("speed_inc_value");
+        if (p->hasProperty("speed_inc_per"))   previous_.speedIncPer_   = p->getProperty("speed_inc_per");
+        if (p->hasProperty("speed_inc_goal"))  previous_.speedIncGoal_  = p->getProperty("speed_inc_goal");
     }
     
     history_.clear();
@@ -103,19 +119,44 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             {
                 auto obj = s.getDynamicObject();
                 Song song;
-                song.filePath_ = obj->getProperty("file");
-                song.volume_   = obj->getProperty("volume");
-                song.pitch_    = obj->getProperty("pitch");
-                song.memo_     = obj->getProperty("memo");
+                song.filePath_         = obj->getProperty("file");
+                song.pitch_            = obj->getProperty("pitch");
+                const int outputMode   = obj->getProperty("output_mode");
+                song.outputMode_  = static_cast<OutputMode>(outputMode);
+                song.musicVolume_      = obj->getProperty("music_volume");
+                song.metronomeVolume_  = obj->getProperty("metronome_volume");
+                song.volumeBalance_    = obj->getProperty("volume_balance");
+                song.metronomeSw_      = obj->getProperty("metronome_sw");
+                song.bpm_              = obj->getProperty("bpm");
+                song.accent_           = obj->getProperty("accent");
+                song.beatPositionMSec_ = obj->getProperty("beat_position");
+                song.memo_             = obj->getProperty("memo");
                 for (auto l : *(obj->getProperty("list").getArray()))
                 {
                     Song::PracticeList list;
                     list.name_       = l.getProperty("name", "");
                     list.aRatio_     = l.getProperty("a", 0.f);
                     list.bRatio_     = l.getProperty("b", 1.f);
-                    list.speed_      = l.getProperty("speed", 100);
-                    const int outputMode = l.getProperty("output", kOutputMode_LR);
+                    
+                    const int outputMode = l.getProperty("output_mode", kOutputMode_LR);
                     list.outputMode_ = static_cast<OutputMode>(outputMode);
+                    list.musicVolume_     = l.getProperty("volume", 1.f);
+                    list.metronomeVolume_ = l.getProperty("metronome_volume", 1.f);
+                    list.volumeBalance_   = l.getProperty("volume_balance", 0.5f);
+                    
+                    list.metronomeSw_      = l.getProperty("metronome_sw", false);
+                    list.bpm_              = l.getProperty("bpm", 120);
+                    list.accent_           = l.getProperty("accent", 4);
+                    list.beatPositionMSec_ = l.getProperty("beat_position", 0.f);
+                    
+                    const int speedMode = l.getProperty("speed_mode", kSpeedMode_Basic);
+                    list.speedMode_     = static_cast<SpeedMode>(speedMode);
+                    list.speed_         = l.getProperty("speed", 100);
+                    list.speedIncStart_ = l.getProperty("speed_inc_start", 70);
+                    list.speedIncValue_ = l.getProperty("speed_inc_value", 1);
+                    list.speedIncPer_   = l.getProperty("speed_inc_per", 10);
+                    list.speedIncGoal_  = l.getProperty("speed_inc_goal", 100);
+                    
                     song.practiceList_.emplace_back(list);
                 }
                 songs_.emplace_back(song);
@@ -150,12 +191,27 @@ void MelissaDataSource::saveSettingsFile()
     
     auto previous = new DynamicObject();
     previous->setProperty("file",   currentSongFilePath_);
-    previous->setProperty("volume", model_->getMusicVolume());
+    previous->setProperty("pitch",  model_->getPitch());
     previous->setProperty("a",      model_->getLoopAPosRatio());
     previous->setProperty("b",      model_->getLoopBPosRatio());
-    previous->setProperty("speed",  model_->getSpeed());
-    previous->setProperty("pitch",  model_->getPitch());
-    previous->setProperty("output", model_->getOutputMode());
+    
+    previous->setProperty("output_mode",      model_->getOutputMode());
+    previous->setProperty("volume",           model_->getMusicVolume());
+    previous->setProperty("metronome_volume", model_->getMetronomeVolume());
+    previous->setProperty("volume_balance",   model_->getMusicMetronomeBalance());
+    
+    previous->setProperty("metronome_sw",  model_->getMetronomeSwitch());
+    previous->setProperty("bpm",           model_->getBpm());
+    previous->setProperty("accent",        model_->getAccent());
+    previous->setProperty("beat_position", model_->getBeatPositionMSec());
+    
+    previous->setProperty("speed_mode",      model_->getSpeedMode());
+    previous->setProperty("speed",           model_->getSpeed());
+    previous->setProperty("speed_inc_start", model_->getSpeedIncStart());
+    previous->setProperty("speed_inc_value", model_->getSpeedIncValue());
+    previous->setProperty("speed_inc_per",   model_->getSpeedIncPer());
+    previous->setProperty("speed_inc_goal",  model_->getSpeedIncGoal());
+    
     settings->setProperty("previous", previous);
     
     Array<var> history;
@@ -181,10 +237,16 @@ void MelissaDataSource::saveSettingsFile()
     for (auto song : songs_)
     {
         auto obj = new DynamicObject();
-        obj->setProperty("file",   song.filePath_);
-        obj->setProperty("volume", song.volume_);
-        obj->setProperty("pitch",  song.pitch_);
-        obj->setProperty("memo",   song.memo_);
+        obj->setProperty("file",             song.filePath_);
+        obj->setProperty("output_mode",      song.outputMode_);
+        obj->setProperty("music_volume",     song.musicVolume_);
+        obj->setProperty("metronome_volume", song.metronomeVolume_);
+        obj->setProperty("volume_balance",   song.volumeBalance_);
+        obj->setProperty("metronome_sw",     song.metronomeSw_);
+        obj->setProperty("bpm",              song.bpm_);
+        obj->setProperty("accent",           song.accent_);
+        obj->setProperty("beat_position",    song.beatPositionMSec_);
+        obj->setProperty("memo",             song.memo_);
         Array<var> list;
         for (auto l : song.practiceList_)
         {
@@ -192,8 +254,24 @@ void MelissaDataSource::saveSettingsFile()
             obj->setProperty("name",   l.name_);
             obj->setProperty("a",      l.aRatio_);
             obj->setProperty("b",      l.bRatio_);
-            obj->setProperty("speed",  l.speed_);
+            
             obj->setProperty("output", l.outputMode_);
+            obj->setProperty("volume", l.musicVolume_);
+            obj->setProperty("metronome_volume", l.metronomeVolume_);
+            obj->setProperty("volume_balance",   l.volumeBalance_);
+            
+            obj->setProperty("metronome_sw",  l.metronomeSw_);
+            obj->setProperty("bpm",           l.bpm_);
+            obj->setProperty("accent",        l.accent_);
+            obj->setProperty("beat_position", l.beatPositionMSec_);
+            
+            obj->setProperty("speed_mode",      l.speedMode_);
+            obj->setProperty("speed",           l.speed_);
+            obj->setProperty("speed_inc_start", l.speedIncStart_);
+            obj->setProperty("speed_inc_value", l.speedIncValue_);
+            obj->setProperty("speed_inc_per",   l.speedIncPer_);
+            obj->setProperty("speed_inc_goal",  l.speedIncGoal_);
+            
             list.add(obj);
         }
         obj->setProperty("list", list);
@@ -259,10 +337,22 @@ void MelissaDataSource::restorePreviousState()
     if (!file.existsAsFile()) return;
     
     loadFileAsync(file, [&]() {
-        model_->setMusicVolume(previous_.volume_);
-        model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
-        model_->setSpeed(previous_.speed_);
         model_->setPitch(previous_.pitch_);
+        model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
+        model_->setOutputMode(previous_.outputMode_);
+        model_->setMusicVolume(previous_.musicVolume_);
+        model_->setMetronomeVolume(previous_.metronomeVolume_);
+        model_->setMusicMetronomeBalance(previous_.volumeBalance_);
+        model_->setMetronomeSwitch(previous_.metronomeSw_);
+        model_->setBpm(previous_.bpm_);
+        model_->setAccent(previous_.accent_);
+        model_->setBeatPositionMSec(previous_.beatPositionMSec_);
+        model_->setSpeedMode(previous_.speedMode_);
+        model_->setSpeed(previous_.speed_);
+        model_->setSpeedIncStart(previous_.speedIncStart_);
+        model_->setSpeedIncValue(previous_.speedIncValue_);
+        model_->setSpeedIncPer(previous_.speedIncPer_);
+        model_->setSpeedIncGoal(previous_.speedIncGoal_);
     });
 }
 
@@ -340,7 +430,6 @@ void MelissaDataSource::saveSongState()
     {
         if (song.filePath_ == currentSongFilePath_)
         {
-            song.volume_ = model_->getMusicVolume();
             song.pitch_  = model_->getPitch();
             return;
         }
@@ -348,7 +437,6 @@ void MelissaDataSource::saveSongState()
     
     Song song;
     song.filePath_ = currentSongFilePath_;
-    song.volume_ = model_->getMusicVolume();
     song.pitch_  = model_->getPitch();
     songs_.emplace_back(song);
 }
@@ -407,7 +495,24 @@ void MelissaDataSource::addPracticeList(const String& name)
             plist.name_   = name;
             plist.aRatio_ = model_->getLoopAPosRatio();
             plist.bRatio_ = model_->getLoopBPosRatio();
-            plist.speed_  = model_->getSpeed();
+            
+            plist.outputMode_      = model_->getOutputMode();
+            plist.musicVolume_     = model_->getMusicVolume();
+            plist.metronomeVolume_ = model_->getMetronomeVolume();
+            plist.volumeBalance_   = model_->getMusicMetronomeBalance();
+            
+            plist.metronomeSw_      = model_->getMetronomeSwitch();
+            plist.bpm_              = model_->getBpm();
+            plist.accent_           = model_->getAccent();
+            plist.beatPositionMSec_ = model_->getBeatPositionMSec();
+
+            plist.speedMode_     = model_->getSpeedMode();
+            plist.speed_         = model_->getSpeed();
+            plist.speedIncStart_ = model_->getSpeedIncStart();
+            plist.speedIncValue_ = model_->getSpeedIncValue();
+            plist.speedIncPer_   = model_->getSpeedIncPer();
+            plist.speedIncGoal_  = model_->getSpeedIncGoal();
+            
             song.practiceList_.emplace_back(plist);
             for (auto l : listeners_) l->practiceListUpdated();
             return;
@@ -431,7 +536,7 @@ void MelissaDataSource::removePracticeList(size_t index)
     }
 }
 
-void MelissaDataSource::overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed, OutputMode outputMode)
+void MelissaDataSource::overwritePracticeList(size_t index, const String& name)
 {
     for (auto&& song : songs_)
     {
@@ -439,11 +544,27 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name, 
         {
             if (index < song.practiceList_.size())
             {
-                song.practiceList_[index].name_       = name;
-                song.practiceList_[index].aRatio_     = aRatio;
-                song.practiceList_[index].bRatio_     = bRatio;
-                song.practiceList_[index].speed_      = speed;
-                song.practiceList_[index].outputMode_ = outputMode;
+                 song.practiceList_[index].name_   = name;
+                 song.practiceList_[index].aRatio_ = model_->getLoopAPosRatio();
+                 song.practiceList_[index].bRatio_ = model_->getLoopBPosRatio();
+                 
+                 song.practiceList_[index].outputMode_      = model_->getOutputMode();
+                 song.practiceList_[index].musicVolume_     = model_->getMusicVolume();
+                 song.practiceList_[index].metronomeVolume_ = model_->getMetronomeVolume();
+                 song.practiceList_[index].volumeBalance_   = model_->getMusicMetronomeBalance();
+                 
+                 song.practiceList_[index].metronomeSw_ = model_->getMetronomeSwitch();
+                 song.practiceList_[index].bpm_         = model_->getBpm();
+                 song.practiceList_[index].accent_      = model_->getAccent();
+                 song.practiceList_[index].beatPositionMSec_ = model_->getBeatPositionMSec();
+
+                 song.practiceList_[index].speedMode_     = model_->getSpeedMode();
+                 song.practiceList_[index].speed_         = model_->getSpeed();
+                 song.practiceList_[index].speedIncStart_ = model_->getSpeedIncStart();
+                 song.practiceList_[index].speedIncValue_ = model_->getSpeedIncValue();
+                 song.practiceList_[index].speedIncPer_   = model_->getSpeedIncPer();
+                 song.practiceList_[index].speedIncGoal_  = model_->getSpeedIncGoal();
+                 
                 for (auto l : listeners_) l->practiceListUpdated();
             }
             return;
@@ -488,19 +609,32 @@ void MelissaDataSource::handleAsyncUpdate()
         if (song.filePath_ == currentSongFilePath_)
         {
             found = true;
-            model_->setMusicVolume(song.volume_);
             model_->setPitch(song.pitch_);
+            model_->setOutputMode(song.outputMode_);
+            model_->setMusicVolume(song.musicVolume_);
+            model_->setMetronomeVolume(song.metronomeVolume_);
+            model_->setMusicMetronomeBalance(song.volumeBalance_);
+            model_->setMetronomeSwitch(song.metronomeSw_);
+            model_->setBpm(song.bpm_);
+            model_->setAccent(song.accent_);
+            model_->setBeatPositionMSec(song.beatPositionMSec_);
         }
     }
     if (!found)
     {
-        model_->setMusicVolume(1.f);
         model_->setPitch(0);
+        model_->setOutputMode(kOutputMode_LR);
+        model_->setMusicVolume(1.f);
+        model_->setMetronomeVolume(1.f);
+        model_->setMusicMetronomeBalance(0.5f);
+        model_->setMetronomeSwitch(false);
+        model_->setBpm(120);
+        model_->setAccent(4);
+        model_->setBeatPositionMSec(0.f);
     }
     model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
     model_->setLoopPosRatio(0.f, 1.f);
     model_->setPlayingPosRatio(0.f);
-    model_->setOutputMode(kOutputMode_LR);
     
     addToHistory(currentSongFilePath_);
     saveSongState();

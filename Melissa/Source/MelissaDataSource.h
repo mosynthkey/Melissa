@@ -52,14 +52,35 @@ public:
     struct Previous
     {
         String filePath_;
-        float volume_;
+        int pitch_;
+        
         float aRatio_;
         float bRatio_;
-        int speed_;
-        int pitch_;
-        OutputMode outputMode_;
         
-        Previous() : filePath_(""), volume_(1.f), aRatio_(0.f), bRatio_(1.f), speed_(100), pitch_(0), outputMode_(kOutputMode_LR) {}
+        OutputMode outputMode_;
+        float musicVolume_;
+        float metronomeVolume_;
+        float volumeBalance_;
+        
+        bool metronomeSw_;
+        int bpm_;
+        int accent_;
+        float beatPositionMSec_;
+
+        SpeedMode speedMode_;
+        int speed_;
+        int speedIncStart_;
+        int speedIncValue_;
+        int speedIncPer_;
+        int speedIncGoal_;
+        
+        Previous() :
+        filePath_(""), pitch_(0),
+        aRatio_(0.f), bRatio_(1.f),
+        outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
+        metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f),
+        speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
+        {}
     } previous_;
     
     FilePathList history_;
@@ -76,22 +97,50 @@ public:
     struct Song
     {
         String filePath_;
-        float volume_;
         int pitch_;
+        OutputMode outputMode_;
+        float musicVolume_;
+        float metronomeVolume_;
+        float volumeBalance_;
+        bool metronomeSw_;
+        int bpm_;
+        int accent_;
+        float beatPositionMSec_;
         String memo_;
+        
         struct PracticeList
         {
             String name_;
             float aRatio_;
             float bRatio_;
-            int speed_;
-            OutputMode outputMode_;
             
-            PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f), speed_(100), outputMode_(kOutputMode_LR) {}
+            OutputMode outputMode_;
+            float musicVolume_;
+            float metronomeVolume_;
+            float volumeBalance_;
+            
+            bool metronomeSw_;
+            int bpm_;
+            int accent_;
+            float beatPositionMSec_;
+
+            SpeedMode speedMode_;
+            int speed_;
+            int speedIncStart_;
+            int speedIncValue_;
+            int speedIncPer_;
+            int speedIncGoal_;
+            
+            PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f),
+            outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
+            metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f),
+            speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
+            {}
         };
         std::vector<PracticeList> practiceList_;
         
-        Song() : filePath_(""), volume_(1.f), pitch_(0), memo_("") {}
+        Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
+        metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f), memo_("") {}
     };
     std::vector<Song> songs_;
     
@@ -135,7 +184,7 @@ public:
     void getPracticeList(std::vector<Song::PracticeList>& list);
     void addPracticeList(const String& name);
     void removePracticeList(size_t index);
-    void overwritePracticeList(size_t index, const String& name, float aRatio, float bRatio, int speed, OutputMode outputMode);
+    void overwritePracticeList(size_t index, const String& name);
     
     // AsyncUpdater
     void handleAsyncUpdate() override;
