@@ -34,6 +34,8 @@ public:
     SpeedMode getSpeedMode() { return speedMode_; }
     void setSpeed(int speed);
     int getSpeed() const  { return speed_; }
+    void setCurrentSpeed(int speed);
+    int getCurrentSpeed() { return currentSpeed_; }
     void setSpeedIncStart(int speedIncStart);
     int getSpeedIncStart() { return speedIncStart_; }
     void setSpeedIncValue(int speedIncValue);
@@ -64,7 +66,8 @@ public:
     float getPlayingPosMSec() const;
     
     // Metronome
-    void  setMetronomeState(MetronomeStatus status);
+    void  setMetronomeSwitch(bool on);
+    bool  getMetronomeSwitch() const { return metronomeSwitch_; }
     void  setBpm(float bpm);
     float getBpm() { return bpm_; }
     void  setBeatPositionMSec(float beatPositionMSec);
@@ -98,7 +101,7 @@ private:
     MelissaAudioEngine* audioEngine_;
     
     PlaybackStatus playbackStatus_;
-    MetronomeStatus metronomeStatus_;
+    bool metronomeSwitch_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
     float musicVolume_;
@@ -107,6 +110,7 @@ private:
     int semitone_;
     SpeedMode speedMode_;
     int speed_;
+    int currentSpeed_;
     int speedIncStart_;
     int speedIncValue_;
     int speedIncPer_;

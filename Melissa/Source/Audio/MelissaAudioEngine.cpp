@@ -95,8 +95,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
         mutex_.unlock();
         
         const int beatSection = (playingPosMSec_ - metronome_.beatPositionMSec_) / ((60.f / metronome_.bpm_) * 1000.f);
-        const int accentBeatSection = beatSection / metronome_.accent_;
-        if (accentBeatSection != metronome_.prevBeatSection_ / metronome_.accent_)
+        if (metronome_.accent_ != 0 && (beatSection / metronome_.accent_ != metronome_.prevBeatSection_ / metronome_.accent_))
         {
             metronome_.amp_ = 1.f;
             metronome_.pitch_ = 880 * 2;
@@ -142,6 +141,7 @@ void MelissaAudioEngine::process()
                     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
                     currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
                     if (currentSpeed_ > speedIncGoal_) currentSpeed_ = speedIncGoal_;
+                    model_->setCurrentSpeed(currentSpeed_);
                     soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
                 }
 
@@ -353,6 +353,7 @@ void MelissaAudioEngine::speedChanged(int speed)
 {
     speed_ = speed;
     currentSpeed_ = speed;
+    model_->setCurrentSpeed(speed);
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
 }
@@ -400,10 +401,9 @@ void MelissaAudioEngine::playingPosChanged(float time, float ratio)
     needToReset_ = true;
 }
 
-void MelissaAudioEngine::metronomeStatusChanged(MetronomeStatus status)
+void MelissaAudioEngine::metronomeSwitchChanged(bool on)
 {
-#warning todo
-    metronome_.on_ = (status == kMetronomeStatus_On_Sync || status == kMetronomeStatus_On_Free);
+    metronome_.on_ = on;
 }
 
 void MelissaAudioEngine::bpmChanged(float bpm)

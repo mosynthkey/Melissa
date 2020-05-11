@@ -14,13 +14,6 @@ enum PlaybackStatus
     kPlaybackStatus_Stop
 };
 
-enum MetronomeStatus
-{
-    kMetronomeStatus_On_Sync,
-    kMetronomeStatus_On_Free,
-    kMetronomeStatus_Off,
-};
-
 enum OutputMode : int
 {
     kOutputMode_LR,
@@ -29,7 +22,7 @@ enum OutputMode : int
     kNumOfOutputModes
 };
 
-enum SpeedMode
+enum SpeedMode : int
 {
     kSpeedMode_Basic,
     kSpeedMode_Training,
@@ -46,13 +39,14 @@ public:
     virtual void pitchChanged(int semitone) {}
     virtual void speedModeChanged(SpeedMode mode) {}
     virtual void speedChanged(int speed) {}
+    virtual void currentSpeedChanged(int speed) {}
     virtual void speedIncStartChanged(int speedIncStart) {}
     virtual void speedIncValueChanged(int speedIncValue) {}
     virtual void speedIncPerChanged(int speedIncPer) {}
     virtual void speedIncGoalChanged(int speedIncGoal) {}
     virtual void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) {}
     virtual void playingPosChanged(float time, float ratio) {}
-    virtual void metronomeStatusChanged(MetronomeStatus status) {}
+    virtual void metronomeSwitchChanged(bool on) {}
     virtual void bpmChanged(float bpm) {}
     virtual void beatPositionChanged(float beatPositionMSec) {}
     virtual void accentUpdated(int accent) {}

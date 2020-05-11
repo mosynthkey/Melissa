@@ -155,6 +155,16 @@ MainComponent::~MainComponent()
     shutdownAudio();
     
     setLookAndFeel(nullptr);
+    resetButton_->setLookAndFeel(nullptr);
+    volumeBalanceSlider_->setLookAndFeel(nullptr);
+    metronomeOnOffButton_->setLookAndFeel(nullptr);
+    analyzeButton_->setLookAndFeel(nullptr);
+    speedModeBasicToggleButton_->setLookAndFeel(nullptr);
+    speedModeTrainingToggleButton_->setLookAndFeel(nullptr);
+    for (auto&& b : speedPresetButtons_)
+    {
+        b->setLookAndFeel(nullptr);
+    }
     historyTable_->setLookAndFeel(nullptr);
     browseToggleButton_->setLookAndFeel(nullptr);
     playlistToggleButton_->setLookAndFeel(nullptr);
@@ -404,15 +414,9 @@ void MainComponent::createUI()
         metronomeOnOffButton_->onClick = [this]()
         {
             const auto on = metronomeOnOffButton_->getToggleState();
-            model_->setMetronomeState(on ? kMetronomeStatus_On_Sync : kMetronomeStatus_Off);
+            model_->setMetronomeSwitch(on);
         };
         section->addAndMakeVisible(metronomeOnOffButton_.get());
-        
-        metronomeSyncButton_ = make_unique<ToggleButton>();
-        metronomeSyncButton_->setButtonText("Sync");
-        metronomeSyncButton_->setClickingTogglesState(true);
-        metronomeSyncButton_->setLookAndFeel(&circleToggleLaf_);
-        section->addAndMakeVisible(metronomeSyncButton_.get());
         
         bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
         bpmButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
@@ -932,8 +936,7 @@ void MainComponent::resized()
         analyzeButton_->setTopRightPosition(section->getWidth() - 10, 0);
         
         bpmButton_->setBounds(20, y, 180, controlHeight);
-        metronomeSyncButton_->setBounds(bpmButton_->getRight() + 10, y, 80, controlHeight);
-        accentButton_->setBounds(metronomeSyncButton_->getRight() + 10, y, 180, controlHeight);
+        accentButton_->setBounds(bpmButton_->getRight() + 10, y, 180, controlHeight);
         beatPositionButton_->setBounds(accentButton_->getRight() + 10, y, 180, controlHeight);
     }
     
@@ -1235,6 +1238,8 @@ void MainComponent::timerCallback()
 
 void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
 {
+    speedModeBasicToggleButton_->setToggleState(tab == kSpeedModeTab_Basic, dontSendNotification);
+    speedModeTrainingToggleButton_->setToggleState(tab == kSpeedModeTab_Training, dontSendNotification);
     speedModeNormalComponent_->setVisible(tab == kSpeedModeTab_Basic);
     speedModeTrainingComponent_->setVisible(tab == kSpeedModeTab_Training);
 }
@@ -1353,6 +1358,11 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
     bButton_->setText(MelissaUtility::getFormattedTimeMSec(bTimeMSec));
 }
 
+void MainComponent::metronomeSwitchChanged(bool on)
+{
+    metronomeOnOffButton_->setToggleState(on, dontSendNotification);
+}
+
 void MainComponent::bpmChanged(float bpm)
 {
     bpmButton_->setText(String(static_cast<uint32_t>(model_->getBpm())));
@@ -1366,6 +1376,16 @@ void MainComponent::beatPositionChanged(float beatPositionMSec)
 void MainComponent::accentUpdated(int accent)
 {
     accentButton_->setText(String(accent));
+}
+
+void MainComponent::metronomeVolumeUpdated(float volume)
+{
+    metronomeVolumeSlider_->setValue(volume);
+}
+
+void MainComponent::musicMetronomeBalanceUpdated(float balance)
+{
+    volumeBalanceSlider_->setValue(balance);
 }
 
 void MainComponent::outputModeChanged(OutputMode outputMode)
