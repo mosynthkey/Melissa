@@ -18,11 +18,64 @@
 
 using std::make_unique;
 
+class MelissaAudioEngine::SampleIndexStretcher
+{
+public:
+    SampleIndexStretcher() :
+    readIndex_(0.f),
+    speed_(1.f)
+    {
+    }
+    
+    void reset()
+    {
+        readIndex_ = 0;
+        que_.clear();
+    }
+    
+    void setSpeed(float speed)
+    {
+        speed_ = speed;
+        reset();
+    }
+    
+    void putSampleIndex(size_t sampleIndex)
+    {
+        que_.push_back(sampleIndex);
+    }
+    
+    void getStretchedSampleIndices(size_t length, std::deque<float>& stretchedSampleIndex)
+    {
+        stretchedSampleIndex.clear();
+        
+        for (size_t index = 0; index < length; ++index)
+        {
+            stretchedSampleIndex.push_back(que_[static_cast<size_t>(readIndex_)]);
+            readIndex_ += speed_;
+        }
+        
+        const size_t numOfSamplesToDelete = static_cast<int>(readIndex_) - 1;
+        if (0 < numOfSamplesToDelete)
+        {
+            que_.erase(que_.begin(), que_.begin() + numOfSamplesToDelete);
+            readIndex_ -= numOfSamplesToDelete;
+        }
+    }
+    
+private:
+    std::deque<size_t> que_;
+    float readIndex_;
+    float speed_;
+};
+
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f)
 {
+    sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
 }
+
+MelissaAudioEngine::~MelissaAudioEngine() {}
 
 void MelissaAudioEngine::updateBuffer()
 {
@@ -60,6 +113,12 @@ float MelissaAudioEngine::getPlayingPosRatio() const
 
 void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 {
+    
+    if (processedBufferQue_.size() <= bufferLength) return;
+    mutex_.lock();
+    sampleIndexStretcher_->getStretchedSampleIndices(bufferLength, timeQue_);
+    mutex_.unlock();
+    
     for (int iSample = 0; iSample < bufferLength; ++iSample)
     {
         metronome_.osc_ += 2.f / (outputSampleRate_ / metronome_.pitch_);
@@ -67,7 +126,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
         
         const auto metronomeOsc = metronome_.osc_ * metronome_.amp_ * metronome_.volume_ * (metronome_.on_ ? 1.f : 0.f);
         mutex_.lock();
-        if (processedBufferQue_.size() > 0)
+        if (processedBufferQue_.size() > 0 && timeQue_.size() > 0)
         {
             float l = processedBufferQue_[0] * volume_;
             float r = processedBufferQue_[1] * volume_;
@@ -85,12 +144,8 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
             bufferToRender[1][iSample] = r * cos(M_PI / 2.f * volumeBalance_) + metronomeOsc * sin(M_PI / 2.f * volumeBalance_);
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
-            if (timeQue_.size() > 0)
-            {
-                playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
-                timeQue_.pop_front();
-            }
-            
+            playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
+            timeQue_.pop_front();
         }
         mutex_.unlock();
         
@@ -121,10 +176,8 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 
 void MelissaAudioEngine::process()
 {
-    if (dataSource_->getBufferLength() == 0) return;
+    if (dataSource_->getBufferLength() == 0 || sampleIndexStretcher_ == nullptr) return;
     if (needToReset_) resetProcessedBuffer();
-    
-    size_t sampleIndex[processLength_];
     
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     while (receivedSampleSize == 0)
@@ -146,20 +199,15 @@ void MelissaAudioEngine::process()
                 }
 
             }
-            sampleIndex[iSample] = readIndex_;
+            mutex_.lock();
+            sampleIndexStretcher_->putSampleIndex(readIndex_);
+            mutex_.unlock();
             bufferForSoundTouch_[iSample * 2 + 0] = dataSource_->readBuffer(0, readIndex_);
             bufferForSoundTouch_[iSample * 2 + 1] = dataSource_->readBuffer(1, readIndex_);
             ++readIndex_;
         }
         
         soundTouch_->putSamples(bufferForSoundTouch_, processLength_);
-        mutex_.lock();
-        for (size_t index = 0; index < processLength_ / processingSpeed_; ++index)
-        {
-            timeQue_.emplace_back(sampleIndex[static_cast<size_t>(index * processingSpeed_)]);
-        }
-        mutex_.unlock();
-        
         receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     }
     
@@ -201,10 +249,12 @@ void MelissaAudioEngine::resetProcessedBuffer()
     soundTouch_->setTempo(fsConvPitch * speed_ / 100.f);
     soundTouch_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
     processingSpeed_ = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (speed_ / 100.f);
+    sampleIndexStretcher_->setSpeed(processingSpeed_);
     
     mutex_.lock();
     processedBufferQue_.clear();
     timeQue_.clear();
+    sampleIndexStretcher_->reset();
     mutex_.unlock();
     
     playingPosMSec_ = static_cast<float>(processStartIndex_) / originalSampleRate_ * 1000.f;

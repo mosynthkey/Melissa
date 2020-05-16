@@ -20,7 +20,7 @@ class MelissaAudioEngine : public MelissaModelListener
 {
 public:
     MelissaAudioEngine();
-    virtual ~MelissaAudioEngine() {};
+    ~MelissaAudioEngine();
     
     void updateBuffer();
     void setOutputSampleRate(int32_t sampleRate);
@@ -58,6 +58,9 @@ private:
     std::deque<float> processedBufferQue_;
     std::deque<float> timeQue_;
     int32_t outputSampleRate_;
+    
+    class SampleIndexStretcher;
+    std::unique_ptr<SampleIndexStretcher> sampleIndexStretcher_;
     
     size_t aIndex_, bIndex_, processStartIndex_;
     size_t readIndex_; // from buffer_
