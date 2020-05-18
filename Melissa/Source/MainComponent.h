@@ -179,6 +179,7 @@ private:
     
     enum { kNumOfSpeedPresets = 9 };
     std::unique_ptr<MelissaIncDecButton> speedButton_;
+    std::unique_ptr<Viewport> speedPresetViewport_;
     std::unique_ptr<Component> speedPresetComponent_;
     std::unique_ptr<TextButton> speedPresetButtons_[kNumOfSpeedPresets];
 
@@ -188,6 +189,13 @@ private:
     std::unique_ptr<MelissaIncDecButton> speedIncGoalButton_;
     
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
+    
+    enum EqBand
+    {
+        EqBandMid1,
+        kNumOfEqBands
+    };
+    std::unique_ptr<Slider> eqFreqKnobs_[kNumOfEqBands];
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
     std::unique_ptr<ToggleButton> playlistToggleButton_;
@@ -214,9 +222,10 @@ private:
     {
         kSection_Song,
         kSection_Loop,
-        kSection_Output,
-        kSection_Metronome,
         kSection_Speed,
+        kSection_Metronome,
+        kSection_Eq,
+        kSection_Output,
         kNumOfSections
     };
     std::array<std::unique_ptr<MelissaSectionComponent>, kNumOfSections> sectionComponents_;

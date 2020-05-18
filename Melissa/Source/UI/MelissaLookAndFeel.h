@@ -101,6 +101,29 @@ public:
         
     }
     
+    void drawRotarySlider(Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override
+    {
+        const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
+        constexpr float thickness = 4.f;
+        
+        Path path;
+        path.addArc(x, y, width, height, angle, rotaryEndAngle, true);
+        path.lineTo(x + width / 2, y + height / 2);
+        path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, rotaryEndAngle, angle, false);
+        path.closeSubPath();
+        g.setColour(Colours::white.withAlpha(0.4f));
+        g.fillPath(path);
+        
+        path.clear();
+        path.addArc(x, y, width, height, rotaryStartAngle, angle, true);
+        path.lineTo(x + width / 2, y + height / 2);
+        path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, angle, rotaryStartAngle, false);
+        path.closeSubPath();
+        g.setColour(Colour(MelissaUISettings::getAccentColour()));
+        g.fillPath(path);
+        
+    }
+    
     void drawPopupMenuBackground (Graphics& g, int width, int height) override
     {
         g.fillAll(Colour(MelissaUISettings::getDialogBackgoundColour()));

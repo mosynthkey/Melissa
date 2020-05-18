@@ -459,7 +459,6 @@ void MelissaAudioEngine::metronomeSwitchChanged(bool on)
 void MelissaAudioEngine::bpmChanged(float bpm)
 {
     metronome_.bpm_ = bpm;
-    printf("BPM : %f", metronome_.bpm_);
 }
 
 void MelissaAudioEngine::beatPositionChanged(float beatPositionMSec)
