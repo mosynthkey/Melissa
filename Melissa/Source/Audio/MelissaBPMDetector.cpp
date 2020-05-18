@@ -56,7 +56,6 @@ void MelissaBPMDetector::handleAsyncUpdate()
     }
     
     auto model = MelissaModel::getInstance();
-    printf("BPM : %f", bpmDetect_->getBpm());
     model->setBpm(std::round(bpmDetect_->getBpm()));
     model->setBeatPositionMSec(beatPosition[strengthMaxIndex] * 1000.f);
 }
