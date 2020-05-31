@@ -68,11 +68,104 @@ private:
     float speed_;
 };
 
+class MelissaAudioEngine::Equalizer
+{
+public:
+    Equalizer() :
+    shouldUpdateCoefs_(true)
+    {
+        sampleRate_ = 48000;
+        freq_ = 500;
+        q_ = 7.f;
+        gainDb_ = 0.f;
+        reset();
+    }
+    
+    void reset()
+    {
+        for (size_t chIndex = 0; chIndex < kNumOfChs; ++chIndex)
+        {
+            std::fill(z_[chIndex], z_[chIndex] + kNumOfZs_, 0.f);
+        }
+    }
+    
+    void updateCoefs()
+    {
+        const float gain = pow(10, abs(gainDb_) / 20.f) * ((gainDb_ > 0) ? 1 : -1);
+        printf("gain = %f\n", gain);
+        const float omega = 2.f * M_PI *  freq_ / sampleRate_;
+        const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
+        const float A     = pow(10.f, (gain / 40.f) );
+         
+        a[0] =  1.0f + alpha / A;
+        a[1] = -2.0f * cos(omega);
+        a[2] =  1.0f - alpha / A ;
+        b[0] =  1.0f + alpha * A ;
+        b[1] = -2.0f * cos(omega);
+        b[2] =  1.0f - alpha * A ;
+        
+        shouldUpdateCoefs_ = false;
+    }
+    
+    void process(float* inBuffer, float* outBuffer)
+    {
+        if (shouldUpdateCoefs_) updateCoefs();
+        
+        for (size_t chIndex = 0; chIndex < 2; ++chIndex)
+        {
+            const float signalIn = inBuffer[chIndex];
+            outBuffer[chIndex] = (b[0] / a[0]) * signalIn
+                               + (b[1] / a[0]) * z_[chIndex][0]
+                               + (b[2] / a[0]) * z_[chIndex][1]
+                               - (a[1] / a[0]) * z_[chIndex][2]
+                               - (a[2] / a[0]) * z_[chIndex][3];
+            
+            z_[chIndex][1] = z_[chIndex][0];
+            z_[chIndex][0] = signalIn;
+            z_[chIndex][3] = z_[chIndex][2];
+            z_[chIndex][2] = outBuffer[chIndex];
+        }
+    }
+    
+    void setSampleRate(float sampleRate)
+    {
+        sampleRate_ = sampleRate;
+        shouldUpdateCoefs_ = true;
+    }
+    
+    void setFreq(float freq)
+    {
+        freq_ = freq;
+        shouldUpdateCoefs_ = true;
+    }
+    
+    void setGain(float gain)
+    {
+        gainDb_ = gain;
+        shouldUpdateCoefs_ = true;
+    }
+    
+    void setQ(float q)
+    {
+        q_ = q;
+        shouldUpdateCoefs_ = true;
+    }
+    
+private:
+    float a[3], b[3];
+    static constexpr size_t kNumOfZs_ = 4;
+    static constexpr size_t kNumOfChs = 2;
+    float z_[kNumOfChs][kNumOfZs_];
+    float shouldUpdateCoefs_;
+    float sampleRate_, freq_, gainDb_, q_;
+};
+
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncPer_(0), speedIncValue_(0), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f)
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncStart_(100), speedIncPer_(0), speedIncValue_(0), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
+    eq_ = std::make_unique<Equalizer>();
 }
 
 MelissaAudioEngine::~MelissaAudioEngine() {}
@@ -98,6 +191,7 @@ void MelissaAudioEngine::setOutputSampleRate(int32_t sampleRate)
     if (outputSampleRate_ == sampleRate) return;
     
     outputSampleRate_ = sampleRate;
+    eq_->setSampleRate(sampleRate);
     needToReset_ = true;
 }
 
@@ -128,20 +222,24 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
         mutex_.lock();
         if (processedBufferQue_.size() > 0 && timeQue_.size() > 0)
         {
-            float l = processedBufferQue_[0] * volume_;
-            float r = processedBufferQue_[1] * volume_;
+            float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
+            
+            if (eqSwitch_) eq_->process(buffer, buffer);
+            buffer[0] *= volume_;
+            buffer[1] *= volume_;
             
             if (outputMode_ == kOutputMode_LL)
             {
-                r = l;
+                buffer[1] = buffer[0];
             }
             else if (outputMode_ == kOutputMode_RR)
             {
-                l = r;
+                buffer[0] = buffer[1];
             }
             
-            bufferToRender[0][iSample] = l * cos(M_PI / 2.f * volumeBalance_) + metronomeOsc * sin(M_PI / 2.f * volumeBalance_);
-            bufferToRender[1][iSample] = r * cos(M_PI / 2.f * volumeBalance_) + metronomeOsc * sin(M_PI / 2.f * volumeBalance_);
+            const float musicVolumeCoef = cos(M_PI / 2.f * volumeBalance_);
+            bufferToRender[0][iSample] = buffer[0] * musicVolumeCoef + metronomeOsc * (1.f - musicVolumeCoef);
+            bufferToRender[1][iSample] = buffer[1] * musicVolumeCoef + metronomeOsc * (1.f - musicVolumeCoef);
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
             playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
@@ -387,8 +485,18 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
     }
     else
     {
-        speed_ = model_->getSpeedIncStart();
-        currentSpeed_  = speed_;
+        if (currentSpeed_ < speedIncStart_)
+        {
+            speed_ = speedIncStart_;
+        }
+        else if (speedIncGoal_ < currentSpeed_)
+        {
+            speed_ = speedIncGoal_;
+        }
+        else
+        {
+            speed_ = currentSpeed_;
+        }
         speedIncValue_ = model_->getSpeedIncValue();
         speedIncPer_   = model_->getSpeedIncPer();
         speedIncGoal_  = model_->getSpeedIncGoal();
@@ -410,7 +518,7 @@ void MelissaAudioEngine::speedChanged(int speed)
 
 void MelissaAudioEngine::speedIncStartChanged(int speedIncStart)
 {
-    speed_ = speedIncStart;
+    speedIncStart_ = speedIncStart;
     count_ = 0;
 }
 
@@ -484,4 +592,24 @@ void MelissaAudioEngine::musicMetronomeBalanceUpdated(float balance)
 void MelissaAudioEngine::outputModeChanged(OutputMode outputMode)
 {
     outputMode_ = outputMode;
+}
+
+void MelissaAudioEngine::eqSwitchChanged(bool on)
+{
+    eqSwitch_ = on;
+}
+
+void MelissaAudioEngine::eqFreqChanged(size_t band, float freq)
+{
+    eq_->setFreq(freq);
+}
+
+void MelissaAudioEngine::eqGainChanged(size_t band, float gain)
+{
+    eq_->setGain(gain);
+}
+
+void MelissaAudioEngine::eqQChanged(size_t band, float q)
+{
+    eq_->setQ(q);
 }

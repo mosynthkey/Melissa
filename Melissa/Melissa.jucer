@@ -140,6 +140,8 @@
             file="Source/MelissaDataSource.cpp"/>
       <FILE id="skT0g0" name="MelissaDataSource.h" compile="0" resource="0"
             file="Source/MelissaDataSource.h"/>
+      <FILE id="hgx51a" name="MelissaDefinitions.h" compile="0" resource="0"
+            file="Source/MelissaDefinitions.h"/>
       <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>
       <FILE id="EbvOl3" name="MelissaMIDIControlManager.cpp" compile="1"
             resource="0" file="Source/MelissaMIDIControlManager.cpp"/>

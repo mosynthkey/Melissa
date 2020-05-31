@@ -34,6 +34,11 @@ public:
         g.drawText(text_, position_, 0, textWidth_, getHeight(), Justification::left);
     }
     
+    void resized() override
+    {
+        setText(text_);
+    }
+    
     void setText(const String& text)
     {
         stopTimer();

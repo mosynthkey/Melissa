@@ -26,7 +26,7 @@ void MelissaBPMDetector::handleAsyncUpdate()
     
     const auto numOfSamples = dataSource_->getBufferLength();
     
-    constexpr size_t processLength = 4096;
+    constexpr size_t processLength = 512;
     constexpr size_t bufferLength = processLength * 2 /* Stereo */;
     float buffer[bufferLength];
     
@@ -55,7 +55,10 @@ void MelissaBPMDetector::handleAsyncUpdate()
         }
     }
     
+    
+    const auto bpm = bpmDetect_->getBpm();
+    printf("bpm = %f\n", bpm);
     auto model = MelissaModel::getInstance();
-    model->setBpm(std::round(bpmDetect_->getBpm()));
+    model->setBpm(std::round(bpm));
     model->setBeatPositionMSec(beatPosition[strengthMaxIndex] * 1000.f);
 }

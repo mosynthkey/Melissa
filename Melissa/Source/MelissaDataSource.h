@@ -74,12 +74,18 @@ public:
         int speedIncPer_;
         int speedIncGoal_;
         
+        bool eqSw_;
+        float eqFreq_;
+        float eqGain_;
+        float eqQ_;
+        
         Previous() :
         filePath_(""), pitch_(0),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f),
-        speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
+        speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
+        eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f)
         {}
     } previous_;
     
@@ -106,6 +112,10 @@ public:
         int bpm_;
         int accent_;
         float beatPositionMSec_;
+        bool eqSw_;
+        float eqFreq_;
+        float eqGain_;
+        float eqQ_;
         String memo_;
         
         struct PracticeList
@@ -140,7 +150,7 @@ public:
         std::vector<PracticeList> practiceList_;
         
         Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f), memo_("") {}
+        metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f), eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
     };
     std::vector<Song> songs_;
     
