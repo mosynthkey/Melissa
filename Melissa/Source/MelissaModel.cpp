@@ -5,6 +5,7 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include "MelissaDefinitions.h"
 #include "MelissaModel.h"
 
 MelissaModel MelissaModel::instance_;
@@ -58,7 +59,7 @@ void MelissaModel::setSpeedMode(SpeedMode speedMode)
 
 void MelissaModel::setSpeed(int speed)
 {
-    if (speed < 20 || 200 < speed) return;
+    if (speed < kSpeedMin || kSpeedMax < speed) return;
     
     speed_ = speed;
     for (auto&& l : listeners_) l->speedChanged(speed);
@@ -66,7 +67,7 @@ void MelissaModel::setSpeed(int speed)
 
 void MelissaModel::setCurrentSpeed(int speed)
 {
-    if (speed < 20 || 200 < speed) return;
+    if (speed < kSpeedMin || kSpeedMax < speed) return;
     
     currentSpeed_ = speed;
     for (auto&& l : listeners_) l->currentSpeedChanged(speed);
@@ -74,7 +75,7 @@ void MelissaModel::setCurrentSpeed(int speed)
 
 void MelissaModel::setSpeedIncStart(int speedIncStart)
 {
-    if (speedIncStart < 20 || 200 < speedIncStart || speedIncGoal_ <= speedIncStart) return;
+    if (speedIncStart < kSpeedMin || kSpeedMax < speedIncStart || speedIncGoal_ <= speedIncStart) return;
         
     speedIncStart_ = speedIncStart;
     for (auto&& l : listeners_) l->speedIncStartChanged(speedIncStart);
@@ -98,7 +99,7 @@ void MelissaModel::setSpeedIncPer(int speedIncPer)
 
 void MelissaModel::setSpeedIncGoal(int speedIncGoal)
 {
-    if (speedIncGoal < 20 || 200 < speedIncGoal || speedIncGoal <= speedIncStart_) return;
+    if (speedIncGoal < kSpeedMin || kSpeedMax < speedIncGoal || speedIncGoal <= speedIncStart_) return;
     
     speedIncGoal_ = speedIncGoal;
     for (auto&& l : listeners_) l->speedIncGoalChanged(speedIncGoal);
@@ -227,6 +228,31 @@ void MelissaModel::setOutputMode(OutputMode outputMode)
     for (auto&& l : listeners_) l->outputModeChanged(outputMode);
 }
 
+void MelissaModel::setEqSwitch(bool on)
+{
+    eqSwitch_ = on;
+    for (auto&& l : listeners_) l->eqSwitchChanged(on);
+}
+
+void MelissaModel::setEqFreq(size_t band, float freq)
+{
+    if (freq < kEqFreqMin || kEqFreqMax < freq) return;
+    eqFreq_ = freq;
+    for (auto&& l : listeners_) l->eqFreqChanged(band, freq);
+}
+
+void MelissaModel::setEqGain(size_t band, float gain)
+{
+    if (gain < kEqGainMin || kEqGainMax < gain) return;
+    for (auto&& l : listeners_) l->eqGainChanged(band, gain);
+}
+
+void MelissaModel::setEqQ(size_t band, float eqQ)
+{
+    if (eqQ < kEqQMin || kEqQMax < eqQ) return;
+    for (auto&& l : listeners_) l->eqQChanged(band, eqQ);
+}
+
 void MelissaModel::addListener(MelissaModelListener* listener)
 {
     for (auto&& l : listeners_)
@@ -257,6 +283,6 @@ MelissaModel* MelissaModel::getInstance()
 MelissaModel::MelissaModel() :
 playbackStatus_(kPlaybackStatus_Stop), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
 speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
-bpm_(120.f), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR)
+bpm_(120.f), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f)
 {
 }

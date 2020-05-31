@@ -77,6 +77,7 @@ private:
     
     int32_t count_;
     
+    int32_t speedIncStart_;
     int32_t speedIncPer_;
     int32_t speedIncValue_;
     int32_t speedIncGoal_;
@@ -103,6 +104,11 @@ private:
         float pitch_;
     } metronome_;
     
+    class Equalizer;
+    bool eqSwitch_;
+    std::unique_ptr<Equalizer> eq_;
+    
+    
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
     void pitchChanged(int semitone) override;
@@ -121,4 +127,8 @@ private:
     void metronomeVolumeUpdated(float volume) override;
     void musicMetronomeBalanceUpdated(float balance) override;
     void outputModeChanged(OutputMode outputMode) override;
+    void eqSwitchChanged(bool on) override;
+    void eqFreqChanged(size_t band, float freq) override;
+    void eqGainChanged(size_t band, float gain) override;
+    void eqQChanged(size_t band, float q) override;
 };

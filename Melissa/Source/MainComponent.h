@@ -195,7 +195,11 @@ private:
         EqBandMid1,
         kNumOfEqBands
     };
+    std::unique_ptr<ToggleButton> eqSwitchButton_;
     std::unique_ptr<Slider> eqFreqKnobs_[kNumOfEqBands];
+    std::unique_ptr<Slider> eqQKnobs_[kNumOfEqBands];
+    std::unique_ptr<Slider> eqGainKnobs_[kNumOfEqBands];
+    std::unique_ptr<Label> knobLabels_[kNumOfEqBands * 3];
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
     std::unique_ptr<ToggleButton> playlistToggleButton_;
@@ -298,6 +302,10 @@ private:
     void metronomeVolumeUpdated(float volume) override;
     void musicMetronomeBalanceUpdated(float balance) override;
     void outputModeChanged(OutputMode outputMode) override;
+    void eqSwitchChanged(bool on) override;
+    void eqFreqChanged(size_t band, float freq) override;
+    void eqGainChanged(size_t band, float gain) override;
+    void eqQChanged(size_t band, float q) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

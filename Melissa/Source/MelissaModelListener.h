@@ -53,5 +53,9 @@ public:
     virtual void metronomeVolumeUpdated(float volume) {}
     virtual void musicMetronomeBalanceUpdated(float balance) {}
     virtual void outputModeChanged(OutputMode outputMode) {}
+    virtual void eqSwitchChanged(bool on) {}
+    virtual void eqFreqChanged(size_t band, float freq) {}
+    virtual void eqGainChanged(size_t band, float gain) {}
+    virtual void eqQChanged(size_t band, float q) {}
 };
 

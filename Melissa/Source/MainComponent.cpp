@@ -8,9 +8,10 @@
 #include <sstream>
 #include "MainComponent.h"
 #include "MelissaAboutComponent.h"
-#include "MelissaUISettings.h"
-#include "MelissaOptionDialog.h"
+#include "MelissaDefinitions.h"
 #include "MelissaInputDialog.h"
+#include "MelissaOptionDialog.h"
+#include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
 using std::make_unique;
@@ -159,6 +160,7 @@ MainComponent::~MainComponent()
     resetButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
+    eqSwitchButton_->setLookAndFeel(nullptr);
     analyzeButton_->setLookAndFeel(nullptr);
     speedModeBasicToggleButton_->setLookAndFeel(nullptr);
     speedModeTrainingToggleButton_->setLookAndFeel(nullptr);
@@ -568,13 +570,64 @@ void MainComponent::createUI()
     {
         auto section = sectionComponents_[kSection_Eq].get();
         
-        for (size_t eqIndex = 0; eqIndex < kNumOfEqBands; ++eqIndex)
+        eqSwitchButton_ = std::make_unique<ToggleButton>();
+        eqSwitchButton_->setClickingTogglesState(true);
+        eqSwitchButton_->setLookAndFeel(&slideToggleLaf_);
+        eqSwitchButton_->onClick = [this]()
         {
-            auto k = std::make_unique<Slider>();
-            k->setSliderStyle(Slider::RotaryVerticalDrag);
-            k->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-            section->addAndMakeVisible(k.get());
-            eqFreqKnobs_[eqIndex] = std::move(k);
+            const auto on = eqSwitchButton_->getToggleState();
+            model_->setEqSwitch(on);
+        };
+        section->addAndMakeVisible(eqSwitchButton_.get());
+        
+        for (size_t bandIndex = 0; bandIndex < kNumOfEqBands; ++bandIndex)
+        {
+            auto freqKnob = std::make_unique<Slider>();
+            freqKnob->setSliderStyle(Slider::RotaryVerticalDrag);
+            freqKnob->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+            freqKnob->setRange(kEqFreqMin, kEqFreqMax);
+            freqKnob->onValueChange = [&, bandIndex]()
+            {
+                auto value = eqFreqKnobs_[bandIndex]->getValue();
+                model_->setEqFreq(0, value);
+            };
+            section->addAndMakeVisible(freqKnob.get());
+            eqFreqKnobs_[bandIndex] = std::move(freqKnob);
+            
+            auto qKnob = std::make_unique<Slider>();
+            qKnob->setSliderStyle(Slider::RotaryVerticalDrag);
+            qKnob->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+            qKnob->setRange(kEqQMin, kEqQMax);
+            qKnob->onValueChange = [&, bandIndex]()
+            {
+                auto value = eqQKnobs_[bandIndex]->getValue();
+                model_->setEqQ(0, value);
+            };
+            section->addAndMakeVisible(qKnob.get());
+            eqQKnobs_[bandIndex] = std::move(qKnob);
+            
+            auto gainKnob = std::make_unique<Slider>();
+            gainKnob->setSliderStyle(Slider::RotaryVerticalDrag);
+            gainKnob->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+            gainKnob->setRange(kEqGainMin, kEqGainMax);
+            gainKnob->onValueChange = [&, bandIndex]()
+            {
+                auto value = eqGainKnobs_[bandIndex]->getValue();
+                model_->setEqGain(0, value);
+            };
+            section->addAndMakeVisible(gainKnob.get());
+            eqGainKnobs_[bandIndex] = std::move(gainKnob);
+        }
+        
+        constexpr int numOfControls = 3;
+        const static String labelTitles[] = { "Freq", "Q", "Gain" };
+        for (size_t labelIndex = 0; labelIndex < kNumOfEqBands * numOfControls; ++labelIndex)
+        {
+            auto l = std::make_unique<Label>();
+            l->setText(labelTitles[labelIndex % numOfControls], dontSendNotification);
+            l->setJustificationType(Justification::centred);
+            section->addAndMakeVisible(l.get());
+            knobLabels_[labelIndex] = std::move(l);
         }
     }
     
@@ -883,9 +936,9 @@ void MainComponent::resized()
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
     const int totalSectionWidth = getWidth() - sectionMarginX * 4;
-    const int songWidth  = totalSectionWidth * 420 / (420 + 280 + 460);
-    const int loopWidth  = totalSectionWidth * 280 / (420 + 280 + 460);
-    const int speedWidth = totalSectionWidth * 460 / (420 + 280 + 460);
+    const int songWidth  = totalSectionWidth * 0.35;
+    const int loopWidth  = totalSectionWidth * 0.25;
+    const int speedWidth = totalSectionWidth * 0.4;
     const int metronomeWidth = songWidth;
     const int eqWidth        = loopWidth;
     const int outputWidth    = speedWidth;
@@ -991,14 +1044,27 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Eq].get();
         section->setBounds(sectionComponents_[kSection_Metronome]->getRight() + sectionMarginX, y, eqWidth, 100);
         
-        constexpr int largeKnobSize = 50;
-        constexpr int smallKnobSize = 30;
+        eqSwitchButton_->setBounds(10, 5, 40, 20);
         
-        const int y = 30 + (section->getHeight() - 30) / 2 - largeKnobSize / 2;
+        constexpr int knobSize = 40;
+        const int y = 30 + (section->getHeight() - 30) / 2 - knobSize / 2 - 6;
+        const int interval = (section->getWidth() - knobSize * kNumOfEqBands * 3) / (kNumOfEqBands * 3 + 1);
         
+        int x = interval;
+        const int expandWidth = 40;
         for (size_t bandIndex = 0; bandIndex < kNumOfEqBands; ++bandIndex)
         {
-            eqFreqKnobs_[bandIndex]->setBounds(10, y, largeKnobSize, largeKnobSize);
+            eqFreqKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
+            knobLabels_[bandIndex * 3 + 0]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
+            x += knobSize + interval;
+            
+            eqQKnobs_   [bandIndex]->setBounds(x, y, knobSize, knobSize);
+            knobLabels_[bandIndex * 3 + 1]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
+            x += knobSize + interval;
+            
+            eqGainKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
+            knobLabels_[bandIndex * 3 + 2]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
+            x += knobSize + interval;
         }
     }
     
@@ -1007,7 +1073,7 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Output].get();
         section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, outputWidth, 100);
         
-        const int controlWidth = std::clamp((section->getWidth() - 10 - 10 - 10 - 10) / 4, controlBWidthMin, controlBWidthMax);
+        const int controlWidth = std::clamp((section->getWidth() - 10 * 5) / 4, controlAWidthMin, controlAWidthMax);
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
         oututModeComboBox_->setBounds(10, y, controlWidth, controlHeight);
@@ -1404,6 +1470,11 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
 void MainComponent::metronomeSwitchChanged(bool on)
 {
     metronomeOnOffButton_->setToggleState(on, dontSendNotification);
+    auto children = sectionComponents_[kSection_Metronome]->getChildren();
+    for (auto&& c : children)
+    {
+        if (c != metronomeOnOffButton_.get()) c->setEnabled(on);
+    }
 }
 
 void MainComponent::bpmChanged(float bpm)
@@ -1434,4 +1505,32 @@ void MainComponent::musicMetronomeBalanceUpdated(float balance)
 void MainComponent::outputModeChanged(OutputMode outputMode)
 {
     oututModeComboBox_->setSelectedId(outputMode + 1);
+}
+
+void MainComponent::eqSwitchChanged(bool on)
+{
+    eqSwitchButton_->setToggleState(on, dontSendNotification);
+    auto children = sectionComponents_[kSection_Eq]->getChildren();
+    for (auto&& c : children)
+    {
+        if (c != eqSwitchButton_.get()) c->setEnabled(on);
+    }
+}
+
+void MainComponent::eqFreqChanged(size_t band, float freq)
+{
+    eqFreqKnobs_[band]->setValue(freq, dontSendNotification);
+    knobLabels_[0]->setText(String::formatted("%d Hz", static_cast<int>(freq)), dontSendNotification);
+}
+
+void MainComponent::eqGainChanged(size_t band, float gain)
+{
+    eqGainKnobs_[band]->setValue(gain, dontSendNotification);
+    knobLabels_[2]->setText(String::formatted("Gain: %2.1f", gain), dontSendNotification);
+}
+
+void MainComponent::eqQChanged(size_t band, float q)
+{
+    eqQKnobs_[band]->setValue(q, dontSendNotification);
+    knobLabels_[1]->setText(String::formatted("Q:%1.2f", q), dontSendNotification);
 }

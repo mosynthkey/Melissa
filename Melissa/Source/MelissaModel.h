@@ -83,6 +83,17 @@ public:
     void setOutputMode(OutputMode outputMode);
     OutputMode getOutputMode() const { return outputMode_; }
     
+    // EQ
+    void  setEqSwitch(bool on);
+    bool  getEqSwitch() { return eqSwitch_; }
+    void  setEqFreq(size_t band, float freq);
+    float getEqFreq(size_t band) { return eqFreq_; }
+    void  setEqGain(size_t band, float gain);
+    float getEqGain(size_t band) { return eqGain_; }
+    void  setEqQ(size_t band, float eqQ);
+    float getEqQ(size_t band) { return eqQ_; }
+    
+    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);
@@ -121,6 +132,10 @@ private:
     int accent_;
     String filePath_;
     OutputMode outputMode_;
+    bool eqSwitch_;
+    float eqFreq_;
+    float eqGain_;
+    float eqQ_;
     
     // Singleton
     static MelissaModel instance_;
