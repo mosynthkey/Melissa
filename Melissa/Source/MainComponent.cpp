@@ -887,9 +887,9 @@ void MainComponent::resized()
 {
     menuButton_->setBounds(20, 20, 26, 14);
     
-    waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 200);
+    waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 180);
     
-    controlComponent_->setBounds(0, 220, getWidth(), 230);
+    controlComponent_->setBounds(0, 210, getWidth(), 230);
     
     // left-bottom part (Browser / Playlist / History)
     {
@@ -1143,6 +1143,18 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
         {
             model_->setLoopBPosRatio(model_->getPlayingPosRatio());
             return true;
+        }
+        case 77:
+        {
+            MelissaDataSource::Song::Marker marker;
+            marker.position_ = model_->getPlayingPosRatio();
+            Colour colour = Colour::fromRGB(255, 140, 140);
+            colour = colour.withHue(rand() / static_cast<float>(RAND_MAX));
+            marker.colourR_  = colour.getRed();
+            marker.colourG_  = colour.getGreen();
+            marker.colourB_  = colour.getBlue();
+            marker.memo_     = "marker_test";
+            dataSource_->addMarker(marker);
         }
         case 8: // delete
         case 127:

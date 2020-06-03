@@ -27,6 +27,7 @@ public:
     virtual void historyUpdated() { }
     virtual void playlistUpdated(size_t index) { }
     virtual void practiceListUpdated() { }
+    virtual void markerUpdated() { }
     virtual void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) { }
 };
 
@@ -149,6 +150,14 @@ public:
         };
         std::vector<PracticeList> practiceList_;
         
+        struct Marker
+        {
+            float position_;
+            int colourR_, colourG_, colourB_;
+            String memo_;
+        };
+        std::vector<Marker> markers_;
+        
         Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f), eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
     };
@@ -191,10 +200,18 @@ public:
     void saveSongState();
     String getMemo() const;
     void saveMemo(const String& memo);
+    
+    // Practice list
     void getPracticeList(std::vector<Song::PracticeList>& list);
     void addPracticeList(const String& name);
     void removePracticeList(size_t index);
     void overwritePracticeList(size_t index, const String& name);
+    
+    // Marker
+    void getMarkers(std::vector<Song::Marker>& markers) const;
+    void addMarker(const Song::Marker& marker);
+    void removeMarker(size_t index);
+    void overwriteMarker(size_t index, const Song::Marker& marker);
     
     // AsyncUpdater
     void handleAsyncUpdate() override;
