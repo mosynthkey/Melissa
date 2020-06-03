@@ -176,6 +176,7 @@ public:
     void mouseExit(const MouseEvent& event) override
     {
         current_->setVisible(false);
+        parent_->hideTimeTooltip();
     }
     
     void timerCallback() override
@@ -283,6 +284,52 @@ private:
     std::vector<float> previewBuffer_;
 };
 
+class MelissaWaveformControlComponent::Marker : public Button
+{
+public:
+    Marker() : Button("") {}
+    
+    void paintButton (Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const float alpha = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f;
+        constexpr float headHeight = 20;
+        constexpr float widthRatio = 0.3f;
+        g.setColour(colour_.withAlpha(alpha));
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+        g.setColour(Colours::black.withAlpha(0.2f));
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+        
+        g.setColour(colour_.withAlpha(alpha));
+        g.fillRect((1 - widthRatio) * getWidth() / 2.f, headHeight, getWidth() * widthRatio, getHeight() - headHeight);
+    }
+    
+    void setPosition(float position)
+    {
+        position_ = position;
+    }
+    
+    float getPosition() const
+    {
+        return position_;
+    }
+    
+    void setColour(const Colour& colour)
+    {
+        colour_ = colour;
+        repaint();
+    }
+    
+    void setMemo(const String& memo)
+    {
+        memo_ = memo;
+    }
+    
+private:
+    float position_;
+    Colour colour_;
+    String memo_;
+};
+
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
 timeSec_(0)
 {
@@ -291,28 +338,28 @@ timeSec_(0)
     waveformView_ = std::make_unique<WaveformView>(this);
     addAndMakeVisible(waveformView_.get());
     
-    posTooltip_ = std::make_unique<MelissaLabel>();
-    posTooltip_->setSize(100, 28);
-    addChildComponent(posTooltip_.get());
+    markerBaseComponent_ = std::make_unique<Component>();
+    markerBaseComponent_->setInterceptsMouseClicks(false, true);
+    addAndMakeVisible(markerBaseComponent_.get());
     
-    startTimer(100);
+    posTooltip_ = std::make_unique<Label>();
+    posTooltip_->setSize(100, 30);
+    posTooltip_->setJustificationType(Justification::centred);
+    posTooltip_->setFont(MelissaUISettings::getFontSizeSmall());
+    addChildComponent(posTooltip_.get());
 }
 
-MelissaWaveformControlComponent::~MelissaWaveformControlComponent()
-{
-    
-}
+MelissaWaveformControlComponent::~MelissaWaveformControlComponent() {}
 
 void MelissaWaveformControlComponent::resized()
 {
-    waveformView_->setBounds(60, 20, getWidth() - 60 * 2, getHeight() - 40);
+    waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40);
+    markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
     
     posTooltip_->setTopLeftPosition(0, 0);
-}
-
-void MelissaWaveformControlComponent::timerCallback()
-{
-    posTooltip_->setVisible(false);
+    
+    arrangeMarkers();
+    arrangeTimeLabels();
 }
 
 void MelissaWaveformControlComponent::setPlayPosition(float ratio)
@@ -322,20 +369,106 @@ void MelissaWaveformControlComponent::setPlayPosition(float ratio)
 
 void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
 {
-    posTooltip_->setText(timeSec_ != 0 ? MelissaUtility::getFormattedTimeMSec(timeSec_ * posRatio * 1000) : "-:--.----");
+    posTooltip_->setText(timeSec_ != 0 ? MelissaUtility::getFormattedTimeMSec(timeSec_ * posRatio * 1000) : "-:--.-", dontSendNotification);
+    posTooltip_->setSize(MelissaUtility::getStringSize(posTooltip_->getFont(), posTooltip_->getText()).first, 20);
     
-    const int32_t x = waveformView_->getX() + waveformView_->getWidth() * posRatio;
+    const int32_t x = waveformView_->getX() + waveformView_->getWidth() * posRatio  - posTooltip_->getWidth() / 2;
     if (x != posTooltip_->getX())
     {
-        posTooltip_->setCentrePosition(x, posTooltip_->getY() + posTooltip_->getHeight() / 2);
-    
-        startTimer(2000);
+        posTooltip_->setTopLeftPosition(x, getHeight() - posTooltip_->getHeight());
+        
+        for (auto&& l : timeLabels_)
+        {
+            const auto x0 = posTooltip_->getX();
+            const auto x1 = posTooltip_->getRight();
+            l->setVisible(x1 < l->getX() || l->getRight() < x0);
+        }
         posTooltip_->setVisible(true);
     }
+}
+
+void MelissaWaveformControlComponent::hideTimeTooltip()
+{
+    posTooltip_->setVisible(false);
+    for (auto&& l : timeLabels_) l->setVisible(true);
 }
 
 void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     timeSec_ = static_cast<float>(bufferLength) / sampleRate;
     waveformView_->update(true);
+    
+    timeLabels_.clear();
+    auto createLabel = [this](const String& text)
+    {
+        auto l = std::make_unique<Label>();
+        l->setJustificationType(Justification::centred);
+        l->setFont(MelissaUISettings::getFontSizeSmall());
+        l->setText(text, dontSendNotification);
+        l->setSize(MelissaUtility::getStringSize(l->getFont(), l->getText()).first, 20);
+        addAndMakeVisible(l.get());
+        return l;
+    };
+    
+    for (size_t minuteIndex = 0; minuteIndex * 60 < timeSec_; ++minuteIndex)
+    {
+        auto l = createLabel(String::formatted("%d:00", minuteIndex));
+        timeLabels_.emplace_back(std::move(l));
+    }
+    /*
+    const int minute = timeSec_ / 60;
+    const int second = timeSec_ - minute * 60;
+    timeLabels_.emplace_back(createLabel(String::formatted("%d:%02d", minute, second)));
+     */
+    
+    arrangeTimeLabels();
+}
+
+void MelissaWaveformControlComponent::markerUpdated()
+{
+    std::vector<MelissaDataSource::Song::Marker> markers;
+    MelissaDataSource::getInstance()->getMarkers(markers);
+    markers_.clear();
+    
+    size_t markerIndex = 0;
+    for (auto&& m : markers)
+    {
+        auto marker = std::make_unique<Marker>();
+        marker->setPosition(m.position_);
+        marker->setColour(Colour::fromRGB(m.colourR_, m.colourG_, m.colourB_));
+        marker->setMemo(m.memo_);
+        
+        markerBaseComponent_->addAndMakeVisible(marker.get());
+        markers_.emplace_back(std::move(marker));
+        ++markerIndex;
+    }
+    
+    arrangeMarkers();
+}
+
+void MelissaWaveformControlComponent::arrangeMarkers() const
+{
+    for (auto&& m : markers_)
+    {
+        const int x = waveformView_->getX() + waveformView_->getWidth() * m->getPosition();
+        m->setBounds(x - 4, 0, 8, getHeight() - 20);
+    }
+}
+
+void MelissaWaveformControlComponent::arrangeTimeLabels() const
+{
+    int minuteIndex = 0;
+    for (auto&& l : timeLabels_)
+    {
+        int x = waveformView_->getX() + waveformView_->getWidth() * (minuteIndex * 60.f / timeSec_)  - l->getWidth() / 2;
+        /*
+        if (minuteIndex == timeLabels_.size() - 1)
+        {
+            x = waveformView_->getX() + waveformView_->getWidth() - l->getWidth() / 2;
+        }
+         */
+        
+        l->setTopLeftPosition(x, getHeight() - l->getHeight());
+        ++minuteIndex;
+    }
 }
