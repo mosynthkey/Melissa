@@ -180,6 +180,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                         marker.memo_     = m.getProperty("memo", "");
                         song.markers_.emplace_back(marker);
                     }
+                    std::sort(song.markers_.begin(), song.markers_.end(), [](auto const& lhs, auto const& rhs) { return lhs.position_ < rhs.position_; });
                 }
                 songs_.emplace_back(song);
             }
@@ -657,6 +658,7 @@ void MelissaDataSource::addMarker(const Song::Marker& marker)
         if (song.filePath_ == currentSongFilePath_)
         {
             song.markers_.emplace_back(marker);
+            std::sort(song.markers_.begin(), song.markers_.end(), [](auto const& lhs, auto const& rhs) { return lhs.position_ < rhs.position_; });
             for (auto&& l : listeners_) l->markerUpdated();
             return;
         }
