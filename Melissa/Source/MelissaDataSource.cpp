@@ -669,7 +669,7 @@ void MelissaDataSource::removeMarker(size_t index)
     {
         if (song.filePath_ == currentSongFilePath_)
         {
-            if (index < song.practiceList_.size())
+            if (index < song.markers_.size())
             {
                 song.markers_.erase(song.markers_.begin() + index);
                 for (auto&& l : listeners_) l->markerUpdated();

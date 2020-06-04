@@ -268,8 +268,9 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
         {
             metronome_.amp_ = 0.f;
         }
-        
     }
+    
+    model_->updatePlayingPosMSecFromDsp(playingPosMSec_);
 }
 
 void MelissaAudioEngine::process()

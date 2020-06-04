@@ -59,11 +59,12 @@ public:
     void setLoopBPosMSec(float bPosMSec);
     float getLoopBPosMSec() const { return bPosRatio_ * lengthMSec_; }
     
-    void setPlayingPosRatio(float playbackPosRatio);
+    void setPlayingPosRatio(float playingPosRatio);
     float getPlayingPosRatio() const;
     
-    void setPlayingPosMSec(float playbackPosMSec);
+    void setPlayingPosMSec(float playingPosMSec);
     float getPlayingPosMSec() const;
+    void updatePlayingPosMSecFromDsp(float playingPosMSec);
     
     // Metronome
     void  setMetronomeSwitch(bool on);

@@ -161,7 +161,7 @@ void MelissaModel::setPlayingPosRatio(float playingPosRatio)
 
 float MelissaModel::getPlayingPosRatio() const
 {
-    return audioEngine_->getPlayingPosRatio();
+    return playingPosRatio_;
 }
 
 void MelissaModel::setPlayingPosMSec(float playingPosMSec)
@@ -174,7 +174,14 @@ void MelissaModel::setPlayingPosMSec(float playingPosMSec)
 
 float MelissaModel::getPlayingPosMSec() const
 {
-    return audioEngine_->getPlayingPosMSec();
+    return playingPosRatio_ * lengthMSec_;
+}
+
+void MelissaModel::updatePlayingPosMSecFromDsp(float playingPosMSec)
+{
+    if (playingPosMSec < 0 || lengthMSec_ < playingPosMSec || lengthMSec_ < 0.f) return;
+    
+    playingPosRatio_ = playingPosMSec / lengthMSec_;
 }
 
 void  MelissaModel::setMetronomeSwitch(bool on)
