@@ -19,13 +19,14 @@
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
+#include "MelissaScrollLabel.h"
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaPreferencesComponent.h"
-#include "MelissaScrollLabel.h"
+#include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
 #include "MelissaToHeadButton.h"
 #include "MelissaTutorialComponent.h"
@@ -48,10 +49,11 @@ enum FileChooserTab
     kNumOfFileChooserTabs
 };
 
-enum PracticeMemoTab
+enum ListMemoTab
 {
-    kPracticeMemoTab_Practice,
-    kPracticeMemoTab_Memo
+    kListMemoTab_Practice,
+    kListMemoTab_Marker,
+    kListMemoTab_Memo
 };
 
 class MainComponent   : public AudioAppComponent,
@@ -120,7 +122,7 @@ public:
     
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
-    void updatePracticeMemoTab(PracticeMemoTab tab);
+    void updateListMemoTab(ListMemoTab tab);
     
     void toHead();
     void resetLoop();
@@ -209,9 +211,11 @@ private:
     std::unique_ptr<MelissaFileListBox> historyTable_;
     
     std::unique_ptr<ToggleButton> practiceListToggleButton_;
+    std::unique_ptr<ToggleButton> markerListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
     std::unique_ptr<TextEditor> memoTextEditor_;
     std::unique_ptr<MelissaAddButton> addToListButton_;
+    std::unique_ptr<MelissaMarkerListBox> markerTable_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
     std::unique_ptr<ComboBox> oututModeComboBox_;

@@ -19,7 +19,7 @@ using std::make_unique;
 enum
 {
     kFileChooserTabGroup = 1000,
-    kPracticeMemoTabGroup = 2000,
+    kListMemoTabGroup = 2000,
     kSpeedModeTabGroup = 3000,
     
     // UI
@@ -173,6 +173,7 @@ MainComponent::~MainComponent()
     playlistToggleButton_->setLookAndFeel(nullptr);
     historyToggleButton_->setLookAndFeel(nullptr);
     practiceListToggleButton_->setLookAndFeel(nullptr);
+    markerListToggleButton_->setLookAndFeel(nullptr);
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
     practiceTable_->setLookAndFeel(nullptr);
@@ -710,6 +711,9 @@ void MainComponent::createUI()
 
     practiceTable_ = make_unique<MelissaPracticeTableListBox>();
     addAndMakeVisible(practiceTable_.get());
+    
+    markerTable_ = make_unique<MelissaMarkerListBox>();
+    addAndMakeVisible(markerTable_.get());
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
@@ -722,22 +726,21 @@ void MainComponent::createUI()
     };
     memoTextEditor_->setReturnKeyStartsNewLine(true);
     addAndMakeVisible(memoTextEditor_.get());
+    
+    auto createAndAddTab = [&](const String& title, ListMemoTab tab)
+    {
+        auto b  = make_unique<ToggleButton>();
+        b->setButtonText(title);
+        b->setLookAndFeel(&tabLaf_);
+        b->setRadioGroupId(kListMemoTabGroup);
+        b->onClick = [&, tab]() { updateListMemoTab(tab); };
+        addAndMakeVisible(b.get());
+        return b;
+    };
 
-    practiceListToggleButton_ = make_unique<ToggleButton>();
-    practiceListToggleButton_ = make_unique<ToggleButton>();
-    practiceListToggleButton_->setButtonText("Practice list");
-    practiceListToggleButton_->setLookAndFeel(&tabLaf_);
-    practiceListToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
-    practiceListToggleButton_->onClick = [&]() { updatePracticeMemoTab(kPracticeMemoTab_Practice); };
-    addAndMakeVisible(practiceListToggleButton_.get());
-    
-    memoToggleButton_ = make_unique<ToggleButton>();
-    memoToggleButton_->setButtonText("Memo");
-    memoToggleButton_->setLookAndFeel(&tabLaf_);
-    memoToggleButton_->setRadioGroupId(kPracticeMemoTabGroup);
-    memoToggleButton_->onClick = [&]() { updatePracticeMemoTab(kPracticeMemoTab_Memo); };
-    addAndMakeVisible(memoToggleButton_.get());
-    
+    practiceListToggleButton_ = createAndAddTab("Practice list", kListMemoTab_Practice);
+    markerListToggleButton_   = createAndAddTab("Marker", kListMemoTab_Marker);
+    memoToggleButton_         = createAndAddTab("Memo", kListMemoTab_Memo);
     practiceListToggleButton_->setToggleState(true, dontSendNotification);
 
     addToListButton_ = make_unique<MelissaAddButton>();
@@ -803,7 +806,7 @@ void MainComponent::createUI()
     tooltipWindow_->setLookAndFeel(&laf_);
     
     updateSpeedModeTab(kSpeedModeTab_Basic);
-    updatePracticeMemoTab(kPracticeMemoTab_Practice);
+    updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
 }
 
@@ -909,6 +912,8 @@ void MainComponent::resized()
         x = 20 + browserWidth + 20;
         practiceListToggleButton_->setBounds(x, y, w, 30);
         x += (w + 2);
+        markerListToggleButton_->setBounds(x, y, w, 30);
+        x += (w + 2);
         memoToggleButton_->setBounds(x, y, w, 30);
         
         y += 40;
@@ -922,6 +927,7 @@ void MainComponent::resized()
         {
             const int32_t h = getHeight() - 80 - y;
             practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+            markerTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
             addToListButton_->setBounds(getWidth() - 30 - 20, practiceTable_->getBottom() + 10, 30, 30);
             memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
         }
@@ -1144,17 +1150,18 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
             model_->setLoopBPosRatio(model_->getPlayingPosRatio());
             return true;
         }
-        case 77:
+        case 77: // m
         {
             MelissaDataSource::Song::Marker marker;
             marker.position_ = model_->getPlayingPosRatio();
-            Colour colour = Colour::fromRGB(255, 140, 140);
-            colour = colour.withHue(rand() / static_cast<float>(RAND_MAX));
+            Colour colour = Colour::fromRGB(255, 160, 160);
+            colour = colour.withHue(marker.position_);
             marker.colourR_  = colour.getRed();
             marker.colourG_  = colour.getGreen();
             marker.colourB_  = colour.getBlue();
             marker.memo_     = "marker_test";
             dataSource_->addMarker(marker);
+            break;
         }
         case 8: // delete
         case 127:
@@ -1372,11 +1379,12 @@ void MainComponent::updateFileChooserTab(FileChooserTab tab)
     historyTable_->setVisible(tab == kFileChooserTab_History);
 }
 
-void MainComponent::updatePracticeMemoTab(PracticeMemoTab tab)
+void MainComponent::updateListMemoTab(ListMemoTab tab)
 {
-    practiceTable_->setVisible(tab == kPracticeMemoTab_Practice);
-    addToListButton_->setVisible(tab == kPracticeMemoTab_Practice);
-    memoTextEditor_->setVisible(tab == kPracticeMemoTab_Memo);
+    practiceTable_->setVisible(tab == kListMemoTab_Practice);
+    addToListButton_->setVisible(tab == kListMemoTab_Practice);
+    markerTable_->setVisible(tab == kListMemoTab_Marker);
+    memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
 }
 
 void MainComponent::toHead()

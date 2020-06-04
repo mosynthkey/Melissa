@@ -87,6 +87,10 @@
         <FILE id="mYLdQR" name="MelissaLabel.h" compile="0" resource="0" file="Source/UI/MelissaLabel.h"/>
         <FILE id="x5V2V6" name="MelissaLookAndFeel.h" compile="0" resource="0"
               file="Source/UI/MelissaLookAndFeel.h"/>
+        <FILE id="qkGitj" name="MelissaMarkerListBox.cpp" compile="1" resource="0"
+              file="Source/UI/MelissaMarkerListBox.cpp"/>
+        <FILE id="eNBL9S" name="MelissaMarkerListBox.h" compile="0" resource="0"
+              file="Source/UI/MelissaMarkerListBox.h"/>
         <FILE id="M048TD" name="MelissaModalDialog.cpp" compile="1" resource="0"
               file="Source/UI/MelissaModalDialog.cpp"/>
         <FILE id="vNDLTs" name="MelissaModalDialog.h" compile="0" resource="0"

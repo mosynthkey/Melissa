@@ -291,16 +291,19 @@ public:
     
     void paintButton (Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const float alpha = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f;
         constexpr float headHeight = 20;
-        constexpr float widthRatio = 0.3f;
-        g.setColour(colour_.withAlpha(alpha));
-        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
-        g.setColour(Colours::black.withAlpha(0.2f));
-        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+        constexpr float bodyWidth = 3;
         
-        g.setColour(colour_.withAlpha(alpha));
-        g.fillRect((1 - widthRatio) * getWidth() / 2.f, headHeight, getWidth() * widthRatio, getHeight() - headHeight);
+        g.setColour(colour_);
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+        g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight - 2, bodyWidth, getHeight() - headHeight + 2);
+        
+        if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            g.setColour(Colours::black.withAlpha(0.3f));
+            g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+            g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight, bodyWidth, getHeight() - headHeight);
+        }
     }
     
     void setPosition(float position)
