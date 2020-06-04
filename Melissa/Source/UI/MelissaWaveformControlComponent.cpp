@@ -306,6 +306,13 @@ public:
         }
     }
     
+    void clicked(const ModifierKeys& modifiers) override
+    {
+        if (onClick_ != nullptr) onClick_(modifiers.isShiftDown());
+    }
+    
+    std::function<void(bool)> onClick_;
+    
     void setPosition(float position)
     {
         position_ = position;
@@ -440,6 +447,21 @@ void MelissaWaveformControlComponent::markerUpdated()
         marker->setPosition(m.position_);
         marker->setColour(Colour::fromRGB(m.colourR_, m.colourG_, m.colourB_));
         marker->setMemo(m.memo_);
+        marker->onClick_ = [&, markerIndex](bool isShiftKeyDown)
+        {
+            auto model = MelissaModel::getInstance();
+            if (isShiftKeyDown)
+            {
+                const auto markerPosSec  = markers_[markerIndex]->getPosition() * timeSec_;
+                const auto startPosRatio = std::clamp<float>((markerPosSec - 3) / timeSec_, 0, 1.f);
+                const auto endPosSec     = std::clamp<float>((markerPosSec + 3) / timeSec_, 0, 1.f);
+                model->setLoopPosRatio(startPosRatio, endPosSec);
+            }
+            else
+            {
+                model->setPlayingPosRatio(markers_[markerIndex]->getPosition());
+            }
+        };
         
         markerBaseComponent_->addAndMakeVisible(marker.get());
         markers_.emplace_back(std::move(marker));
