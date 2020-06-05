@@ -353,6 +353,27 @@ void MainComponent::createUI()
             }
         };
         section->addAndMakeVisible(bButton_.get());
+        
+        leftArrowImage_             = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
+        rightArrowImage_            = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
+        leftArrowHighlightedImage_  = Drawable::createFromImageData(BinaryData::arrow_left_highlighted_svg, BinaryData::arrow_left_highlighted_svgSize);
+        rightArrowHighlightedImage_ = Drawable::createFromImageData(BinaryData::arrow_right_highlighted_svg, BinaryData::arrow_right_highlighted_svgSize);
+        
+        aResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        aResetButton_->setImages(leftArrowImage_.get(), leftArrowHighlightedImage_.get());
+        aResetButton_->onClick = [&]()
+        {
+            model_->setLoopAPosRatio(0.f);
+        };
+        section->addAndMakeVisible(aResetButton_.get());
+        
+        bResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        bResetButton_->setImages(rightArrowImage_.get(), rightArrowHighlightedImage_.get());
+        bResetButton_->onClick = [&]()
+        {
+            model_->setLoopBPosRatio(1.f);
+        };
+        section->addAndMakeVisible(bResetButton_.get());
 
         resetButton_ = make_unique<TextButton>();
         resetButton_->setButtonText("Reset");
@@ -793,7 +814,8 @@ void MainComponent::createUI()
         l->setText(labelInfo_[label_i].first, dontSendNotification);
         l->setFont(Font(MelissaUISettings::getFontSizeSub()));
         l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
-        l->setJustificationType(Justification::centredTop);
+        l->setInterceptsMouseClicks(false, true);
+        l->setJustificationType(Justification::centred);
         labelInfo_[label_i].second->getParentComponent()->addAndMakeVisible(l.get());
         labels_[label_i] = std::move(l);
     }
@@ -993,6 +1015,9 @@ void MainComponent::resized()
         aButton_->setBounds(10, y, buttonWidth, controlHeight);
         bButton_->setBounds(section->getWidth() - 10 - buttonWidth, y, buttonWidth, controlHeight);
         
+        aResetButton_->setBounds(aButton_->getX() + 10, aButton_->getY() - 24 + 2, 20, 14);
+        bResetButton_->setBounds(bButton_->getRight() - 20 - 10, bButton_->getY() - 24 + 2, 20, 14);
+        
         const int resetButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), resetButton_->getButtonText()).first;
         resetButton_->setSize(resetButtonWidth, 30);
         resetButton_->setTopRightPosition(section->getWidth() - 10, 0);
@@ -1079,7 +1104,7 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Output].get();
         section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, outputWidth, 100);
         
-        const int controlWidth = std::clamp((section->getWidth() - 10 * 5) / 4, controlAWidthMin, controlAWidthMax);
+        const int controlWidth = (section->getWidth() - 10 * 5) / 4;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
         oututModeComboBox_->setBounds(10, y, controlWidth, controlHeight);
@@ -1090,12 +1115,9 @@ void MainComponent::resized()
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
     {
-        if (label_i == kLabel_ATime || label_i == kLabel_BTime) continue;
         auto b = labelInfo_[label_i].second->getBoundsInParent();
-        labels_[label_i]->setBounds(b.getX(), b.getY() - 24, b.getWidth(), 24);
+        labels_[label_i]->setBounds(b.getX(), b.getY() - 30, b.getWidth(), 30);
     }
-    labels_[kLabel_ATime]->setBounds(aButton_->getX(), aButton_->getY() - 24, aButton_->getRight() - aButton_->getX(), 24);
-    labels_[kLabel_BTime]->setBounds(bButton_->getX(), bButton_->getY() - 24, bButton_->getRight() - bButton_->getX(), 24);
     
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
 }
