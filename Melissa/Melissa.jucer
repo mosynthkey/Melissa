@@ -7,6 +7,14 @@
               compilerFlagSchemes="">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
+      <GROUP id="{C5AC6B22-7389-6732-F819-CB34CCC7D946}" name="Icon">
+        <FILE id="QqaTr6" name="arrow_left.svg" compile="0" resource="1" file="Resource/Icon/arrow_left.svg"/>
+        <FILE id="tHvaA1" name="arrow_left_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/arrow_left_highlighted.svg"/>
+        <FILE id="Z6gLOK" name="arrow_right_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/arrow_right_highlighted.svg"/>
+        <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>
+      </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
         <FILE id="FtRcUX" name="ja-JP.txt" compile="0" resource="1" file="Resource/Language/ja-JP.txt"/>

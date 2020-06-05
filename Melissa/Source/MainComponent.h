@@ -171,7 +171,14 @@ private:
     
     std::unique_ptr<MelissaIncDecButton> aButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
+    std::unique_ptr<DrawableButton> aResetButton_;
+    std::unique_ptr<DrawableButton> bResetButton_;
     std::unique_ptr<TextButton> resetButton_;
+    
+    std::unique_ptr<Drawable> leftArrowImage_;
+    std::unique_ptr<Drawable> rightArrowImage_;
+    std::unique_ptr<Drawable> leftArrowHighlightedImage_;
+    std::unique_ptr<Drawable> rightArrowHighlightedImage_;
     
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
     std::unique_ptr<ToggleButton> speedModeTrainingToggleButton_;

@@ -7,8 +7,74 @@
 namespace BinaryData
 {
 
-//================== en-US.txt ==================
+//================== arrow_left.svg ==================
 static const unsigned char temp_binary_data_0[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_left</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.4\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -250.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M553,250 C553.552285,250 554,250.447715 554,251 L554,254.576 L559.964102,251.133975 C560.442394,250.857832 561.053985,251.021707 561.330127,251.5 C561.606269,251.978293 561.442394,252.589883 560.964102,252.866025 L555.535,256 L5"
+"71,256 C571.552285,256 572,256.447715 572,257 C572,257.552285 571.552285,258 571,258 L555.537,258 L560.964102,261.133975 C561.442394,261.410117 561.606269,262.021707 561.330127,262.5 C561.053985,262.978293 560.442394,263.142168 559.964102,262.866025 "
+"L554,259.423 L554,263 C554,263.552285 553.552285,264 553,264 C552.447715,264 552,263.552285 552,263 L552,251 C552,250.447715 552.447715,250 553,250 Z\" id=\"arrow_left\"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* arrow_left_svg = (const char*) temp_binary_data_0;
+
+//================== arrow_left_highlighted.svg ==================
+static const unsigned char temp_binary_data_1[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_left_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-553.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M554,235 C554.552285,235 555,235.447715 555,236 L555,239.576 L560.964102,236.133975 C561.442394,235.857832 562.053985,236.021707 562.330127,236.5 C562.606269,236.978293 562.442394,237.589883 561.964102,237.866025 L556.535,241 L5"
+"72,241 C572.552285,241 573,241.447715 573,242 C573,242.552285 572.552285,243 572,243 L556.537,243 L561.964102,246.133975 C562.442394,246.410117 562.606269,247.021707 562.330127,247.5 C562.053985,247.978293 561.442394,248.142168 560.964102,247.866025 "
+"L555,244.423 L555,248 C555,248.552285 554.552285,249 554,249 C553.447715,249 553,248.552285 553,248 L553,236 C553,235.447715 553.447715,235 554,235 Z\" id=\"arrow_left_highlighted\"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* arrow_left_highlighted_svg = (const char*) temp_binary_data_1;
+
+//================== arrow_right_highlighted.svg ==================
+static const unsigned char temp_binary_data_2[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_right_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M581,235 C581.552285,235 582,235.447715 582,236 L582,239.576 L587.964102,236.133975 C588.442394,235.857832 589.053985,236.021707 589.330127,236.5 C589.606269,236.978293 589.442394,237.589883 588.964102,237.866025 L583.535,241 L5"
+"99,241 C599.552285,241 600,241.447715 600,242 C600,242.552285 599.552285,243 599,243 L583.537,243 L588.964102,246.133975 C589.442394,246.410117 589.606269,247.021707 589.330127,247.5 C589.053985,247.978293 588.442394,248.142168 587.964102,247.866025 "
+"L582,244.423 L582,248 C582,248.552285 581.552285,249 581,249 C580.447715,249 580,248.552285 580,248 L580,236 C580,235.447715 580.447715,235 581,235 Z\" id=\"arrow_right_highlighted\" transform=\"translate(590.000000, 242.000000) scale(-1, 1) translat"
+"e(-590.000000, -242.000000) \"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* arrow_right_highlighted_svg = (const char*) temp_binary_data_2;
+
+//================== arrow_right.svg ==================
+static const unsigned char temp_binary_data_3[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_right</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.4\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-579.000000, -250.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M580,250 C580.552285,250 581,250.447715 581,251 L581,254.576 L586.964102,251.133975 C587.442394,250.857832 588.053985,251.021707 588.330127,251.5 C588.606269,251.978293 588.442394,252.589883 587.964102,252.866025 L582.535,256 L5"
+"98,256 C598.552285,256 599,256.447715 599,257 C599,257.552285 598.552285,258 598,258 L582.537,258 L587.964102,261.133975 C588.442394,261.410117 588.606269,262.021707 588.330127,262.5 C588.053985,262.978293 587.442394,263.142168 586.964102,262.866025 "
+"L581,259.423 L581,263 C581,263.552285 580.552285,264 580,264 C579.447715,264 579,263.552285 579,263 L579,251 C579,250.447715 579.447715,250 580,250 Z\" id=\"arrow_right\" transform=\"translate(589.000000, 257.000000) scale(-1, 1) translate(-589.00000"
+"0, -257.000000) \"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* arrow_right_svg = (const char*) temp_binary_data_3;
+
+//================== en-US.txt ==================
+static const unsigned char temp_binary_data_4[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -56,10 +122,10 @@ static const unsigned char temp_binary_data_0[] =
 "\"first_launch\" = \"Thank you for downloading Melissa!\\nFirst of all, let's open a song.\"\n"
 "\"load_failed\" = \"Failed to load this file.\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_0;
+const char* enUS_txt = (const char*) temp_binary_data_4;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_1[] =
+static const unsigned char temp_binary_data_5[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,111,111,112,95,110,97,109,101,34,32,61,32,34,227,131,171,227,131,188,227,131,151,229,140,186,233,150,147,227,129,
 174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,10,34,101,110,116,101,114,95,112,108,97,121,108,105,115,116,95,110,97,109,101,34,32,61,32,34,112,108,97,121,108,
@@ -100,10 +166,10 @@ static const unsigned char temp_binary_data_1[] =
 159,227,128,130,34,10,10,10,34,71,111,32,117,112,32,116,111,32,112,97,114,101,110,116,32,100,105,114,101,99,116,111,114,121,34,32,61,32,34,228,184,138,227,129,174,227,131,135,227,130,163,227,131,172,227,130,175,227,131,136,227,131,170,227,129,184,34,
 10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_1;
+const char* jaJP_txt = (const char*) temp_binary_data_5;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_6[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,64,0,73,68,65,84,120,1,172,189,221,207,174,237,118,214,245,188,111,151,237,106,3,182,208,66,172,213,13,211,74,64,136,88,
 26,18,137,108,152,136,27,24,117,75,119,76,220,209,13,255,39,55,221,213,196,13,77,52,38,26,117,67,35,17,81,240,3,130,224,71,72,33,197,82,138,88,90,161,107,121,252,142,99,28,227,60,175,251,126,230,251,174,22,175,103,62,215,121,158,99,28,31,99,140,235,186,
 159,57,153,239,236,226,171,159,251,3,63,255,253,15,93,223,215,253,171,175,180,106,255,149,190,124,177,36,176,121,178,223,23,248,43,192,11,2,166,216,205,219,220,8,84,104,88,44,71,35,254,135,94,237,3,174,10,69,190,251,227,254,89,221,210,217,198,132,104,
@@ -1849,7 +1915,7 @@ static const unsigned char temp_binary_data_2[] =
 127,115,69,120,181,79,248,220,163,72,175,192,160,208,127,163,126,54,103,30,117,48,213,158,67,17,169,192,199,223,200,148,165,45,250,94,230,102,123,157,128,237,253,29,69,19,228,57,29,162,56,211,8,253,123,37,151,6,28,127,108,124,126,117,86,190,229,116,224,
 252,250,71,192,79,48,243,248,55,95,216,17,232,24,2,38,116,226,22,156,8,125,57,112,218,193,137,250,44,179,126,5,218,217,115,42,61,209,212,139,192,255,7,26,135,30,11,110,146,105,186,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_2;
+const char* logo_png = (const char*) temp_binary_data_6;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -1862,6 +1928,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
+        case 0xc1a269a2:  numBytes = 1101; return arrow_left_svg;
+        case 0x5ea986b6:  numBytes = 1130; return arrow_left_highlighted_svg;
+        case 0x53bb409f:  numBytes = 1228; return arrow_right_highlighted_svg;
+        case 0xad54f90b:  numBytes = 1199; return arrow_right_svg;
         case 0x4c8ea738:  numBytes = 2072; return enUS_txt;
         case 0x9153efee:  numBytes = 2550; return jaJP_txt;
         case 0x78ded995:  numBytes = 121456; return logo_png;
@@ -1874,6 +1944,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
 const char* namedResourceList[] =
 {
+    "arrow_left_svg",
+    "arrow_left_highlighted_svg",
+    "arrow_right_highlighted_svg",
+    "arrow_right_svg",
     "enUS_txt",
     "jaJP_txt",
     "logo_png"
@@ -1881,6 +1955,10 @@ const char* namedResourceList[] =
 
 const char* originalFilenames[] =
 {
+    "arrow_left.svg",
+    "arrow_left_highlighted.svg",
+    "arrow_right_highlighted.svg",
+    "arrow_right.svg",
     "en-US.txt",
     "ja-JP.txt",
     "logo.png"
