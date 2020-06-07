@@ -4,7 +4,7 @@
               cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\UI"
               version="1.0.1" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
-              compilerFlagSchemes="">
+              compilerFlagSchemes="" defines="_USE_MATH_DEFINES">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <GROUP id="{C5AC6B22-7389-6732-F819-CB34CCC7D946}" name="Icon">

@@ -440,6 +440,10 @@ void MainComponent::createUI()
         speedPresetComponent_ = make_unique<Component>();
         speedModeNormalComponent_->addAndMakeVisible(speedPresetComponent_.get());
         const int speedPresets[kNumOfSpeedPresets] = { 50, 60, 70, 75, 80, 85, 90, 95, 100 };
+        constexpr int presetButtonMargin = 4;
+        constexpr int controlHeight = 30;
+        int speedButtonX = 0;
+        int speedButtonWidthSum = 0;
         for (size_t speedPresetIndex = 0; speedPresetIndex < kNumOfSpeedPresets; ++speedPresetIndex)
         {
             auto b = make_unique<TextButton>();
@@ -447,20 +451,16 @@ void MainComponent::createUI()
             const int speed = speedPresets[speedPresetIndex];
             b->setButtonText(String(speed) + "%");
             b->onClick = [&, speed]() { model_->setSpeed(speed); };
+            const auto width = MelissaUtility::getStringSize(simpleTextButtonLaf_.getFontSize(), b->getButtonText()).first;
+            speedButtonWidthSum += width;
+            b->setBounds(speedButtonX, 0, width, 30);
+            speedButtonX += (width + presetButtonMargin);
             speedPresetComponent_->addAndMakeVisible(b.get());
             speedPresetButtons_[speedPresetIndex] = std::move(b);
         }
-        constexpr int presetButtonWidth  = 40;
-        constexpr int presetButtonMargin = 4;
-        constexpr int controlHeight = 30;
-        speedPresetComponent_->setSize(presetButtonWidth * kNumOfSpeedPresets + presetButtonMargin * (kNumOfSpeedPresets - 1), controlHeight - kScrollbarThichness);
+        
+        speedPresetComponent_->setSize(speedButtonWidthSum + presetButtonMargin * (kNumOfSpeedPresets - 1), controlHeight - kScrollbarThichness);
         speedPresetViewport_->setViewedComponent(speedPresetComponent_.get(), false);
-        int speedButtonX = 0;
-        for (auto&& b : speedPresetButtons_)
-        {
-            b->setBounds(speedButtonX, 0, presetButtonWidth, controlHeight);
-            speedButtonX = b->getRight() + presetButtonMargin;
-        }
         
         speedIncStartButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
         speedIncStartButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
