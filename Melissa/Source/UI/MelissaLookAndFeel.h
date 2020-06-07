@@ -561,6 +561,8 @@ public:
         g.setFont(fontSize_);
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), justification_);
     }
+
+    int getFontSize() const { return fontSize_; }
     
 private:
     int fontSize_;
