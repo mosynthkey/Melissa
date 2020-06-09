@@ -20,6 +20,7 @@
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
+#include "MelissaMessageComponent.h"
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
@@ -145,6 +146,8 @@ private:
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
+    
+    MelissaMessageComponent* messageComponent_;
     
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;

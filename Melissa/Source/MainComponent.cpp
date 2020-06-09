@@ -243,6 +243,9 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(menuButton_.get());
     
+    messageComponent_ = MelissaMessageComponent::getInstance();
+    addAndMakeVisible(messageComponent_);
+    
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     addAndMakeVisible(waveformComponent_.get());
     
@@ -911,10 +914,11 @@ void MainComponent::paint(Graphics& g)
 void MainComponent::resized()
 {
     menuButton_->setBounds(20, 20, 26, 14);
+    messageComponent_->setBounds(50, 0, getWidth() - 100, 30);
     
-    waveformComponent_->setBounds(60, 20, getWidth() - 60 * 2, 180);
+    waveformComponent_->setBounds(60, 40, getWidth() - 60 * 2, 160);
     
-    controlComponent_->setBounds(0, 210, getWidth(), 230);
+    controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
     // left-bottom part (Browser / Playlist / History)
     {
