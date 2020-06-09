@@ -49,9 +49,9 @@ public:
     virtual void metronomeSwitchChanged(bool on) {}
     virtual void bpmChanged(float bpm) {}
     virtual void beatPositionChanged(float beatPositionMSec) {}
-    virtual void accentUpdated(int accent) {}
-    virtual void metronomeVolumeUpdated(float volume) {}
-    virtual void musicMetronomeBalanceUpdated(float balance) {}
+    virtual void accentChanged(int accent) {}
+    virtual void metronomeVolumeChanged(float volume) {}
+    virtual void musicMetronomeBalanceChanged(float balance) {}
     virtual void outputModeChanged(OutputMode outputMode) {}
     virtual void eqSwitchChanged(bool on) {}
     virtual void eqFreqChanged(size_t band, float freq) {}

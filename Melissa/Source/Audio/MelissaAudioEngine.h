@@ -28,11 +28,9 @@ public:
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
-    bool isMetoronomeOn() const { return metronome_.on_ ;};
-    void setMetoronome(bool on) { metronome_.on_ = on; };
     void analyzeBpm();
     
-    void render(float* bufferToRender[], size_t bufferLength);
+    void render(float* bufferToRender[], std::vector<float>&  timeIndicesMSec, size_t bufferLength);
     
     void process();
     bool needToProcess() const;
@@ -86,24 +84,6 @@ private:
     float volumeBalance_;
     OutputMode outputMode_;
     
-    // metronome
-    struct Metronome
-    {
-        Metronome() : on_(true), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), accent_(4), prevBeatSection_(0), prevAccentBeatSection_(0), amp_(0.f), osc_(-1.f), pitch_(880) { }
-        bool on_;
-        float volume_;
-        float beatPositionMSec_;
-        float bpm_;
-        int accent_;
-        int prevBeatSection_;
-        int prevAccentBeatSection_;
-        
-        // for beep
-        float amp_;
-        float osc_;
-        float pitch_;
-    } metronome_;
-    
     class Equalizer;
     bool eqSwitch_;
     std::unique_ptr<Equalizer> eq_;
@@ -120,12 +100,7 @@ private:
     void speedIncGoalChanged(int speedIncGoal) override;
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void playingPosChanged(float time, float ratio) override;
-    void metronomeSwitchChanged(bool on) override;
-    void bpmChanged(float bpm) override;
-    void beatPositionChanged(float beatPositionMSec) override;
-    void accentUpdated(int accent) override;
-    void metronomeVolumeUpdated(float volume) override;
-    void musicMetronomeBalanceUpdated(float balance) override;
+    void musicMetronomeBalanceChanged(float balance) override;
     void outputModeChanged(OutputMode outputMode) override;
     void eqSwitchChanged(bool on) override;
     void eqFreqChanged(size_t band, float freq) override;

@@ -21,6 +21,7 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaMessageComponent.h"
+#include "MelissaMetronome.h"
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
@@ -139,6 +140,7 @@ public:
 
 private:
     std::unique_ptr<MelissaAudioEngine> audioEngine_;
+    std::unique_ptr<MelissaMetronome> metronome_;
     MelissaModel* model_;
     MelissaDataSource* dataSource_;
     std::unique_ptr<MelissaBPMDetector> bpmDetector_;
@@ -297,6 +299,8 @@ private:
     
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     
+    std::vector<float> timeIndicesMSec_;
+    
     void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
     
     // MelissaModelListener
@@ -312,9 +316,9 @@ private:
     void metronomeSwitchChanged(bool on) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
-    void accentUpdated(int accent) override;
-    void metronomeVolumeUpdated(float volume) override;
-    void musicMetronomeBalanceUpdated(float balance) override;
+    void accentChanged(int accent) override;
+    void metronomeVolumeChanged(float volume) override;
+    void musicMetronomeBalanceChanged(float balance) override;
     void outputModeChanged(OutputMode outputMode) override;
     void eqSwitchChanged(bool on) override;
     void eqFreqChanged(size_t band, float freq) override;

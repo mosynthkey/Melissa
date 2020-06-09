@@ -208,7 +208,7 @@ void MelissaModel::setAccent(int accent)
     if (accent < 0 || 16 <= accent) return;
     
     accent_ = accent;
-    for (auto&& l : listeners_) l->accentUpdated(accent);
+    for (auto&& l : listeners_) l->accentChanged(accent);
 }
 
 void MelissaModel::setMetronomeVolume(float volume)
@@ -216,7 +216,7 @@ void MelissaModel::setMetronomeVolume(float volume)
     if (volume < 0.f || 1.f < volume) return;
     
     metronomeVolume_ = volume;
-    for (auto&& l : listeners_) l->metronomeVolumeUpdated(volume);
+    for (auto&& l : listeners_) l->metronomeVolumeChanged(volume);
 }
 
 void MelissaModel::setMusicMetronomeBalance(float balance)
@@ -224,7 +224,7 @@ void MelissaModel::setMusicMetronomeBalance(float balance)
     if (balance < 0.f || 1.f < balance) return;
     
     musicMetronomeBalance_ = balance;
-    for (auto&& l : listeners_) l->musicMetronomeBalanceUpdated(balance);
+    for (auto&& l : listeners_) l->musicMetronomeBalanceChanged(balance);
 }
 
 void MelissaModel::setOutputMode(OutputMode outputMode)
