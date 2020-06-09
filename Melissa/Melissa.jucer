@@ -99,6 +99,10 @@
               file="Source/UI/MelissaMarkerListBox.cpp"/>
         <FILE id="eNBL9S" name="MelissaMarkerListBox.h" compile="0" resource="0"
               file="Source/UI/MelissaMarkerListBox.h"/>
+        <FILE id="rFO3sM" name="MelissaMessageComponent.cpp" compile="1" resource="0"
+              file="Source/UI/MelissaMessageComponent.cpp"/>
+        <FILE id="JnLty6" name="MelissaMessageComponent.h" compile="0" resource="0"
+              file="Source/UI/MelissaMessageComponent.h"/>
         <FILE id="M048TD" name="MelissaModalDialog.cpp" compile="1" resource="0"
               file="Source/UI/MelissaModalDialog.cpp"/>
         <FILE id="vNDLTs" name="MelissaModalDialog.h" compile="0" resource="0"

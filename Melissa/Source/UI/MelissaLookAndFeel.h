@@ -7,8 +7,6 @@
 
 #pragma once
 
-#define _USE_MATH_DEFINES
-
 #include <math.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaUISettings.h"

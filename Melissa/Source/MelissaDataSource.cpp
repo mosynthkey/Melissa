@@ -653,6 +653,21 @@ void MelissaDataSource::addMarker(const Song::Marker& marker)
 {
     if (currentSongFilePath_.isEmpty()) return;
     
+    const int lengthSec = model_->getLengthMSec() / 1000.f;
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            for (auto&& m : song.markers_)
+            {
+                if (static_cast<int>(marker.position_ * lengthSec) == static_cast<int>(m.position_ * lengthSec))
+                {
+                    return;
+                }
+            }
+        }
+    }
+    
     for (auto&& song : songs_)
     {
         if (song.filePath_ == currentSongFilePath_)

@@ -5,6 +5,7 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include "MelissaMessageComponent.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
@@ -306,12 +307,22 @@ public:
         }
     }
     
+    std::function<void(bool)> onClick_;
+    
     void clicked(const ModifierKeys& modifiers) override
     {
         if (onClick_ != nullptr) onClick_(modifiers.isShiftDown());
     }
     
-    std::function<void(bool)> onClick_;
+    void mouseEnter(const MouseEvent& e) override
+    {
+        MelissaMessageComponent::getInstance()->showMessage(memo_);
+    }
+    
+    void mouseExit(const MouseEvent& e) override
+    {
+        MelissaMessageComponent::getInstance()->showMessage("");
+    }
     
     void setPosition(float position)
     {
