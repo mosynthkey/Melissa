@@ -5,8 +5,6 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
-#define _USE_MATH_DEFINES
-
 #include <cmath>
 #include <iostream>
 #include <limits.h>
@@ -42,6 +40,11 @@ public:
     void putSampleIndex(size_t sampleIndex)
     {
         que_.push_back(sampleIndex);
+    }
+    
+    bool isStretchedSampleIndicesPrepared(size_t length) const
+    {
+        return (readIndex_ + length * speed_) < que_.size();
     }
     
     void getStretchedSampleIndices(size_t length, std::deque<float>& stretchedSampleIndex)
@@ -207,8 +210,7 @@ float MelissaAudioEngine::getPlayingPosRatio() const
 
 void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
 {
-    
-    if (processedBufferQue_.size() <= bufferLength) return;
+    if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength)) return;
     mutex_.lock();
     sampleIndexStretcher_->getStretchedSampleIndices(bufferLength, timeQue_);
     mutex_.unlock();
