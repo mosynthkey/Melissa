@@ -208,7 +208,7 @@ float MelissaAudioEngine::getPlayingPosRatio() const
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
-void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
+void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
     if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength)) return;
     mutex_.lock();
@@ -217,10 +217,6 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
     
     for (int iSample = 0; iSample < bufferLength; ++iSample)
     {
-        metronome_.osc_ += 2.f / (outputSampleRate_ / metronome_.pitch_);
-        if (metronome_.osc_ > 1.f) metronome_.osc_ = -1.f;
-        
-        const auto metronomeOsc = metronome_.osc_ * metronome_.amp_ * metronome_.volume_ * (metronome_.on_ ? 1.f : 0.f);
         mutex_.lock();
         if (processedBufferQue_.size() > 0 && timeQue_.size() > 0)
         {
@@ -240,36 +236,14 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t bufferLength)
             }
             
             const float musicVolumeCoef = cos(M_PI / 2.f * volumeBalance_);
-            bufferToRender[0][iSample] = buffer[0] * musicVolumeCoef + metronomeOsc * (1.f - musicVolumeCoef);
-            bufferToRender[1][iSample] = buffer[1] * musicVolumeCoef + metronomeOsc * (1.f - musicVolumeCoef);
+            bufferToRender[0][iSample] = buffer[0] * musicVolumeCoef;
+            bufferToRender[1][iSample] = buffer[1] * musicVolumeCoef;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
-            playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
+            timeIndicesMSec[iSample] = playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
             timeQue_.pop_front();
         }
         mutex_.unlock();
-        
-        const int beatSection = (playingPosMSec_ - metronome_.beatPositionMSec_) / ((60.f / metronome_.bpm_) * 1000.f);
-        if (metronome_.accent_ != 0 && (beatSection / metronome_.accent_ != metronome_.prevBeatSection_ / metronome_.accent_))
-        {
-            metronome_.amp_ = 1.f;
-            metronome_.pitch_ = 880 * 2;
-        }
-        else if (beatSection != metronome_.prevBeatSection_)
-        {
-            metronome_.amp_ = 1.f;
-            metronome_.pitch_ = 880;
-        }
-        metronome_.prevBeatSection_ = beatSection;
-        
-        if (metronome_.amp_ > 0.f)
-        {
-            metronome_.amp_ -= 1.f / static_cast<float>(outputSampleRate_) * 20.f;
-        }
-        else if (metronome_.amp_ < 0.f)
-        {
-            metronome_.amp_ = 0.f;
-        }
     }
     
     model_->updatePlayingPosMSecFromDsp(playingPosMSec_);
@@ -562,32 +536,7 @@ void MelissaAudioEngine::playingPosChanged(float time, float ratio)
     needToReset_ = true;
 }
 
-void MelissaAudioEngine::metronomeSwitchChanged(bool on)
-{
-    metronome_.on_ = on;
-}
-
-void MelissaAudioEngine::bpmChanged(float bpm)
-{
-    metronome_.bpm_ = bpm;
-}
-
-void MelissaAudioEngine::beatPositionChanged(float beatPositionMSec)
-{
-    metronome_.beatPositionMSec_ = beatPositionMSec;
-}
-
-void MelissaAudioEngine::accentUpdated(int accent)
-{
-    metronome_.accent_ = accent;
-}
-
-void MelissaAudioEngine::metronomeVolumeUpdated(float volume)
-{
-    metronome_.volume_ = volume;
-}
-
-void MelissaAudioEngine::musicMetronomeBalanceUpdated(float balance)
+void MelissaAudioEngine::musicMetronomeBalanceChanged(float balance)
 {
     volumeBalance_ = balance;
 }

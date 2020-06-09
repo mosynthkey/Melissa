@@ -41,6 +41,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     
+    metronome_ = std::make_unique<MelissaMetronome>();
+    
     model_ = MelissaModel::getInstance();
     model_->setMelissaAudioEngine(audioEngine_.get());
     model_->addListener(dynamic_cast<MelissaModelListener*>(audioEngine_.get()));    
@@ -850,15 +852,24 @@ void MainComponent::showFileChooser()
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
     audioEngine_->setOutputSampleRate(sampleRate);
+    metronome_->setOutputSampleRate(sampleRate);
 }
 
 void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
 {
+    const auto numSamples = bufferToFill.numSamples;
+    if (timeIndicesMSec_.size() != numSamples)
+    {
+        timeIndicesMSec_.resize(numSamples);
+    }
     bufferToFill.clearActiveBufferRegion();
     
-    if (model_->getPlaybackStatus() != kPlaybackStatus_Playing) return;
     float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
-    audioEngine_->render(buffer, bufferToFill.numSamples);
+    if (model_->getPlaybackStatus() == kPlaybackStatus_Playing)
+    {
+        audioEngine_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
+    }
+    metronome_  ->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
 }
 
 void MainComponent::releaseResources()
@@ -1533,17 +1544,17 @@ void MainComponent::beatPositionChanged(float beatPositionMSec)
     beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec()));
 }
 
-void MainComponent::accentUpdated(int accent)
+void MainComponent::accentChanged(int accent)
 {
     accentButton_->setText(String(accent));
 }
 
-void MainComponent::metronomeVolumeUpdated(float volume)
+void MainComponent::metronomeVolumeChanged(float volume)
 {
     metronomeVolumeSlider_->setValue(volume);
 }
 
-void MainComponent::musicMetronomeBalanceUpdated(float balance)
+void MainComponent::musicMetronomeBalanceChanged(float balance)
 {
     volumeBalanceSlider_->setValue(balance);
 }
