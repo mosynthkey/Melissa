@@ -165,7 +165,7 @@ private:
 
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedIncStart_(100), speedIncPer_(0), speedIncValue_(0), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false)
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(0), speedIncValue_(0), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<Equalizer>();
@@ -234,6 +234,11 @@ void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& tim
             {
                 buffer[0] = buffer[1];
             }
+            else if (outputMode_ == kOutputMode_CenterCancel)
+            {
+                const auto lrDiff = buffer[0] - buffer[1];
+                buffer[0] = buffer[1] = lrDiff;
+            }
             
             const float musicVolumeCoef = cos(M_PI / 2.f * volumeBalance_);
             bufferToRender[0][iSample] = buffer[0] * musicVolumeCoef;
@@ -264,7 +269,7 @@ void MelissaAudioEngine::process()
                 readIndex_ = aIndex_;
                 ++count_;
                 
-                if (speedIncPer_ != 0)
+                if (speedMode_ == kSpeedMode_Training && speedIncPer_ != 0)
                 {
                     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
                     currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
@@ -365,79 +370,6 @@ std::string MelissaAudioEngine::getStatusString() const
     return ss.str();
 }
 
-void MelissaAudioEngine::analyzeBpm()
-{
-    // Ref : http://hp.vector.co.jp/authors/VA046927/tempo/tempo.html
-    
-    constexpr size_t frameLength = 32;
-    const size_t numOfFrames = originalBufferLength_ / frameLength;
-    
-    std::vector<float> frameAmp(numOfFrames);
-    for (size_t iFrame = 0; iFrame < numOfFrames; ++iFrame)
-    {
-        float amp = 0.f;
-        for (size_t iSample = 0; iSample < frameLength; ++iSample)
-        {
-            // stereo -> monoral
-            size_t sampleIndex = iFrame * frameLength + iSample;
-            if (sampleIndex > originalBufferLength_) break;
-            const float sig = (dataSource_->readBuffer(0, sampleIndex) + dataSource_->readBuffer(1, sampleIndex));
-            amp += sig * sig;
-        }
-        frameAmp[iFrame] =  sqrt(amp / frameLength);
-    }
-    
-    std::vector<float> frameAmpDiff(numOfFrames);
-    for (size_t iFrame = 0; iFrame < numOfFrames - 1; ++iFrame)
-    {
-        frameAmpDiff[iFrame] = frameAmp[iFrame + 1] - frameAmp[iFrame];
-        if (frameAmpDiff[iFrame] < 0.f) frameAmpDiff[iFrame] = 0.f;
-    }
-    frameAmpDiff[numOfFrames - 1] = 0.f;
-    
-    auto getBpmCorrelation = [&](uint32_t bpm, float* a, float* b)
-    {
-        *a = 0.f;
-        *b = 0.f;
-        for (size_t iFrame = 0; iFrame < numOfFrames - 1; ++iFrame)
-        {
-            const double rad = 2 * M_PI * (bpm / 60.f) * iFrame / (originalSampleRate_ / frameLength);
-            const double win = 0.5f * (1.f - cos(2.0 * M_PI * static_cast<float>(iFrame) / numOfFrames));
-            *a += frameAmpDiff[iFrame] * cos(rad) * win;
-            *b += frameAmpDiff[iFrame] * sin(rad) * win;
-        }
-        *a /= numOfFrames;
-        *b /= numOfFrames;
-        
-        return sqrt(*a * *a + *b * *b);
-    };
-    
-    constexpr uint32_t bpmMax = 240, bpmMin = 60;
-    uint32_t estimatedBpm = 0;
-    std::vector<float> correlations(bpmMax - bpmMin + 1);
-    float correlationMax = 0.f, aMax = 0.f, bMax = 0.f;
-    for (uint32_t iBpm = bpmMin; iBpm <= bpmMax; ++iBpm)
-    {
-        auto c = correlations[iBpm - bpmMin] = getBpmCorrelation(iBpm, &aMax, &bMax);
-        if (c > correlationMax)
-        {
-            correlationMax = c;
-            estimatedBpm = iBpm;
-            std::cout << "Bpm might be " << estimatedBpm << " (" << correlationMax << ")" << std::endl;
-        }
-    }
-    
-    model_->setBpm(estimatedBpm);
-    
-    float theta = atan2(bMax, aMax);
-    if (theta < 0) theta += 2.f * M_PI;
-    const float beatPositionMSec = theta / (2 * M_PI * (estimatedBpm / 60.f));
-    model_->setBeatPositionMSec(beatPositionMSec);
-    
-    std::cout << "BPM = " << estimatedBpm << std::endl;
-    std::cout << beatPositionMSec << " sec" << std::endl;
-}
-
 void MelissaAudioEngine::musicVolumeChanged(float volume)
 {
     volume_ = volume;
@@ -479,6 +411,7 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
         speedIncGoal_  = model_->getSpeedIncGoal();
     }
     
+    speedMode_ = mode;
     count_ = 0;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;

@@ -134,6 +134,7 @@ public:
     var getSongSetting(String fileName);
     void showPreferencesDialog();
     void showAboutDialog();
+    void showBPMSettingDialog();
     
     void showTutorial();
     void showUpdateDialog(bool showIfThereIsNoUpdate = false);
@@ -144,6 +145,10 @@ private:
     MelissaModel* model_;
     MelissaDataSource* dataSource_;
     std::unique_ptr<MelissaBPMDetector> bpmDetector_;
+    float analyzedBpm_;
+    bool bpmAnalyzeFinished_;
+    bool shouldInitializeBpmDetector_;
+    bool shouldUpdateBpm_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
@@ -168,7 +173,6 @@ private:
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
     std::unique_ptr<MelissaIncDecButton> accentButton_;
-    std::unique_ptr<TextButton> analyzeButton_;
     
     std::unique_ptr<Slider> musicVolumeSlider_;
     std::unique_ptr<Slider> volumeBalanceSlider_;
@@ -230,7 +234,7 @@ private:
     std::unique_ptr<MelissaMarkerListBox> markerTable_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     
-    std::unique_ptr<ComboBox> oututModeComboBox_;
+    std::unique_ptr<ComboBox> outputModeComboBox_;
     
     std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     std::unique_ptr<MelissaPlaylistComponent> playlistComponent_;

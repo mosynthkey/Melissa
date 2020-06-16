@@ -28,8 +28,6 @@ public:
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
-    void analyzeBpm();
-    
     void render(float* bufferToRender[], std::vector<float>&  timeIndicesMSec, size_t bufferLength);
     
     void process();
@@ -74,7 +72,7 @@ private:
     std::mutex mutex_;
     
     int32_t count_;
-    
+    SpeedMode speedMode_;
     int32_t speedIncStart_;
     int32_t speedIncPer_;
     int32_t speedIncValue_;

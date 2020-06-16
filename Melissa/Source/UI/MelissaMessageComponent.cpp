@@ -59,6 +59,7 @@ MelissaMessageComponent::~MelissaMessageComponent()
 
 void MelissaMessageComponent::resized()
 {
+            /*
     if (label_ == nullptr)
     {
         label_ = std::make_unique<Label>();
@@ -77,6 +78,7 @@ void MelissaMessageComponent::resized()
         messageLabels_.emplace_back(std::move(l));
     }
     label_->setBounds(0, 0, getWidth(), getHeight());
+                      */
 }
 
 void MelissaMessageComponent::timerCallback()
@@ -86,6 +88,7 @@ void MelissaMessageComponent::timerCallback()
 
 int MelissaMessageComponent::showMessage(const String& message)
 {
+    /*
     const auto assignedId = assignCounter_;
     label_->setText(message, dontSendNotification);
     messageList_.emplace_back(std::make_pair(assignedId, message));
@@ -93,6 +96,7 @@ int MelissaMessageComponent::showMessage(const String& message)
     ++assignCounter_;
     
     return assignedId;
+     */
 }
 
 void MelissaMessageComponent::hideMessage(int messageId)

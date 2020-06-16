@@ -88,6 +88,8 @@
               resource="0" file="Source/UI/MelissaBottomControlComponent.cpp"/>
         <FILE id="fuTs88" name="MelissaBottomControlComponent.h" compile="0"
               resource="0" file="Source/UI/MelissaBottomControlComponent.h"/>
+        <FILE id="r13aSZ" name="MelissaBPMSettingComponent.h" compile="0" resource="0"
+              file="Source/UI/MelissaBPMSettingComponent.h"/>
         <FILE id="j1BKmo" name="MelissaButtons.h" compile="0" resource="0"
               file="Source/UI/MelissaButtons.h"/>
         <FILE id="vQExoN" name="MelissaFileListBox.h" compile="0" resource="0"
