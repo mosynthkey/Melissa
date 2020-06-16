@@ -9,43 +9,56 @@
 
 MelissaBPMDetector::MelissaBPMDetector() :
 bpmDetect_(nullptr),
-dataSource_(MelissaDataSource::getInstance())
+dataSource_(MelissaDataSource::getInstance()),
+sampleRate_(0),
+bufferLength_(0),
+processStartIndex_(0)
 {
-    
 }
 
-void MelissaBPMDetector::start()
+void MelissaBPMDetector::initialize(int sampleRate, size_t bufferLength)
 {
-    cancelPendingUpdate();
-    triggerAsyncUpdate();
+    sampleRate_   = sampleRate;
+    bufferLength_ = bufferLength;
+    
+    bpmDetect_ = std::make_unique<soundtouch::BPMDetect>(2, sampleRate);
+    processStartIndex_ = 0;
 }
 
-void MelissaBPMDetector::handleAsyncUpdate()
+void MelissaBPMDetector::process(bool* processFinished, float* bpm)
 {
-    bpmDetect_ = std::make_unique<soundtouch::BPMDetect>(2, dataSource_->getSampleRate());
-    
-    const auto numOfSamples = dataSource_->getBufferLength();
+    *processFinished = false;
     
     constexpr size_t processLength = 512;
-    constexpr size_t bufferLength = processLength * 2 /* Stereo */;
-    float buffer[bufferLength];
+    constexpr size_t processBufferLength = processLength * 2 /* Stereo */;
+    float buffer[processBufferLength];
     
-    for (size_t bufferStart_i = 0; bufferStart_i < numOfSamples; bufferStart_i += bufferLength)
+    for (size_t bufferIndex = 0; bufferIndex < processBufferLength; bufferIndex += 2)
     {
-        for (size_t buffer_i = 0; buffer_i < bufferLength && (bufferStart_i + buffer_i < numOfSamples); buffer_i += 2)
+        if (bufferLength_ * 2 <= processStartIndex_ + bufferIndex)
         {
-            buffer[buffer_i + 0] = dataSource_->readBuffer(0, bufferStart_i + buffer_i);
-            buffer[buffer_i + 1] = dataSource_->readBuffer(1, bufferStart_i + buffer_i + 1);
+            *processFinished = true;
+            break;
         }
-        bpmDetect_->inputSamples(buffer, processLength);
+        buffer[bufferIndex + 0] = dataSource_->readBuffer(0, processStartIndex_ + bufferIndex);
+        buffer[bufferIndex + 1] = dataSource_->readBuffer(1, processStartIndex_ + bufferIndex + 1);
     }
+    processStartIndex_ += processBufferLength;
+    bpmDetect_->inputSamples(buffer, processLength);
+    
+    if (!(*processFinished)) return;
     
     const auto beatsLength = bpmDetect_->getBeats(nullptr, nullptr, 0);
     std::vector<float> beatPosition, strength;
     beatPosition.resize(beatsLength);
     strength.resize(beatsLength);
-    bpmDetect_->getBeats(beatPosition.data(), strength.data(), beatsLength);
     
+    *bpm = std::round(bpmDetect_->getBpm());
+    printf("bpm = %f\n", *bpm);
+    // model->setBeatPositionMSec(beatPosition[strengthMaxIndex] * 1000.f);
+    
+    /*
+    bpmDetect_->getBeats(beatPosition.data(), strength.data(), beatsLength);
     size_t strengthMaxIndex = 0;
     for (size_t strength_i = 0; strength_i < strength.size(); ++strength_i)
     {
@@ -54,11 +67,10 @@ void MelissaBPMDetector::handleAsyncUpdate()
             strengthMaxIndex = strength_i;
         }
     }
-    
-    
-    const auto bpm = bpmDetect_->getBpm();
+     
     printf("bpm = %f\n", bpm);
     auto model = MelissaModel::getInstance();
     model->setBpm(std::round(bpm));
     model->setBeatPositionMSec(beatPosition[strengthMaxIndex] * 1000.f);
+  */
 }

@@ -11,6 +11,8 @@
 #include "MelissaAudioEngine.h"
 #include "MelissaModel.h"
 
+// #define SAVE_METRONOME_IN_PRACTICE_LIST
+
 enum FileLoadStatus
 {
     kFileLoadStatus_Success,
@@ -84,7 +86,7 @@ public:
         filePath_(""), pitch_(0),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f),
+        metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
         eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f)
         {}
@@ -131,9 +133,11 @@ public:
             float volumeBalance_;
             
             bool metronomeSw_;
+#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
             int bpm_;
             int accent_;
             float beatPositionMSec_;
+#endif
 
             SpeedMode speedMode_;
             int speed_;
@@ -144,7 +148,10 @@ public:
             
             PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f),
             outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-            metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f),
+            metronomeSw_(false),
+#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
+            bpm_(-1), accent_(4), beatPositionMSec_(0.f),
+#endif
             speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
             {}
         };
@@ -159,7 +166,7 @@ public:
         std::vector<Marker> markers_;
         
         Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(120), accent_(4), beatPositionMSec_(0.f), eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
+        metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f), eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
     };
     std::vector<Song> songs_;
     

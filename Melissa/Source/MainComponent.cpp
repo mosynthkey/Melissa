@@ -8,6 +8,7 @@
 #include <sstream>
 #include "MainComponent.h"
 #include "MelissaAboutComponent.h"
+#include "MelissaBPMSettingComponent.h"
 #include "MelissaDefinitions.h"
 #include "MelissaInputDialog.h"
 #include "MelissaOptionDialog.h"
@@ -53,6 +54,10 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     dataSource_->addListener(this);
     
     bpmDetector_ = std::make_unique<MelissaBPMDetector>();
+    analyzedBpm_ = -1.f;
+    bpmAnalyzeFinished_ = true;
+    shouldInitializeBpmDetector_ = false;
+    shouldUpdateBpm_ = false;
     
     MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
@@ -163,7 +168,6 @@ MainComponent::~MainComponent()
     volumeBalanceSlider_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     eqSwitchButton_->setLookAndFeel(nullptr);
-    analyzeButton_->setLookAndFeel(nullptr);
     speedModeBasicToggleButton_->setLookAndFeel(nullptr);
     speedModeTrainingToggleButton_->setLookAndFeel(nullptr);
     for (auto&& b : speedPresetButtons_)
@@ -538,10 +542,15 @@ void MainComponent::createUI()
         section->addAndMakeVisible(metronomeOnOffButton_.get());
         
         bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("bpm"), TRANS("bpm"));
+        bpmButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Edit", TRANS("todo"));
         bpmButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
             {
+            }
+            else if (event == MelissaIncDecButton::kEvent_Func)
+            {
+                showBPMSettingDialog();
             }
             else
             {
@@ -583,15 +592,6 @@ void MainComponent::createUI()
             }
         };
         section->addAndMakeVisible(accentButton_.get());
-        
-        analyzeButton_ = make_unique<TextButton>();
-        analyzeButton_->setLookAndFeel(&simpleTextButtonLaf_);
-        analyzeButton_->setButtonText("Auto detect");
-        analyzeButton_->onClick = [this]()
-        {
-            bpmDetector_->start();
-        };
-        section->addAndMakeVisible(analyzeButton_.get());
     }
     
     {
@@ -612,11 +612,11 @@ void MainComponent::createUI()
             auto freqKnob = std::make_unique<Slider>();
             freqKnob->setSliderStyle(Slider::RotaryVerticalDrag);
             freqKnob->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-            freqKnob->setRange(kEqFreqMin, kEqFreqMax);
+            freqKnob->setRange(0.f, 1.f);
             freqKnob->onValueChange = [&, bandIndex]()
             {
                 auto value = eqFreqKnobs_[bandIndex]->getValue();
-                model_->setEqFreq(0, value);
+                model_->setEqFreq(0, 20 * std::pow(1000, value));
             };
             section->addAndMakeVisible(freqKnob.get());
             eqFreqKnobs_[bandIndex] = std::move(freqKnob);
@@ -647,7 +647,7 @@ void MainComponent::createUI()
         }
         
         constexpr int numOfControls = 3;
-        const static String labelTitles[] = { "Freq", "Q", "Gain" };
+        const static String labelTitles[] = { "Freq", "Gain", "Q" };
         for (size_t labelIndex = 0; labelIndex < kNumOfEqBands * numOfControls; ++labelIndex)
         {
             auto l = std::make_unique<Label>();
@@ -661,18 +661,19 @@ void MainComponent::createUI()
     {
         auto section = sectionComponents_[kSection_Output].get();
         
-        oututModeComboBox_ = make_unique<ComboBox>();
-        oututModeComboBox_->setJustificationType(Justification::centred);
-        oututModeComboBox_->addItem("L - R", kOutputMode_LR + 1);
-        oututModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
-        oututModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
-        oututModeComboBox_->onChange = [&]()
+        outputModeComboBox_ = make_unique<ComboBox>();
+        outputModeComboBox_->setJustificationType(Justification::centred);
+        outputModeComboBox_->addItem("Original", kOutputMode_LR + 1);
+        outputModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
+        outputModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
+        outputModeComboBox_->addItem("Center Cancel", kOutputMode_CenterCancel + 1);
+        outputModeComboBox_->onChange = [&]()
         {
-            OutputMode mode = static_cast<OutputMode>(oututModeComboBox_->getSelectedId() - 1);
+            OutputMode mode = static_cast<OutputMode>(outputModeComboBox_->getSelectedId() - 1);
             model_->setOutputMode(mode);
         };
-        oututModeComboBox_->setSelectedId(kOutputMode_LR + 1);
-        section->addAndMakeVisible(oututModeComboBox_.get());
+        outputModeComboBox_->setSelectedId(kOutputMode_LR + 1);
+        section->addAndMakeVisible(outputModeComboBox_.get());
     
         musicVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         musicVolumeSlider_->setRange(0.01f, 2.0f);
@@ -802,7 +803,7 @@ void MainComponent::createUI()
     labelInfo_[kLabel_MusicVolume]      = { "Music",         musicVolumeSlider_.get() };
     labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",     metronomeVolumeSlider_.get() };
     labelInfo_[kLabel_Pitch]            = { "Pitch",         pitchButton_.get() };
-    labelInfo_[kLabel_OutputMode]       = { "Output",        oututModeComboBox_.get() };
+    labelInfo_[kLabel_OutputMode]       = { "Output",        outputModeComboBox_.get() };
     labelInfo_[kLabel_ATime]            = { "Start",         aButton_.get() };
     labelInfo_[kLabel_BTime]            = { "End",           bButton_.get() };
     labelInfo_[kLabel_Speed]            = { "Speed",         speedButton_.get() };
@@ -884,12 +885,13 @@ void MainComponent::paint(Graphics& g)
 {
     const int w = getWidth();
     const int h = getHeight();
-    const int center = w / 2;
+    const int xCenter = w / 2;
+    const int yCenter = h / 2;
     const auto gradationColour = MelissaUISettings::getBackGroundGradationColour();
-    const int playButtonCenterY = playPauseButton_->getY() + playPauseButton_->getHeight() / 2;
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, playButtonCenterY, Colour(gradationColour.second), 0, getHeight(), true));
+    const int playButtonCenterY = controlComponent_->getY() + controlComponent_->getHeight() / 2;
+    g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), 0, getHeight(), true));
     g.fillRect(0, 0, w / 2, h);
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), center, playButtonCenterY, Colour(gradationColour.second), w, getHeight(), true));
+    g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), w, getHeight(), true));
     g.fillRect(w / 2, 0, w / 2, h);
     
     constexpr int interval = 6;
@@ -910,15 +912,15 @@ void MainComponent::paint(Graphics& g)
     Colour colours[] = { Colour(0x00000000), Colour(0x50000000) };
     
     int y = controlComponent_->getY() - kGradationHeight;
-    g.setGradientFill(ColourGradient(colours[0], center, y, colours[1], center, y + kGradationHeight, false));
+    g.setGradientFill(ColourGradient(colours[0], xCenter, y, colours[1], xCenter, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
     
     y = controlComponent_->getBottom();
-    g.setGradientFill(ColourGradient(colours[1], center, y, colours[0], center, y + kGradationHeight, false));
+    g.setGradientFill(ColourGradient(colours[1], xCenter, y, colours[0], xCenter, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
     
     y = bottomComponent_->getY() - kGradationHeight;
-    g.setGradientFill(ColourGradient(colours[0], center, y, colours[1], center, y + kGradationHeight, false));
+    g.setGradientFill(ColourGradient(colours[0], xCenter, y, colours[1], xCenter, y + kGradationHeight, false));
     g.fillRect(0, y, w, kGradationHeight);
 }
 
@@ -1060,9 +1062,9 @@ void MainComponent::resized()
         
         x = speedModeBasicToggleButton_->getRight() + 10;
         speedIncStartButton_->setBounds(x, y, 120, controlHeight);
-        speedIncPerButton_->setBounds(speedIncStartButton_->getRight() + 20, y, 120, controlHeight);
-        speedIncValueButton_->setBounds(speedIncPerButton_->getRight() + 20, y, 120, controlHeight);
-        speedIncGoalButton_->setBounds(speedIncValueButton_->getRight() + 20, y, 120, controlHeight);
+        speedIncValueButton_->setBounds(speedIncStartButton_->getRight() + 20, y, 120, controlHeight);
+        speedIncPerButton_->setBounds(speedIncValueButton_->getRight() + 20, y, 120, controlHeight);
+        speedIncGoalButton_->setBounds(speedIncPerButton_->getRight() + 20, y, 120, controlHeight);
     }
     
     y = sectionComponents_[kSection_Song]->getBottom() + sectionMarginY;
@@ -1076,9 +1078,6 @@ void MainComponent::resized()
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
         metronomeOnOffButton_->setBounds(10, 5, 40, 20);
-        const int analyzeButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), analyzeButton_->getButtonText()).first;
-        analyzeButton_->setSize(analyzeButtonWidth, 30);
-        analyzeButton_->setTopRightPosition(section->getWidth() - 10, 0);
         
         bpmButton_->setBounds(10, y, buttonWidth, controlHeight);
         accentButton_->setBounds((section->getWidth() - buttonWidth) / 2, y, buttonWidth, controlHeight);
@@ -1104,11 +1103,11 @@ void MainComponent::resized()
             knobLabels_[bandIndex * 3 + 0]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
             
-            eqQKnobs_   [bandIndex]->setBounds(x, y, knobSize, knobSize);
+            eqGainKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
             knobLabels_[bandIndex * 3 + 1]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
             
-            eqGainKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
+            eqQKnobs_   [bandIndex]->setBounds(x, y, knobSize, knobSize);
             knobLabels_[bandIndex * 3 + 2]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
         }
@@ -1122,8 +1121,8 @@ void MainComponent::resized()
         const int controlWidth = (section->getWidth() - 10 * 5) / 4;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
-        oututModeComboBox_->setBounds(10, y, controlWidth, controlHeight);
-        musicVolumeSlider_->setBounds(oututModeComboBox_->getRight() + 10, y, controlWidth, controlHeight);
+        outputModeComboBox_->setBounds(10, y, controlWidth, controlHeight);
+        musicVolumeSlider_->setBounds(outputModeComboBox_->getRight() + 10, y, controlWidth, controlHeight);
         volumeBalanceSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, controlWidth, controlHeight);
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
     }
@@ -1249,6 +1248,12 @@ void MainComponent::showAboutDialog()
     MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("about_melissa"));
 }
 
+void MainComponent::showBPMSettingDialog()
+{
+    auto component = std::make_shared<MelissaBPMSettingComponent>();
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("bpm_setting"));
+}
+
 void MainComponent::showTutorial()
 {
 #if defined(ENABLE_TUTORIAL)
@@ -1306,6 +1311,8 @@ void MainComponent::songChanged(const String& filePath, size_t bufferLength, int
     auto parentDir = File(filePath).getParentDirectory();
     parentDir.setAsCurrentWorkingDirectory();
     fileBrowserComponent_->setRoot(parentDir);
+    
+    shouldInitializeBpmDetector_ = true;
 }
 
 void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String& filePath)
@@ -1371,6 +1378,16 @@ void MainComponent::run()
         {
             audioEngine_->process();
         }
+        else if (!bpmAnalyzeFinished_)
+        {
+            if (shouldInitializeBpmDetector_)
+            {
+                bpmDetector_->initialize(dataSource_->getSampleRate(), dataSource_->getBufferLength());
+                shouldInitializeBpmDetector_ = false;
+            }
+            bpmDetector_->process(&bpmAnalyzeFinished_, &analyzedBpm_);
+            if (bpmAnalyzeFinished_) shouldUpdateBpm_ = true;
+        }
         else
         {
             wait(100);
@@ -1399,6 +1416,12 @@ void MainComponent::timerCallback()
     
     timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
+    
+    if (shouldUpdateBpm_)
+    {
+        model_->setBpm(analyzedBpm_);
+        shouldUpdateBpm_ = false;
+    }
 }
 
 void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
@@ -1527,16 +1550,20 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
 void MainComponent::metronomeSwitchChanged(bool on)
 {
     metronomeOnOffButton_->setToggleState(on, dontSendNotification);
-    auto children = sectionComponents_[kSection_Metronome]->getChildren();
-    for (auto&& c : children)
-    {
-        if (c != metronomeOnOffButton_.get()) c->setEnabled(on);
-    }
 }
 
 void MainComponent::bpmChanged(float bpm)
 {
-    bpmButton_->setText(String(static_cast<uint32_t>(model_->getBpm())));
+    if (bpm < 0)
+    {
+        bpmButton_->setText("---");
+        bpmAnalyzeFinished_ = false;
+    }
+    else
+    {
+        bpmButton_->setText(String(bpm));
+        bpmAnalyzeFinished_ = true;
+    }
 }
 
 void MainComponent::beatPositionChanged(float beatPositionMSec)
@@ -1561,33 +1588,29 @@ void MainComponent::musicMetronomeBalanceChanged(float balance)
 
 void MainComponent::outputModeChanged(OutputMode outputMode)
 {
-    oututModeComboBox_->setSelectedId(outputMode + 1);
+    outputModeComboBox_->setSelectedId(outputMode + 1);
 }
 
 void MainComponent::eqSwitchChanged(bool on)
 {
     eqSwitchButton_->setToggleState(on, dontSendNotification);
-    auto children = sectionComponents_[kSection_Eq]->getChildren();
-    for (auto&& c : children)
-    {
-        if (c != eqSwitchButton_.get()) c->setEnabled(on);
-    }
 }
 
 void MainComponent::eqFreqChanged(size_t band, float freq)
 {
-    eqFreqKnobs_[band]->setValue(freq, dontSendNotification);
+    const float quantizedValue = std::log10(freq / 20.f) / 3.f; //log10(1000.f);
+    eqFreqKnobs_[band]->setValue(quantizedValue, dontSendNotification);
     knobLabels_[0]->setText(String::formatted("%d Hz", static_cast<int>(freq)), dontSendNotification);
 }
 
 void MainComponent::eqGainChanged(size_t band, float gain)
 {
     eqGainKnobs_[band]->setValue(gain, dontSendNotification);
-    knobLabels_[2]->setText(String::formatted("Gain: %2.1f", gain), dontSendNotification);
+    knobLabels_[1]->setText(String::formatted("%+2.1f dB", gain), dontSendNotification);
 }
 
 void MainComponent::eqQChanged(size_t band, float q)
 {
     eqQKnobs_[band]->setValue(q, dontSendNotification);
-    knobLabels_[1]->setText(String::formatted("Q:%1.2f", q), dontSendNotification);
+    knobLabels_[2]->setText(String::formatted("Q:%1.2f", q), dontSendNotification);
 }

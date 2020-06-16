@@ -443,7 +443,13 @@ class MelissaLookAndFeel_SlideToggleButton : public LookAndFeel_V4
 
 class MelissaLookAndFeel_CircleToggleButton : public LookAndFeel_V4
 {
-     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+public:
+    void setFont(Font font)
+    {
+        font_ = font;
+    }
+    
+    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool on = tb.getToggleState();
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
@@ -461,6 +467,7 @@ class MelissaLookAndFeel_CircleToggleButton : public LookAndFeel_V4
         
         const auto textX = outsideRect.getRight() + 8;
         g.setColour(Colours::white);
+        g.setFont(font_);
         g.drawText(tb.getButtonText(), textX, 0, tb.getWidth() - textX, tb.getHeight(), Justification::left);
         
         if (on)
@@ -470,6 +477,9 @@ class MelissaLookAndFeel_CircleToggleButton : public LookAndFeel_V4
             g.fillRoundedRectangle(circleRect, circleRect.getHeight() / 2);
         }
     }
+    
+private:
+    Font font_;
 };
 
 class MelissaLookAndFeel_SelectorToggleButton : public LookAndFeel_V4

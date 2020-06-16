@@ -9,16 +9,16 @@
 namespace BinaryData
 {
     extern const char*   arrow_left_svg;
-    const int            arrow_left_svgSize = 1101;
+    const int            arrow_left_svgSize = 1157;
 
     extern const char*   arrow_left_highlighted_svg;
-    const int            arrow_left_highlighted_svgSize = 1130;
+    const int            arrow_left_highlighted_svgSize = 1167;
 
     extern const char*   arrow_right_highlighted_svg;
-    const int            arrow_right_highlighted_svgSize = 1228;
+    const int            arrow_right_highlighted_svgSize = 1265;
 
     extern const char*   arrow_right_svg;
-    const int            arrow_right_svgSize = 1199;
+    const int            arrow_right_svgSize = 1255;
 
     extern const char*   enUS_txt;
     const int            enUS_txtSize = 2072;

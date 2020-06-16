@@ -12,16 +12,17 @@
 #include "MelissaAudioEngine.h"
 #include "MelissaDataSource.h"
 
-class MelissaBPMDetector : public AsyncUpdater
+class MelissaBPMDetector
 {
 public:
     MelissaBPMDetector();
-    void start();
+    void initialize(int sampleRate, size_t bufferLength);
+    void process(bool* processFinished, float* bpm);
     
-private:
-    // AsyncUpdater
-    void handleAsyncUpdate() override;
-    
+private:    
     std::unique_ptr<soundtouch::BPMDetect> bpmDetect_;
     MelissaDataSource* dataSource_;
+    int sampleRate_;
+    size_t bufferLength_;
+    size_t processStartIndex_;
 };
