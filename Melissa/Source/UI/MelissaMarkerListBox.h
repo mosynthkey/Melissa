@@ -12,7 +12,8 @@
 #include "MelissaDataSource.h"
 #include "MelissaLookAndFeel.h"
 
-class MelissaMarkerListBox : public MelissaDataSourceListener,
+class MelissaMarkerListBox : public Label::Listener,
+                             public MelissaDataSourceListener,
                              public TableListBox,
                              public TableListBoxModel
 {
@@ -40,12 +41,15 @@ public:
     void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override;
     void cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& e) override;
     
+    // Label
+    void labelTextChanged(Label* label) override;
+    
     // MelissaDataSourceListener
     void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
     void markerUpdated() override;
     
 private:
-    MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_SimpleTextEditor laf_;
     MelissaDataSource* dataSource_;
     std::vector<MelissaDataSource::Song::Marker> markers_;
     float totalLengthMSec_;

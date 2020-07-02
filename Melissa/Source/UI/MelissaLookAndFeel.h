@@ -27,26 +27,26 @@ public:
     
     virtual ~MelissaLookAndFeel() {};
     
-    void setBottomComponent(Component* bottomComponent)
+    virtual void setBottomComponent(Component* bottomComponent)
     {
         bottomComponent_ = bottomComponent;
     }
     
-    void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const auto& c = b.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
         g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
     
-    void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
     
-     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool b = tb.getToggleState() || shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         const auto& c = tb.getLocalBounds();
@@ -56,7 +56,7 @@ public:
         g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
     
-    void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
+    virtual void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
     {
         if (style != Slider::LinearHorizontal) return;
         
@@ -94,12 +94,12 @@ public:
         }
     }
     
-    void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override
+    virtual void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override
     {
         
     }
     
-    void drawRotarySlider(Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override
+    virtual void drawRotarySlider(Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override
     {
         const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
         constexpr float thickness = 4.f;
@@ -122,12 +122,12 @@ public:
         
     }
     
-    void drawPopupMenuBackground (Graphics& g, int width, int height) override
+    virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override
     {
         g.fillAll(Colour(MelissaUISettings::getDialogBackgoundColour()));
     }
     
-    void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
+    virtual void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
     {
         g.setColour(Colour(MelissaUISettings::getDialogBackgoundColour()));
         g.fillRect(area);
@@ -143,7 +143,7 @@ public:
         g.drawText(text, area.reduced(10, 0), Justification::left);
     }
     
-    void drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent &) override
+    virtual void drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent &) override
     {
         if (isMouseOverBar)
         {
@@ -155,24 +155,24 @@ public:
         }
     }
     
-    Font getTextButtonFont(TextButton& tb, int buttonHeight) override
+    virtual Font getTextButtonFont(TextButton& tb, int buttonHeight) override
     {
         return Font(MelissaUISettings::getFontSizeMain());
     }
     
-    void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
+    virtual void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
     {
         // no background
     }
     
-    void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    virtual void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
     {
         const auto& c = te.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
         g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
      
-    void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
+    virtual void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
     {
         const auto& c = cb.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
@@ -184,12 +184,12 @@ public:
         g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
     }
     
-    Font getComboBoxFont(ComboBox &) override
+    virtual Font getComboBoxFont(ComboBox &) override
     {
         return Font(MelissaUISettings::getFontSizeMain());
     }
     
-    void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
+    virtual void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
     {
         const bool highlight = isMouseOver || isMouseDown;
         
@@ -205,20 +205,20 @@ public:
         }
     }
     
-    void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
+    virtual void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
         g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.1f));
         g.fillAll();
     }
     
-    void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
+    virtual void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
         g.setColour(Colours::white);
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
     
-    void drawFileBrowserRow(Graphics& g, int width, int height,
+    virtual void drawFileBrowserRow(Graphics& g, int width, int height,
                             const File&, const String& filename, Image* icon,
                             const String& fileSizeDescription,
                             const String& fileTimeDescription,
@@ -262,19 +262,19 @@ public:
 
     }
     
-    Font getPopupMenuFont() override
+    virtual Font getPopupMenuFont() override
     {
         return Font(MelissaUISettings::getFontSizeMain());
     }
     
     
-    Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
+    virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
     {
         return Font(MelissaUISettings::getFontSizeMain());
     }
     
     
-    Button* createFileBrowserGoUpButton() override
+    virtual Button* createFileBrowserGoUpButton() override
     {
         class UpButton : public Button
         {
@@ -299,7 +299,7 @@ public:
         return new UpButton();
     }
     
-    void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
+    virtual void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
     {
         const auto w = browserComp.getWidth();
         const auto h = browserComp.getHeight();
@@ -318,7 +318,7 @@ public:
         }
     }
     
-    Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
+    virtual Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
     {
         if (bottomComponent_ == nullptr)
         {
@@ -337,7 +337,7 @@ public:
         }
     }
     
-    void drawTooltip(Graphics& g, const String& text, int width, int height) override
+    virtual void drawTooltip(Graphics& g, const String& text, int width, int height) override
     {
         Rectangle<int> bounds (width, height);
         
@@ -575,4 +575,17 @@ public:
 private:
     int fontSize_;
     Justification justification_;
+};
+
+class MelissaLookAndFeel_SimpleTextEditor : public MelissaLookAndFeel
+{
+public:
+    void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
+    {
+        // no background
+    }
+
+    void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    {
+    }
 };

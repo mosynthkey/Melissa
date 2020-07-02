@@ -1195,7 +1195,7 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
             marker.colourR_  = colour.getRed();
             marker.colourG_  = colour.getGreen();
             marker.colourB_  = colour.getBlue();
-            marker.memo_     = "marker_test";
+            marker.memo_     = "";
             dataSource_->addMarker(marker);
             break;
         }
