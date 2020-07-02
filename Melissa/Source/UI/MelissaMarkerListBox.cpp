@@ -54,12 +54,13 @@ dataSource_(MelissaDataSource::getInstance())
     }
     
     popupMenu_ = std::make_shared<PopupMenu>();
-    popupMenu_->setLookAndFeel(&laf_);
+    setLookAndFeel(&laf_);
 }
 
 MelissaMarkerListBox::~MelissaMarkerListBox()
 {
     popupMenu_->setLookAndFeel(nullptr);
+    setLookAndFeel(nullptr);
 }
 
 void MelissaMarkerListBox::updateMarkers()
@@ -104,11 +105,6 @@ void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, i
                 text = "Colour";
                 break;
             }
-            case kColumn_Memo + 1:
-            {
-                text = String(marker.memo_);
-                break;
-            }
             default:
             {
                 return;
@@ -124,7 +120,9 @@ void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, i
 
 Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate)
 {
-    if (rowNumber < markers_.size() && columnId == kColumn_Colour + 1)
+    if (markers_.size() <= rowNumber) return nullptr;
+    
+    if (columnId == kColumn_Colour + 1)
     {
         auto marker = markers_[rowNumber];
         auto colour = Colour::fromRGB(marker.colourR_, marker.colourG_, marker.colourB_);
@@ -138,6 +136,25 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         {
             auto component = dynamic_cast<MarkerColourLabel*>(existingComponentToUpdate);
             component->setColour(colour);
+            return existingComponentToUpdate;
+        }
+    }
+    else if (columnId == kColumn_Memo + 1)
+    {
+        auto marker = markers_[rowNumber];
+        if (existingComponentToUpdate == nullptr)
+        {
+            auto l = new Label();
+            l->setEditable(true);
+            l->setComponentID(String(rowNumber));
+            l->setText(marker.memo_, dontSendNotification);
+            l->addListener(this);
+            return dynamic_cast<Component*>(l);
+        }
+        else
+        {
+            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            l->setText(marker.memo_, dontSendNotification);
             return existingComponentToUpdate;
         }
     }
@@ -182,6 +199,14 @@ void MelissaMarkerListBox::cellClicked(int rowNumber, int columnId, const MouseE
 
 void MelissaMarkerListBox::cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& e)
 {
+}
+
+void MelissaMarkerListBox::labelTextChanged(Label* label)
+{
+    const int rowIndex = label->getComponentID().getIntValue();
+    if (markers_.size() <= rowIndex) return;
+    markers_[rowIndex].memo_ = label->getText();
+    dataSource_->overwriteMarker(rowIndex, markers_[rowIndex]);
 }
 
 void MelissaMarkerListBox::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
