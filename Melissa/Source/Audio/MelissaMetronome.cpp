@@ -13,7 +13,8 @@ MelissaMetronome::MelissaMetronome() :
 isMusicPlaying_(false),
 sampleRate_(1),
 volumeBalance_(0.5f),
-timeMSec_(0.f)
+timeMSec_(0),
+timeMSecDecimal_(0.f)
 {
     MelissaModel::getInstance()->addListener(this);
 }
@@ -26,11 +27,17 @@ void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>&
     {
         if (isMusicPlaying_)
         {
-            timeMSec_ = timeIndicesMSec[iSample];
+            timeMSec_ = static_cast<int>(timeIndicesMSec[iSample]);
         }
         else
         {
-            timeMSec_ += (currentSpeed / 100.f) / sampleRate_ * 1000.f;
+            const float timeMSecToAdvance = (currentSpeed / 100.f) / sampleRate_ * 1000.f;
+            timeMSecDecimal_ += timeMSecToAdvance;
+            
+            const int timeMSecNumerator = static_cast<int>(timeMSecDecimal_);
+            timeMSecDecimal_ -= timeMSecNumerator;
+            
+            timeMSec_ += timeMSecNumerator;
         }
         
         metronome_.osc_ += 2.f / (sampleRate_ / metronome_.pitch_);
@@ -68,6 +75,7 @@ void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>&
 void MelissaMetronome::playbackStatusChanged(PlaybackStatus status)
 {
     isMusicPlaying_ = (status == kPlaybackStatus_Playing);
+    timeMSecDecimal_ = 0.f;
 }
 
 void MelissaMetronome::metronomeSwitchChanged(bool on)

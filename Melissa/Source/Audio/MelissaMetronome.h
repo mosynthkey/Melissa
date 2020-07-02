@@ -47,5 +47,6 @@ private:
     bool isMusicPlaying_;
     int32_t sampleRate_;
     float volumeBalance_;
-    float timeMSec_;
+    uint32_t timeMSec_;
+    float timeMSecDecimal_;
 };
