@@ -195,7 +195,7 @@ private:
     std::unique_ptr<Component> speedModeNormalComponent_;
     std::unique_ptr<Component> speedModeTrainingComponent_;
     
-    enum { kNumOfSpeedPresets = 9 };
+    enum { kNumOfSpeedPresets = 11 };
     std::unique_ptr<MelissaIncDecButton> speedButton_;
     std::unique_ptr<Viewport> speedPresetViewport_;
     std::unique_ptr<Component> speedPresetComponent_;
