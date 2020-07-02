@@ -15,6 +15,9 @@
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
+
+#include <float.h>
+
 using std::make_unique;
 
 enum
@@ -448,7 +451,7 @@ void MainComponent::createUI()
         
         speedPresetComponent_ = make_unique<Component>();
         speedModeNormalComponent_->addAndMakeVisible(speedPresetComponent_.get());
-        const int speedPresets[kNumOfSpeedPresets] = { 50, 60, 70, 75, 80, 85, 90, 95, 100 };
+        const int speedPresets[kNumOfSpeedPresets] = { 40, 50, 60, 70, 75, 80, 85, 90, 95, 100, 105 };
         constexpr int presetButtonMargin = 4;
         constexpr int controlHeight = 30;
         int speedButtonX = 0;
@@ -870,7 +873,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
     {
         audioEngine_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
     }
-    metronome_  ->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
+    metronome_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
 }
 
 void MainComponent::releaseResources()
