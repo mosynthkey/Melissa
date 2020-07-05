@@ -10,6 +10,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaDataSource.h"
 #include "MelissaLabel.h"
+#include "MelissaLoopRangeComponent.h"
 #include "MelissaModel.h"
 
 class MelissaWaveformControlComponent : public Component,
@@ -37,6 +38,8 @@ private:
     std::unique_ptr<Component> markerBaseComponent_;
     std::vector<std::unique_ptr<Marker>> markers_;
     void arrangeMarkers() const;
+    
+    std::unique_ptr<MelissaLoopRangeComponent> loopRangeComponent_;
     
     std::vector<std::unique_ptr<Label>> timeLabels_;
     void arrangeTimeLabels() const;

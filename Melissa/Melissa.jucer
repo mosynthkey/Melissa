@@ -101,6 +101,10 @@
         <FILE id="mYLdQR" name="MelissaLabel.h" compile="0" resource="0" file="Source/UI/MelissaLabel.h"/>
         <FILE id="x5V2V6" name="MelissaLookAndFeel.h" compile="0" resource="0"
               file="Source/UI/MelissaLookAndFeel.h"/>
+        <FILE id="cRpsFX" name="MelissaLoopRangeComponent.cpp" compile="1"
+              resource="0" file="Source/UI/MelissaLoopRangeComponent.cpp"/>
+        <FILE id="vlIkLU" name="MelissaLoopRangeComponent.h" compile="0" resource="0"
+              file="Source/UI/MelissaLoopRangeComponent.h"/>
         <FILE id="qkGitj" name="MelissaMarkerListBox.cpp" compile="1" resource="0"
               file="Source/UI/MelissaMarkerListBox.cpp"/>
         <FILE id="eNBL9S" name="MelissaMarkerListBox.h" compile="0" resource="0"
