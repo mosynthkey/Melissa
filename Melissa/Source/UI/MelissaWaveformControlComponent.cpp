@@ -18,7 +18,6 @@ public:
     WaveformView(MelissaWaveformControlComponent* parent) :
     parent_(parent),
     numOfStrip_(0),
-    isMouseDown_(false),
     clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
     currentMouseOnStripIndex_(-1),
     playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f)
@@ -58,120 +57,6 @@ public:
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }
-        
-        if (isMouseDown_)
-        {
-            const int32_t highlightAStripIndex = std::min(currentMouseOnStripIndex_, clickedStripIndex_);
-            const int32_t highlightBStripIndex = std::max(currentMouseOnStripIndex_, clickedStripIndex_);
-            for (size_t iStrip = highlightAStripIndex; iStrip < highlightBStripIndex && iStrip < previewBuffer_.size(); ++iStrip)
-            {
-                const int32_t height = previewBuffer_[iStrip] * getHeight();
-                const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
-                
-                g.setColour(colour.withAlpha(0.7f));
-                g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
-            }
-        }
-    }
-    
-    void mouseMoveOrDrag(const MouseEvent& event)
-    {
-        auto pos = event.getPosition();
-        parent_->showTimeTooltip(static_cast<float>(pos.getX()) / getWidth());
-        
-        current_->setVisible(true);
-        size_t strip = static_cast<float>(pos.getX() / (waveformStripWidth_ + waveformStripInterval_));
-        const int32_t height = previewBuffer_[strip] * getHeight();
-        const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * strip);
-        current_->setBounds(x, getHeight() - height, waveformStripWidth_, height);
-    }
-    
-    void mouseMove(const MouseEvent& event) override
-    {
-        mouseMoveOrDrag(event);
-    }
-    
-    void mouseDrag(const MouseEvent& event) override
-    {
-        mouseMoveOrDrag(event);
-        currentMouseOnStripIndex_ = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
-        repaint();
-    }
-    
-    void mouseDown(const MouseEvent& event) override
-    {
-        isMouseDown_ = true;
-        clickedStripIndex_ = currentMouseOnStripIndex_ = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
-    }
-    
-    void mouseUp(const MouseEvent& event) override
-    {
-        auto model = MelissaModel::getInstance();
-        auto distX = abs(event.getMouseDownX() - event.x);
-        auto distY = abs(event.getMouseDownY() - event.y);
-        if (isMouseDown_)
-        {
-            if (distX < 4 && distY < 4)
-            {
-                // Click
-                clickedStripIndex_ = -1;
-                const float clickPosRatio = static_cast<float>(event.getPosition().getX()) / getWidth();
-                
-                if (event.mods.isShiftDown())
-                {
-                    const auto aRatio = model->getLoopAPosRatio();
-                    const auto bRatio = model->getLoopBPosRatio();
-                    if (clickPosRatio < aRatio)
-                    {
-                        model->setLoopAPosMSec(model->getLoopAPosMSec() - 1000);
-                    }
-                    else if (aRatio <= clickPosRatio && clickPosRatio <= bRatio)
-                    {
-                        const bool aIsNear = (clickPosRatio - aRatio) < (bRatio - clickPosRatio);
-                        if (aIsNear)
-                        {
-                            model->setLoopAPosMSec(model->getLoopAPosMSec() + 1000);
-                        }
-                        else
-                        {
-                            model->setLoopBPosMSec(model->getLoopBPosMSec() - 1000);
-                        }
-                    }
-                    else if (bRatio < clickPosRatio)
-                    {
-                        model->setLoopBPosMSec(model->getLoopBPosMSec() + 1000);
-                    }
-                }
-                else
-                {
-                    model->setPlayingPosRatio(clickPosRatio);
-                }
-            }
-            else
-            {
-                // Drag
-                loopAStripIndex_ = clickedStripIndex_;
-                auto stripIndex = getStripIndexOnX(static_cast<float>(event.getPosition().getX()));
-                if (stripIndex < 0) stripIndex = 0;
-                if (stripIndex < loopAStripIndex_)
-                {
-                    loopBStripIndex_ = loopAStripIndex_;
-                    loopAStripIndex_ = stripIndex;
-                }
-                else
-                {
-                    loopBStripIndex_ = stripIndex;
-                }
-                
-                float aRatio = static_cast<float>(loopAStripIndex_) / numOfStrip_;
-                if (1.f < aRatio) aRatio = 1.f;
-                float bRatio = static_cast<float>(loopBStripIndex_) / numOfStrip_;
-                if (1.f < bRatio) bRatio = 1.f;
-                model->setLoopPosRatio(aRatio, bRatio);
-            }
-        }
-        isMouseDown_ = false;
-        currentMouseOnStripIndex_ = -1;
     }
     
     void mouseExit(const MouseEvent& event) override
@@ -278,7 +163,6 @@ private:
     std::shared_ptr<Label> current_;
     const int32_t waveformStripWidth_ = 3, waveformStripInterval_ = 1;
     size_t numOfStrip_;
-    bool isMouseDown_;
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
@@ -288,9 +172,9 @@ private:
 class MelissaWaveformControlComponent::Marker : public Button
 {
 public:
-    Marker() : Button("") {}
+    Marker() : Button(""), isMouseOn_(false) {}
     
-    void paintButton (Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         constexpr float headHeight = 20;
         constexpr float bodyWidth = 3;
@@ -299,7 +183,7 @@ public:
         g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
         g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight - 2, bodyWidth, getHeight() - headHeight + 2);
         
-        if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        if (isMouseOn_)
         {
             g.setColour(Colours::black.withAlpha(0.3f));
             g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
@@ -316,12 +200,16 @@ public:
     
     void mouseEnter(const MouseEvent& e) override
     {
+        isMouseOn_ = true;
         MelissaMessageComponent::getInstance()->showMessage(memo_);
+        repaint();
     }
     
     void mouseExit(const MouseEvent& e) override
     {
+        isMouseOn_ = false;
         MelissaMessageComponent::getInstance()->showMessage("");
+        repaint();
     }
     
     void setPosition(float position)
@@ -349,6 +237,7 @@ private:
     float position_;
     Colour colour_;
     String memo_;
+    bool isMouseOn_;
 };
 
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
@@ -363,6 +252,9 @@ timeSec_(0)
     markerBaseComponent_->setInterceptsMouseClicks(false, true);
     addAndMakeVisible(markerBaseComponent_.get());
     
+    loopRangeComponent_ = std::make_unique<MelissaLoopRangeComponent>();
+    addAndMakeVisible(loopRangeComponent_.get());
+    
     posTooltip_ = std::make_unique<Label>();
     posTooltip_->setSize(100, 30);
     posTooltip_->setJustificationType(Justification::centred);
@@ -376,6 +268,8 @@ void MelissaWaveformControlComponent::resized()
 {
     waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40);
     markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
+    
+    loopRangeComponent_->setBounds(waveformView_->getBounds());
     
     posTooltip_->setTopLeftPosition(0, 0);
     
