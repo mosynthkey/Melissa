@@ -22,7 +22,8 @@ public:
     void createUI();
     void updateComboBox();
     void updateList();
-    void select(size_t index);
+    void select(int index);
+    int  getSelected() const { return playlistComboBox_->getSelectedItemIndex(); }
     
     // Component
     void resized() override;

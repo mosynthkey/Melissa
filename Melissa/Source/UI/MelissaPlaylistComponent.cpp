@@ -160,9 +160,9 @@ void MelissaPlaylistComponent::updateList()
     listBox_->setTarget(static_cast<MelissaFileListBox::Target>(index));
 }
 
-void MelissaPlaylistComponent::select(size_t index)
+void MelissaPlaylistComponent::select(int index)
 {
-    playlistComboBox_->setSelectedItemIndex(static_cast<int>(index));
+    playlistComboBox_->setSelectedItemIndex(index);
     updateList();
 }
 

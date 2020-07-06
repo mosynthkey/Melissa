@@ -79,6 +79,13 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (p->hasProperty("eq_0_freq")) previous_.eqFreq_ = p->getProperty("eq_0_freq");
         if (p->hasProperty("eq_0_gain")) previous_.eqGain_ = p->getProperty("eq_0_gain");
         if (p->hasProperty("eq_0_q"))    previous_.eqQ_    = p->getProperty("eq_0_q");
+        
+        if (p->hasProperty("ui_state"))
+        {
+            auto uiState = p->getProperty("ui_state");
+            if (uiState.hasProperty("browser_tab")) previous_.uiState_.selectedFileBrowserTab_ = uiState.getProperty("browser_tab", 0);
+            if (uiState.hasProperty("playlist")) previous_.uiState_.selectedPlaylist_ = uiState.getProperty("playlist", 0);
+        }
     }
     
     history_.clear();
@@ -241,6 +248,11 @@ void MelissaDataSource::saveSettingsFile()
     previous->setProperty("eq_0_freq", model_->getEqFreq(0));
     previous->setProperty("eq_0_gain", model_->getEqGain(0));
     previous->setProperty("eq_0_q",    model_->getEqQ(0));
+    
+    auto uiState = new DynamicObject();
+    uiState->setProperty("browser_tab", previous_.uiState_.selectedFileBrowserTab_);
+    uiState->setProperty("playlist",    previous_.uiState_.selectedPlaylist_);
+    previous->setProperty("ui_state", uiState);
     
     settings->setProperty("previous", previous);
     
