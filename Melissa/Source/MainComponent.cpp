@@ -141,6 +141,10 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
     
     dataSource_->restorePreviousState();
+    uiState_ = dataSource_->getPreviousUIState();
+    updateFileChooserTab(static_cast<FileChooserTab>(uiState_.selectedFileBrowserTab_));
+    playlistComponent_->select(static_cast<size_t>(uiState_.selectedPlaylist_));
+    
     deviceManager.addMidiInputCallback("", this);
     
     if (isFirstLaunch)
@@ -1157,7 +1161,7 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
             {
                 const auto index = dataSource_->createPlaylist(playlistName);
                 for (auto file : files) dataSource_->addToPlaylist(index, file);
-                playlistComponent_->select(index);
+                playlistComponent_->select(static_cast<int>(index));
             }
         }), TRANS("new_playlist"));
     }
@@ -1409,6 +1413,10 @@ void MainComponent::exitSignalSent()
     const auto stateXml = deviceManager.createStateXml();
     if (stateXml != nullptr) dataSource_->global_.device_  = stateXml->toString();
     
+    const int selectedFileBrowserTab = (fileBrowserComponent_->isVisible()) ? 0 : (playlistComponent_->isVisible() ? 1 : 2);
+    const int selectedPlaylist = playlistComponent_->getSelected();
+    dataSource_->saveUIState({selectedFileBrowserTab, selectedPlaylist});
+    
     dataSource_->saveSettingsFile();
     dataSource_->disposeBuffer();
 }
@@ -1437,6 +1445,10 @@ void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
 
 void MainComponent::updateFileChooserTab(FileChooserTab tab)
 {
+    browseToggleButton_->setToggleState(tab == kFileChooserTab_Browse, dontSendNotification);
+    playlistToggleButton_->setToggleState(tab == kFileChooserTab_Playlist, dontSendNotification);
+    historyToggleButton_->setToggleState(tab == kFileChooserTab_History, dontSendNotification);
+    
     fileBrowserComponent_->setVisible(tab == kFileChooserTab_Browse);
     playlistComponent_->setVisible(tab == kFileChooserTab_Playlist);
     historyTable_->setVisible(tab == kFileChooserTab_History);

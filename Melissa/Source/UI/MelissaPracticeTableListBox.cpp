@@ -169,10 +169,6 @@ void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const
         else if (result == kMenuId_Overwrite)
         {
             auto model = MelissaModel::getInstance();
-            const float a = model->getLoopAPosRatio();
-            const float b = model->getLoopBPosRatio();
-            const int   speed = model->getSpeed();
-            const OutputMode output = model->getOutputMode();
             dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_);
         }
     }

@@ -149,6 +149,7 @@ private:
     bool bpmAnalyzeFinished_;
     bool shouldInitializeBpmDetector_;
     bool shouldUpdateBpm_;
+    MelissaDataSource::Previous::UIState uiState_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
