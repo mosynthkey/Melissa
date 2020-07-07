@@ -20,6 +20,7 @@
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
+#include "MelissaSpeedTrainingProgressComponent.h"
 #include "MelissaMessageComponent.h"
 #include "MelissaMetronome.h"
 #include "MelissaMIDIControlManager.h"
@@ -202,6 +203,7 @@ private:
     std::unique_ptr<Component> speedPresetComponent_;
     std::unique_ptr<TextButton> speedPresetButtons_[kNumOfSpeedPresets];
 
+    std::unique_ptr<MelissaSpeedTrainingProgressComponent> speedProgressComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncStartButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
@@ -273,10 +275,8 @@ private:
         kLabel_Speed,
         kLabel_SpeedPresets,
         
-        kLabel_SpeedBegin,
-        kLabel_SpeedPlus,
-        kLabel_SpeedPer,
-        kLabel_SpeedEnd,
+        kLabel_SpeedStart,
+        kLabel_SpeedGoal,
         
         kNumOfLabels
     };
