@@ -6,52 +6,64 @@
 //
 
 #include "MelissaSpeedTrainingProgressComponent.h"
+#include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
 MelissaSpeedTrainingProgressComponent::MelissaSpeedTrainingProgressComponent() :
-minRatio_(0.f),
-maxRatio_(1.f),
-currentRatio_(0.f),
-labelText_("")
+model_(MelissaModel::getInstance()),
+prevPlayingPosRatio_(0.f)
 {
-    
+    model_->addListener(this);
+    startTimer(1000 / 10);
 }
 
-void MelissaSpeedTrainingProgressComponent::setMinRatio(float ratio)
+void MelissaSpeedTrainingProgressComponent::speedIncStartChanged(int speedIncStart)
 {
-    if (ratio < 0.f || 1.f < ratio || maxRatio_ < ratio) return;
-    minRatio_ = ratio;
     repaint();
 }
 
-void MelissaSpeedTrainingProgressComponent::setMaxRatio(float ratio)
+void MelissaSpeedTrainingProgressComponent::speedIncGoalChanged(int speedIncGoal)
 {
-    if (ratio < 0.f || 1.f < ratio || ratio < minRatio_) return;
-    maxRatio_ = ratio;
-    repaint();
-}
-
-void MelissaSpeedTrainingProgressComponent::setCurrentRatioAndLabelText(float ratio, const String& labelText)
-{
-    if (ratio < 0.f || 1.f < ratio || ratio < minRatio_ || maxRatio_ < ratio) return;
-    currentRatio_ = ratio;
-    labelText_ = labelText;
     repaint();
 }
 
 void MelissaSpeedTrainingProgressComponent::paint(Graphics& g)
 {
     constexpr int lineHeight = 4;
-    constexpr int triangleWidth = 4;
-    constexpr int triangleHeight = 4;
-    constexpr int marginX = 30;
+    constexpr int triangleWidth = 10;
+    constexpr int triangleHeight = 10;
     
-    int strWidth, strHeight;
-    std::tie(strWidth, strHeight) = MelissaUtility::getStringSize(font_, labelText_);
-    const int strXPos = (getWidth() - marginX * 2) * currentRatio_ + marginX - strWidth / 2;
-    g.setColour(Colours::white);
-    g.drawText(labelText_, strXPos, 0, strWidth, strHeight, Justification::centred);
+    const auto width = getWidth();
     
+    g.setColour(Colours::white.withAlpha(0.2f));
+    g.fillRoundedRectangle(triangleWidth / 2, 0, width - triangleWidth, lineHeight, lineHeight / lineHeight);
     
+    printf("%d / %d\n", (model_->getCurrentSpeed() - model_->getSpeedIncStart()), (model_->getSpeedIncGoal() - model_->getSpeedIncStart()));
+    const auto currentRatio = std::clamp((model_->getCurrentSpeed() - model_->getSpeedIncStart()) / static_cast<float>(model_->getSpeedIncGoal() - model_->getSpeedIncStart()), 0.f, 1.f);
+    printf("currentRatio = %f\n", currentRatio);
     
+    Path path;
+    const int triangleCenter = currentRatio * (width - triangleWidth) + triangleWidth / 2;
+    path.startNewSubPath(triangleCenter, 0);
+    path.lineTo(triangleCenter - triangleWidth / 2, triangleHeight);
+    path.lineTo(triangleCenter + triangleWidth / 2, triangleHeight);
+    
+    g.setColour(Colour(MelissaUISettings::getAccentColour()));
+    g.fillPath(path);
+    
+    const auto currentSpeedStr = String(model_->getCurrentSpeed()) + "%";
+    const auto strSize = MelissaUtility::getStringSize(font_, currentSpeedStr);
+    
+    auto strX = std::clamp(triangleCenter - strSize.first / 2, 0, width - strSize.first);
+    g.setColour(Colours::white.withAlpha(0.8f));
+    g.setFont(font_);
+    g.drawText(currentSpeedStr, strX, triangleHeight + 2, strSize.first, strSize.second, Justification::centred);
 }
+
+void MelissaSpeedTrainingProgressComponent::timerCallback()
+{
+    const auto currentRatio = model_->getPlayingPosRatio();
+    if (currentRatio < prevPlayingPosRatio_) repaint();
+    prevPlayingPosRatio_ = currentRatio;
+}
+

@@ -342,6 +342,7 @@ void MelissaAudioEngine::resetProcessedBuffer()
     readIndex_ = processStartIndex_;
     needToReset_ = false;
     count_ = 0;
+    model_->setCurrentSpeed(currentSpeed_);
 }
 
 std::string MelissaAudioEngine::getStatusString() const
@@ -394,18 +395,8 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
     }
     else
     {
-        if (currentSpeed_ < speedIncStart_)
-        {
-            speed_ = speedIncStart_;
-        }
-        else if (speedIncGoal_ < currentSpeed_)
-        {
-            speed_ = speedIncGoal_;
-        }
-        else
-        {
-            speed_ = currentSpeed_;
-        }
+        speed_         = model_->getSpeedIncStart();
+        currentSpeed_  = speed_;
         speedIncValue_ = model_->getSpeedIncValue();
         speedIncPer_   = model_->getSpeedIncPer();
         speedIncGoal_  = model_->getSpeedIncGoal();

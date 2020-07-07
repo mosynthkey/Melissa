@@ -533,6 +533,10 @@ void MainComponent::createUI()
             }
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncGoalButton_.get());
+        
+        speedProgressComponent_ = make_unique<MelissaSpeedTrainingProgressComponent>();
+        speedProgressComponent_->setFont(MelissaUISettings::getFontSizeSmall());
+        speedModeTrainingComponent_->addAndMakeVisible(speedProgressComponent_.get());
     }
     
     {
@@ -815,10 +819,8 @@ void MainComponent::createUI()
     labelInfo_[kLabel_BTime]            = { "End",           bButton_.get() };
     labelInfo_[kLabel_Speed]            = { "Speed",         speedButton_.get() };
     labelInfo_[kLabel_SpeedPresets]     = { "Presets",       speedPresetViewport_.get() };
-    labelInfo_[kLabel_SpeedBegin]       = { "Begin",         speedIncStartButton_.get() };
-    labelInfo_[kLabel_SpeedPlus]        = { "+",             speedIncValueButton_.get() };
-    labelInfo_[kLabel_SpeedPer]         = { "Per",           speedIncPerButton_.get() };
-    labelInfo_[kLabel_SpeedEnd]         = { "End",           speedIncGoalButton_.get() };
+    labelInfo_[kLabel_SpeedStart]       = { "Start",         speedIncStartButton_.get() };
+    labelInfo_[kLabel_SpeedGoal]        = { "Goal",          speedIncGoalButton_.get() };
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
     {
@@ -1067,11 +1069,13 @@ void MainComponent::resized()
         x = (speedButton_->getRight() + 10) + ((section->getWidth() - 10) - (speedButton_->getRight() + 10)) / 2 - viewportWidth / 2;
         speedPresetViewport_->setBounds(x, y, viewportWidth, controlHeight);
         
-        x = speedModeBasicToggleButton_->getRight() + 10;
-        speedIncStartButton_->setBounds(x, y, 120, controlHeight);
-        speedIncValueButton_->setBounds(speedIncStartButton_->getRight() + 20, y, 120, controlHeight);
-        speedIncPerButton_->setBounds(speedIncValueButton_->getRight() + 20, y, 120, controlHeight);
-        speedIncGoalButton_->setBounds(speedIncPerButton_->getRight() + 20, y, 120, controlHeight);
+        x = speedModeBasicToggleButton_->getRight() + 20;
+        const int buttonWidth = ((section->getWidth() - 20) - x - 20 * 3) / 4;
+        speedIncStartButton_->setBounds(x, y, buttonWidth, controlHeight);
+        speedIncValueButton_->setBounds(speedIncStartButton_->getRight() + 20, y, buttonWidth, controlHeight);
+        speedIncPerButton_->setBounds(speedIncValueButton_->getRight() + 20, y, buttonWidth, controlHeight);
+        speedIncGoalButton_->setBounds(speedIncPerButton_->getRight() + 20, y, buttonWidth, controlHeight);
+        speedProgressComponent_->setBounds(speedIncValueButton_->getX(), y - 30, speedIncPerButton_->getRight() - speedIncValueButton_->getX(), 30);
     }
     
     y = sectionComponents_[kSection_Song]->getBottom() + sectionMarginY;
@@ -1543,12 +1547,12 @@ void MainComponent::speedIncStartChanged(int speedIncStart)
 
 void MainComponent::speedIncValueChanged(int speedIncValue)
 {
-    speedIncValueButton_->setText(String("+") + String(speedIncValue));
+    speedIncValueButton_->setText(String("+ ") + String(speedIncValue));
 }
 
 void MainComponent::speedIncPerChanged(int speedIncPer)
 {
-    speedIncPerButton_->setText(String(speedIncPer));
+    speedIncPerButton_->setText(String(speedIncPer) + " times");
 }
 
 void MainComponent::speedIncGoalChanged(int speedIncGoal)

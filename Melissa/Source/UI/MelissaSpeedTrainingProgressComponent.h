@@ -8,24 +8,28 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaModel.h"
+#include "MelissaModelListener.h"
 
-class MelissaSpeedTrainingProgressComponent : public Component
+class MelissaSpeedTrainingProgressComponent : public Component, public MelissaModelListener, public Timer
 {
 public:
     MelissaSpeedTrainingProgressComponent();
     
-    void setFont(const Font& font);
-    void setMinRatio(float ratio);
-    void setMaxRatio(float ratio);
-    void setCurrentRatioAndLabelText(float ratio, const String& labelText);
+    void setFont(const Font& font) { font_ = font; }
     
     // Component
     void paint(Graphics& g) override;
     
+    // MelissaModelListener
+    void speedIncStartChanged(int speedIncStart) override;
+    void speedIncGoalChanged(int speedIncGoal) override;
+    
+    // Timer
+    void timerCallback() override;
+    
 private:
+    MelissaModel* model_;
     Font font_;
-    float minRatio_;
-    float maxRatio_;
-    float currentRatio_;
-    String labelText_;
+    float prevPlayingPosRatio_;
 };
