@@ -40,7 +40,6 @@ public:
     virtual void pitchChanged(int semitone) {}
     virtual void speedModeChanged(SpeedMode mode) {}
     virtual void speedChanged(int speed) {}
-    virtual void currentSpeedChanged(int speed) {}
     virtual void speedIncStartChanged(int speedIncStart) {}
     virtual void speedIncValueChanged(int speedIncValue) {}
     virtual void speedIncPerChanged(int speedIncPer) {}

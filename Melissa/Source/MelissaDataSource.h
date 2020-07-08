@@ -120,10 +120,19 @@ public:
         float musicVolume_;
         float metronomeVolume_;
         float volumeBalance_;
+        
         bool metronomeSw_;
         int bpm_;
         int accent_;
         float beatPositionMSec_;
+        
+        SpeedMode speedMode_;
+        int speed_;
+        int speedIncStart_;
+        int speedIncValue_;
+        int speedIncPer_;
+        int speedIncGoal_;
+        
         bool eqSw_;
         float eqFreq_;
         float eqGain_;
@@ -175,7 +184,9 @@ public:
         std::vector<Marker> markers_;
         
         Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f), eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
+        metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f),
+        speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
+        eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
     };
     std::vector<Song> songs_;
     

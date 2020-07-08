@@ -30,17 +30,15 @@ void MelissaSpeedTrainingProgressComponent::speedIncGoalChanged(int speedIncGoal
 void MelissaSpeedTrainingProgressComponent::paint(Graphics& g)
 {
     constexpr int lineHeight = 4;
-    constexpr int triangleWidth = 10;
-    constexpr int triangleHeight = 10;
+    constexpr int triangleWidth = 8;
+    constexpr int triangleHeight = 8;
     
     const auto width = getWidth();
     
     g.setColour(Colours::white.withAlpha(0.2f));
-    g.fillRoundedRectangle(triangleWidth / 2, 0, width - triangleWidth, lineHeight, lineHeight / lineHeight);
+    g.fillRoundedRectangle(triangleWidth / 2, 0, width - triangleWidth, lineHeight, lineHeight / 2);
     
-    printf("%d / %d\n", (model_->getCurrentSpeed() - model_->getSpeedIncStart()), (model_->getSpeedIncGoal() - model_->getSpeedIncStart()));
     const auto currentRatio = std::clamp((model_->getCurrentSpeed() - model_->getSpeedIncStart()) / static_cast<float>(model_->getSpeedIncGoal() - model_->getSpeedIncStart()), 0.f, 1.f);
-    printf("currentRatio = %f\n", currentRatio);
     
     Path path;
     const int triangleCenter = currentRatio * (width - triangleWidth) + triangleWidth / 2;

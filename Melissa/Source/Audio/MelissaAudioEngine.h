@@ -28,6 +28,8 @@ public:
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
+    int32_t getCurrentSpeed() const { return currentSpeed_; }
+    
     void render(float* bufferToRender[], std::vector<float>&  timeIndicesMSec, size_t bufferLength);
     
     void process();

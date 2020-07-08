@@ -41,6 +41,16 @@ enum
     kMenuID_FileOpen = 2000,
 };
 
+class MainComponent::SlashComponent : public Component
+{
+public:
+    void paint(Graphics& g)
+    {
+        g.setColour(Colours::white.withAlpha(0.2f));
+        g.drawLine(getWidth() - 4, 4, 4, getHeight() - 4, 2);
+    }
+};
+
 MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), shouldExit_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
@@ -505,6 +515,9 @@ void MainComponent::createUI()
             }
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncPerButton_.get());
+        
+        slashComponent_ = make_unique<SlashComponent>();
+        speedModeTrainingComponent_->addAndMakeVisible(slashComponent_.get());
         
         speedIncValueButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
         speedIncValueButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
@@ -1069,13 +1082,15 @@ void MainComponent::resized()
         x = (speedButton_->getRight() + 10) + ((section->getWidth() - 10) - (speedButton_->getRight() + 10)) / 2 - viewportWidth / 2;
         speedPresetViewport_->setBounds(x, y, viewportWidth, controlHeight);
         
-        x = speedModeBasicToggleButton_->getRight() + 20;
+        x = speedModeBasicToggleButton_->getRight() + 10;
         const int buttonWidth = ((section->getWidth() - 20) - x - 20 * 3) / 4;
         speedIncStartButton_->setBounds(x, y, buttonWidth, controlHeight);
         speedIncValueButton_->setBounds(speedIncStartButton_->getRight() + 20, y, buttonWidth, controlHeight);
         speedIncPerButton_->setBounds(speedIncValueButton_->getRight() + 20, y, buttonWidth, controlHeight);
         speedIncGoalButton_->setBounds(speedIncPerButton_->getRight() + 20, y, buttonWidth, controlHeight);
-        speedProgressComponent_->setBounds(speedIncValueButton_->getX(), y - 30, speedIncPerButton_->getRight() - speedIncValueButton_->getX(), 30);
+        speedProgressComponent_->setBounds(speedIncValueButton_->getX(), y - 30 + 2, speedIncPerButton_->getRight() - speedIncValueButton_->getX(), 30 - 2);
+        
+        slashComponent_->setBounds(speedIncValueButton_->getRight(), y, speedIncPerButton_->getX() - speedIncValueButton_->getRight(), controlHeight);
     }
     
     y = sectionComponents_[kSection_Song]->getBottom() + sectionMarginY;
