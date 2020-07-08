@@ -507,6 +507,14 @@ void MelissaDataSource::saveSongState()
             song.bpm_              = model_->getBpm();
             song.accent_           = model_->getAccent();
             song.beatPositionMSec_ = model_->getBeatPositionMSec();
+            
+            song.speedMode_     = model_->getSpeedMode();
+            song.speed_         = model_->getSpeed();
+            song.speedIncStart_ = model_->getSpeedIncStart();
+            song.speedIncValue_ = model_->getSpeedIncValue();
+            song.speedIncPer_   = model_->getSpeedIncPer();
+            song.speedIncGoal_  = model_->getSpeedIncGoal();
+            
             song.eqSw_             = model_->getEqSwitch();
             song.eqFreq_           = model_->getEqFreq(0);
             song.eqGain_           = model_->getEqGain(0);
@@ -779,6 +787,14 @@ void MelissaDataSource::handleAsyncUpdate()
             model_->setBpm(song.bpm_);
             model_->setAccent(song.accent_);
             model_->setBeatPositionMSec(song.beatPositionMSec_);
+            
+            model_->setSpeedMode(song.speedMode_);
+            model_->setSpeed(song.speed_);
+            model_->setSpeedIncStart(song.speedIncStart_);
+            model_->setSpeedIncValue(song.speedIncValue_);
+            model_->setSpeedIncPer(song.speedIncPer_);
+            model_->setSpeedIncGoal(song.speedIncGoal_);
+            
             model_->setEqSwitch(song.eqSw_);
             model_->setEqFreq(0, song.eqFreq_);
             model_->setEqGain(0, song.eqGain_);
@@ -796,6 +812,14 @@ void MelissaDataSource::handleAsyncUpdate()
         model_->setBpm(-1);
         model_->setAccent(4);
         model_->setBeatPositionMSec(0.f);
+        
+        model_->setSpeedMode(kSpeedMode_Basic);
+        model_->setSpeed(100);
+        model_->setSpeedIncStart(75);
+        model_->setSpeedIncValue(1);
+        model_->setSpeedIncPer(10);
+        model_->setSpeedIncGoal(100);
+        
         model_->setEqSwitch(false);
         model_->setEqFreq(0, 500);
         model_->setEqGain(0, 0.f);

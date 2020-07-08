@@ -203,9 +203,11 @@ private:
     std::unique_ptr<Component> speedPresetComponent_;
     std::unique_ptr<TextButton> speedPresetButtons_[kNumOfSpeedPresets];
 
+    class SlashComponent;
     std::unique_ptr<MelissaSpeedTrainingProgressComponent> speedProgressComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncStartButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncPerButton_;
+    std::unique_ptr<SlashComponent>      slashComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncGoalButton_;
     

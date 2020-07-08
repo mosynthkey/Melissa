@@ -65,14 +65,6 @@ void MelissaModel::setSpeed(int speed)
     for (auto&& l : listeners_) l->speedChanged(speed);
 }
 
-void MelissaModel::setCurrentSpeed(int speed)
-{
-    if (speed < kSpeedMin || kSpeedMax < speed) return;
-    
-    currentSpeed_ = speed;
-    for (auto&& l : listeners_) l->currentSpeedChanged(speed);
-}
-
 void MelissaModel::setSpeedIncStart(int speedIncStart)
 {
     if (speedIncStart < kSpeedMin || kSpeedMax < speedIncStart || speedIncGoal_ <= speedIncStart) return;
@@ -83,7 +75,7 @@ void MelissaModel::setSpeedIncStart(int speedIncStart)
 
 void MelissaModel::setSpeedIncValue(int speedIncValue)
 {
-    if (speedIncValue < 0 || 20 < speedIncValue) return;
+    speedIncValue = std::clamp(speedIncValue, 1, 20);
     
     speedIncValue_ = speedIncValue;
     for (auto&& l : listeners_) l->speedIncValueChanged(speedIncValue);
@@ -91,7 +83,7 @@ void MelissaModel::setSpeedIncValue(int speedIncValue)
 
 void MelissaModel::setSpeedIncPer(int speedIncPer)
 {
-    if (speedIncPer < 0 || 50 < speedIncPer) return;
+    speedIncPer = std::clamp(speedIncPer, 1, 50);
     
     speedIncPer_ = speedIncPer;
     for (auto&& l : listeners_) l->speedIncPerChanged(speedIncPer);

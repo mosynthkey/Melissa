@@ -56,6 +56,7 @@ dataSource_(MelissaDataSource::getInstance())
     {
         getHeader().addColumn(headerTitles[i], i + 1, 50);
     }
+    setOutlineThickness(1);
     
     popupMenu_ = std::make_shared<PopupMenu>();
     popupMenu_->setLookAndFeel(&laf_);
