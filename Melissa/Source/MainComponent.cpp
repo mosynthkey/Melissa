@@ -46,9 +46,41 @@ class MainComponent::SlashComponent : public Component
 public:
     void paint(Graphics& g)
     {
-        g.setColour(Colours::white.withAlpha(0.2f));
+        g.setColour(Colours::white.withAlpha(0.4f));
         g.drawLine(getWidth() - 4, 4, 4, getHeight() - 4, 2);
     }
+};
+
+class MainComponent::QIconComponent : public Component
+{
+public:
+    QIconComponent(float ratio = 0.2f) : ratio_(ratio) {}
+    
+    void paint(Graphics& g)
+    {
+        const auto lineWidth = 2.f;
+        const auto w = getWidth();
+        const auto h = getHeight();
+        const int sinStartX = w * (1 - ratio_) / 2;
+        const int sinWidth = w * ratio_;
+        
+        Path path;
+        path.startNewSubPath(0, h - lineWidth / 2);
+        path.lineTo(sinStartX, h - lineWidth / 2);
+        for (float rad = 0; rad < 2 * M_PI; rad += 0.01f)
+        {
+            auto x = sinStartX + rad / (2 * M_PI) * sinWidth;
+            auto y = (1.f + cos(rad)) / 2.f * (h - lineWidth) + lineWidth / 2;
+            path.lineTo(x, y);
+        }
+        path.lineTo(w, h - lineWidth / 2);
+        
+        g.setColour(Colours::white.withAlpha(0.4f));
+        g.strokePath (path, juce::PathStrokeType(lineWidth));
+    }
+    
+private:
+    float ratio_;
 };
 
 MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), shouldExit_(false)
@@ -680,6 +712,12 @@ void MainComponent::createUI()
             section->addAndMakeVisible(l.get());
             knobLabels_[labelIndex] = std::move(l);
         }
+        
+        for (size_t qIconIndex = 0; qIconIndex < 2; ++qIconIndex)
+        {
+            qIconComponents_[qIconIndex] = std::make_unique<QIconComponent>(0.25 + 0.5 * qIconIndex);
+            section->addAndMakeVisible(qIconComponents_[qIconIndex].get());
+        }
     }
     
     {
@@ -1137,6 +1175,12 @@ void MainComponent::resized()
             knobLabels_[bandIndex * 3 + 2]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
         }
+        
+        constexpr int qIconWidth = 28;
+        constexpr int qIconHeight = 14;
+        constexpr int qIconXMargin = 10;
+        qIconComponents_[0]->setBounds(eqQKnobs_[0]->getX() - qIconWidth - qIconXMargin, eqQKnobs_[0]->getBottom() - qIconHeight, qIconWidth, qIconHeight);
+        qIconComponents_[1]->setBounds(eqQKnobs_[0]->getRight() + qIconXMargin, eqQKnobs_[0]->getBottom() - qIconHeight, qIconWidth, qIconHeight);
     }
     
     // Output

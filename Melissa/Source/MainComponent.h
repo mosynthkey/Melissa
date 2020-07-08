@@ -222,6 +222,8 @@ private:
     std::unique_ptr<Slider> eqFreqKnobs_[kNumOfEqBands];
     std::unique_ptr<Slider> eqQKnobs_[kNumOfEqBands];
     std::unique_ptr<Slider> eqGainKnobs_[kNumOfEqBands];
+    class QIconComponent;
+    std::unique_ptr<QIconComponent> qIconComponents_[2];
     std::unique_ptr<Label> knobLabels_[kNumOfEqBands * 3];
     
     std::unique_ptr<ToggleButton> browseToggleButton_;
