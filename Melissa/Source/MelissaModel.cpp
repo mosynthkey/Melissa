@@ -184,8 +184,8 @@ void  MelissaModel::setMetronomeSwitch(bool on)
 
 void MelissaModel::setBpm(float bpm)
 {
-    bpm_ = bpm;
-    for (auto&& l : listeners_) l->bpmChanged(bpm);
+    bpm_ = std::clamp<float>(bpm, kBpmUnmeasured, kBpmMax);
+    for (auto&& l : listeners_) l->bpmChanged(bpm_);
 }
 
 void MelissaModel::setBeatPositionMSec(float beatPositionMSec)
@@ -267,7 +267,7 @@ void MelissaModel::removeListener(MelissaModelListener* listener)
     {
         if (listeners_[listener_i] == listener)
         {
-            listeners_.erase(listeners_.begin(), listeners_.begin() + 1);
+            listeners_.erase(listeners_.begin() + listener_i);
             return;
         }
     }

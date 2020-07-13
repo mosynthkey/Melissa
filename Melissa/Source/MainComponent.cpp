@@ -603,6 +603,7 @@ void MainComponent::createUI()
         {
             if (event == MelissaIncDecButton::kEvent_Double)
             {
+                model_->setBpm(kBpmUnmeasured);
             }
             else if (event == MelissaIncDecButton::kEvent_Func)
             {
@@ -616,9 +617,9 @@ void MainComponent::createUI()
         };
         section->addAndMakeVisible(bpmButton_.get());
         
-        beatPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome"), TRANS("metronome"));
-        beatPositionButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Set", TRANS("todo"));
-        beatPositionButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
+        accentPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome"), TRANS("metronome"));
+        accentPositionButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Set", TRANS("todo"));
+        accentPositionButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
             {
@@ -633,7 +634,7 @@ void MainComponent::createUI()
                 model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
             }
         };
-        section->addAndMakeVisible(beatPositionButton_.get());
+        section->addAndMakeVisible(accentPositionButton_.get());
         
         accentButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
         accentButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
@@ -859,19 +860,19 @@ void MainComponent::createUI()
     addAndMakeVisible(fileBrowserComponent_.get());
     
     
-    labelInfo_[kLabel_MetronomeBpm]     = { "BPM",           bpmButton_.get() };
-    labelInfo_[kLabel_MetronomeOffset]  = { "Beat position", beatPositionButton_.get() };
-    labelInfo_[kLabel_MetronomeAccent]  = { "Accent",        accentButton_.get() };
-    labelInfo_[kLabel_MusicVolume]      = { "Music",         musicVolumeSlider_.get() };
-    labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",     metronomeVolumeSlider_.get() };
-    labelInfo_[kLabel_Pitch]            = { "Pitch",         pitchButton_.get() };
-    labelInfo_[kLabel_OutputMode]       = { "Output",        outputModeComboBox_.get() };
-    labelInfo_[kLabel_ATime]            = { "Start",         aButton_.get() };
-    labelInfo_[kLabel_BTime]            = { "End",           bButton_.get() };
-    labelInfo_[kLabel_Speed]            = { "Speed",         speedButton_.get() };
-    labelInfo_[kLabel_SpeedPresets]     = { "Presets",       speedPresetViewport_.get() };
-    labelInfo_[kLabel_SpeedStart]       = { "Start",         speedIncStartButton_.get() };
-    labelInfo_[kLabel_SpeedGoal]        = { "Goal",          speedIncGoalButton_.get() };
+    labelInfo_[kLabel_MetronomeBpm]     = { "BPM",             bpmButton_.get() };
+    labelInfo_[kLabel_AccentPosition]   = { "Accent position", accentPositionButton_.get() };
+    labelInfo_[kLabel_MetronomeAccent]  = { "Accent",          accentButton_.get() };
+    labelInfo_[kLabel_MusicVolume]      = { "Music",           musicVolumeSlider_.get() };
+    labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",       metronomeVolumeSlider_.get() };
+    labelInfo_[kLabel_Pitch]            = { "Pitch",           pitchButton_.get() };
+    labelInfo_[kLabel_OutputMode]       = { "Output",          outputModeComboBox_.get() };
+    labelInfo_[kLabel_ATime]            = { "Start",           aButton_.get() };
+    labelInfo_[kLabel_BTime]            = { "End",             bButton_.get() };
+    labelInfo_[kLabel_Speed]            = { "Speed",           speedButton_.get() };
+    labelInfo_[kLabel_SpeedPresets]     = { "Presets",         speedPresetViewport_.get() };
+    labelInfo_[kLabel_SpeedStart]       = { "Start",           speedIncStartButton_.get() };
+    labelInfo_[kLabel_SpeedGoal]        = { "Goal",            speedIncGoalButton_.get() };
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
     {
@@ -1145,7 +1146,7 @@ void MainComponent::resized()
         
         bpmButton_->setBounds(10, y, buttonWidth, controlHeight);
         accentButton_->setBounds((section->getWidth() - buttonWidth) / 2, y, buttonWidth, controlHeight);
-        beatPositionButton_->setBounds(section->getWidth() - buttonWidth - 10, y, buttonWidth, controlHeight);
+        accentPositionButton_->setBounds(section->getWidth() - buttonWidth - 10, y, buttonWidth, controlHeight);
     }
     
     // EQ
@@ -1632,7 +1633,7 @@ void MainComponent::metronomeSwitchChanged(bool on)
 
 void MainComponent::bpmChanged(float bpm)
 {
-    if (bpm < 0)
+    if (bpm == kBpmUnmeasured)
     {
         bpmButton_->setText("---");
         bpmAnalyzeFinished_ = false;
@@ -1646,7 +1647,7 @@ void MainComponent::bpmChanged(float bpm)
 
 void MainComponent::beatPositionChanged(float beatPositionMSec)
 {
-    beatPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec()));
+    accentPositionButton_->setText(MelissaUtility::getFormattedTimeMSec(model_->getBeatPositionMSec()));
 }
 
 void MainComponent::accentChanged(int accent)

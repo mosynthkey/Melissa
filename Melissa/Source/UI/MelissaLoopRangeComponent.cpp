@@ -14,6 +14,7 @@ constexpr int kEdgeWidth = 4;
 
 MelissaLoopRangeComponent::MelissaLoopRangeComponent() :
 aRatio_(0.f), bRatio_(1.f),
+mouseClickXRatio_(0.f),
 mouseOnLoopStartEdge_(false), mouseOnLoopEndEdge_(false),
 draggingLoopStart_(true),
 mouseStatus_(kMouseStatus_None)
@@ -52,9 +53,16 @@ void MelissaLoopRangeComponent::paint(Graphics& g)
     }
 }
 
-void MelissaLoopRangeComponent::mouseDown(const MouseEvent& event)
+void MelissaLoopRangeComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
-    const auto mousePoint = juce::Point<float>(event.x, event.y);
+    aRatio_ = aRatio;
+    bRatio_ = bRatio;
+    repaint();
+}
+
+void MelissaLoopRangeComponent::mouseDown(float xRatio)
+{
+    const auto mousePoint = juce::Point<float>(xRatio * getWidth(), 0);
     mouseOnLoopStartEdge_ = getLoopStartEdgeRect().contains(mousePoint);
     mouseOnLoopEndEdge_   = getLoopEndEdgeRect().contains(mousePoint);
     
@@ -66,14 +74,16 @@ void MelissaLoopRangeComponent::mouseDown(const MouseEvent& event)
     {
         mouseStatus_ = kMouseStatus_DraggingEnd;
     }
+    
+    mouseClickXRatio_ = xRatio;
 }
 
-void MelissaLoopRangeComponent::mouseUp(const MouseEvent& event)
+void MelissaLoopRangeComponent::mouseUp(float xRatio)
 {
     if (mouseStatus_ == kMouseStatus_None)
     {
         // clicked
-        model_->setPlayingPosRatio(event.x / static_cast<float>(getWidth()));
+        model_->setPlayingPosRatio(xRatio);
     }
     else
     {
@@ -82,19 +92,18 @@ void MelissaLoopRangeComponent::mouseUp(const MouseEvent& event)
     mouseStatus_ = kMouseStatus_None;
 }
 
-void MelissaLoopRangeComponent::mouseMove(const MouseEvent& event)
+void MelissaLoopRangeComponent::mouseMove(float xRatio)
 {
-    const auto mousePoint = juce::Point<float>(event.x, event.y);
+    const auto mousePoint = juce::Point<float>(xRatio * getWidth(), 0);
     mouseOnLoopStartEdge_ = getLoopStartEdgeRect().contains(mousePoint);
     mouseOnLoopEndEdge_   = getLoopEndEdgeRect().contains(mousePoint);
     
     repaint();
 }
 
-void MelissaLoopRangeComponent::mouseDrag(const MouseEvent& event)
+void MelissaLoopRangeComponent::mouseDrag(float xRatio)
 {
-    const auto width = getWidth();
-    const auto mousePosRatio = std::clamp(event.x / static_cast<float>(width), 0.f, 1.f);
+    const auto mousePosRatio = std::clamp(xRatio, 0.f, 1.f);
     
     if (mouseStatus_ == kMouseStatus_Range)
     {
@@ -147,20 +156,22 @@ void MelissaLoopRangeComponent::mouseDrag(const MouseEvent& event)
             mouseStatus_ = kMouseStatus_DraggingStart;
         }
     }
-    else if (abs(event.getMouseDownX() - event.x) > 4)
+    else if (abs(mouseClickXRatio_ - xRatio) * getWidth() > 4)
     {
         mouseStatus_ = kMouseStatus_Range;
-        aRatio_ = event.getMouseDownX() / static_cast<float>(getWidth());
-        draggingLoopStart_ = true;
+        if (xRatio >= mouseClickXRatio_)
+        {
+            aRatio_ = mouseClickXRatio_;
+            draggingLoopStart_ = true;
+        }
+        else
+        {
+            bRatio_ = mouseClickXRatio_;
+            draggingLoopStart_ = false;
+        }
+
     }
     
-    repaint();
-}
-
-void MelissaLoopRangeComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
-{
-    aRatio_ = aRatio;
-    bRatio_ = bRatio;
     repaint();
 }
 

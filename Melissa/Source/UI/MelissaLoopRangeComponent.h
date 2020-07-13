@@ -12,9 +12,11 @@
 #include "MelissaModel.h"
 #include "MelissaModelListener.h"
 #include "MelissaUISettings.h"
+#include "MelissaWaveformMouseEventComponent.h"
 
 class MelissaLoopRangeComponent : public Component,
-                                  public MelissaModelListener
+                                  public MelissaModelListener,
+                                  public MelissaWaveformMouseEventListener
 {
 public:
     MelissaLoopRangeComponent();
@@ -22,19 +24,22 @@ public:
 private:
     // Component
     void paint(Graphics& g) override;
-    void mouseDown(const MouseEvent& event) override;
-    void mouseUp(const MouseEvent& event) override;
-    void mouseMove(const MouseEvent& event) override;
-    void mouseDrag(const MouseEvent& event) override;
     
     // MelissaModelListener
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
+    
+    // MelissaWaveformMouseEventListener
+    void mouseDown(float xRatio) override;
+    void mouseUp(float xRatio) override;
+    void mouseMove(float xRatio) override;
+    void mouseDrag(float xRatio) override;
     
     Rectangle<float> getLoopStartEdgeRect() const;
     Rectangle<float> getLoopEndEdgeRect() const;
     
     MelissaModel* model_;
     float aRatio_, bRatio_;
+    float mouseClickXRatio_;
     bool mouseOnLoopStartEdge_, mouseOnLoopEndEdge_;
     bool draggingLoopStart_;
     

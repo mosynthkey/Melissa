@@ -12,6 +12,7 @@
 #include "MelissaLabel.h"
 #include "MelissaLoopRangeComponent.h"
 #include "MelissaModel.h"
+#include "MelissaWaveformMouseEventComponent.h"
 
 class MelissaWaveformControlComponent : public Component,
                                         public MelissaDataSourceListener
@@ -40,6 +41,7 @@ private:
     void arrangeMarkers() const;
     
     std::unique_ptr<MelissaLoopRangeComponent> loopRangeComponent_;
+    std::unique_ptr<MelissaWaveformMouseEventComponent> mouseEventComponent_;
     
     std::vector<std::unique_ptr<Label>> timeLabels_;
     void arrangeTimeLabels() const;
