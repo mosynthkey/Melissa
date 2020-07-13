@@ -18,3 +18,7 @@ static constexpr int kEqGainMax = 24;
     
 static constexpr float kEqQMin = 0.1;
 static constexpr float kEqQMax = 2;
+
+static constexpr int kBpmMin = 10;
+static constexpr int kBpmMax = 500;
+static constexpr int kBpmUnmeasured = kBpmMin - 1;

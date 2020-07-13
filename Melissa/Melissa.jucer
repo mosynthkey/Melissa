@@ -143,6 +143,10 @@
               compile="1" resource="0" file="Source/UI/MelissaSpeedTrainingProgressComponent.cpp"/>
         <FILE id="zwolRj" name="MelissaSpeedTrainingProgressComponent.h" compile="0"
               resource="0" file="Source/UI/MelissaSpeedTrainingProgressComponent.h"/>
+        <FILE id="EpXZNq" name="MelissaTapTempoButton.cpp" compile="1" resource="0"
+              file="Source/UI/MelissaTapTempoButton.cpp"/>
+        <FILE id="ltN6TU" name="MelissaTapTempoButton.h" compile="0" resource="0"
+              file="Source/UI/MelissaTapTempoButton.h"/>
         <FILE id="zkvBy8" name="MelissaToHeadButton.h" compile="0" resource="0"
               file="Source/UI/MelissaToHeadButton.h"/>
         <FILE id="R9fqkj" name="MelissaTutorialComponent.cpp" compile="1" resource="0"
@@ -157,6 +161,10 @@
               resource="0" file="Source/UI/MelissaWaveformControlComponent.cpp"/>
         <FILE id="PgEvCR" name="MelissaWaveformControlComponent.h" compile="0"
               resource="0" file="Source/UI/MelissaWaveformControlComponent.h"/>
+        <FILE id="ErgDg2" name="MelissaWaveformMouseEventComponent.cpp" compile="1"
+              resource="0" file="Source/UI/MelissaWaveformMouseEventComponent.cpp"/>
+        <FILE id="oXnnJI" name="MelissaWaveformMouseEventComponent.h" compile="0"
+              resource="0" file="Source/UI/MelissaWaveformMouseEventComponent.h"/>
       </GROUP>
       <FILE id="blXHe3" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="qbxqMN" name="MainComponent.cpp" compile="1" resource="0"

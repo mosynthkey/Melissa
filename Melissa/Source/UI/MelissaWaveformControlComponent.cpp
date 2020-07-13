@@ -12,6 +12,7 @@
 
 class MelissaWaveformControlComponent::WaveformView : public Component,
                                                       public MelissaModelListener,
+                                                      public MelissaWaveformMouseEventListener,
                                                       public Timer
 {
 public:
@@ -59,10 +60,31 @@ public:
         }
     }
     
-    void mouseExit(const MouseEvent& event) override
+    void mouseExit(float xRatio) override
     {
         current_->setVisible(false);
         parent_->hideTimeTooltip();
+    }
+    
+    void mouseMove(float xRatio) override
+    {
+        mouseMoveOrDrag(xRatio);
+    }
+    
+    void mouseDrag(float xRatio) override
+    {
+        mouseMoveOrDrag(xRatio);
+    }
+    
+    void mouseMoveOrDrag(float xRatio)
+    {
+        parent_->showTimeTooltip(xRatio);
+        
+        current_->setVisible(true);
+        size_t strip = static_cast<float>(xRatio * getWidth() / (waveformStripWidth_ + waveformStripInterval_));
+        const int32_t height = previewBuffer_[strip] * getHeight();
+        const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * strip);
+        current_->setBounds(x, getHeight() - height, waveformStripWidth_, height);
     }
     
     void timerCallback() override
@@ -255,6 +277,11 @@ timeSec_(0)
     loopRangeComponent_ = std::make_unique<MelissaLoopRangeComponent>();
     addAndMakeVisible(loopRangeComponent_.get());
     
+    mouseEventComponent_ = std::make_unique<MelissaWaveformMouseEventComponent>();
+    mouseEventComponent_->addListener(waveformView_.get());
+    mouseEventComponent_->addListener(loopRangeComponent_.get());
+    addAndMakeVisible(mouseEventComponent_.get());
+    
     posTooltip_ = std::make_unique<Label>();
     posTooltip_->setSize(100, 30);
     posTooltip_->setJustificationType(Justification::centred);
@@ -270,6 +297,7 @@ void MelissaWaveformControlComponent::resized()
     markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
     
     loopRangeComponent_->setBounds(waveformView_->getBounds());
+    mouseEventComponent_->setBounds(waveformView_->getBounds());
     
     posTooltip_->setTopLeftPosition(0, 0);
     

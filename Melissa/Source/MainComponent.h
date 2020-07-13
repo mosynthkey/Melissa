@@ -173,7 +173,7 @@ private:
 
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
-    std::unique_ptr<MelissaIncDecButton> beatPositionButton_;
+    std::unique_ptr<MelissaIncDecButton> accentPositionButton_;
     std::unique_ptr<MelissaIncDecButton> accentButton_;
     
     std::unique_ptr<Slider> musicVolumeSlider_;
@@ -266,7 +266,7 @@ private:
     enum
     {
         kLabel_MetronomeBpm,
-        kLabel_MetronomeOffset,
+        kLabel_AccentPosition,
         kLabel_MetronomeAccent,
         kLabel_MusicVolume,
         kLabel_MetronomeVolume,
