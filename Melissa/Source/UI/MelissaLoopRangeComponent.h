@@ -29,7 +29,7 @@ private:
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     
     // MelissaWaveformMouseEventListener
-    void mouseDown(float xRatio) override;
+    void mouseDown(float xRatio, bool isLeft = true) override;
     void mouseUp(float xRatio) override;
     void mouseMove(float xRatio) override;
     void mouseDrag(float xRatio) override;

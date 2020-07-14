@@ -15,7 +15,8 @@
 #include "MelissaWaveformMouseEventComponent.h"
 
 class MelissaWaveformControlComponent : public Component,
-                                        public MelissaDataSourceListener
+                                        public MelissaDataSourceListener,
+                                        public MelissaWaveformMouseEventListener
 {
 public:
     MelissaWaveformControlComponent();
@@ -30,6 +31,9 @@ public:
     // MelissaDataSourceListener
     void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
     void markerUpdated() override;
+    
+    // MelissaWaveformMouseEventListener
+    void mouseDown(float xRatio, bool isLeft) override;
     
 private:
     class WaveformView;

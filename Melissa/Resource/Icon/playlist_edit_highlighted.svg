@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="30px" viewBox="0 0 26 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>playlist_edit_highlighted</title>
+    <g id="Ver2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="A6" transform="translate(-1292.000000, -873.000000)">
+            <g id="playlist_edit_highlighted" transform="translate(1292.000000, 873.000000)">
+                <g id="Group-5">
+                    <path d="M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z" id="Combined-Shape" stroke-opacity="0.8" stroke="#FFFFFF"></path>
+                    <rect id="Rectangle" stroke-opacity="0.8" stroke="#FFFFFF" x="9.5" y="4.5" width="7" height="1" rx="0.5"></rect>
+                    <rect id="Rectangle" stroke-opacity="0.8" stroke="#FFFFFF" x="9.5" y="7.5" width="7" height="1" rx="0.5"></rect>
+                    <rect id="Rectangle" stroke-opacity="0.8" stroke="#FFFFFF" x="3.5" y="10.5" width="13" height="1" rx="0.5"></rect>
+                    <rect id="Rectangle" stroke-opacity="0.8" stroke="#FFFFFF" x="3.5" y="13.5" width="7" height="1" rx="0.5"></rect>
+                    <rect id="Rectangle" stroke-opacity="0.8" stroke="#FFFFFF" x="3.5" y="16.5" width="7" height="1" rx="0.5"></rect>
+                    <polygon id="Triangle" fill-opacity="0.8" fill="#FFFFFF" transform="translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) " points="6 4 8 8 4 8"></polygon>
+                </g>
+                <path d="M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.3071885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z" id="Combined-Shape" fill-opacity="0.8" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

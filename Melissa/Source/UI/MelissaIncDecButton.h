@@ -137,7 +137,7 @@ public:
     
     void mouseDown(const MouseEvent& event) override
     {
-        prevMouseY_ = event.getMouseDownY();
+        prevMouseY_ = event.getScreenY();
     }
     
     void mouseDrag(const MouseEvent& event) override
@@ -149,7 +149,6 @@ public:
         {
             diffY_ = 0;
             onClick_(kEvent_Dec, false);
-            
         }
         else if (diffY_ < -1 * dragStep_)
         {

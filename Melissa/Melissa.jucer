@@ -11,9 +11,36 @@
         <FILE id="QqaTr6" name="arrow_left.svg" compile="0" resource="1" file="Resource/Icon/arrow_left.svg"/>
         <FILE id="tHvaA1" name="arrow_left_highlighted.svg" compile="0" resource="1"
               file="Resource/Icon/arrow_left_highlighted.svg"/>
+        <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>
         <FILE id="Z6gLOK" name="arrow_right_highlighted.svg" compile="0" resource="1"
               file="Resource/Icon/arrow_right_highlighted.svg"/>
-        <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>
+        <FILE id="FwWRrv" name="marker_add.svg" compile="0" resource="1" file="Resource/Icon/marker_add.svg"/>
+        <FILE id="kJPQ5z" name="marker_add_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/marker_add_highlighted.svg"/>
+        <FILE id="hK6blR" name="playlist_add.svg" compile="0" resource="1"
+              file="Resource/Icon/playlist_add.svg"/>
+        <FILE id="QLXXHx" name="playlist_add_file.svg" compile="0" resource="1"
+              file="Resource/Icon/playlist_add_file.svg"/>
+        <FILE id="zDT4Id" name="playlist_add_file_highlighted.svg" compile="0"
+              resource="1" file="Resource/Icon/playlist_add_file_highlighted.svg"/>
+        <FILE id="JWOY48" name="playlist_add_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/playlist_add_highlighted.svg"/>
+        <FILE id="lGdnPw" name="playlist_add_playing.svg" compile="0" resource="1"
+              file="Resource/Icon/playlist_add_playing.svg"/>
+        <FILE id="HK4cgr" name="playlist_add_playing_highlighted.svg" compile="0"
+              resource="1" file="Resource/Icon/playlist_add_playing_highlighted.svg"/>
+        <FILE id="HMTx7c" name="playlist_edit.svg" compile="0" resource="1"
+              file="Resource/Icon/playlist_edit.svg"/>
+        <FILE id="LnvnTV" name="playlist_edit_highlighted.svg" compile="0"
+              resource="1" file="Resource/Icon/playlist_edit_highlighted.svg"/>
+        <FILE id="y1rw8c" name="playlist_remove.svg" compile="0" resource="1"
+              file="Resource/Icon/playlist_remove.svg"/>
+        <FILE id="XJKNra" name="playlist_remove_highlighted.svg" compile="0"
+              resource="1" file="Resource/Icon/playlist_remove_highlighted.svg"/>
+        <FILE id="HV7Gj9" name="practicelist_add.svg" compile="0" resource="1"
+              file="Resource/Icon/practicelist_add.svg"/>
+        <FILE id="wbZoj5" name="practicelist_add_highlighted.svg" compile="0"
+              resource="1" file="Resource/Icon/practicelist_add_highlighted.svg"/>
       </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
@@ -109,10 +136,10 @@
               file="Source/UI/MelissaMarkerListBox.cpp"/>
         <FILE id="eNBL9S" name="MelissaMarkerListBox.h" compile="0" resource="0"
               file="Source/UI/MelissaMarkerListBox.h"/>
-        <FILE id="rFO3sM" name="MelissaMessageComponent.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaMessageComponent.cpp"/>
-        <FILE id="JnLty6" name="MelissaMessageComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaMessageComponent.h"/>
+        <FILE id="jUguhW" name="MelissaMarkerMemoComponent.cpp" compile="1"
+              resource="0" file="Source/UI/MelissaMarkerMemoComponent.cpp"/>
+        <FILE id="gg9VzE" name="MelissaMarkerMemoComponent.h" compile="0" resource="0"
+              file="Source/UI/MelissaMarkerMemoComponent.h"/>
         <FILE id="M048TD" name="MelissaModalDialog.cpp" compile="1" resource="0"
               file="Source/UI/MelissaModalDialog.cpp"/>
         <FILE id="vNDLTs" name="MelissaModalDialog.h" compile="0" resource="0"

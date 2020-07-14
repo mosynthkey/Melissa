@@ -5,7 +5,6 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
-#include "MelissaMessageComponent.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
@@ -223,14 +222,12 @@ public:
     void mouseEnter(const MouseEvent& e) override
     {
         isMouseOn_ = true;
-        MelissaMessageComponent::getInstance()->showMessage(memo_);
         repaint();
     }
     
     void mouseExit(const MouseEvent& e) override
     {
         isMouseOn_ = false;
-        MelissaMessageComponent::getInstance()->showMessage("");
         repaint();
     }
     
@@ -278,6 +275,7 @@ timeSec_(0)
     addAndMakeVisible(loopRangeComponent_.get());
     
     mouseEventComponent_ = std::make_unique<MelissaWaveformMouseEventComponent>();
+    mouseEventComponent_->addListener(this);
     mouseEventComponent_->addListener(waveformView_.get());
     mouseEventComponent_->addListener(loopRangeComponent_.get());
     addAndMakeVisible(mouseEventComponent_.get());
@@ -402,6 +400,13 @@ void MelissaWaveformControlComponent::markerUpdated()
     }
     
     arrangeMarkers();
+}
+
+void MelissaWaveformControlComponent::mouseDown(float xRatio, bool isLeft)
+{
+    if (isLeft) return;
+    
+    MelissaDataSource::getInstance()->addDefaultMarker(xRatio);
 }
 
 void MelissaWaveformControlComponent::arrangeMarkers() const

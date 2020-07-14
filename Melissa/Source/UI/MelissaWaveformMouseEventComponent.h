@@ -15,7 +15,7 @@ class MelissaWaveformMouseEventListener
 public:
     virtual ~MelissaWaveformMouseEventListener() {}
     
-    virtual void mouseDown(float xRatio) {};
+    virtual void mouseDown(float xRatio, bool isLeft = true) {};
     virtual void mouseUp(float xRatio) {};
     virtual void mouseMove(float xRatio) {}
     virtual void mouseDrag(float xRatio) {}

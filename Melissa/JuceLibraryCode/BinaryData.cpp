@@ -39,25 +39,8 @@ static const unsigned char temp_binary_data_1[] =
 
 const char* arrow_left_highlighted_svg = (const char*) temp_binary_data_1;
 
-//================== arrow_right_highlighted.svg ==================
-static const unsigned char temp_binary_data_2[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>arrow_right_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M580.7,235 C581.086599,235 581.4,235.313401 581.4,235.7 L581.4,239.969 L588.373909,235.943782 C588.708714,235.750483 589.136827,235.865195 589.330127,236.2 C589.523427,236.534805 589.408714,236.962918 589.073909,237.156218 L582."
-"416,241 L599.3,241 C599.686599,241 600,241.313401 600,241.7 C600,242.086599 599.686599,242.4 599.3,242.4 L582.417,242.4 L589.073909,246.243782 C589.408714,246.437082 589.523427,246.865195 589.330127,247.2 C589.136827,247.534805 588.708714,247.649517 "
-"588.373909,247.456218 L581.4,243.43 L581.4,248.3 C581.4,248.686599 581.086599,249 580.7,249 C580.313401,249 580,248.686599 580,248.3 L580,235.7 C580,235.313401 580.313401,235 580.7,235 Z\" id=\"arrow_right_highlighted\" transform=\"translate(590.0000"
-"00, 242.000000) scale(-1, 1) translate(-590.000000, -242.000000) \"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* arrow_right_highlighted_svg = (const char*) temp_binary_data_2;
-
 //================== arrow_right.svg ==================
-static const unsigned char temp_binary_data_3[] =
+static const unsigned char temp_binary_data_2[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>arrow_right</title>\n"
@@ -71,10 +54,391 @@ static const unsigned char temp_binary_data_3[] =
 "    </g>\n"
 "</svg>";
 
-const char* arrow_right_svg = (const char*) temp_binary_data_3;
+const char* arrow_right_svg = (const char*) temp_binary_data_2;
+
+//================== arrow_right_highlighted.svg ==================
+static const unsigned char temp_binary_data_3[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_right_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M580.7,235 C581.086599,235 581.4,235.313401 581.4,235.7 L581.4,239.969 L588.373909,235.943782 C588.708714,235.750483 589.136827,235.865195 589.330127,236.2 C589.523427,236.534805 589.408714,236.962918 589.073909,237.156218 L582."
+"416,241 L599.3,241 C599.686599,241 600,241.313401 600,241.7 C600,242.086599 599.686599,242.4 599.3,242.4 L582.417,242.4 L589.073909,246.243782 C589.408714,246.437082 589.523427,246.865195 589.330127,247.2 C589.136827,247.534805 588.708714,247.649517 "
+"588.373909,247.456218 L581.4,243.43 L581.4,248.3 C581.4,248.686599 581.086599,249 580.7,249 C580.313401,249 580,248.686599 580,248.3 L580,235.7 C580,235.313401 580.313401,235 580.7,235 Z\" id=\"arrow_right_highlighted\" transform=\"translate(590.0000"
+"00, 242.000000) scale(-1, 1) translate(-590.000000, -242.000000) \"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* arrow_right_highlighted_svg = (const char*) temp_binary_data_3;
+
+//================== marker_add.svg ==================
+static const unsigned char temp_binary_data_4[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>marker_add</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1408.000000, -914.000000)\" fill=\"#FFFFFF\">\n"
+"            <g id=\"marker_add\" transform=\"translate(1408.000000, 914.000000)\">\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\"></path>\n"
+"                <path d=\"M6,0 C8.209139,-4.05812251e-16 10,1.790861 10,4 L10,14 C10,15.8635652 8.72560224,17.429479 7.00076134,17.8737865 L7,30 L3,30 L3.00024347,17.8740452 C1.27489272,17.4300871 2.28265236e-16,15.8639271 0,14 L0,4 C-2.705415e-16,1."
+"790861 1.790861,4.05812251e-16 4,0 L6,0 Z\" id=\"Combined-Shape\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* marker_add_svg = (const char*) temp_binary_data_4;
+
+//================== marker_add_highlighted.svg ==================
+static const unsigned char temp_binary_data_5[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>marker_add_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A6\" transform=\"translate(-1408.000000, -872.000000)\" fill=\"#FFFFFF\">\n"
+"            <g id=\"marker_add_highlighted\" transform=\"translate(1408.000000, 872.000000)\">\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\"></path>\n"
+"                <path d=\"M6,0 C8.209139,-4.05812251e-16 10,1.790861 10,4 L10,14 C10,15.8635652 8.72560224,17.429479 7.00076134,17.8737865 L7,30 L3,30 L3.00024347,17.8740452 C1.27489272,17.4300871 2.28265236e-16,15.8639271 0,14 L0,4 C-2.705415e-16,1."
+"790861 1.790861,4.05812251e-16 4,0 L6,0 Z\" id=\"Combined-Shape\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* marker_add_highlighted_svg = (const char*) temp_binary_data_5;
+
+//================== playlist_add.svg ==================
+static const unsigned char temp_binary_data_6[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1255.000000, -915.000000)\">\n"
+"            <g id=\"playlist_add\" transform=\"translate(1255.000000, 915.000000)\">\n"
+"                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
+"4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
+"0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
+"\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_add_svg = (const char*) temp_binary_data_6;
+
+//================== playlist_add_file.svg ==================
+static const unsigned char temp_binary_data_7[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_file</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1490.000000, -914.000000)\">\n"
+"            <g id=\"playlist_add_file\" transform=\"translate(1490.000000, 914.000000)\">\n"
+"                <g id=\"Group\">\n"
+"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
+"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
+"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,8.5 L6,8.5 C6.69035594,8.5 7.31535594,8.22017797 7.76776695,7.76776695 C8.22017797,7.31535594 8.5,6.69035594 8.5,6 L8.5,6 L8.5,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\""
+"#FFFFFF\"></path>\n"
+"                    <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477"
+"153,22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22"
+" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                </g>\n"
+"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_add_file_svg = (const char*) temp_binary_data_7;
+
+//================== playlist_add_file_highlighted.svg ==================
+static const unsigned char temp_binary_data_8[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_file_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1490.000000, -872.000000)\">\n"
+"            <g id=\"playlist_add_file_highlighted\" transform=\"translate(1490.000000, 872.000000)\">\n"
+"                <g id=\"Group\">\n"
+"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
+"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
+"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,8.5 L6,8.5 C6.69035594,8.5 7.31535594,8.22017797 7.76776695,7.76776695 C8.22017797,7.31535594 8.5,6.69035594 8.5,6 L8.5,6 L8.5,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\""
+"#FFFFFF\"></path>\n"
+"                    <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477"
+"153,22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22"
+" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                </g>\n"
+"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_add_file_highlighted_svg = (const char*) temp_binary_data_8;
+
+//================== playlist_add_highlighted.svg ==================
+static const unsigned char temp_binary_data_9[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1255.000000, -873.000000)\">\n"
+"            <g id=\"playlist_add_highlighted\" transform=\"translate(1255.000000, 873.000000)\">\n"
+"                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
+"4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
+"0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
+"\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_add_highlighted_svg = (const char*) temp_binary_data_9;
+
+//================== playlist_add_playing.svg ==================
+static const unsigned char temp_binary_data_10[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_playing</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1449.000000, -915.000000)\">\n"
+"            <g id=\"playlist_add_playing\" transform=\"translate(1449.000000, 915.000000)\">\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                <path d=\"M12,0.5 C15.1756373,0.5 18.0506373,1.78718134 20.131728,3.86827202 C22.2128187,5.94936269 23.5,8.82436269 23.5,12 C23.5,13.2129308 23.3123225,14.3820286 22.9640482,15.4794775 C21.780564,14.8540406 20.4316401,14.5 19,14.5 C16"
+".6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C7.77173607,23.0505786 5.33601003,21.7331954 3.55282854,19.8038307 C1.65792344,17.7535834 0.5,15.0120085 0.5,12 C0.5,8.82436269 1.78718134,5.9493"
+"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_add_playing_svg = (const char*) temp_binary_data_10;
+
+//================== playlist_add_playing_highlighted.svg ==================
+static const unsigned char temp_binary_data_11[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_playing_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1449.000000, -873.000000)\">\n"
+"            <g id=\"playlist_add_playing_highlighted\" transform=\"translate(1449.000000, 873.000000)\">\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                <path d=\"M12,0.5 C15.1756373,0.5 18.0506373,1.78718134 20.131728,3.86827202 C22.2128187,5.94936269 23.5,8.82436269 23.5,12 C23.5,13.2129308 23.3123225,14.3820286 22.9640482,15.4794775 C21.780564,14.8540406 20.4316401,14.5 19,14.5 C16"
+".6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C7.77173607,23.0505786 5.33601003,21.7331954 3.55282854,19.8038307 C1.65792344,17.7535834 0.5,15.0120085 0.5,12 C0.5,8.82436269 1.78718134,5.9493"
+"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_add_playing_highlighted_svg = (const char*) temp_binary_data_11;
+
+//================== playlist_edit.svg ==================
+static const unsigned char temp_binary_data_12[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_edit</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1292.000000, -915.000000)\">\n"
+"            <g id=\"playlist_edit\" transform=\"translate(1292.000000, 915.000000)\">\n"
+"                <g id=\"Group-5\">\n"
+"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
+"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
+"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.30"
+"71885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3"
+"637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z\" id=\"Combined-Shape\" fill-opacity=\"0"
+".8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_edit_svg = (const char*) temp_binary_data_12;
+
+//================== playlist_edit_highlighted.svg ==================
+static const unsigned char temp_binary_data_13[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_edit_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1292.000000, -873.000000)\">\n"
+"            <g id=\"playlist_edit_highlighted\" transform=\"translate(1292.000000, 873.000000)\">\n"
+"                <g id=\"Group-5\">\n"
+"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
+"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
+"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.30"
+"71885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3"
+"637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z\" id=\"Combined-Shape\" fill-opacity=\"0"
+".8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_edit_highlighted_svg = (const char*) temp_binary_data_13;
+
+//================== playlist_remove.svg ==================
+static const unsigned char temp_binary_data_14[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_remove</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1329.000000, -915.000000)\">\n"
+"            <g id=\"playlist_remove\" transform=\"translate(1329.000000, 915.000000)\">\n"
+"                <g id=\"Group-5\">\n"
+"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
+"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
+"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M17.5857864,20.1715729 C17.1952621,19.7810486 16.5620972,19.7810486 16.1715"
+"729,20.1715729 C15.7810486,20.5620972 15.7810486,21.1952621 16.1715729,21.5857864 L16.1715729,21.5857864 L17.5857864,23 L16.1715729,24.4142136 C15.7810486,24.8047379 15.7810486,25.4379028 16.1715729,25.8284271 C16.5620972,26.2189514 17.1952621,26.218"
+"9514 17.5857864,25.8284271 L17.5857864,25.8284271 L19,24.4142136 L20.4142136,25.8284271 C20.8047379,26.2189514 21.4379028,26.2189514 21.8284271,25.8284271 C22.2189514,25.4379028 22.2189514,24.8047379 21.8284271,24.4142136 L21.8284271,24.4142136 L20.4"
+"142136,23 L21.8284271,21.5857864 C22.2189514,21.1952621 22.2189514,20.5620972 21.8284271,20.1715729 C21.4379028,19.7810486 20.8047379,19.7810486 20.4142136,20.1715729 L20.4142136,20.1715729 L19,21.5857864 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\""
+" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_remove_svg = (const char*) temp_binary_data_14;
+
+//================== playlist_remove_highlighted.svg ==================
+static const unsigned char temp_binary_data_15[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_remove_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1329.000000, -873.000000)\">\n"
+"            <g id=\"playlist_remove_highlighted\" transform=\"translate(1329.000000, 873.000000)\">\n"
+"                <g id=\"Group-5\">\n"
+"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
+"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
+"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M17.5857864,20.1715729 C17.1952621,19.7810486 16.5620972,19.7810486 16.1715"
+"729,20.1715729 C15.7810486,20.5620972 15.7810486,21.1952621 16.1715729,21.5857864 L16.1715729,21.5857864 L17.5857864,23 L16.1715729,24.4142136 C15.7810486,24.8047379 15.7810486,25.4379028 16.1715729,25.8284271 C16.5620972,26.2189514 17.1952621,26.218"
+"9514 17.5857864,25.8284271 L17.5857864,25.8284271 L19,24.4142136 L20.4142136,25.8284271 C20.8047379,26.2189514 21.4379028,26.2189514 21.8284271,25.8284271 C22.2189514,25.4379028 22.2189514,24.8047379 21.8284271,24.4142136 L21.8284271,24.4142136 L20.4"
+"142136,23 L21.8284271,21.5857864 C22.2189514,21.1952621 22.2189514,20.5620972 21.8284271,20.1715729 C21.4379028,19.7810486 20.8047379,19.7810486 20.4142136,20.1715729 L20.4142136,20.1715729 L19,21.5857864 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\""
+" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* playlist_remove_highlighted_svg = (const char*) temp_binary_data_15;
+
+//================== practicelist_add.svg ==================
+static const unsigned char temp_binary_data_16[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>practicelist_add</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1367.000000, -915.000000)\">\n"
+"            <g id=\"practicelist_add\" transform=\"translate(1367.000000, 915.000000)\">\n"
+"                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
+"4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
+"0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
+"\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"4.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"8.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* practicelist_add_svg = (const char*) temp_binary_data_16;
+
+//================== practicelist_add_highlighted.svg ==================
+static const unsigned char temp_binary_data_17[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>practicelist_add_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1367.000000, -873.000000)\">\n"
+"            <g id=\"practicelist_add_highlighted\" transform=\"translate(1367.000000, 873.000000)\">\n"
+"                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
+"4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
+"0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
+"\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"4.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"8.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
+"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* practicelist_add_highlighted_svg = (const char*) temp_binary_data_17;
 
 //================== en-US.txt ==================
-static const unsigned char temp_binary_data_4[] =
+static const unsigned char temp_binary_data_18[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -122,10 +486,10 @@ static const unsigned char temp_binary_data_4[] =
 "\"first_launch\" = \"Thank you for downloading Melissa!\\nFirst of all, let's open a song.\"\n"
 "\"load_failed\" = \"Failed to load this file.\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_4;
+const char* enUS_txt = (const char*) temp_binary_data_18;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_5[] =
+static const unsigned char temp_binary_data_19[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,111,111,112,95,110,97,109,101,34,32,61,32,34,227,131,171,227,131,188,227,131,151,229,140,186,233,150,147,227,129,
 174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,10,34,101,110,116,101,114,95,112,108,97,121,108,105,115,116,95,110,97,109,101,34,32,61,32,34,112,108,97,121,108,
@@ -166,10 +530,10 @@ static const unsigned char temp_binary_data_5[] =
 159,227,128,130,34,10,10,10,34,71,111,32,117,112,32,116,111,32,112,97,114,101,110,116,32,100,105,114,101,99,116,111,114,121,34,32,61,32,34,228,184,138,227,129,174,227,131,135,227,130,163,227,131,172,227,130,175,227,131,136,227,131,170,227,129,184,34,
 10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_5;
+const char* jaJP_txt = (const char*) temp_binary_data_19;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_6[] =
+static const unsigned char temp_binary_data_20[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,64,0,73,68,65,84,120,1,172,189,221,207,174,237,118,214,245,188,111,151,237,106,3,182,208,66,172,213,13,211,74,64,136,88,
 26,18,137,108,152,136,27,24,117,75,119,76,220,209,13,255,39,55,221,213,196,13,77,52,38,26,117,67,35,17,81,240,3,130,224,71,72,33,197,82,138,88,90,161,107,121,252,142,99,28,227,60,175,251,126,230,251,174,22,175,103,62,215,121,158,99,28,31,99,140,235,186,
 159,57,153,239,236,226,171,159,251,3,63,255,253,15,93,223,215,253,171,175,180,106,255,149,190,124,177,36,176,121,178,223,23,248,43,192,11,2,166,216,205,219,220,8,84,104,88,44,71,35,254,135,94,237,3,174,10,69,190,251,227,254,89,221,210,217,198,132,104,
@@ -1915,7 +2279,7 @@ static const unsigned char temp_binary_data_6[] =
 127,115,69,120,181,79,248,220,163,72,175,192,160,208,127,163,126,54,103,30,117,48,213,158,67,17,169,192,199,223,200,148,165,45,250,94,230,102,123,157,128,237,253,29,69,19,228,57,29,162,56,211,8,253,123,37,151,6,28,127,108,124,126,117,86,190,229,116,224,
 252,250,71,192,79,48,243,248,55,95,216,17,232,24,2,38,116,226,22,156,8,125,57,112,218,193,137,250,44,179,126,5,218,217,115,42,61,209,212,139,192,255,7,26,135,30,11,110,146,105,186,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_6;
+const char* logo_png = (const char*) temp_binary_data_20;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -1930,8 +2294,22 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
     {
         case 0xc1a269a2:  numBytes = 1157; return arrow_left_svg;
         case 0x5ea986b6:  numBytes = 1167; return arrow_left_highlighted_svg;
-        case 0x53bb409f:  numBytes = 1265; return arrow_right_highlighted_svg;
         case 0xad54f90b:  numBytes = 1255; return arrow_right_svg;
+        case 0x53bb409f:  numBytes = 1265; return arrow_right_highlighted_svg;
+        case 0xe3588ec1:  numBytes = 1440; return marker_add_svg;
+        case 0x712df555:  numBytes = 1442; return marker_add_highlighted_svg;
+        case 0x6e376459:  numBytes = 2714; return playlist_add_svg;
+        case 0x30ca904c:  numBytes = 2073; return playlist_add_file_svg;
+        case 0x27cafe60:  numBytes = 2075; return playlist_add_file_highlighted_svg;
+        case 0x414126ed:  numBytes = 2716; return playlist_add_highlighted_svg;
+        case 0x58a0d7c8:  numBytes = 1988; return playlist_add_playing_svg;
+        case 0x1ce5ebdc:  numBytes = 1990; return playlist_add_playing_highlighted_svg;
+        case 0x01e0e27c:  numBytes = 2960; return playlist_edit_svg;
+        case 0xb8878890:  numBytes = 2962; return playlist_edit_highlighted_svg;
+        case 0xc6a6e0b6:  numBytes = 3211; return playlist_remove_svg;
+        case 0x87efffca:  numBytes = 3213; return playlist_remove_highlighted_svg;
+        case 0xa21087e0:  numBytes = 2135; return practicelist_add_svg;
+        case 0x289637f4:  numBytes = 2137; return practicelist_add_highlighted_svg;
         case 0x4c8ea738:  numBytes = 2072; return enUS_txt;
         case 0x9153efee:  numBytes = 2550; return jaJP_txt;
         case 0x78ded995:  numBytes = 121456; return logo_png;
@@ -1946,8 +2324,22 @@ const char* namedResourceList[] =
 {
     "arrow_left_svg",
     "arrow_left_highlighted_svg",
-    "arrow_right_highlighted_svg",
     "arrow_right_svg",
+    "arrow_right_highlighted_svg",
+    "marker_add_svg",
+    "marker_add_highlighted_svg",
+    "playlist_add_svg",
+    "playlist_add_file_svg",
+    "playlist_add_file_highlighted_svg",
+    "playlist_add_highlighted_svg",
+    "playlist_add_playing_svg",
+    "playlist_add_playing_highlighted_svg",
+    "playlist_edit_svg",
+    "playlist_edit_highlighted_svg",
+    "playlist_remove_svg",
+    "playlist_remove_highlighted_svg",
+    "practicelist_add_svg",
+    "practicelist_add_highlighted_svg",
     "enUS_txt",
     "jaJP_txt",
     "logo_png"
@@ -1957,8 +2349,22 @@ const char* originalFilenames[] =
 {
     "arrow_left.svg",
     "arrow_left_highlighted.svg",
-    "arrow_right_highlighted.svg",
     "arrow_right.svg",
+    "arrow_right_highlighted.svg",
+    "marker_add.svg",
+    "marker_add_highlighted.svg",
+    "playlist_add.svg",
+    "playlist_add_file.svg",
+    "playlist_add_file_highlighted.svg",
+    "playlist_add_highlighted.svg",
+    "playlist_add_playing.svg",
+    "playlist_add_playing_highlighted.svg",
+    "playlist_edit.svg",
+    "playlist_edit_highlighted.svg",
+    "playlist_remove.svg",
+    "playlist_remove_highlighted.svg",
+    "practicelist_add.svg",
+    "practicelist_add_highlighted.svg",
     "en-US.txt",
     "ja-JP.txt",
     "logo.png"

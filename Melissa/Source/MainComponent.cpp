@@ -298,11 +298,26 @@ void MainComponent::createUI()
     };
     addAndMakeVisible(menuButton_.get());
     
-    messageComponent_ = MelissaMessageComponent::getInstance();
-    addAndMakeVisible(messageComponent_);
+    {
+        iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
+        iconImages_[kIcon_ArrowLeftHighlighted] = Drawable::createFromImageData(BinaryData::arrow_left_highlighted_svg, BinaryData::arrow_left_highlighted_svgSize);
+        
+        iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
+        iconImages_[kIcon_ArrowRightHighlighted] = Drawable::createFromImageData(BinaryData::arrow_right_highlighted_svg, BinaryData::arrow_right_highlighted_svgSize);
+        
+        iconImages_[kIcon_MarkerAdd] = Drawable::createFromImageData(BinaryData::marker_add_svg, BinaryData::marker_add_svgSize);
+        iconImages_[kIcon_MarkerAddHighlighted] = Drawable::createFromImageData(BinaryData::marker_add_highlighted_svg, BinaryData::marker_add_highlighted_svgSize);
+        
+        iconImages_[kIcon_PracticelistAdd] = Drawable::createFromImageData(BinaryData::practicelist_add_svg, BinaryData::practicelist_add_svgSize);
+        iconImages_[kIcon_PracticelistAddHighlighted] = Drawable::createFromImageData(BinaryData::practicelist_add_highlighted_svg, BinaryData::practicelist_add_highlighted_svgSize);
+    }
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     addAndMakeVisible(waveformComponent_.get());
+    
+    markerMemoComponent_ = make_unique<MelissaMarkerMemoComponent>();
+    markerMemoComponent_->setFont(MelissaUISettings::getFontSizeMain());
+    addAndMakeVisible(markerMemoComponent_.get());
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
@@ -412,13 +427,8 @@ void MainComponent::createUI()
         };
         section->addAndMakeVisible(bButton_.get());
         
-        leftArrowImage_             = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
-        rightArrowImage_            = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
-        leftArrowHighlightedImage_  = Drawable::createFromImageData(BinaryData::arrow_left_highlighted_svg, BinaryData::arrow_left_highlighted_svgSize);
-        rightArrowHighlightedImage_ = Drawable::createFromImageData(BinaryData::arrow_right_highlighted_svg, BinaryData::arrow_right_highlighted_svgSize);
-        
         aResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        aResetButton_->setImages(leftArrowImage_.get(), leftArrowHighlightedImage_.get());
+        aResetButton_->setImages(iconImages_[kIcon_ArrowLeft].get(), iconImages_[kIcon_ArrowLeftHighlighted].get());
         aResetButton_->onClick = [&]()
         {
             model_->setLoopAPosRatio(0.f);
@@ -426,7 +436,7 @@ void MainComponent::createUI()
         section->addAndMakeVisible(aResetButton_.get());
         
         bResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        bResetButton_->setImages(rightArrowImage_.get(), rightArrowHighlightedImage_.get());
+        bResetButton_->setImages(iconImages_[kIcon_ArrowRight].get(), iconImages_[kIcon_ArrowRightHighlighted].get());
         bResetButton_->onClick = [&]()
         {
             model_->setLoopBPosRatio(1.f);
@@ -833,8 +843,9 @@ void MainComponent::createUI()
     memoToggleButton_         = createAndAddTab("Memo", kListMemoTab_Memo);
     practiceListToggleButton_->setToggleState(true, dontSendNotification);
 
-    addToListButton_ = make_unique<MelissaAddButton>();
-    addToListButton_->onClick = [this]()
+    addToPracticeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);;
+    addToPracticeButton_->setImages(iconImages_[kIcon_PracticelistAdd].get(), iconImages_[kIcon_PracticelistAddHighlighted].get());
+    addToPracticeButton_->onClick = [this]()
     {
         const String defaultName = MelissaUtility::getFormattedTimeSec(model_->getLoopAPosMSec() / 1000.f) + " - " + MelissaUtility::getFormattedTimeSec(model_->getLoopBPosMSec() / 1000.f);
         auto dialog = std::make_shared<MelissaInputDialog>(TRANS("enter_loop_name"), defaultName, [&](const String& text) {
@@ -846,9 +857,31 @@ void MainComponent::createUI()
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
     };
-    addAndMakeVisible(addToListButton_.get());
+    addAndMakeVisible(addToPracticeButton_.get());
     
-
+    addMarkerButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    addMarkerButton_->setImages(iconImages_[kIcon_MarkerAdd].get(), iconImages_[kIcon_MarkerAddHighlighted].get());
+    addMarkerButton_->onClick = [this]()
+    {
+        const auto position = model_->getPlayingPosRatio();
+        const String defaultName = MelissaUtility::getFormattedTimeSec(model_->getPlayingPosMSec() / 1000.f);
+        auto dialog = std::make_shared<MelissaInputDialog>(TRANS("enter_marker_name"), defaultName, [&, position, defaultName](const String& text) {
+            String name(text);
+            if (name.isEmpty()) name = defaultName;
+            
+            MelissaDataSource::Song::Marker marker;
+            
+            marker.position_ = position;
+            Colour colour = Colour::fromRGB(255, 160, 160).withHue(marker.position_);
+            marker.colourR_  = colour.getRed();
+            marker.colourG_  = colour.getGreen();
+            marker.colourB_  = colour.getBlue();
+            marker.memo_     = text;
+            dataSource_->addMarker(marker);
+        });
+        MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_marker"));
+    };
+    addAndMakeVisible(addMarkerButton_.get());
 
     wildCardFilter_ = make_unique<WildcardFileFilter>(MelissaDataSource::getCompatibleFileExtensions(), "*", "Music Files");
     fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
@@ -988,9 +1021,9 @@ void MainComponent::paint(Graphics& g)
 void MainComponent::resized()
 {
     menuButton_->setBounds(20, 20, 26, 14);
-    messageComponent_->setBounds(50, 0, getWidth() - 100, 30);
     
     waveformComponent_->setBounds(60, 40, getWidth() - 60 * 2, 160);
+    markerMemoComponent_->setBounds(80, 4, getWidth() - 80 * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
@@ -1012,8 +1045,12 @@ void MainComponent::resized()
         x = 20 + browserWidth + 20;
         practiceListToggleButton_->setBounds(x, y, w, 30);
         x += (w + 2);
+        addToPracticeButton_->setBounds(x, y, 28, 30);
+        x += (28 + 10);
         markerListToggleButton_->setBounds(x, y, w, 30);
         x += (w + 2);
+        addMarkerButton_->setBounds(x, y, 28, 30);
+        x += (28 + 10);
         memoToggleButton_->setBounds(x, y, w, 30);
         
         y += 40;
@@ -1025,11 +1062,10 @@ void MainComponent::resized()
         }
         
         {
-            const int32_t h = getHeight() - 80 - y;
+            const int32_t h = getHeight() - 40 - y;
             practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
-            markerTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
-            addToListButton_->setBounds(getWidth() - 30 - 20, practiceTable_->getBottom() + 10, 30, 30);
-            memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h + 40);
+            markerTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+            memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
         }
     }
     
@@ -1177,9 +1213,9 @@ void MainComponent::resized()
             x += knobSize + interval;
         }
         
-        constexpr int qIconWidth = 28;
-        constexpr int qIconHeight = 14;
-        constexpr int qIconXMargin = 10;
+        constexpr int qIconWidth = 24;
+        constexpr int qIconHeight = 10;
+        constexpr int qIconXMargin = 8;
         qIconComponents_[0]->setBounds(eqQKnobs_[0]->getX() - qIconWidth - qIconXMargin, eqQKnobs_[0]->getBottom() - qIconHeight, qIconWidth, qIconHeight);
         qIconComponents_[1]->setBounds(eqQKnobs_[0]->getRight() + qIconXMargin, eqQKnobs_[0]->getBottom() - qIconHeight, qIconWidth, qIconHeight);
     }
@@ -1259,15 +1295,7 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
         }
         case 77: // m
         {
-            MelissaDataSource::Song::Marker marker;
-            marker.position_ = model_->getPlayingPosRatio();
-            Colour colour = Colour::fromRGB(255, 160, 160);
-            colour = colour.withHue(marker.position_);
-            marker.colourR_  = colour.getRed();
-            marker.colourG_  = colour.getGreen();
-            marker.colourB_  = colour.getBlue();
-            marker.memo_     = "";
-            dataSource_->addMarker(marker);
+            dataSource_->addDefaultMarker(model_->getPlayingPosRatio());
             break;
         }
         case 8: // delete
@@ -1521,7 +1549,6 @@ void MainComponent::updateFileChooserTab(FileChooserTab tab)
 void MainComponent::updateListMemoTab(ListMemoTab tab)
 {
     practiceTable_->setVisible(tab == kListMemoTab_Practice);
-    addToListButton_->setVisible(tab == kListMemoTab_Practice);
     markerTable_->setVisible(tab == kListMemoTab_Marker);
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
 }

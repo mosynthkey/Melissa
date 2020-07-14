@@ -12,7 +12,8 @@
 #include "MelissaDataSource.h"
 #include "MelissaLookAndFeel.h"
 
-class MelissaPracticeTableListBox : public MelissaDataSourceListener,
+class MelissaPracticeTableListBox : public Label::Listener,
+                                    public MelissaDataSourceListener,
                                     public TableListBox,
                                     public TableListBoxModel
 {
@@ -44,8 +45,11 @@ public:
     void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
     void practiceListUpdated() override;
     
+    // Label
+    void labelTextChanged(Label* label) override;
+    
 private:
-    MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_SimpleTextEditor laf_;
     MelissaDataSource* dataSource_;
     std::vector<MelissaDataSource::Song::PracticeList> practiceList_;
     float totalLengthMSec_;
