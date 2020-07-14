@@ -235,10 +235,12 @@ public:
     void addPracticeList(const String& name);
     void removePracticeList(size_t index);
     void overwritePracticeList(size_t index, const String& name);
+    void overwritePracticeList(size_t index, const Song::PracticeList& list);
     
     // Marker
     void getMarkers(std::vector<Song::Marker>& markers) const;
     void addMarker(const Song::Marker& marker);
+    void addDefaultMarker(float position);
     void removeMarker(size_t index);
     void overwriteMarker(size_t index, const Song::Marker& marker);
     

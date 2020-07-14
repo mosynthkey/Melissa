@@ -27,7 +27,7 @@ void MelissaWaveformMouseEventComponent::removeListener(MelissaWaveformMouseEven
 void MelissaWaveformMouseEventComponent::MelissaWaveformMouseEventComponent::mouseDown(const MouseEvent& event)
 {
     const float xRatio = std::clamp(event.x / static_cast<float>(getWidth()), 0.f, 1.f);
-    for (auto&& l : listeners_) l->mouseDown(xRatio);
+    for (auto&& l : listeners_) l->mouseDown(xRatio, event.mods.isLeftButtonDown());
 }
 
 void MelissaWaveformMouseEventComponent::MelissaWaveformMouseEventComponent::mouseUp(const MouseEvent& event)

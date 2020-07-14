@@ -58,6 +58,8 @@ dataSource_(MelissaDataSource::getInstance())
     }
     setOutlineThickness(1);
     
+    setLookAndFeel(&laf_);
+    
     popupMenu_ = std::make_shared<PopupMenu>();
     popupMenu_->setLookAndFeel(&laf_);
 }
@@ -124,7 +126,28 @@ void MelissaPracticeTableListBox::paintCell(Graphics& g, int rowNumber, int colu
 
 Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate)
 {
-    if (rowNumber < practiceList_.size() && columnId == kColumn_LoopRange + 1)
+    if (practiceList_.size() <= rowNumber) return nullptr;
+    
+    if (columnId == kColumn_Name + 1)
+    {
+        auto prac = practiceList_[rowNumber];
+        if (existingComponentToUpdate == nullptr)
+        {
+            auto l = new Label();
+            l->setEditable(true);
+            l->setComponentID(String(rowNumber));
+            l->setText(prac.name_, dontSendNotification);
+            l->addListener(this);
+            return dynamic_cast<Component*>(l);
+        }
+        else
+        {
+            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            l->setText(prac.name_, dontSendNotification);
+            return existingComponentToUpdate;
+        }
+    }
+    else if (columnId == kColumn_LoopRange + 1)
     {
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
@@ -193,4 +216,12 @@ void MelissaPracticeTableListBox::songChanged(const String& filePath, size_t buf
 void MelissaPracticeTableListBox::practiceListUpdated()
 {
     updatePracticeList();
+}
+
+void MelissaPracticeTableListBox::labelTextChanged(Label* label)
+{
+    const int rowIndex = label->getComponentID().getIntValue();
+    if (practiceList_.size() <= rowIndex) return;
+    practiceList_[rowIndex].name_ = label->getText();
+    dataSource_->overwritePracticeList(rowIndex, practiceList_[rowIndex]);
 }

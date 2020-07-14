@@ -665,6 +665,22 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name)
     }
 }
 
+void MelissaDataSource::overwritePracticeList(size_t index, const Song::PracticeList& list)
+{
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            if (index < song.practiceList_.size())
+            {
+                song.practiceList_[index] = list;
+                for (auto&& l : listeners_) l->practiceListUpdated();
+            }
+            return;
+        }
+    }
+}
+
 void MelissaDataSource::getMarkers(std::vector<Song::Marker>& markers) const
 {
     markers.clear();
@@ -707,6 +723,20 @@ void MelissaDataSource::addMarker(const Song::Marker& marker)
             return;
         }
     }
+}
+
+void MelissaDataSource::addDefaultMarker(float position)
+{
+    Song::Marker marker;
+    
+    marker.position_ = position;
+    Colour colour = Colour::fromRGB(255, 160, 160);
+    colour = colour.withHue(marker.position_);
+    marker.colourR_  = colour.getRed();
+    marker.colourG_  = colour.getGreen();
+    marker.colourB_  = colour.getBlue();
+    marker.memo_     = "";
+    addMarker(marker);
 }
 
 void MelissaDataSource::removeMarker(size_t index)

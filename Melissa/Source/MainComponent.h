@@ -21,7 +21,7 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaSpeedTrainingProgressComponent.h"
-#include "MelissaMessageComponent.h"
+#include "MelissaMarkerMemoComponent.h"
 #include "MelissaMetronome.h"
 #include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
@@ -156,12 +156,11 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
-    MelissaMessageComponent* messageComponent_;
-    
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
+    std::unique_ptr<MelissaMarkerMemoComponent> markerMemoComponent_;
     std::unique_ptr<Label> controlComponent_;
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
     
@@ -186,10 +185,20 @@ private:
     std::unique_ptr<DrawableButton> bResetButton_;
     std::unique_ptr<TextButton> resetButton_;
     
-    std::unique_ptr<Drawable> leftArrowImage_;
-    std::unique_ptr<Drawable> rightArrowImage_;
-    std::unique_ptr<Drawable> leftArrowHighlightedImage_;
-    std::unique_ptr<Drawable> rightArrowHighlightedImage_;
+    enum
+    {
+        kIcon_ArrowLeft,
+        kIcon_ArrowLeftHighlighted,
+        kIcon_ArrowRight,
+        kIcon_ArrowRightHighlighted,
+        kIcon_MarkerAdd,
+        kIcon_MarkerAddHighlighted,
+        kIcon_PracticelistAdd,
+        kIcon_PracticelistAddHighlighted,
+        kNumOfIcons
+    };
+    
+    std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
     
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
     std::unique_ptr<ToggleButton> speedModeTrainingToggleButton_;
@@ -210,7 +219,6 @@ private:
     std::unique_ptr<SlashComponent>      slashComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncGoalButton_;
-    
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
     enum EqBand
@@ -237,9 +245,10 @@ private:
     std::unique_ptr<ToggleButton> markerListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
     std::unique_ptr<TextEditor> memoTextEditor_;
-    std::unique_ptr<MelissaAddButton> addToListButton_;
-    std::unique_ptr<MelissaMarkerListBox> markerTable_;
+    std::unique_ptr<DrawableButton> addToPracticeButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
+    std::unique_ptr<DrawableButton> addMarkerButton_;
+    std::unique_ptr<MelissaMarkerListBox> markerTable_;
     
     std::unique_ptr<ComboBox> outputModeComboBox_;
     

@@ -60,7 +60,7 @@ void MelissaLoopRangeComponent::loopPosChanged(float aTimeMSec, float aRatio, fl
     repaint();
 }
 
-void MelissaLoopRangeComponent::mouseDown(float xRatio)
+void MelissaLoopRangeComponent::mouseDown(float xRatio, bool isLeft)
 {
     const auto mousePoint = juce::Point<float>(xRatio * getWidth(), 0);
     mouseOnLoopStartEdge_ = getLoopStartEdgeRect().contains(mousePoint);
