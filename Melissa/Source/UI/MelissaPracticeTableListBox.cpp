@@ -89,7 +89,7 @@ int MelissaPracticeTableListBox::getNumRows()
 
 void MelissaPracticeTableListBox::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected)
 {
-    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.06f : 0.f);
+    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
     g.fillAll(colour);
 }
 
@@ -108,7 +108,15 @@ void MelissaPracticeTableListBox::paintCell(Graphics& g, int rowNumber, int colu
             }
             case kColumn_Speed + 1:
             {
-                text = String(prac.speed_) + " %";
+                if (prac.speedMode_ == kSpeedMode_Basic)
+                {
+                    text = String(prac.speed_) + " %";
+                }
+                else
+                {
+                    text = String::formatted("%d %% -> %d %% (+%d / %d)", prac.speedIncStart_, prac.speedIncGoal_, prac.speedIncValue_, prac.speedIncPer_);
+                }
+                
                 break;
             }
             default:
@@ -134,7 +142,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         if (existingComponentToUpdate == nullptr)
         {
             auto l = new Label();
-            l->setEditable(true);
+            l->setEditable(false, true);
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
             l->addListener(this);
@@ -167,9 +175,9 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
 
 int MelissaPracticeTableListBox::getColumnAutoSizeWidth(int columnId)
 {
-    const std::vector<int> widthRatio = { 3, 5, 2 };
+    const std::vector<int> widthRatio = { 3, 5, 3 };
     const float sum = std::accumulate(widthRatio.begin(), widthRatio.end(), 0);
-    return widthRatio[columnId - 1] / sum * getWidth();
+    return widthRatio[columnId - 1] / sum * (getWidth() - 2);
 }
 
 void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
@@ -192,7 +200,6 @@ void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const
         }
         else if (result == kMenuId_Overwrite)
         {
-            auto model = MelissaModel::getInstance();
             dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_);
         }
     }
@@ -202,9 +209,15 @@ void MelissaPracticeTableListBox::cellDoubleClicked(int rowNumber, int columnId,
 {
     auto prac = practiceList_[rowNumber];
     auto model = MelissaModel::getInstance();
+    
     model->setLoopPosRatio(prac.aRatio_, prac.bRatio_);
+    
     model->setSpeed(prac.speed_);
-    model->setOutputMode(prac.outputMode_);
+    model->setSpeedIncStart(prac.speedIncStart_);
+    model->setSpeedIncValue(prac.speedIncValue_);
+    model->setSpeedIncPer(prac.speedIncPer_);
+    model->setSpeedIncGoal(prac.speedIncGoal_);
+    model->setSpeedMode(prac.speedMode_);
 }
 
 void MelissaPracticeTableListBox::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)

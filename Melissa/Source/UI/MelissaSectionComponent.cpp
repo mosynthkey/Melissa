@@ -19,7 +19,7 @@ void MelissaSectionComponent::paint(Graphics& g)
     const auto colour = Colour(MelissaUISettings::getMainColour());
     
     // title
-    g.setColour(colour.withAlpha(0.3f));
+    g.setColour(colour.withAlpha(0.12f));
     MelissaUtility::fillRoundRectangle(g, 0, 0, getWidth(), 30, 8, 8, 0, 0);
     g.setColour(Colours::white);
     g.setFont(MelissaUISettings::getFontSizeMain());

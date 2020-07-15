@@ -260,7 +260,8 @@ private:
 };
 
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
-timeSec_(0)
+timeSec_(0),
+tableListBox_(nullptr)
 {
     MelissaDataSource::getInstance()->addListener(this);
     
@@ -391,6 +392,7 @@ void MelissaWaveformControlComponent::markerUpdated()
             else
             {
                 model->setPlayingPosRatio(markers_[markerIndex]->getPosition());
+                tableListBox_->selectRow(static_cast<int>(markerIndex));
             }
         };
         

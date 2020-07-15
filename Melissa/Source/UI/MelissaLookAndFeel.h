@@ -20,10 +20,10 @@ public:
     MelissaLookAndFeel()
     {
         setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        setColour(ListBox::outlineColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
         setColour(ListBox::backgroundColourId, Colours::transparentWhite);
         setColour(DirectoryContentsDisplayComponent::highlightColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
-        setColour(ListBox::outlineColourId, Colours::white.withAlpha(0.2f));
+        setColour(ListBox::outlineColourId, Colours::white.withAlpha(0.4f));
+        setColour(TableListBox::outlineColourId, Colours::white.withAlpha(0.4f));
     }
     
     virtual ~MelissaLookAndFeel() {};

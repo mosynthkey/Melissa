@@ -27,6 +27,7 @@ public:
     void setPlayPosition(float ratio);
     void showTimeTooltip(float posRatio);
     void hideTimeTooltip();
+    void setMarkerTableListBox(TableListBox* tableListBox) { tableListBox_ = tableListBox; }
     
     // MelissaDataSourceListener
     void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
@@ -52,4 +53,6 @@ private:
     
     std::unique_ptr<Label> posTooltip_;
     float timeSec_;
+    
+    TableListBox* tableListBox_;
 };

@@ -33,6 +33,7 @@ public:
         dataSource_->addListener(this);
         popupMenu_ = std::make_unique<PopupMenu>();
         popupMenu_->setLookAndFeel(&laf_);
+        setOutlineThickness(1.f);
     }
     
     ~MelissaFileListBox()
@@ -44,12 +45,6 @@ public:
     {
         target_ = target;
         updateList();
-    }
-    
-    void paint(Graphics& g) override
-    {
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRect(0, 0, getWidth(), getHeight());
     }
     
     int getNumRows() override
