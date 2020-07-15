@@ -84,7 +84,7 @@ int MelissaMarkerListBox::getNumRows()
 
 void MelissaMarkerListBox::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected)
 {
-    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.06f : 0.f);
+    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
     g.fillAll(colour);
 }
 
@@ -146,7 +146,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         if (existingComponentToUpdate == nullptr)
         {
             auto l = new Label();
-            l->setEditable(true);
+            l->setEditable(false, true);
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
             l->addListener(this);
@@ -167,7 +167,7 @@ int MelissaMarkerListBox::getColumnAutoSizeWidth(int columnId)
 {
     if (columnId == kColumn_Time + 1)
     {
-        return 60;
+        return 80;
     }
     else if (columnId == kColumn_Colour + 1)
     {
@@ -175,7 +175,7 @@ int MelissaMarkerListBox::getColumnAutoSizeWidth(int columnId)
     }
     else
     {
-        return getWidth() - 100 - 60;
+        return getWidth() - 100 - 80 - 2;
     }
 }
 

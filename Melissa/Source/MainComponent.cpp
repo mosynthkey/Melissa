@@ -930,6 +930,8 @@ void MainComponent::createUI()
     updateSpeedModeTab(kSpeedModeTab_Basic);
     updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
+    
+    waveformComponent_->setMarkerTableListBox(markerTable_.get());
 }
 
 void MainComponent::showFileChooser()
@@ -1041,16 +1043,14 @@ void MainComponent::resized()
         x += (w + tabMargin);
         historyToggleButton_ ->setBounds(x, y, w, 30);
         
-        w = 180;
+        w = 200;
         x = 20 + browserWidth + 20;
         practiceListToggleButton_->setBounds(x, y, w, 30);
+        addToPracticeButton_->setBounds(x + w - 30, y - 4, 28, 30);
         x += (w + 2);
-        addToPracticeButton_->setBounds(x, y, 28, 30);
-        x += (28 + 10);
         markerListToggleButton_->setBounds(x, y, w, 30);
+        addMarkerButton_->setBounds(x + w - 30, y - 4, 28, 30);
         x += (w + 2);
-        addMarkerButton_->setBounds(x, y, 28, 30);
-        x += (28 + 10);
         memoToggleButton_->setBounds(x, y, w, 30);
         
         y += 40;
