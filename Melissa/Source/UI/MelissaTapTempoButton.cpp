@@ -52,7 +52,7 @@ void MelissaTapTempoButton::mouseDown(const MouseEvent& event)
     stopTimer();
     
     auto model = MelissaModel::getInstance();
-    const float speed = model->getCurrentSpeed() / 100.f;
+    const float speed = model->getPlayingSpeed() / 100.f;
     
     const auto now = std::chrono::system_clock::now();
     if (isActive_)

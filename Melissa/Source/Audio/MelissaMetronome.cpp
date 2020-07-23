@@ -21,7 +21,7 @@ timeMSecDecimal_(0.f)
 
 void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
-    const auto currentSpeed = MelissaModel::getInstance()->getCurrentSpeed();
+    const auto currentSpeed = MelissaModel::getInstance()->getPlayingSpeed();
     
     for (int iSample = 0; iSample < bufferLength; ++iSample)
     {

@@ -34,7 +34,7 @@ public:
     SpeedMode getSpeedMode() { return speedMode_; }
     void setSpeed(int speed);
     int getSpeed() const  { return speed_; }
-    int getCurrentSpeed() { return audioEngine_->getCurrentSpeed(); }
+    int getPlayingSpeed() { return audioEngine_->getPlayingSpeed(); }
     void setSpeedIncStart(int speedIncStart);
     int getSpeedIncStart() { return speedIncStart_; }
     void setSpeedIncValue(int speedIncValue);
