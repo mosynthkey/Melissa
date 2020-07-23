@@ -11,7 +11,7 @@
 #include "MelissaAudioEngine.h"
 #include "MelissaModel.h"
 
-// #define SAVE_METRONOME_IN_PRACTICE_LIST
+#define SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST
 
 enum FileLoadStatus
 {
@@ -145,13 +145,13 @@ public:
             float aRatio_;
             float bRatio_;
             
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
             OutputMode outputMode_;
             float musicVolume_;
             float metronomeVolume_;
             float volumeBalance_;
             
             bool metronomeSw_;
-#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
             int bpm_;
             int accent_;
             float beatPositionMSec_;
@@ -165,10 +165,9 @@ public:
             int speedIncGoal_;
             
             PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f),
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
             outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-            metronomeSw_(false),
-#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
-            bpm_(-1), accent_(4), beatPositionMSec_(0.f),
+            metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f),
 #endif
             speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
             {}
