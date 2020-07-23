@@ -154,7 +154,8 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                     list.name_       = l.getProperty("name", "");
                     list.aRatio_     = l.getProperty("a", 0.f);
                     list.bRatio_     = l.getProperty("b", 1.f);
-                    
+
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
                     const int outputMode = l.getProperty("output_mode", kOutputMode_LR);
                     list.outputMode_ = static_cast<OutputMode>(outputMode);
                     list.musicVolume_     = l.getProperty("volume", 1.f);
@@ -162,7 +163,6 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                     list.volumeBalance_   = l.getProperty("volume_balance", 0.5f);
                     
                     list.metronomeSw_      = l.getProperty("metronome_sw", false);
-#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
                     list.bpm_              = l.getProperty("bpm", -1);
                     list.accent_           = l.getProperty("accent", 4);
                     list.beatPositionMSec_ = l.getProperty("beat_position", 0.f);
@@ -303,13 +303,13 @@ void MelissaDataSource::saveSettingsFile()
             obj->setProperty("a",      l.aRatio_);
             obj->setProperty("b",      l.bRatio_);
             
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
             obj->setProperty("output", l.outputMode_);
             obj->setProperty("volume", l.musicVolume_);
             obj->setProperty("metronome_volume", l.metronomeVolume_);
             obj->setProperty("volume_balance",   l.volumeBalance_);
             
             obj->setProperty("metronome_sw",  l.metronomeSw_);
-#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
             obj->setProperty("bpm",           l.bpm_);
             obj->setProperty("accent",        l.accent_);
             obj->setProperty("beat_position", l.beatPositionMSec_);
@@ -584,14 +584,14 @@ void MelissaDataSource::addPracticeList(const String& name)
             plist.name_   = name;
             plist.aRatio_ = model_->getLoopAPosRatio();
             plist.bRatio_ = model_->getLoopBPosRatio();
-            
+
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
             plist.outputMode_      = model_->getOutputMode();
             plist.musicVolume_     = model_->getMusicVolume();
             plist.metronomeVolume_ = model_->getMetronomeVolume();
             plist.volumeBalance_   = model_->getMusicMetronomeBalance();
             
             plist.metronomeSw_      = model_->getMetronomeSwitch();
-#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
             plist.bpm_              = model_->getBpm();
             plist.accent_           = model_->getAccent();
             plist.beatPositionMSec_ = model_->getBeatPositionMSec();
@@ -639,13 +639,13 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name)
                  song.practiceList_[index].aRatio_ = model_->getLoopAPosRatio();
                  song.practiceList_[index].bRatio_ = model_->getLoopBPosRatio();
                  
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
                  song.practiceList_[index].outputMode_      = model_->getOutputMode();
                  song.practiceList_[index].musicVolume_     = model_->getMusicVolume();
                  song.practiceList_[index].metronomeVolume_ = model_->getMetronomeVolume();
                  song.practiceList_[index].volumeBalance_   = model_->getMusicMetronomeBalance();
                  
                  song.practiceList_[index].metronomeSw_ = model_->getMetronomeSwitch();
-#if defined(SAVE_METRONOME_IN_PRACTICE_LIST)
                  song.practiceList_[index].bpm_         = model_->getBpm();
                  song.practiceList_[index].accent_      = model_->getAccent();
                  song.practiceList_[index].beatPositionMSec_ = model_->getBeatPositionMSec();
