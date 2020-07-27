@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.7"
               cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\UI"
-              version="1.0.1" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono"
+              version="2.0.0" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1">
   <MAINGROUP id="M4NJn2" name="Melissa">
@@ -17,9 +17,6 @@
         <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>
         <FILE id="Z6gLOK" name="arrow_right_highlighted.svg" compile="0" resource="1"
               file="Resource/Icon/arrow_right_highlighted.svg"/>
-        <FILE id="FwWRrv" name="marker_add.svg" compile="0" resource="1" file="Resource/Icon/marker_add.svg"/>
-        <FILE id="kJPQ5z" name="marker_add_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/marker_add_highlighted.svg"/>
         <FILE id="hK6blR" name="playlist_add.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_add.svg"/>
         <FILE id="QLXXHx" name="playlist_add_file.svg" compile="0" resource="1"
@@ -40,10 +37,6 @@
               file="Resource/Icon/playlist_remove.svg"/>
         <FILE id="XJKNra" name="playlist_remove_highlighted.svg" compile="0"
               resource="1" file="Resource/Icon/playlist_remove_highlighted.svg"/>
-        <FILE id="HV7Gj9" name="practicelist_add.svg" compile="0" resource="1"
-              file="Resource/Icon/practicelist_add.svg"/>
-        <FILE id="wbZoj5" name="practicelist_add_highlighted.svg" compile="0"
-              resource="1" file="Resource/Icon/practicelist_add_highlighted.svg"/>
       </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
@@ -55,8 +48,6 @@
     <GROUP id="{7861AF46-3FAB-B002-909F-38D9C3534B17}" name="soundtouch">
       <FILE id="j3IUBl" name="AAFilter.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/AAFilter.cpp"/>
       <FILE id="JtwPPZ" name="AAFilter.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/AAFilter.h"/>
-      <FILE id="OGPkg4" name="BPMDetect.cpp" compile="1" resource="0" file="../Submodule/soundtouch/source/SoundTouch/BPMDetect.cpp"/>
-      <FILE id="ZpdUM3" name="BPMDetect.h" compile="0" resource="0" file="../Submodule/soundtouch/include/BPMDetect.h"/>
       <FILE id="RcqQwh" name="cpu_detect.h" compile="0" resource="0" file="../Submodule/soundtouch/source/SoundTouch/cpu_detect.h"/>
       <FILE id="PWBilK" name="cpu_detect_x86.cpp" compile="1" resource="0"
             file="../Submodule/soundtouch/source/SoundTouch/cpu_detect_x86.cpp"/>
@@ -98,6 +89,12 @@
     </GROUP>
     <GROUP id="{15084612-5127-E7CA-7B8B-5B4D02AAA024}" name="Source">
       <GROUP id="{D8396015-3B56-0001-03E8-FD830368B22F}" name="Audio">
+        <GROUP id="{142E0C66-4BFE-2386-3C2B-5F60DE5F1D7F}" name="soundtouch">
+          <FILE id="spzWRt" name="BPMDetect_for_Melissa.cpp" compile="1" resource="0"
+                file="Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp"/>
+          <FILE id="LXNLj7" name="BPMDetect_for_Melissa.h" compile="0" resource="0"
+                file="Source/Audio/soundtouch/BPMDetect_for_Melissa.h"/>
+        </GROUP>
         <FILE id="vqc52c" name="MelissaAudioEngine.cpp" compile="1" resource="0"
               file="Source/Audio/MelissaAudioEngine.cpp"/>
         <FILE id="l6mtHh" name="MelissaAudioEngine.h" compile="0" resource="0"

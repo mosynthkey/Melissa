@@ -309,12 +309,6 @@ void MainComponent::createUI()
         iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
         iconImages_[kIcon_ArrowRightHighlighted] = Drawable::createFromImageData(BinaryData::arrow_right_highlighted_svg, BinaryData::arrow_right_highlighted_svgSize);
         
-        iconImages_[kIcon_MarkerAdd] = Drawable::createFromImageData(BinaryData::marker_add_svg, BinaryData::marker_add_svgSize);
-        iconImages_[kIcon_MarkerAddHighlighted] = Drawable::createFromImageData(BinaryData::marker_add_highlighted_svg, BinaryData::marker_add_highlighted_svgSize);
-        
-        iconImages_[kIcon_PracticelistAdd] = Drawable::createFromImageData(BinaryData::practicelist_add_svg, BinaryData::practicelist_add_svgSize);
-        iconImages_[kIcon_PracticelistAddHighlighted] = Drawable::createFromImageData(BinaryData::practicelist_add_highlighted_svg, BinaryData::practicelist_add_highlighted_svgSize);
-        
         iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
         iconImages_[kIcon_AddHighlighted] = Drawable::createFromImageData(BinaryData::add_highlighted_svg, BinaryData::add_highlighted_svgSize);
     }

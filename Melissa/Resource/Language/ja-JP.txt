@@ -9,6 +9,7 @@ countries: ja
 "choose_file_playlist" = "playlistに追加するファイルを選択してください"
 "add_practice_list" = "練習リストに追加"
 "remove" = "削除"
+"reveal" = "ファイルの場所を表示"
 "overwrite" = "上書き"
 "detect_multifiles_drop" = "複数のファイルがドロップされました。セットリストを作りますか?"
 "cancel" = "キャンセル"

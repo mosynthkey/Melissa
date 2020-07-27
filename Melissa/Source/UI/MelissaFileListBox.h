@@ -56,10 +56,16 @@ public:
     {
         if (e.mods.isRightButtonDown())
         {
-            enum { kMenuId_Remove = 1 };
+            enum
+            {
+                kMenuId_Remove = 1,
+                kMenuId_Reveal,
+            };
             popupMenu_->clear();
             popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
-            if (popupMenu_->show() == kMenuId_Remove)
+            popupMenu_->addItem(kMenuId_Reveal, TRANS("reveal"), true);
+            const auto result = popupMenu_->show();
+            if (result == kMenuId_Remove)
             {
                 if (target_ == kTarget_History)
                 {
@@ -70,6 +76,11 @@ public:
                     const size_t index = static_cast<size_t>(target_);
                     dataSource_->removeFromPlaylist(index, row);
                 }
+            }
+            else if (result == kMenuId_Reveal)
+            {
+                File file = list_[row];
+                if (file.existsAsFile()) file.revealToUser();
             }
         }
     }
