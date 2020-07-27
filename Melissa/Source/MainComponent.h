@@ -195,10 +195,6 @@ private:
         kIcon_ArrowLeftHighlighted,
         kIcon_ArrowRight,
         kIcon_ArrowRightHighlighted,
-        kIcon_MarkerAdd,
-        kIcon_MarkerAddHighlighted,
-        kIcon_PracticelistAdd,
-        kIcon_PracticelistAddHighlighted,
         kIcon_Add,
         kIcon_AddHighlighted,
         kNumOfIcons

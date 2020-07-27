@@ -9,6 +9,7 @@ countries: us
 "choose_file_playlist" = "Select a file to add to this playlist"
 "add_practice_list" = "Add to this practice list"
 "remove" = "Remove"
+"reveal" = "Reveal"
 "overwrite" = "Overwrite"
 "detect_multifiles_drop" = " Multiple files were dropped. Do you want to make a playlist with these files?"
 "cancel" = "Cancel"

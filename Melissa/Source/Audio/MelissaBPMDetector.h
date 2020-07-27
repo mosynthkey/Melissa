@@ -8,7 +8,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "BPMDetect.h"
+#include "BPMDetect_for_Melissa.h"
 #include "MelissaAudioEngine.h"
 #include "MelissaDataSource.h"
 
