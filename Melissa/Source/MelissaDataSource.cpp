@@ -238,12 +238,15 @@ void MelissaDataSource::saveSettingsFile()
     previous->setProperty("accent",        model_->getAccent());
     previous->setProperty("beat_position", model_->getBeatPositionMSec());
     
-    previous->setProperty("speed_mode",      model_->getSpeedMode());
     previous->setProperty("speed",           model_->getSpeed());
+    
+#if defined(ENABLE_SPEED_TRAINING)
+    previous->setProperty("speed_mode",      model_->getSpeedMode());
     previous->setProperty("speed_inc_start", model_->getSpeedIncStart());
     previous->setProperty("speed_inc_value", model_->getSpeedIncValue());
     previous->setProperty("speed_inc_per",   model_->getSpeedIncPer());
     previous->setProperty("speed_inc_goal",  model_->getSpeedIncGoal());
+#endif
     
     previous->setProperty("eq_sq",     model_->getEqSwitch());
     previous->setProperty("eq_0_freq", model_->getEqFreq(0));
@@ -412,12 +415,14 @@ void MelissaDataSource::restorePreviousState()
         model_->setBpm(previous_.bpm_);
         model_->setAccent(previous_.accent_);
         model_->setBeatPositionMSec(previous_.beatPositionMSec_);
-        model_->setSpeedMode(previous_.speedMode_);
         model_->setSpeed(previous_.speed_);
+#if defined(ENABLE_SPEED_TRAINING)
+        model_->setSpeedMode(previous_.speedMode_);
         model_->setSpeedIncStart(previous_.speedIncStart_);
         model_->setSpeedIncValue(previous_.speedIncValue_);
         model_->setSpeedIncPer(previous_.speedIncPer_);
         model_->setSpeedIncGoal(previous_.speedIncGoal_);
+#endif
         model_->setEqSwitch(previous_.metronomeSw_);
         model_->setEqFreq(0, previous_.eqSw_);
         model_->setEqGain(0, previous_.eqGain_);
@@ -509,12 +514,14 @@ void MelissaDataSource::saveSongState()
             song.accent_           = model_->getAccent();
             song.beatPositionMSec_ = model_->getBeatPositionMSec();
             
-            song.speedMode_     = model_->getSpeedMode();
             song.speed_         = model_->getSpeed();
+#if defined(ENABLE_SPEED_TRAINING)
+            song.speedMode_     = model_->getSpeedMode();
             song.speedIncStart_ = model_->getSpeedIncStart();
             song.speedIncValue_ = model_->getSpeedIncValue();
             song.speedIncPer_   = model_->getSpeedIncPer();
             song.speedIncGoal_  = model_->getSpeedIncGoal();
+#endif
             
             song.eqSw_             = model_->getEqSwitch();
             song.eqFreq_           = model_->getEqFreq(0);
@@ -597,12 +604,14 @@ void MelissaDataSource::addPracticeList(const String& name)
             plist.beatPositionMSec_ = model_->getBeatPositionMSec();
 #endif
 
-            plist.speedMode_     = model_->getSpeedMode();
             plist.speed_         = model_->getSpeed();
+#if defined(ENABLE_SPEED_TRAINING)
+            plist.speedMode_     = model_->getSpeedMode();
             plist.speedIncStart_ = model_->getSpeedIncStart();
             plist.speedIncValue_ = model_->getSpeedIncValue();
             plist.speedIncPer_   = model_->getSpeedIncPer();
             plist.speedIncGoal_  = model_->getSpeedIncGoal();
+#endif
             
             song.practiceList_.emplace_back(plist);
             for (auto&& l : listeners_) l->practiceListUpdated();
@@ -650,13 +659,15 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String& name)
                  song.practiceList_[index].accent_      = model_->getAccent();
                  song.practiceList_[index].beatPositionMSec_ = model_->getBeatPositionMSec();
 #endif
+                song.practiceList_[index].speed_         = model_->getSpeed();
 
-                 song.practiceList_[index].speedMode_     = model_->getSpeedMode();
-                 song.practiceList_[index].speed_         = model_->getSpeed();
-                 song.practiceList_[index].speedIncStart_ = model_->getSpeedIncStart();
-                 song.practiceList_[index].speedIncValue_ = model_->getSpeedIncValue();
-                 song.practiceList_[index].speedIncPer_   = model_->getSpeedIncPer();
-                 song.practiceList_[index].speedIncGoal_  = model_->getSpeedIncGoal();
+#if defined(ENABLE_SPEED_TRAINING)
+                song.practiceList_[index].speedMode_     = model_->getSpeedMode();
+                song.practiceList_[index].speedIncStart_ = model_->getSpeedIncStart();
+                song.practiceList_[index].speedIncValue_ = model_->getSpeedIncValue();
+                song.practiceList_[index].speedIncPer_   = model_->getSpeedIncPer();
+                song.practiceList_[index].speedIncGoal_  = model_->getSpeedIncGoal();
+#endif
                  
                 for (auto&& l : listeners_) l->practiceListUpdated();
             }
@@ -819,12 +830,15 @@ void MelissaDataSource::handleAsyncUpdate()
             model_->setAccent(song.accent_);
             model_->setBeatPositionMSec(song.beatPositionMSec_);
             
-            model_->setSpeedMode(song.speedMode_);
             model_->setSpeed(song.speed_);
+            
+#if defined(ENABLE_SPEED_TRAINING)
+            model_->setSpeedMode(song.speedMode_);
             model_->setSpeedIncStart(song.speedIncStart_);
             model_->setSpeedIncValue(song.speedIncValue_);
             model_->setSpeedIncPer(song.speedIncPer_);
             model_->setSpeedIncGoal(song.speedIncGoal_);
+#endif
             
             model_->setEqSwitch(song.eqSw_);
             model_->setEqFreq(0, song.eqFreq_);
@@ -844,12 +858,14 @@ void MelissaDataSource::handleAsyncUpdate()
         model_->setAccent(4);
         model_->setBeatPositionMSec(0.f);
         
-        model_->setSpeedMode(kSpeedMode_Basic);
         model_->setSpeed(100);
+#if defined(ENABLE_SPEED_TRAINING)
+        model_->setSpeedMode(kSpeedMode_Basic);
         model_->setSpeedIncStart(75);
         model_->setSpeedIncValue(1);
         model_->setSpeedIncPer(10);
         model_->setSpeedIncGoal(100);
+#endif
         
         model_->setEqSwitch(false);
         model_->setEqFreq(0, 500);

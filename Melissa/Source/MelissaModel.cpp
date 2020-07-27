@@ -51,18 +51,19 @@ void MelissaModel::setPitch(int semitone)
     for (auto&& l : listeners_) l->pitchChanged(semitone);
 }
 
-void MelissaModel::setSpeedMode(SpeedMode speedMode)
-{
-    speedMode_ = speedMode;
-    for (auto&& l : listeners_) l->speedModeChanged(speedMode);
-}
-
 void MelissaModel::setSpeed(int speed)
 {
     if (speed < kSpeedMin || kSpeedMax < speed) return;
     
     speed_ = speed;
     for (auto&& l : listeners_) l->speedChanged(speed);
+}
+
+#if defined(ENABLE_SPEED_TRAINING)
+void MelissaModel::setSpeedMode(SpeedMode speedMode)
+{
+    speedMode_ = speedMode;
+    for (auto&& l : listeners_) l->speedModeChanged(speedMode);
 }
 
 void MelissaModel::setSpeedIncStart(int speedIncStart)
@@ -96,6 +97,7 @@ void MelissaModel::setSpeedIncGoal(int speedIncGoal)
     speedIncGoal_ = speedIncGoal;
     for (auto&& l : listeners_) l->speedIncGoalChanged(speedIncGoal);
 }
+#endif
 
 void MelissaModel::setLoopPosRatio(float aPosRatio, float bPosRatio)
 {

@@ -35,6 +35,7 @@ public:
     static void setParentComponent(Component* parentComponent) { parentComponent_ = parentComponent; }
     static void show(std::shared_ptr<Component> component, const String& title, bool closeOnClickingOutside = true);
     static void close();
+    static void resize();
     
 private:
     static Component* parentComponent_;

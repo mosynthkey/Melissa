@@ -74,3 +74,8 @@ void MelissaModalDialog::close()
 {
     dialog_.reset(nullptr);
 }
+
+void MelissaModalDialog::resize()
+{
+    if (dialog_ != nullptr) dialog_->setSize(parentComponent_->getWidth(), parentComponent_->getHeight());
+}

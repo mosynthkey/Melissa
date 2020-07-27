@@ -20,7 +20,11 @@
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
+
+#if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
+#endif
+
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaMetronome.h"
 #include "MelissaMIDIControlManager.h"
@@ -195,16 +199,22 @@ private:
         kIcon_MarkerAddHighlighted,
         kIcon_PracticelistAdd,
         kIcon_PracticelistAddHighlighted,
+        kIcon_Add,
+        kIcon_AddHighlighted,
         kNumOfIcons
     };
     
     std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
     
+#if defined(ENABLE_SPEED_TRAINING)
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
     std::unique_ptr<ToggleButton> speedModeTrainingToggleButton_;
+#endif
     
     std::unique_ptr<Component> speedModeNormalComponent_;
+#if defined(ENABLE_SPEED_TRAINING)
     std::unique_ptr<Component> speedModeTrainingComponent_;
+#endif
     
     enum { kNumOfSpeedPresets = 11 };
     std::unique_ptr<MelissaIncDecButton> speedButton_;
@@ -212,6 +222,7 @@ private:
     std::unique_ptr<Component> speedPresetComponent_;
     std::unique_ptr<TextButton> speedPresetButtons_[kNumOfSpeedPresets];
 
+#if defined(ENABLE_SPEED_TRAINING)
     class SlashComponent;
     std::unique_ptr<MelissaSpeedTrainingProgressComponent> speedProgressComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncStartButton_;
@@ -219,6 +230,8 @@ private:
     std::unique_ptr<SlashComponent>      slashComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncGoalButton_;
+#endif
+    
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
     
     enum EqBand
@@ -288,8 +301,10 @@ private:
         kLabel_Speed,
         kLabel_SpeedPresets,
         
+#if defined(ENABLE_SPEED_TRAINING)
         kLabel_SpeedStart,
         kLabel_SpeedGoal,
+#endif
         
         kNumOfLabels
     };
@@ -324,12 +339,16 @@ private:
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
     void pitchChanged(int semitone) override;
-    void speedModeChanged(SpeedMode mode) override;
     void speedChanged(int speed) override;
+    
+#if defined(ENABLE_SPEED_TRAINING)
+    void speedModeChanged(SpeedMode mode) override;
     void speedIncStartChanged(int speedIncStart) override;
     void speedIncValueChanged(int speedIncValue) override;
     void speedIncPerChanged(int speedIncPer) override;
     void speedIncGoalChanged(int speedIncGoal) override;
+#endif
+    
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void metronomeSwitchChanged(bool on) override;
     void bpmChanged(float bpm) override;

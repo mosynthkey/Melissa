@@ -25,14 +25,14 @@ public:
         model_->setMetronomeSwitch(false);
         
         constexpr int textEditorWidth = 100;
-        constexpr int buttonWidth = 120;
+        //constexpr int buttonWidth = 120;
         constexpr int controlHeight = 30;
         constexpr int margin = 10;
-        constexpr int checkboxWidth = 30;
+        //constexpr int checkboxWidth = 30;
         
         circleToggleLaf_.setFont(Font(MelissaUISettings::getFontSizeMain()));
         
-        setSize(320, margin + (controlHeight + margin) * 3);
+        setSize(380, margin + (controlHeight + margin) * 3);
         
         {
             auto l = std::make_unique<Label>();
@@ -71,7 +71,7 @@ public:
         addAndMakeVisible(tapTempoButton_.get());
         
         speedCheckBox_ = std::make_unique<ToggleButton>();
-        speedCheckBox_->setButtonText("Correct with the playback speed.");
+        speedCheckBox_->setButtonText(TRANS("Correct with the playback speed."));
         speedCheckBox_->setLookAndFeel(&circleToggleLaf_);
         speedCheckBox_->onClick = [&]()
         {

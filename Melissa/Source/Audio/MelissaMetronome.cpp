@@ -105,5 +105,12 @@ void MelissaMetronome::metronomeVolumeChanged(float volume)
 
 void MelissaMetronome::musicMetronomeBalanceChanged(float balance)
 {
-    volumeBalance_ = 1.f - cos(M_PI / 2.f * balance);
+    if (balance < 0.5f)
+    {
+        volumeBalance_ = sin(M_PI / 2.f * balance * 2.f);;
+    }
+    else
+    {
+        volumeBalance_ = 1.f;
+    }
 }
