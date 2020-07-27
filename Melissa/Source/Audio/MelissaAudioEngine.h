@@ -28,7 +28,7 @@ public:
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
     
-    int32_t getCurrentSpeed() const { return currentSpeed_; }
+    int32_t getPlayingSpeed() const { return currentSpeed_; }
     
     void render(float* bufferToRender[], std::vector<float>&  timeIndicesMSec, size_t bufferLength);
     
@@ -73,12 +73,14 @@ private:
     bool needToReset_;
     std::mutex mutex_;
     
+#if defined(ENABLE_SPEED_TRAINING)
     int32_t count_;
     SpeedMode speedMode_;
     int32_t speedIncStart_;
     int32_t speedIncPer_;
     int32_t speedIncValue_;
     int32_t speedIncGoal_;
+#endif
     int32_t currentSpeed_;
     
     float volumeBalance_;
@@ -92,12 +94,14 @@ private:
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
     void pitchChanged(int semitone) override;
-    void speedModeChanged(SpeedMode mode) override;
     void speedChanged(int speed) override;
+#if defined(ENABLE_SPEED_TRAINING)
+    void speedModeChanged(SpeedMode mode) override;
     void speedIncStartChanged(int speedIncStart) override;
     void speedIncValueChanged(int speedIncValue) override;
     void speedIncPerChanged(int speedIncPer) override;
     void speedIncGoalChanged(int speedIncGoal) override;
+#endif
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void playingPosChanged(float time, float ratio) override;
     void musicMetronomeBalanceChanged(float balance) override;

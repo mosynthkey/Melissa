@@ -95,7 +95,6 @@ public:
     void updateCoefs()
     {
         const float gain = pow(10, abs(gainDb_) / 20.f) * ((gainDb_ > 0) ? 1 : -1);
-        printf("gain = %f\n", gain);
         const float omega = 2.f * M_PI *  freq_ / sampleRate_;
         const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
         const float A     = pow(10.f, (gain / 40.f) );
@@ -165,7 +164,11 @@ private:
 
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(-1), originalBufferLength_(0), outputSampleRate_(-1),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100), currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false)
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true),
+#if defined(ENABLE_SPEED_TRAINING)
+count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
+#endif
+currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<Equalizer>();
@@ -240,9 +243,8 @@ void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& tim
                 buffer[0] = buffer[1] = lrDiff;
             }
             
-            const float musicVolumeCoef = cos(M_PI / 2.f * volumeBalance_);
-            bufferToRender[0][iSample] = buffer[0] * musicVolumeCoef;
-            bufferToRender[1][iSample] = buffer[1] * musicVolumeCoef;
+            bufferToRender[0][iSample] = buffer[0] * volumeBalance_;
+            bufferToRender[1][iSample] = buffer[1] * volumeBalance_;
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
             timeIndicesMSec[iSample] = playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
@@ -267,6 +269,7 @@ void MelissaAudioEngine::process()
             if (readIndex_ > bIndex_)
             {
                 readIndex_ = aIndex_;
+#if defined(ENABLE_SPEED_TRAINING)
                 ++count_;
                 
                 if (speedMode_ == kSpeedMode_Training && speedIncPer_ != 0)
@@ -276,7 +279,7 @@ void MelissaAudioEngine::process()
                     if (currentSpeed_ > speedIncGoal_) currentSpeed_ = speedIncGoal_;
                     soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
                 }
-
+#endif
             }
             mutex_.lock();
             sampleIndexStretcher_->putSampleIndex(readIndex_);
@@ -339,7 +342,10 @@ void MelissaAudioEngine::resetProcessedBuffer()
     if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
     readIndex_ = processStartIndex_;
     needToReset_ = false;
+    
+#if defined(ENABLE_SPEED_TRAINING)
     count_ = 0;
+#endif
 }
 
 std::string MelissaAudioEngine::getStatusString() const
@@ -380,6 +386,19 @@ void MelissaAudioEngine::pitchChanged(int semitone)
     needToReset_ = true;
 }
 
+void MelissaAudioEngine::speedChanged(int speed)
+{
+    speed_ = speed;
+#if defined(ENABLE_SPEED_TRAINING)
+    if (speedMode_ == kSpeedMode_Basic) currentSpeed_ = speed_;
+#else
+    currentSpeed_ = speed_;
+#endif
+    processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
+    needToReset_ = true;
+}
+
+#if defined(ENABLE_SPEED_TRAINING)
 void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
 {
     if (mode == kSpeedMode_Basic)
@@ -401,14 +420,6 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
     
     speedMode_ = mode;
     count_ = 0;
-    processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
-    needToReset_ = true;
-}
-
-void MelissaAudioEngine::speedChanged(int speed)
-{
-    speed_ = speed;
-    if (speedMode_ == kSpeedMode_Basic) currentSpeed_ = speed_;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
 }
@@ -440,6 +451,7 @@ void MelissaAudioEngine::speedIncGoalChanged(int speedIncGoal)
     if (speedMode_ == kSpeedMode_Training) currentSpeed_ = speedIncStart_;
     count_ = 0;
 }
+#endif
 
 void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
@@ -462,7 +474,14 @@ void MelissaAudioEngine::playingPosChanged(float time, float ratio)
 
 void MelissaAudioEngine::musicMetronomeBalanceChanged(float balance)
 {
-    volumeBalance_ = balance;
+    if (balance < 0.5f)
+    {
+        volumeBalance_ = 1.f;
+    }
+    else
+    {
+        volumeBalance_ = cos(M_PI / 2.f * (balance - 0.5f) * 2.f);
+    }
 }
 
 void MelissaAudioEngine::outputModeChanged(OutputMode outputMode)

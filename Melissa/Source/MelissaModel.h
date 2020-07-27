@@ -30,12 +30,15 @@ public:
     void setPitch(int semitone);
     int getPitch() const  { return semitone_; }
     
-    void setSpeedMode(SpeedMode speedMode);
-    SpeedMode getSpeedMode() { return speedMode_; }
     void setSpeed(int speed);
     int getSpeed() const  { return speed_; }
+    
     int getPlayingSpeed() { return audioEngine_->getPlayingSpeed(); }
     void setSpeedIncStart(int speedIncStart);
+    
+#if defined(ENABLE_SPEED_TRAINING)
+    void setSpeedMode(SpeedMode speedMode);
+    SpeedMode getSpeedMode() { return speedMode_; }
     int getSpeedIncStart() { return speedIncStart_; }
     void setSpeedIncValue(int speedIncValue);
     int getSpeedIncValue() { return speedIncValue_; }
@@ -43,6 +46,7 @@ public:
     int getSpeedIncPer() { return speedIncPer_; }
     void setSpeedIncGoal(int speedIncGoal);
     int getSpeedIncGoal() { return speedIncGoal_; }
+#endif
     
     void setLoopPosRatio(float aRatio, float bRatio);
     

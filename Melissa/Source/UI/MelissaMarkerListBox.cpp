@@ -131,6 +131,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         {
             auto l = new MarkerColourLabel();
             l->setColour(colour);
+            l->setInterceptsMouseClicks(false, true);
             return dynamic_cast<Component*>(l);
         }
         else
@@ -146,7 +147,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         if (existingComponentToUpdate == nullptr)
         {
             auto l = new Label();
-            l->setEditable(false, true);
+            l->setEditable(true, false);
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
             l->addListener(this);

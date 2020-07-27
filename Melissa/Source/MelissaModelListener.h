@@ -38,12 +38,14 @@ public:
     virtual void playbackStatusChanged(PlaybackStatus status) {}
     virtual void musicVolumeChanged(float volume) {}
     virtual void pitchChanged(int semitone) {}
-    virtual void speedModeChanged(SpeedMode mode) {}
     virtual void speedChanged(int speed) {}
+#if defined(ENABLE_SPEED_TRAINING)
+    virtual void speedModeChanged(SpeedMode mode) {}
     virtual void speedIncStartChanged(int speedIncStart) {}
     virtual void speedIncValueChanged(int speedIncValue) {}
     virtual void speedIncPerChanged(int speedIncPer) {}
     virtual void speedIncGoalChanged(int speedIncGoal) {}
+#endif
     virtual void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) {}
     virtual void playingPosChanged(float time, float ratio) {}
     virtual void metronomeSwitchChanged(bool on) {}

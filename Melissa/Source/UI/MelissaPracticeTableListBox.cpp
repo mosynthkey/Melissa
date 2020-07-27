@@ -142,7 +142,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         if (existingComponentToUpdate == nullptr)
         {
             auto l = new Label();
-            l->setEditable(false, true);
+            l->setEditable(true, false);
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
             l->addListener(this);
@@ -213,11 +213,13 @@ void MelissaPracticeTableListBox::cellDoubleClicked(int rowNumber, int columnId,
     model->setLoopPosRatio(prac.aRatio_, prac.bRatio_);
     
     model->setSpeed(prac.speed_);
+#if defined(ENABLE_SPEED_TRAINING)
     model->setSpeedIncStart(prac.speedIncStart_);
     model->setSpeedIncValue(prac.speedIncValue_);
     model->setSpeedIncPer(prac.speedIncPer_);
     model->setSpeedIncGoal(prac.speedIncGoal_);
     model->setSpeedMode(prac.speedMode_);
+#endif
 }
 
 void MelissaPracticeTableListBox::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)

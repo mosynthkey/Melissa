@@ -56,19 +56,21 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(playlistComboBox_.get());
     
     createButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    createButton_->setTooltip(TRANS("create_playlist"));
     createButton_->setImages(iconImages_[kIcon_PlaylistAdd].get(), iconImages_[kIcon_PlaylistAddHighlighted].get());
     createButton_->onClick = [&]()
     {
         auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "Playlist", [&](const String& name) {
             if (name.isEmpty()) return;
             const size_t index = dataSource_->createPlaylist(name);
-            select(index);
+            select(static_cast<int>(index));
         });
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(inputDialog), TRANS("create_playlist"));
     };
     addAndMakeVisible(createButton_.get());
     
     renameButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    renameButton_->setTooltip(TRANS("rename_playlist"));
     renameButton_->setImages(iconImages_[kIcon_PlaylistEdit].get(), iconImages_[kIcon_PlaylistEditHighlighted].get());
     renameButton_->onClick = [&]()
     {
@@ -84,6 +86,7 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(renameButton_.get());
     
     removeButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    removeButton_->setTooltip(TRANS("remove_playlist"));
     removeButton_->setImages(iconImages_[kIcon_PlaylistRemove].get(), iconImages_[kIcon_PlaylistRemoveHighlighted].get());
     removeButton_->onClick = [&]()
     {
@@ -104,6 +107,7 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(removeButton_.get());
     
     addFileButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    addFileButton_->setTooltip(TRANS("addtolist_select"));
     addFileButton_->setImages(iconImages_[kIcon_PlaylistAddFile].get(), iconImages_[kIcon_PlaylistAddFileHighlighted].get());
     addFileButton_->onClick = [&]()
     {
@@ -126,6 +130,7 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(addFileButton_.get());
     
     addPlayingButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    addPlayingButton_->setTooltip(TRANS("addtolist_current"));
     addPlayingButton_->setImages(iconImages_[kIcon_PlaylistAddPlaying].get(), iconImages_[kIcon_PlaylistAddPlayingHighlighted].get());
     addPlayingButton_->onClick = [&]()
     {
