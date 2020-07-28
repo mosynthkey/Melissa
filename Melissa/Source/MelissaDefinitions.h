@@ -21,4 +21,5 @@ static constexpr float kEqQMax = 2;
 
 static constexpr int kBpmMin = 10;
 static constexpr int kBpmMax = 500;
-static constexpr int kBpmUnmeasured = kBpmMin - 1;
+static constexpr int kBpmShouldMeasure = kBpmMin - 1;
+static constexpr int kBpmMeasureFailed = kBpmShouldMeasure - 1;

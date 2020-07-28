@@ -97,6 +97,7 @@ public:
         
         funcButton_ = std::make_unique<MelissaRoundButton>(funcButtonTitle);
         funcButton_->setTooltip(funcTooltipStr);
+        funcButton_->setFont(MelissaUISettings::getFontSizeSub());
         funcButton_->onClick =  [this]() { if (onClick_ != nullptr) onClick_(kEvent_Func, false); };
         addAndMakeVisible(funcButton_.get());
     }

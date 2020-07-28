@@ -145,6 +145,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
             l->setEditable(true, false);
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
+            l->setFont(MelissaUISettings::getFontSizeSub());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }

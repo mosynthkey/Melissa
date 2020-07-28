@@ -854,7 +854,7 @@ void MelissaDataSource::handleAsyncUpdate()
         model_->setMetronomeVolume(1.f);
         model_->setMusicMetronomeBalance(0.5f);
         model_->setMetronomeSwitch(false);
-        model_->setBpm(kBpmUnmeasured);
+        model_->setBpm(kBpmShouldMeasure);
         model_->setAccent(4);
         model_->setBeatPositionMSec(0.f);
         

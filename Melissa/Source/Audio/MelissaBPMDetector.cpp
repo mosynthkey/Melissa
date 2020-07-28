@@ -54,23 +54,4 @@ void MelissaBPMDetector::process(bool* processFinished, float* bpm)
     strength.resize(beatsLength);
     
     *bpm = std::round(bpmDetect_->getBpm());
-    printf("bpm = %f\n", *bpm);
-    // model->setBeatPositionMSec(beatPosition[strengthMaxIndex] * 1000.f);
-    
-    /*
-    bpmDetect_->getBeats(beatPosition.data(), strength.data(), beatsLength);
-    size_t strengthMaxIndex = 0;
-    for (size_t strength_i = 0; strength_i < strength.size(); ++strength_i)
-    {
-        if (strength[strength_i] > strength[strengthMaxIndex])
-        {
-            strengthMaxIndex = strength_i;
-        }
-    }
-     
-    printf("bpm = %f\n", bpm);
-    auto model = MelissaModel::getInstance();
-    model->setBpm(std::round(bpm));
-    model->setBeatPositionMSec(beatPosition[strengthMaxIndex] * 1000.f);
-  */
 }
