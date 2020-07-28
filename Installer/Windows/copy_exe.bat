@@ -1,0 +1,2 @@
+copy /Y "..\..\Melissa\Builds\VisualStudio2019\Win32\Release (32bit)\App\Melissa.exe" ".\32bit\Melissa_2.0.0_32\"
+copy /Y "..\..\Melissa\Builds\VisualStudio2019\x64\Release\App\Melissa.exe" ".\64bit\Melissa_2.0.0_64\"
