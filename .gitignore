@@ -38,3 +38,6 @@ Melissa/Builds/*
 *.dmg
 *.exe
 Installer/macOS/Makefile
+
+# ThirdParty
+ThirdParty/asio/*
