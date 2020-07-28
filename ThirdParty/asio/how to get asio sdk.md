@@ -1,0 +1,1 @@
+Please get ASIO SDK from [here](https://www.steinberg.net/en/company/developers.html) and extract it to this folder.
