@@ -316,6 +316,7 @@ private:
     MelissaLookAndFeel_SelectorToggleButton selectorLaf_;
     MelissaLookAndFeel_CrossFader crossFaderLaf_;
     MelissaLookAndFeel_SimpleTextButton simpleTextButtonLaf_;
+    MelissaLookAndFeel_SimpleTextEditor simpleTextEditorLaf_;
     std::vector<Component*> lafList_;
     
     String fileName_, fileFullPath_;
