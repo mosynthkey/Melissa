@@ -274,7 +274,7 @@ public:
         return Font(MelissaUISettings::getFontSizeMain());
     }
     
-    
+    /*
     virtual Button* createFileBrowserGoUpButton() override
     {
         class UpButton : public Button
@@ -299,6 +299,7 @@ public:
 
         return new UpButton();
     }
+    */
     
     virtual void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
     {

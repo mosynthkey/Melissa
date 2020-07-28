@@ -239,6 +239,7 @@ MainComponent::~MainComponent()
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
+    fileBrowserComponent_->setLookAndFeel(nullptr);
     
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(nullptr);
@@ -895,6 +896,7 @@ void MainComponent::createUI()
                                                               wildCardFilter_.get(),
                                                               nullptr);
     fileBrowserComponent_->setColour(ListBox::backgroundColourId, Colours::transparentWhite);
+    fileBrowserComponent_->setLookAndFeel(&simpleTextEditorLaf_);
     fileBrowserComponent_->addListener(this);
     addAndMakeVisible(fileBrowserComponent_.get());
     
