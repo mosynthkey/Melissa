@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" jucerVersion="5.4.7"
-              cppLanguageStandard="17" headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\UI"
+<JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
+              headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
               version="2.0.0" companyName="MasakiOno" companyCopyright="Copyright(c) 2020 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
-              compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1">
+              compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
+              jucerFormatVersion="1">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <GROUP id="{C5AC6B22-7389-6732-F819-CB34CCC7D946}" name="Icon">
@@ -244,9 +245,10 @@
     </XCODE_MAC>
     <VS2019 targetFolder="Builds/VisualStudio2019" smallIcon="Y3ewMD" bigIcon="Y3ewMD">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" useRuntimeLibDLL="0"/>
-        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0"/>
-        <CONFIGURATION isDebug="0" name="Release (32bit)" useRuntimeLibDLL="0" winArchitecture="Win32"/>
+        <CONFIGURATION isDebug="1" name="Debug" useRuntimeLibDLL="0" headerPath="..\..\..\ThirdParty\asio\common"/>
+        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" headerPath="..\..\..\ThirdParty\asio\common"/>
+        <CONFIGURATION isDebug="0" name="Release (32bit)" useRuntimeLibDLL="0" winArchitecture="Win32"
+                       headerPath="..\..\..\ThirdParty\asio\common"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../juce"/>
@@ -284,5 +286,6 @@
     <OSX/>
     <WINDOWS/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_USE_MP3AUDIOFORMAT="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_USE_MP3AUDIOFORMAT="1"
+               JUCE_ASIO="1"/>
 </JUCERPROJECT>
