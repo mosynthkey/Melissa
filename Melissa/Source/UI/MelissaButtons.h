@@ -151,13 +151,17 @@ public:
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
-        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 1.f : 0.8f));
+        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 1.f : 0.75f));
         g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
         
         g.setColour(Colours::white);
+        g.setFont(font_);
         g.drawText(title_, 0, 0, getWidth(), getHeight(), Justification::centred);
     }
+
+    void setFont(Font font) { font_ = font; }
     
 private:
     String title_;
+    Font font_;
 };

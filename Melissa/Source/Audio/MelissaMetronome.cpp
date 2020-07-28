@@ -6,6 +6,7 @@
 //
 
 #include <cmath>
+#include "MelissaDefinitions.h"
 #include "MelissaMetronome.h"
 #include "MelissaModel.h"
 
@@ -21,7 +22,8 @@ timeMSecDecimal_(0.f)
 
 void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
-    const auto currentSpeed = MelissaModel::getInstance()->getPlayingSpeed();
+    if (metronome_.bpm_ < kBpmMin) return;
+    const auto playingSpeed = MelissaModel::getInstance()->getPlayingSpeed();
     
     for (int iSample = 0; iSample < bufferLength; ++iSample)
     {
@@ -31,7 +33,7 @@ void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>&
         }
         else
         {
-            const float timeMSecToAdvance = (currentSpeed / 100.f) / sampleRate_ * 1000.f;
+            const float timeMSecToAdvance = (playingSpeed / 100.f) / sampleRate_ * 1000.f;
             timeMSecDecimal_ += timeMSecToAdvance;
             
             const int timeMSecNumerator = static_cast<int>(timeMSecDecimal_);

@@ -621,7 +621,7 @@ void MainComponent::createUI()
         {
             if (event == MelissaIncDecButton::kEvent_Double)
             {
-                model_->setBpm(kBpmUnmeasured);
+                model_->setBpm(kBpmShouldMeasure);
             }
             else if (event == MelissaIncDecButton::kEvent_Func)
             {
@@ -730,6 +730,7 @@ void MainComponent::createUI()
         for (size_t labelIndex = 0; labelIndex < kNumOfEqBands * numOfControls; ++labelIndex)
         {
             auto l = std::make_unique<Label>();
+            l->setFont(MelissaUISettings::getFontSizeSub());
             l->setText(labelTitles[labelIndex % numOfControls], dontSendNotification);
             l->setJustificationType(Justification::centred);
             section->addAndMakeVisible(l.get());
@@ -1540,7 +1541,7 @@ void MainComponent::timerCallback()
     
     if (shouldUpdateBpm_)
     {
-        model_->setBpm(analyzedBpm_);
+        model_->setBpm((analyzedBpm_ == 0) ? kBpmMeasureFailed : analyzedBpm_);
         shouldUpdateBpm_ = false;
     }
 }
@@ -1684,9 +1685,14 @@ void MainComponent::metronomeSwitchChanged(bool on)
 
 void MainComponent::bpmChanged(float bpm)
 {
-    if (bpm == kBpmUnmeasured)
+    if (bpm == kBpmMeasureFailed)
     {
-        bpmButton_->setText("---");
+        bpmButton_->setText("___");
+        bpmAnalyzeFinished_ = true;
+    }
+    else if (bpm == kBpmShouldMeasure)
+    {
+        bpmButton_->setText("...");
         bpmAnalyzeFinished_ = false;
     }
     else

@@ -54,17 +54,19 @@
 #include "STTypes.h"
 #include "FIFOSampleBuffer.h"
 
+#include "MelissaDefinitions.h"
+
 namespace soundtouch
 {
 
     /// Minimum allowed BPM rate. Used to restrict accepted result above a reasonable limit.
-    #define MIN_BPM 30
+    #define MIN_BPM kBpmMin
 
     /// Maximum allowed BPM rate range. Used for calculating algorithm parametrs
     #define MAX_BPM_RANGE 300
 
     /// Maximum allowed BPM rate range. Used to restrict accepted result below a reasonable limit.
-    #define MAX_BPM_VALID 400
+    #define MAX_BPM_VALID kBpmMax
 
 ////////////////////////////////////////////////////////////////////////////////
 

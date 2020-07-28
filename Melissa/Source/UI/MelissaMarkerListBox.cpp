@@ -150,6 +150,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
             l->setEditable(true, false);
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
+            l->setFont(MelissaUISettings::getFontSizeSub());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }

@@ -186,7 +186,7 @@ void  MelissaModel::setMetronomeSwitch(bool on)
 
 void MelissaModel::setBpm(float bpm)
 {
-    bpm_ = std::clamp<float>(bpm, kBpmUnmeasured, kBpmMax);
+    bpm_ = std::clamp<float>(bpm, kBpmMeasureFailed, kBpmMax);
     for (auto&& l : listeners_) l->bpmChanged(bpm_);
 }
 

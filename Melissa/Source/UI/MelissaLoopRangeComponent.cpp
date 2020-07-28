@@ -35,22 +35,12 @@ void MelissaLoopRangeComponent::paint(Graphics& g)
     g.fillRect(rect);
     
     const auto loopStartRect = getLoopStartEdgeRect();
-    g.setColour(Colour(MelissaUISettings::getAccentColour()));
+    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(mouseOnLoopStartEdge_ ? 1.f : 0.75f));
     g.fillRect(loopStartRect);
-    if (mouseOnLoopStartEdge_)
-    {
-        g.setColour(Colours::black.withAlpha(0.3f));
-        g.fillRect(loopStartRect);
-    }
     
     const auto loopEndRect = getLoopEndEdgeRect();
-    g.setColour(Colour(MelissaUISettings::getAccentColour()));
+    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(mouseOnLoopEndEdge_ ? 1.f : 0.75f));
     g.fillRect(loopEndRect);
-    if (mouseOnLoopEndEdge_)
-    {
-        g.setColour(Colours::black.withAlpha(0.3f));
-        g.fillRect(loopEndRect);
-    }
 }
 
 void MelissaLoopRangeComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)

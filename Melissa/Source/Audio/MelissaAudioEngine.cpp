@@ -27,28 +27,39 @@ public:
     
     void reset()
     {
+        std::lock_guard<std::mutex> lock(queMutex_);
         readIndex_ = 0;
         que_.clear();
     }
     
     void setSpeed(float speed)
     {
+        std::lock_guard<std::mutex> lock(queMutex_);
         speed_ = speed;
-        reset();
+        readIndex_ = 0;
+        que_.clear();
     }
     
     void putSampleIndex(size_t sampleIndex)
     {
+        std::lock_guard<std::mutex> lock(queMutex_);
         que_.push_back(sampleIndex);
     }
     
-    bool isStretchedSampleIndicesPrepared(size_t length) const
+    bool isStretchedSampleIndicesPrepared(size_t length) //const
     {
+        assert(0.f <= readIndex_);
+        prevReadIndex_ = readIndex_;
+        prevSpeed_ = speed_;
+        prevLength_ = length;
+        prevQueSize_ = que_.size();
         return (readIndex_ + length * speed_) < que_.size();
     }
     
     void getStretchedSampleIndices(size_t length, std::deque<float>& stretchedSampleIndex)
     {
+        std::lock_guard<std::mutex> lock(queMutex_);
+
         stretchedSampleIndex.clear();
         
         for (size_t index = 0; index < length; ++index)
@@ -66,9 +77,15 @@ public:
     }
     
 private:
+    std::mutex queMutex_;
     std::deque<size_t> que_;
     float readIndex_;
     float speed_;
+
+    float prevReadIndex_;
+    float prevSpeed_;
+    size_t prevLength_;
+    size_t prevQueSize_;
 };
 
 class MelissaAudioEngine::Equalizer
@@ -213,8 +230,12 @@ float MelissaAudioEngine::getPlayingPosRatio() const
 
 void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
-    if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength)) return;
     mutex_.lock();
+    if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
+    {
+        mutex_.unlock();
+        return;
+    }
     sampleIndexStretcher_->getStretchedSampleIndices(bufferLength, timeQue_);
     mutex_.unlock();
     
@@ -314,15 +335,12 @@ bool MelissaAudioEngine::isBufferSet() const
 void MelissaAudioEngine::reset()
 {
     needToReset_ = true;
-    
-    mutex_.lock();
-    soundTouch_->clear();
-    processedBufferQue_.clear();
-    mutex_.unlock();
 }
 
 void MelissaAudioEngine::resetProcessedBuffer()
 {
+    mutex_.lock();
+
     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
     
     soundTouch_->clear();
@@ -333,10 +351,8 @@ void MelissaAudioEngine::resetProcessedBuffer()
     processingSpeed_ = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (currentSpeed_ / 100.f);
     sampleIndexStretcher_->setSpeed(processingSpeed_);
     
-    mutex_.lock();
     processedBufferQue_.clear();
     timeQue_.clear();
-    mutex_.unlock();
     
     playingPosMSec_ = static_cast<float>(processStartIndex_) / originalSampleRate_ * 1000.f;
     if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
@@ -346,6 +362,8 @@ void MelissaAudioEngine::resetProcessedBuffer()
 #if defined(ENABLE_SPEED_TRAINING)
     count_ = 0;
 #endif
+
+    mutex_.unlock();
 }
 
 std::string MelissaAudioEngine::getStatusString() const
