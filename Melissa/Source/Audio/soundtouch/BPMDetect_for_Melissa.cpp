@@ -540,12 +540,17 @@ float BPMDetect::getBpm()
     delete[] data;
 
     assert(decimateBy != 0);
-    if (peakPos < 1e-9) return 0.0; // detection failed.
+    if (peakPos < 1e-9)
+    {
+        printf("detection failed\n");
+        return 0.0; // detection failed.
+    }
 
     _SaveDebugBeatPos("soundtouch-detected-beats.txt", beats);
 
     // calculate BPM
     float bpm = (float)(coeff / peakPos);
+    printf("bpm = %f\n", bpm);
     return (bpm >= MIN_BPM && bpm <= MAX_BPM_VALID) ? bpm : 0;
 }
 

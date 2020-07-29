@@ -7,7 +7,6 @@
 
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
-#include "MelissaDefinitions.h"
 
 enum
 {
@@ -829,7 +828,6 @@ void MelissaDataSource::handleAsyncUpdate()
             model_->setBpm(song.bpm_);
             model_->setAccent(song.accent_);
             model_->setBeatPositionMSec(song.beatPositionMSec_);
-            
             model_->setSpeed(song.speed_);
             
 #if defined(ENABLE_SPEED_TRAINING)

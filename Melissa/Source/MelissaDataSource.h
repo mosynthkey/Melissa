@@ -9,6 +9,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaAudioEngine.h"
+#include "MelissaDefinitions.h"
 #include "MelissaModel.h"
 
 #define SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST
@@ -94,7 +95,7 @@ public:
         filePath_(""), pitch_(0),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f),
+        metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
         eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f),
         uiState_({0, 0})
@@ -167,7 +168,7 @@ public:
             PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f),
 #if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
             outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-            metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f),
+            metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
 #endif
             speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
             {}
@@ -183,7 +184,7 @@ public:
         std::vector<Marker> markers_;
         
         Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(-1), accent_(4), beatPositionMSec_(0.f),
+        metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
         eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
     };

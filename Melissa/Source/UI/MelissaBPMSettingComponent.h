@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDefinitions.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaModelListener.h"
 #include "MelissaTapTempoButton.h"
@@ -52,17 +53,19 @@ public:
             labels_.emplace_back(std::move(l));
         }
         
+        const auto bpm = model_->getBpm();
         bpmEditor_ = std::make_unique<TextEditor>();
         bpmEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
         bpmEditor_->setJustification(Justification::centred);
         bpmEditor_->setBounds(getWidth() - margin - textEditorWidth, margin, textEditorWidth, controlHeight);
         bpmEditor_->setInputRestrictions(3, "0123456789");
-        bpmEditor_->setText(String(model_->getBpm()), dontSendNotification);
+        if (kBpmMin <= bpm) bpmEditor_->setText(String(bpm), dontSendNotification);
         bpmEditor_->onReturnKey = [&]()
         {
             const auto bpm = bpmEditor_->getText().getIntValue();
-            model_->setBpm(bpm);
+            if (kBpmMin <= bpm) model_->setBpm(bpm);
         };
+        addAndMakeVisible(bpmEditor_.get());
         
         tapTempoButton_ = std::make_unique<MelissaTapTempoButton>();
         tapTempoButton_->setFont(Font(MelissaUISettings::getFontSizeMain()));
@@ -80,10 +83,6 @@ public:
         speedCheckBox_->setToggleState(true, dontSendNotification);
         speedCheckBox_->setBounds(margin, margin + (controlHeight + margin) * 2, getWidth() - margin * 2, controlHeight);
         addAndMakeVisible(speedCheckBox_.get());
-        
-        //bpmEditor_->setText();
-        addAndMakeVisible(bpmEditor_.get());
-        
     }
     
     ~MelissaBPMSettingComponent()
