@@ -1211,8 +1211,8 @@ void MainComponent::resized()
         
         eqSwitchButton_->setBounds(10, 5, 40, 20);
         
-        constexpr int knobSize = 40;
-        const int y = 30 + (section->getHeight() - 30) / 2 - knobSize / 2 - 6;
+        constexpr int knobSize = 42;
+        const int y = 30 + (section->getHeight() - 30) / 2 - knobSize / 2 - 8;
         const int interval = (section->getWidth() - knobSize * kNumOfEqBands * 3) / (kNumOfEqBands * 3 + 1);
         
         int x = interval;

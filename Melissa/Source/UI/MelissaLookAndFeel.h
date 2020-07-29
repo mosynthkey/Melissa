@@ -104,23 +104,52 @@ public:
     {
         const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
         constexpr float thickness = 4.f;
+        const auto colour = Colour(MelissaUISettings::getAccentColour());
         
-        Path path;
-        path.addArc(x, y, width, height, angle, rotaryEndAngle, true);
-        path.lineTo(x + width / 2, y + height / 2);
-        path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, rotaryEndAngle, angle, false);
-        path.closeSubPath();
-        g.setColour(Colours::white.withAlpha(0.4f));
-        g.fillPath(path);
+        bool centerBase = slider.getRange().getStart() < 0;
         
-        path.clear();
-        path.addArc(x, y, width, height, rotaryStartAngle, angle, true);
-        path.lineTo(x + width / 2, y + height / 2);
-        path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, angle, rotaryStartAngle, false);
-        path.closeSubPath();
-        g.setColour(Colour(MelissaUISettings::getAccentColour()));
-        g.fillPath(path);
+        if (centerBase)
+        {
+            Path path;
+            path.addArc(x, y, width, height, rotaryStartAngle, rotaryEndAngle, true);
+            path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, rotaryEndAngle, rotaryStartAngle, false);
+            path.closeSubPath();
+            g.setColour(colour.withAlpha(0.2f));
+            g.fillPath(path);
+            
+            path.clear();
+            path.addArc(x, y, width, height, angle, 2 * M_PI, true);
+            path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, 2 * M_PI, angle, false);
+            path.closeSubPath();
+            g.setColour(colour);
+            g.fillPath(path);
+        }
+        else
+        {
+            Path path;
+            path.addArc(x, y, width, height, angle, rotaryEndAngle, true);
+            path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, rotaryEndAngle, angle, false);
+            path.closeSubPath();
+            g.setColour(colour.withAlpha(0.2f));
+            g.fillPath(path);
+             
+            path.clear();
+            path.addArc(x, y, width, height, rotaryStartAngle, angle, true);
+            path.addArc(x + thickness, y + thickness, width - thickness * 2, height - thickness * 2, angle, rotaryStartAngle, false);
+            path.closeSubPath();
+            g.setColour(colour);
+            g.fillPath(path);
+        }
         
+        // draw marker
+        {
+            const auto markerR = 3;
+            const auto r = width / 2 - thickness - markerR * 2;
+            const auto x_ = (x + width / 2) + r * sin(angle);
+            const auto y_ = (y + height / 2) - r * cos(angle);
+            g.setColour(colour);
+            g.fillEllipse(x_ - markerR, y_ - markerR, markerR * 2, markerR * 2);
+        }
     }
     
     virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override
@@ -274,32 +303,25 @@ public:
         return Font(MelissaUISettings::getFontSizeMain());
     }
     
-    /*
     virtual Button* createFileBrowserGoUpButton() override
     {
-        class UpButton : public Button
-        {
-        public:
-            UpButton() : Button("") { }
-            
-            void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
-            {
-                constexpr int lineHeight = 2;
-                
-                const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-                g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(highlighed ? 1.f : 0.6f));
-                
-                const int w = getWidth();
-                const int h = getHeight();
-                g.fillRoundedRectangle(0, 0, w, lineHeight, lineHeight / 2);
-                g.fillRoundedRectangle(0, (h - lineHeight) / 2, w, lineHeight, lineHeight / 2);
-                g.fillRoundedRectangle(0, h - lineHeight, w, lineHeight, lineHeight / 2);
-            }
-        };
+        auto goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
 
-        return new UpButton();
+        Path arrowPath;
+        arrowPath.addArrow ({ 50.0f, 100.0f, 50.0f, 0.0f }, 40.0f, 100.0f, 50.0f);
+
+        DrawablePath arrowImage;
+        arrowImage.setFill(Colours::white.withAlpha(0.4f));
+        arrowImage.setPath(arrowPath);
+        
+        DrawablePath arrowImageHighlighted;
+        arrowImageHighlighted.setFill(Colours::white.withAlpha(0.8f));
+        arrowImageHighlighted.setPath(arrowPath);
+
+        goUpButton->setImages(&arrowImage, &arrowImageHighlighted);
+
+        return goUpButton;
     }
-    */
     
     virtual void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
     {
@@ -360,6 +382,7 @@ public:
     
 private:
     Component* bottomComponent_;
+    std::unique_ptr<Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
 };
 
 class MelissaLookAndFeel_Tab : public LookAndFeel_V4
