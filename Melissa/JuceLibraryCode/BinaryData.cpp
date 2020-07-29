@@ -9,513 +9,512 @@ namespace BinaryData
 
 //================== add.svg ==================
 static const unsigned char temp_binary_data_0[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>add</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1525.000000, -911.000000)\" fill=\"#FFFFFF\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>add</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
+"        <g id=\"A6\" transform=\"translate(-1525.000000, -911.000000)\" fill=\"#FFFFFF\">\n"
 "            <path d=\"M1534,911 C1538.97056,911 1543,915.029437 1543,920 C1543,924.970563 1538.97056,929 1534,929 C1529.02944,929 1525,924.970563 1525,920 C1525,915.029437 1529.02944,911 1534,911 Z M1534,915 C1533.44772,915 1533,915.447715 1533,916 L"
 "1533,916 L1533,919 L1530,919 C1529.44772,919 1529,919.447715 1529,920 C1529,920.552285 1529.44772,921 1530,921 L1530,921 L1533,921 L1533,924 C1533,924.552285 1533.44772,925 1534,925 C1534.55228,925 1535,924.552285 1535,924 L1535,924 L1535,921 L1538,9"
-"21 C1538.55228,921 1539,920.552285 1539,920 C1539,919.447715 1538.55228,919 1538,919 L1538,919 L1535,919 L1535,916 C1535,915.447715 1534.55228,915 1534,915 Z\" id=\"add\"></path>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"21 C1538.55228,921 1539,920.552285 1539,920 C1539,919.447715 1538.55228,919 1538,919 L1538,919 L1535,919 L1535,916 C1535,915.447715 1534.55228,915 1534,915 Z\" id=\"add\"></path>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* add_svg = (const char*) temp_binary_data_0;
 
 //================== add_highlighted.svg ==================
 static const unsigned char temp_binary_data_1[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>add_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1524.000000, -874.000000)\" fill=\"#FFFFFF\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>add_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A6\" transform=\"translate(-1524.000000, -874.000000)\" fill=\"#FFFFFF\">\n"
 "            <path d=\"M1533,874 C1537.97056,874 1542,878.029437 1542,883 C1542,887.970563 1537.97056,892 1533,892 C1528.02944,892 1524,887.970563 1524,883 C1524,878.029437 1528.02944,874 1533,874 Z M1533,878 C1532.44772,878 1532,878.447715 1532,879 L"
 "1532,879 L1532,882 L1529,882 C1528.44772,882 1528,882.447715 1528,883 C1528,883.552285 1528.44772,884 1529,884 L1529,884 L1532,884 L1532,887 C1532,887.552285 1532.44772,888 1533,888 C1533.55228,888 1534,887.552285 1534,887 L1534,887 L1534,884 L1537,8"
-"84 C1537.55228,884 1538,883.552285 1538,883 C1538,882.447715 1537.55228,882 1537,882 L1537,882 L1534,882 L1534,879 C1534,878.447715 1533.55228,878 1533,878 Z\" id=\"add_highlighted\"></path>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"84 C1537.55228,884 1538,883.552285 1538,883 C1538,882.447715 1537.55228,882 1537,882 L1537,882 L1534,882 L1534,879 C1534,878.447715 1533.55228,878 1533,878 Z\" id=\"add_highlighted\"></path>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* add_highlighted_svg = (const char*) temp_binary_data_1;
 
 //================== arrow_left.svg ==================
 static const unsigned char temp_binary_data_2[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>arrow_left</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\r\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -220.000000)\" fill=\"#FFFFFF\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_left</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -220.000000)\" fill=\"#FFFFFF\">\n"
 "            <path d=\"M552.7,220 C553.086599,220 553.4,220.313401 553.4,220.7 L553.4,224.969 L560.373909,220.943782 C560.708714,220.750483 561.136827,220.865195 561.330127,221.2 C561.523427,221.534805 561.408714,221.962918 561.073909,222.156218 L554."
 "416,226 L571.3,226 C571.686599,226 572,226.313401 572,226.7 C572,227.086599 571.686599,227.4 571.3,227.4 L554.417,227.4 L561.073909,231.243782 C561.408714,231.437082 561.523427,231.865195 561.330127,232.2 C561.136827,232.534805 560.708714,232.649517 "
-"560.373909,232.456218 L553.4,228.43 L553.4,233.3 C553.4,233.686599 553.086599,234 552.7,234 C552.313401,234 552,233.686599 552,233.3 L552,220.7 C552,220.313401 552.313401,220 552.7,220 Z\" id=\"arrow_left\"></path>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"560.373909,232.456218 L553.4,228.43 L553.4,233.3 C553.4,233.686599 553.086599,234 552.7,234 C552.313401,234 552,233.686599 552,233.3 L552,220.7 C552,220.313401 552.313401,220 552.7,220 Z\" id=\"arrow_left\"></path>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* arrow_left_svg = (const char*) temp_binary_data_2;
 
 //================== arrow_left_highlighted.svg ==================
 static const unsigned char temp_binary_data_3[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>arrow_left_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\r\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -235.000000)\" fill=\"#FFFFFF\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_left_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
 "            <path d=\"M552.7,235 C553.086599,235 553.4,235.313401 553.4,235.7 L553.4,239.969 L560.373909,235.943782 C560.708714,235.750483 561.136827,235.865195 561.330127,236.2 C561.523427,236.534805 561.408714,236.962918 561.073909,237.156218 L554."
 "416,241 L571.3,241 C571.686599,241 572,241.313401 572,241.7 C572,242.086599 571.686599,242.4 571.3,242.4 L554.417,242.4 L561.073909,246.243782 C561.408714,246.437082 561.523427,246.865195 561.330127,247.2 C561.136827,247.534805 560.708714,247.649517 "
-"560.373909,247.456218 L553.4,243.43 L553.4,248.3 C553.4,248.686599 553.086599,249 552.7,249 C552.313401,249 552,248.686599 552,248.3 L552,235.7 C552,235.313401 552.313401,235 552.7,235 Z\" id=\"arrow_left_highlighted\"></path>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"560.373909,247.456218 L553.4,243.43 L553.4,248.3 C553.4,248.686599 553.086599,249 552.7,249 C552.313401,249 552,248.686599 552,248.3 L552,235.7 C552,235.313401 552.313401,235 552.7,235 Z\" id=\"arrow_left_highlighted\"></path>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* arrow_left_highlighted_svg = (const char*) temp_binary_data_3;
 
 //================== arrow_right.svg ==================
 static const unsigned char temp_binary_data_4[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>arrow_right</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\r\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -220.000000)\" fill=\"#FFFFFF\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_right</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -220.000000)\" fill=\"#FFFFFF\">\n"
 "            <path d=\"M580.7,220 C581.086599,220 581.4,220.313401 581.4,220.7 L581.4,224.969 L588.373909,220.943782 C588.708714,220.750483 589.136827,220.865195 589.330127,221.2 C589.523427,221.534805 589.408714,221.962918 589.073909,222.156218 L582."
 "416,226 L599.3,226 C599.686599,226 600,226.313401 600,226.7 C600,227.086599 599.686599,227.4 599.3,227.4 L582.417,227.4 L589.073909,231.243782 C589.408714,231.437082 589.523427,231.865195 589.330127,232.2 C589.136827,232.534805 588.708714,232.649517 "
 "588.373909,232.456218 L581.4,228.43 L581.4,233.3 C581.4,233.686599 581.086599,234 580.7,234 C580.313401,234 580,233.686599 580,233.3 L580,220.7 C580,220.313401 580.313401,220 580.7,220 Z\" id=\"arrow_right\" transform=\"translate(590.000000, 227.0000"
-"00) scale(-1, 1) translate(-590.000000, -227.000000) \"></path>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"00) scale(-1, 1) translate(-590.000000, -227.000000) \"></path>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* arrow_right_svg = (const char*) temp_binary_data_4;
 
 //================== arrow_right_highlighted.svg ==================
 static const unsigned char temp_binary_data_5[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>arrow_right_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\r\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -235.000000)\" fill=\"#FFFFFF\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>arrow_right_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
 "            <path d=\"M580.7,235 C581.086599,235 581.4,235.313401 581.4,235.7 L581.4,239.969 L588.373909,235.943782 C588.708714,235.750483 589.136827,235.865195 589.330127,236.2 C589.523427,236.534805 589.408714,236.962918 589.073909,237.156218 L582."
 "416,241 L599.3,241 C599.686599,241 600,241.313401 600,241.7 C600,242.086599 599.686599,242.4 599.3,242.4 L582.417,242.4 L589.073909,246.243782 C589.408714,246.437082 589.523427,246.865195 589.330127,247.2 C589.136827,247.534805 588.708714,247.649517 "
 "588.373909,247.456218 L581.4,243.43 L581.4,248.3 C581.4,248.686599 581.086599,249 580.7,249 C580.313401,249 580,248.686599 580,248.3 L580,235.7 C580,235.313401 580.313401,235 580.7,235 Z\" id=\"arrow_right_highlighted\" transform=\"translate(590.0000"
-"00, 242.000000) scale(-1, 1) translate(-590.000000, -242.000000) \"></path>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"00, 242.000000) scale(-1, 1) translate(-590.000000, -242.000000) \"></path>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* arrow_right_highlighted_svg = (const char*) temp_binary_data_5;
 
 //================== playlist_add.svg ==================
 static const unsigned char temp_binary_data_6[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_add</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1255.000000, -915.000000)\">\r\n"
-"            <g id=\"playlist_add\" transform=\"translate(1255.000000, 915.000000)\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1255.000000, -915.000000)\">\n"
+"            <g id=\"playlist_add\" transform=\"translate(1255.000000, 915.000000)\">\n"
 "                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
 "4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
 "0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
-"\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\r\n"
+"\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
 "22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_add_svg = (const char*) temp_binary_data_6;
 
 //================== playlist_add_file.svg ==================
 static const unsigned char temp_binary_data_7[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_add_file</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1490.000000, -914.000000)\">\r\n"
-"            <g id=\"playlist_add_file\" transform=\"translate(1490.000000, 914.000000)\">\r\n"
-"                <g id=\"Group\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_file</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1490.000000, -914.000000)\">\n"
+"            <g id=\"playlist_add_file\" transform=\"translate(1490.000000, 914.000000)\">\n"
+"                <g id=\"Group\">\n"
 "                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
 "98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
 "02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,8.5 L6,8.5 C6.69035594,8.5 7.31535594,8.22017797 7.76776695,7.76776695 C8.22017797,7.31535594 8.5,6.69035594 8.5,6 L8.5,6 L8.5,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\""
-"#FFFFFF\"></path>\r\n"
+"#FFFFFF\"></path>\n"
 "                    <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477"
 "153,22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22"
-" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\r\n"
-"                </g>\r\n"
-"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                </g>\n"
+"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_add_file_svg = (const char*) temp_binary_data_7;
 
 //================== playlist_add_file_highlighted.svg ==================
 static const unsigned char temp_binary_data_8[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_add_file_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1490.000000, -872.000000)\">\r\n"
-"            <g id=\"playlist_add_file_highlighted\" transform=\"translate(1490.000000, 872.000000)\">\r\n"
-"                <g id=\"Group\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_file_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1490.000000, -872.000000)\">\n"
+"            <g id=\"playlist_add_file_highlighted\" transform=\"translate(1490.000000, 872.000000)\">\n"
+"                <g id=\"Group\">\n"
 "                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
 "98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
 "02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,8.5 L6,8.5 C6.69035594,8.5 7.31535594,8.22017797 7.76776695,7.76776695 C8.22017797,7.31535594 8.5,6.69035594 8.5,6 L8.5,6 L8.5,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\""
-"#FFFFFF\"></path>\r\n"
+"#FFFFFF\"></path>\n"
 "                    <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477"
 "153,22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22"
-" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\r\n"
-"                </g>\r\n"
-"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                </g>\n"
+"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_add_file_highlighted_svg = (const char*) temp_binary_data_8;
 
 //================== playlist_add_highlighted.svg ==================
 static const unsigned char temp_binary_data_9[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_add_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1255.000000, -873.000000)\">\r\n"
-"            <g id=\"playlist_add_highlighted\" transform=\"translate(1255.000000, 873.000000)\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1255.000000, -873.000000)\">\n"
+"            <g id=\"playlist_add_highlighted\" transform=\"translate(1255.000000, 873.000000)\">\n"
 "                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
 "4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
 "0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
-"\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\r\n"
+"\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
 "22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_add_highlighted_svg = (const char*) temp_binary_data_9;
 
 //================== playlist_add_playing.svg ==================
 static const unsigned char temp_binary_data_10[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_add_playing</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1449.000000, -915.000000)\">\r\n"
-"            <g id=\"playlist_add_playing\" transform=\"translate(1449.000000, 915.000000)\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_playing</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1449.000000, -915.000000)\">\n"
+"            <g id=\"playlist_add_playing\" transform=\"translate(1449.000000, 915.000000)\">\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
 "22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\r\n"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
 "                <path d=\"M12,0.5 C15.1756373,0.5 18.0506373,1.78718134 20.131728,3.86827202 C22.2128187,5.94936269 23.5,8.82436269 23.5,12 C23.5,13.2129308 23.3123225,14.3820286 22.9640482,15.4794775 C21.780564,14.8540406 20.4316401,14.5 19,14.5 C16"
 ".6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C7.77173607,23.0505786 5.33601003,21.7331954 3.55282854,19.8038307 C1.65792344,17.7535834 0.5,15.0120085 0.5,12 C0.5,8.82436269 1.78718134,5.9493"
-"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\r\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_add_playing_svg = (const char*) temp_binary_data_10;
 
 //================== playlist_add_playing_highlighted.svg ==================
 static const unsigned char temp_binary_data_11[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_add_playing_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1449.000000, -873.000000)\">\r\n"
-"            <g id=\"playlist_add_playing_highlighted\" transform=\"translate(1449.000000, 873.000000)\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_add_playing_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1449.000000, -873.000000)\">\n"
+"            <g id=\"playlist_add_playing_highlighted\" transform=\"translate(1449.000000, 873.000000)\">\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
 "22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\r\n"
+",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
 "                <path d=\"M12,0.5 C15.1756373,0.5 18.0506373,1.78718134 20.131728,3.86827202 C22.2128187,5.94936269 23.5,8.82436269 23.5,12 C23.5,13.2129308 23.3123225,14.3820286 22.9640482,15.4794775 C21.780564,14.8540406 20.4316401,14.5 19,14.5 C16"
 ".6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C7.77173607,23.0505786 5.33601003,21.7331954 3.55282854,19.8038307 C1.65792344,17.7535834 0.5,15.0120085 0.5,12 C0.5,8.82436269 1.78718134,5.9493"
-"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\r\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_add_playing_highlighted_svg = (const char*) temp_binary_data_11;
 
 //================== playlist_edit.svg ==================
 static const unsigned char temp_binary_data_12[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_edit</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1292.000000, -915.000000)\">\r\n"
-"            <g id=\"playlist_edit\" transform=\"translate(1292.000000, 915.000000)\">\r\n"
-"                <g id=\"Group-5\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_edit</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1292.000000, -915.000000)\">\n"
+"            <g id=\"playlist_edit\" transform=\"translate(1292.000000, 915.000000)\">\n"
+"                <g id=\"Group-5\">\n"
 "                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
 "98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
 "02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\r\n"
-"                </g>\r\n"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.30"
 "71885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3"
 "637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z\" id=\"Combined-Shape\" fill-opacity=\"0"
-".8\" fill=\"#FFFFFF\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+".8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_edit_svg = (const char*) temp_binary_data_12;
 
 //================== playlist_edit_highlighted.svg ==================
 static const unsigned char temp_binary_data_13[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_edit_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1292.000000, -873.000000)\">\r\n"
-"            <g id=\"playlist_edit_highlighted\" transform=\"translate(1292.000000, 873.000000)\">\r\n"
-"                <g id=\"Group-5\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_edit_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1292.000000, -873.000000)\">\n"
+"            <g id=\"playlist_edit_highlighted\" transform=\"translate(1292.000000, 873.000000)\">\n"
+"                <g id=\"Group-5\">\n"
 "                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
 "98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
 "02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\r\n"
-"                </g>\r\n"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.30"
 "71885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3"
 "637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z\" id=\"Combined-Shape\" fill-opacity=\"0"
-".8\" fill=\"#FFFFFF\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+".8\" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_edit_highlighted_svg = (const char*) temp_binary_data_13;
 
 //================== playlist_remove.svg ==================
 static const unsigned char temp_binary_data_14[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_remove</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1329.000000, -915.000000)\">\r\n"
-"            <g id=\"playlist_remove\" transform=\"translate(1329.000000, 915.000000)\">\r\n"
-"                <g id=\"Group-5\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_remove</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
+"        <g id=\"A6\" transform=\"translate(-1329.000000, -915.000000)\">\n"
+"            <g id=\"playlist_remove\" transform=\"translate(1329.000000, 915.000000)\">\n"
+"                <g id=\"Group-5\">\n"
 "                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
 "98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
 "02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\r\n"
-"                </g>\r\n"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M17.5857864,20.1715729 C17.1952621,19.7810486 16.5620972,19.7810486 16.1715"
 "729,20.1715729 C15.7810486,20.5620972 15.7810486,21.1952621 16.1715729,21.5857864 L16.1715729,21.5857864 L17.5857864,23 L16.1715729,24.4142136 C15.7810486,24.8047379 15.7810486,25.4379028 16.1715729,25.8284271 C16.5620972,26.2189514 17.1952621,26.218"
 "9514 17.5857864,25.8284271 L17.5857864,25.8284271 L19,24.4142136 L20.4142136,25.8284271 C20.8047379,26.2189514 21.4379028,26.2189514 21.8284271,25.8284271 C22.2189514,25.4379028 22.2189514,24.8047379 21.8284271,24.4142136 L21.8284271,24.4142136 L20.4"
 "142136,23 L21.8284271,21.5857864 C22.2189514,21.1952621 22.2189514,20.5620972 21.8284271,20.1715729 C21.4379028,19.7810486 20.8047379,19.7810486 20.4142136,20.1715729 L20.4142136,20.1715729 L19,21.5857864 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\""
-" fill=\"#FFFFFF\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_remove_svg = (const char*) temp_binary_data_14;
 
 //================== playlist_remove_highlighted.svg ==================
 static const unsigned char temp_binary_data_15[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n"
-"    <title>playlist_remove_highlighted</title>\r\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\r\n"
-"        <g id=\"A6\" transform=\"translate(-1329.000000, -873.000000)\">\r\n"
-"            <g id=\"playlist_remove_highlighted\" transform=\"translate(1329.000000, 873.000000)\">\r\n"
-"                <g id=\"Group-5\">\r\n"
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>playlist_remove_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1329.000000, -873.000000)\">\n"
+"            <g id=\"playlist_remove_highlighted\" transform=\"translate(1329.000000, 873.000000)\">\n"
+"                <g id=\"Group-5\">\n"
 "                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
 "98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
 "02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\r\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\r\n"
-"                </g>\r\n"
+"ath>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
+"                </g>\n"
 "                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M17.5857864,20.1715729 C17.1952621,19.7810486 16.5620972,19.7810486 16.1715"
 "729,20.1715729 C15.7810486,20.5620972 15.7810486,21.1952621 16.1715729,21.5857864 L16.1715729,21.5857864 L17.5857864,23 L16.1715729,24.4142136 C15.7810486,24.8047379 15.7810486,25.4379028 16.1715729,25.8284271 C16.5620972,26.2189514 17.1952621,26.218"
 "9514 17.5857864,25.8284271 L17.5857864,25.8284271 L19,24.4142136 L20.4142136,25.8284271 C20.8047379,26.2189514 21.4379028,26.2189514 21.8284271,25.8284271 C22.2189514,25.4379028 22.2189514,24.8047379 21.8284271,24.4142136 L21.8284271,24.4142136 L20.4"
 "142136,23 L21.8284271,21.5857864 C22.2189514,21.1952621 22.2189514,20.5620972 21.8284271,20.1715729 C21.4379028,19.7810486 20.8047379,19.7810486 20.4142136,20.1715729 L20.4142136,20.1715729 L19,21.5857864 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\""
-" fill=\"#FFFFFF\"></path>\r\n"
-"            </g>\r\n"
-"        </g>\r\n"
-"    </g>\r\n"
+" fill=\"#FFFFFF\"></path>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
 "</svg>";
 
 const char* playlist_remove_highlighted_svg = (const char*) temp_binary_data_15;
 
 //================== en-US.txt ==================
 static const unsigned char temp_binary_data_16[] =
-"language: English\r\n"
-"countries: us\r\n"
-"\r\n"
-"\"about_melissa\" = \"About Melissa\"\r\n"
-"\"preferences\" = \"Preferences\"\r\n"
-"\"enter_loop_name\" = \"Enter the name of this loop\"\r\n"
-"\"enter_playlist_name\" = \"Enter the name of the playlist\"\r\n"
-"\"are_you_sure\" = \"Are you sure?\"\r\n"
-"\"choose_file_playlist\" = \"Select a file to add to this playlist\"\r\n"
-"\"add_practice_list\" = \"Add to this practice list\"\r\n"
-"\"remove\" = \"Remove\"\r\n"
-"\"reveal\" = \"Reveal\"\r\n"
-"\"overwrite\" = \"Overwrite\"\r\n"
-"\"detect_multifiles_drop\" = \" Multiple files were dropped. Do you want to make a playlist with these files?\"\r\n"
-"\"cancel\" = \"Cancel\"\r\n"
-"\"there_is_update\" = \"There is an update. Do you want to check it?\"\r\n"
-"\"there_is_no_update\" = \"You are using the latest version.\"\r\n"
-"\"update\" = \"Update\"\r\n"
-"\"check_update\" = \"Check for updates\"\r\n"
-"\"failed_to_get_update\" = \"Failed to get updates\"\r\n"
-"\"tooltip_loop_start_set\" = \"Set the loop start position\"\r\n"
-"\"tooltip_loop_end_set\" = \"Set the loop end position\"\r\n"
-"\"tooltip_loop_start_dec\" = \"Loop start position : -0.1 sec (shift key: -1 sec)\"\r\n"
-"\"tooltip_loop_start_inc\" = \"Loop start position : +0.1 sec (shift key: +1 sec)\"\r\n"
-"\"tooltip_loop_end_dec\" = \"Loop end position : -0.1 sec (shift key: -1 sec)\"\r\n"
-"\"tooltip_loop_end_inc\" = \"Loop end position : +0.1 sec (shift key: +1 sec)\"\r\n"
-"\"tooltip_loop_reset\" = \"Reset loop range\"\r\n"
-"\"tooltip_pitch_dec\" = \"Pitch : -1 semitone\"\r\n"
-"\"tooltip_pitch_inc\" = \"Pitch : +1 semitone\"\r\n"
-"\"tooltip_speed_dec\" = \"Playback speed : -1 % (shift key: -10 %)\"\r\n"
-"\"tooltip_speed_inc\" = \"Playback speed : +1 % (shift key: +10 %)\"\r\n"
-"\"tooltip_new_playlist\" = \"Create a new playlist\"\r\n"
-"\"tooltip_remove_playlist\" = \"Remove this playlist\"\r\n"
-"\"tooltip_addto_playlist\" = \"Add a file to this playlist\"\r\n"
-"\"create_playlist\" = \"Create a new playlist\"\r\n"
-"\"rename_playlist\" = \"Rename this playlist\"\r\n"
-"\"remove_playlist\" = \"Remove this playlist\"\r\n"
-"\"addtolist_select\" = \"Choose a file\"\r\n"
-"\"addtolist_current\" = \"Add current file\"\r\n"
-"\"update_available\" = \"Update available\"\r\n"
-"\"volume\" = \"Volume\"\r\n"
-"\"ok\" = \"OK\"\r\n"
-"\"cancel\" = \"Cancel\"\r\n"
-"\"check\" = \"Check\"\r\n"
-"\"open_manual\" = \"Manual\"\r\n"
-"\"first_launch\" = \"Thank you for downloading Melissa!\\nFirst of all, let's open a song.\"\r\n"
-"\"load_failed\" = \"Failed to load this file.\"\r\n"
-"\r\n"
-"\"metronome_switch\" = \"Metronome ON/OFF\"\r\n"
-"\"metronome_bpm_edit\" = \"Set Metronome BPM \"\r\n"
-"\"metronome_bpm_dec\" = \"Metronome BPM : -1\"\r\n"
-"\"metronome_bpm_inc\" = \"Metronome BPM : +1\"\r\n"
-"\"metronome_accent_position_set\" = \"Set the metronome accent position to the current playback position.\"\r\n"
-"\"metronome_accent_position_dec\" = \"Metronome accent position : -0.1 sec\"\r\n"
-"\"metronome_accent_position_inc\" = \"Metronome accent position : +0.1 sec\"\r\n"
-"\"metronome_accent_dec\" = \"Metronome accent : -1\"\r\n"
-"\"metronome_accent_inc\" = \"Metronome accent : +1\"\r\n"
-"\"bpm_setting\" = \"BPM settings\"\r\n"
-"\"Correct with the playback speed.\" = \"Correct with the playback speed.\"\r\n"
-"\"eq_switch\" = \"Equalizer ON/OFF\"\r\n"
-"\"eq_freq\" = \"Equalizer : Frequency\"\r\n"
-"\"eq_gain\" = \"Equalizer : Gain\"\r\n"
-"\"eq_q\" = \"Equalizer : Q\"\r\n"
-"\"output_mode\" = \"Output mode\"\r\n"
-"\"volume_music\" = \"Music volume\"\r\n"
-"\"volume_balance\" = \"Music/Metronome volume balance\"\r\n"
-"\"volume_metronome\" = \"Metronome volume\"\r\n"
-"\"add_marker\" = \"Add marker\"\r\n";
+"language: English\n"
+"countries: us\n"
+"\n"
+"\"about_melissa\" = \"About Melissa\"\n"
+"\"preferences\" = \"Preferences\"\n"
+"\"enter_loop_name\" = \"Enter the name of this loop\"\n"
+"\"enter_playlist_name\" = \"Enter the name of the playlist\"\n"
+"\"are_you_sure\" = \"Are you sure?\"\n"
+"\"choose_file_playlist\" = \"Select a file to add to this playlist\"\n"
+"\"add_practice_list\" = \"Add to this practice list\"\n"
+"\"remove\" = \"Remove\"\n"
+"\"reveal\" = \"Reveal\"\n"
+"\"overwrite\" = \"Overwrite\"\n"
+"\"detect_multifiles_drop\" = \" Multiple files were dropped. Do you want to make a playlist with these files?\"\n"
+"\"cancel\" = \"Cancel\"\n"
+"\"there_is_update\" = \"There is an update. Do you want to check it?\"\n"
+"\"there_is_no_update\" = \"You are using the latest version.\"\n"
+"\"update\" = \"Update\"\n"
+"\"check_update\" = \"Check for updates\"\n"
+"\"failed_to_get_update\" = \"Failed to get updates\"\n"
+"\"tooltip_loop_start_set\" = \"Set the loop start position\"\n"
+"\"tooltip_loop_end_set\" = \"Set the loop end position\"\n"
+"\"tooltip_loop_start_dec\" = \"Loop start position : -0.1 sec (shift key: -1 sec)\"\n"
+"\"tooltip_loop_start_inc\" = \"Loop start position : +0.1 sec (shift key: +1 sec)\"\n"
+"\"tooltip_loop_end_dec\" = \"Loop end position : -0.1 sec (shift key: -1 sec)\"\n"
+"\"tooltip_loop_end_inc\" = \"Loop end position : +0.1 sec (shift key: +1 sec)\"\n"
+"\"tooltip_loop_reset\" = \"Reset loop range\"\n"
+"\"tooltip_pitch_dec\" = \"Pitch : -1 semitone\"\n"
+"\"tooltip_pitch_inc\" = \"Pitch : +1 semitone\"\n"
+"\"tooltip_speed_dec\" = \"Playback speed : -1 % (shift key: -10 %)\"\n"
+"\"tooltip_speed_inc\" = \"Playback speed : +1 % (shift key: +10 %)\"\n"
+"\"tooltip_new_playlist\" = \"Create a new playlist\"\n"
+"\"tooltip_remove_playlist\" = \"Remove this playlist\"\n"
+"\"tooltip_addto_playlist\" = \"Add a file to this playlist\"\n"
+"\"create_playlist\" = \"Create a new playlist\"\n"
+"\"rename_playlist\" = \"Rename this playlist\"\n"
+"\"remove_playlist\" = \"Remove this playlist\"\n"
+"\"addtolist_select\" = \"Choose a file\"\n"
+"\"addtolist_current\" = \"Add current file\"\n"
+"\"update_available\" = \"Update available\"\n"
+"\"volume\" = \"Volume\"\n"
+"\"ok\" = \"OK\"\n"
+"\"cancel\" = \"Cancel\"\n"
+"\"check\" = \"Check\"\n"
+"\"open_manual\" = \"Manual\"\n"
+"\"first_launch\" = \"Thank you for downloading Melissa!\\nFirst of all, let's open a song.\"\n"
+"\"load_failed\" = \"Failed to load this file.\"\n"
+"\n"
+"\"metronome_switch\" = \"Metronome ON/OFF\"\n"
+"\"metronome_bpm_edit\" = \"Set Metronome BPM \"\n"
+"\"metronome_bpm_dec\" = \"Metronome BPM : -1\"\n"
+"\"metronome_bpm_inc\" = \"Metronome BPM : +1\"\n"
+"\"metronome_accent_position_set\" = \"Set the metronome accent position to the current playback position.\"\n"
+"\"metronome_accent_position_dec\" = \"Metronome accent position : -0.1 sec\"\n"
+"\"metronome_accent_position_inc\" = \"Metronome accent position : +0.1 sec\"\n"
+"\"metronome_accent_dec\" = \"Metronome accent : -1\"\n"
+"\"metronome_accent_inc\" = \"Metronome accent : +1\"\n"
+"\"bpm_setting\" = \"BPM settings\"\n"
+"\"Correct with the playback speed.\" = \"Correct with the playback speed.\"\n"
+"\"eq_switch\" = \"Equalizer ON/OFF\"\n"
+"\"eq_freq\" = \"Equalizer : Frequency\"\n"
+"\"eq_gain\" = \"Equalizer : Gain\"\n"
+"\"eq_q\" = \"Equalizer : Q\"\n"
+"\"output_mode\" = \"Output mode\"\n"
+"\"volume_music\" = \"Music volume\"\n"
+"\"volume_balance\" = \"Music/Metronome volume balance\"\n"
+"\"volume_metronome\" = \"Metronome volume\"\n"
+"\"add_marker\" = \"Add marker\"\n";
 
 const char* enUS_txt = (const char*) temp_binary_data_16;
 
 //================== ja-JP.txt ==================
 static const unsigned char temp_binary_data_17[] =
-{ 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,13,10,99,111,117,110,116,114,105,101,115,58,32,106,97,13,10,13,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,
-129,132,227,129,166,34,13,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,13,10,34,101,110,116,101,114,95,108,111,111,112,95,110,97,109,101,34,32,61,32,34,227,131,171,227,131,188,227,131,151,229,140,186,233,
-150,147,227,129,174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,13,10,34,101,110,116,101,114,95,112,108,97,121,108,105,115,116,95,110,97,109,101,34,32,61,32,34,
-112,108,97,121,108,105,115,116,227,129,174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,13,10,34,97,114,101,95,121,111,117,95,115,117,114,101,34,32,61,32,34,227,
-130,136,227,130,141,227,129,151,227,129,132,227,129,167,227,129,153,227,129,139,63,34,13,10,34,99,104,111,111,115,101,95,102,105,108,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,129,171,232,191,189,229,138,160,
-227,129,153,227,130,139,227,131,149,227,130,161,227,130,164,227,131,171,227,130,146,233,129,184,230,138,158,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,13,10,34,97,100,100,95,112,114,97,99,116,105,99,101,95,108,105,115,
-116,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,227,129,171,232,191,189,229,138,160,34,13,10,34,114,101,109,111,118,101,34,32,61,32,34,229,137,138,233,153,164,34,13,10,34,114,101,118,101,97,108,34,32,61,32,34,227,131,149,
-227,130,161,227,130,164,227,131,171,227,129,174,229,160,180,230,137,128,227,130,146,232,161,168,231,164,186,34,13,10,34,111,118,101,114,119,114,105,116,101,34,32,61,32,34,228,184,138,230,155,184,227,129,141,34,13,10,34,100,101,116,101,99,116,95,109,117,
-108,116,105,102,105,108,101,115,95,100,114,111,112,34,32,61,32,34,232,164,135,230,149,176,227,129,174,227,131,149,227,130,161,227,130,164,227,131,171,227,129,140,227,131,137,227,131,173,227,131,131,227,131,151,227,129,149,227,130,140,227,129,190,227,
-129,151,227,129,159,227,128,130,227,130,187,227,131,131,227,131,136,227,131,170,227,130,185,227,131,136,227,130,146,228,189,156,227,130,138,227,129,190,227,129,153,227,129,139,63,34,13,10,34,99,97,110,99,101,108,34,32,61,32,34,227,130,173,227,131,163,
-227,131,179,227,130,187,227,131,171,34,13,10,34,116,104,101,114,101,95,105,115,95,117,112,100,97,116,101,34,32,61,32,34,230,150,176,227,129,151,227,129,132,227,131,144,227,131,188,227,130,184,227,131,167,227,131,179,227,129,140,227,131,170,227,131,170,
-227,131,188,227,130,185,227,129,149,227,130,140,227,129,166,227,129,132,227,129,190,227,129,153,227,128,130,92,110,227,130,181,227,130,164,227,131,136,227,129,139,227,130,137,227,131,128,227,130,166,227,131,179,227,131,173,227,131,188,227,131,137,227,
-129,151,227,129,190,227,129,153,227,129,139,239,188,159,34,13,10,34,116,104,101,114,101,95,105,115,95,110,111,95,117,112,100,97,116,101,34,32,61,32,34,230,156,128,230,150,176,227,131,144,227,131,188,227,130,184,227,131,167,227,131,179,227,130,146,229,
-136,169,231,148,168,227,129,151,227,129,166,227,129,132,227,129,190,227,129,153,227,128,130,34,13,10,34,117,112,100,97,116,101,34,32,61,32,34,227,130,162,227,131,131,227,131,151,227,131,135,227,131,188,227,131,136,34,13,10,34,99,104,101,99,107,95,117,
-112,100,97,116,101,34,32,61,32,34,230,156,128,230,150,176,231,137,136,227,130,146,227,131,129,227,130,167,227,131,131,227,130,175,34,13,10,34,102,97,105,108,101,100,95,116,111,95,103,101,116,95,117,112,100,97,116,101,34,32,61,32,34,227,130,162,227,131,
-131,227,131,151,227,131,135,227,131,188,227,131,136,227,129,174,229,143,150,229,190,151,227,129,171,229,164,177,230,149,151,227,129,151,227,129,190,227,129,151,227,129,159,227,128,130,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,
-116,97,114,116,95,115,101,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,130,146,232,168,173,229,174,154,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,115,101,
-116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,227,130,146,232,168,173,229,174,154,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,116,97,114,116,95,100,101,99,34,32,61,32,34,227,
-131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,32,58,32,45,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,107,101,121,58,32,45,49,32,231,167,146,41,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,
-116,97,114,116,95,105,110,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,32,58,32,43,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,107,101,121,58,32,43,49,32,231,167,146,41,34,13,10,34,116,
-111,111,108,116,105,112,95,108,111,111,112,95,115,116,97,114,116,95,114,101,115,101,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,130,146,230,155,178,227,129,174,229,133,136,233,160,173,227,
-129,171,232,168,173,229,174,154,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,100,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,32,58,32,45,48,46,49,32,231,167,
-146,32,40,115,104,105,102,116,32,107,101,121,58,32,45,49,32,231,167,146,41,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,105,110,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,
-231,189,174,32,58,32,43,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,107,101,121,58,32,43,49,32,231,167,146,41,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,114,101,115,101,116,34,32,61,32,34,227,131,171,227,131,
-188,227,131,151,231,181,130,228,186,134,228,189,141,231,189,174,227,130,146,230,155,178,227,129,174,231,181,130,231,171,175,227,129,171,232,168,173,229,174,154,34,13,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,114,101,115,101,116,34,32,61,
-32,34,227,131,171,227,131,188,227,131,151,231,175,132,229,155,178,227,130,146,227,131,170,227,130,187,227,131,131,227,131,136,34,13,10,34,116,111,111,108,116,105,112,95,112,105,116,99,104,95,100,101,99,34,32,61,32,34,233,159,179,231,168,139,32,58,32,
-45,49,32,229,141,138,233,159,179,34,13,10,34,116,111,111,108,116,105,112,95,112,105,116,99,104,95,105,110,99,34,32,61,32,34,233,159,179,231,168,139,32,58,32,43,49,32,229,141,138,233,159,179,34,13,10,34,116,111,111,108,116,105,112,95,115,112,101,101,100,
-95,100,101,99,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,45,49,32,37,32,40,115,104,105,102,116,32,107,101,121,58,32,45,49,48,32,37,41,34,13,10,34,116,111,111,108,116,105,112,95,115,112,101,101,100,95,105,110,99,34,32,61,32,
-34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,43,49,32,37,32,40,115,104,105,102,116,32,107,101,121,58,32,43,49,48,32,37,41,34,13,10,34,116,111,111,108,116,105,112,95,110,101,119,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,
-121,108,105,115,116,227,130,146,228,189,156,230,136,144,34,13,10,34,116,111,111,108,116,105,112,95,114,101,109,111,118,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,130,146,229,137,138,233,153,164,34,13,10,34,
-116,111,111,108,116,105,112,95,97,100,100,116,111,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,129,171,230,155,178,227,130,146,232,191,189,229,138,160,34,13,10,34,99,114,101,97,116,101,95,112,108,97,121,108,105,
-115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,130,146,228,189,156,230,136,144,34,13,10,34,114,101,110,97,109,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,129,174,229,144,141,231,167,176,229,164,137,
-230,155,180,34,13,10,34,114,101,109,111,118,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,129,174,229,137,138,233,153,164,34,13,10,34,97,100,100,116,111,108,105,115,116,95,115,101,108,101,99,116,34,32,61,32,34,
-227,131,149,227,130,161,227,130,164,227,131,171,227,130,146,233,129,184,230,138,158,34,13,10,34,97,100,100,116,111,108,105,115,116,95,99,117,114,114,101,110,116,34,32,61,32,34,231,143,190,229,156,168,229,134,141,231,148,159,227,129,149,227,130,140,227,
-129,166,227,129,132,227,130,139,227,131,149,227,130,161,227,130,164,227,131,171,227,130,146,232,191,189,229,138,160,34,13,10,34,117,112,100,97,116,101,95,97,118,97,105,108,97,98,108,101,34,32,61,32,34,227,130,162,227,131,131,227,131,151,227,131,135,227,
-131,188,227,131,136,227,129,140,227,129,130,227,130,138,227,129,190,227,129,153,34,13,10,34,118,111,108,117,109,101,34,32,61,32,34,233,159,179,233,135,143,34,13,10,34,111,107,34,32,61,32,34,79,75,34,13,10,34,99,97,110,99,101,108,34,32,61,32,34,227,130,
-173,227,131,163,227,131,179,227,130,187,227,131,171,34,13,10,34,99,104,101,99,107,34,32,61,32,34,233,150,139,227,129,143,34,13,10,34,111,112,101,110,95,109,97,110,117,97,108,34,32,61,32,34,227,131,158,227,131,139,227,131,165,227,130,162,227,131,171,227,
-130,146,233,150,139,227,129,143,34,13,10,34,102,105,114,115,116,95,108,97,117,110,99,104,34,32,61,32,34,77,101,108,105,115,115,97,227,130,146,227,131,128,227,130,166,227,131,179,227,131,173,227,131,188,227,131,137,227,129,151,227,129,166,227,129,132,
-227,129,159,227,129,160,227,129,141,227,129,130,227,130,138,227,129,140,227,129,168,227,129,134,227,129,148,227,129,150,227,129,132,227,129,190,227,129,153,227,128,130,92,110,227,129,190,227,129,154,227,129,175,227,129,152,227,130,129,227,129,171,227,
-128,129,230,155,178,227,130,146,233,150,139,227,129,132,227,129,166,227,129,191,227,129,190,227,129,151,227,130,135,227,129,134,239,188,129,34,13,10,34,108,111,97,100,95,102,97,105,108,101,100,34,32,61,32,34,227,131,149,227,130,161,227,130,164,227,131,
-171,227,129,174,232,170,173,227,129,191,232,190,188,227,129,191,227,129,171,229,164,177,230,149,151,227,129,151,227,129,190,227,129,151,227,129,159,227,128,130,34,13,10,34,71,111,32,117,112,32,116,111,32,112,97,114,101,110,116,32,100,105,114,101,99,116,
-111,114,121,34,32,61,32,34,228,184,138,227,129,174,227,131,135,227,130,163,227,131,172,227,130,175,227,131,136,227,131,170,227,129,184,34,13,10,13,10,34,109,101,116,114,111,110,111,109,101,95,115,119,105,116,99,104,34,32,61,32,34,227,131,161,227,131,
-136,227,131,173,227,131,142,227,131,188,227,131,160,32,79,78,47,79,70,70,34,13,10,34,109,101,116,114,111,110,111,109,101,95,98,112,109,95,101,100,105,116,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,
-66,80,77,227,130,146,232,168,173,229,174,154,34,13,10,34,109,101,116,114,111,110,111,109,101,95,98,112,109,95,100,101,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,66,80,77,32,58,32,45,49,34,13,
-10,34,109,101,116,114,111,110,111,109,101,95,98,112,109,95,105,110,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,66,80,77,32,58,32,43,49,34,13,10,34,109,101,116,114,111,110,111,109,101,95,97,99,
-99,101,110,116,95,112,111,115,105,116,105,111,110,95,115,101,116,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,141,231,189,174,227,
-130,146,231,143,190,229,156,168,227,129,174,229,134,141,231,148,159,228,189,141,231,189,174,227,129,171,232,168,173,229,174,154,34,13,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,112,111,115,105,116,105,111,110,95,100,101,99,34,
-32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,141,231,189,174,32,58,32,45,48,46,49,231,167,146,34,13,10,34,109,101,116,114,111,110,111,
-109,101,95,97,99,99,101,110,116,95,112,111,115,105,116,105,111,110,95,105,110,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,141,
-231,189,174,32,58,32,43,48,46,49,231,167,146,34,13,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,100,101,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,
-175,227,130,187,227,131,179,227,131,136,32,58,32,45,49,34,13,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,105,110,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,
-227,130,175,227,130,187,227,131,179,227,131,136,32,58,32,43,49,34,13,10,34,98,112,109,95,115,101,116,116,105,110,103,34,32,61,32,34,66,80,77,227,129,174,232,168,173,229,174,154,34,13,10,34,67,111,114,114,101,99,116,32,119,105,116,104,32,116,104,101,32,
-112,108,97,121,98,97,99,107,32,115,112,101,101,100,46,34,32,61,32,34,227,130,191,227,131,131,227,131,151,227,131,134,227,131,179,227,131,157,227,130,146,230,155,178,227,129,174,229,134,141,231,148,159,233,128,159,229,186,166,227,129,171,229,144,136,227,
-130,143,227,129,155,227,130,139,34,13,10,34,101,113,95,115,119,105,116,99,104,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,79,78,47,79,70,70,34,13,10,34,101,113,95,102,114,101,113,34,32,61,32,34,227,130,164,
-227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,229,145,168,230,179,162,230,149,176,34,13,10,34,101,113,95,103,97,105,110,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,227,130,178,
-227,130,164,227,131,179,34,13,10,34,101,113,95,113,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,81,229,185,133,34,13,10,34,111,117,116,112,117,116,95,109,111,100,101,34,32,61,32,34,229,135,186,229,138,
-155,227,131,162,227,131,188,227,131,137,34,13,10,34,118,111,108,117,109,101,95,109,117,115,105,99,34,32,61,32,34,233,159,179,230,165,189,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,227,131,160,34,13,10,34,118,111,108,117,109,101,95,98,
-97,108,97,110,99,101,34,32,61,32,34,233,159,179,230,165,189,47,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,227,131,160,227,131,144,227,131,169,227,131,179,227,130,
-185,34,13,10,34,118,111,108,117,109,101,95,109,101,116,114,111,110,111,109,101,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,227,131,160,34,13,10,34,
-97,100,100,95,109,97,114,107,101,114,34,32,61,32,34,227,131,158,227,131,188,227,130,171,227,131,188,227,130,146,232,191,189,229,138,160,34,13,10,0,0 };
+{ 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
+227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,111,111,112,95,110,97,109,101,34,32,61,32,34,227,131,171,227,131,188,227,131,151,229,140,186,233,150,147,227,129,
+174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,10,34,101,110,116,101,114,95,112,108,97,121,108,105,115,116,95,110,97,109,101,34,32,61,32,34,112,108,97,121,108,
+105,115,116,227,129,174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,10,34,97,114,101,95,121,111,117,95,115,117,114,101,34,32,61,32,34,227,130,136,227,130,141,227,
+129,151,227,129,132,227,129,167,227,129,153,227,129,139,63,34,10,34,99,104,111,111,115,101,95,102,105,108,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,129,171,232,191,189,229,138,160,227,129,153,227,130,139,
+227,131,149,227,130,161,227,130,164,227,131,171,227,130,146,233,129,184,230,138,158,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,10,34,97,100,100,95,112,114,97,99,116,105,99,101,95,108,105,115,116,34,32,61,32,34,231,183,
+180,231,191,146,227,131,170,227,130,185,227,131,136,227,129,171,232,191,189,229,138,160,34,10,34,114,101,109,111,118,101,34,32,61,32,34,229,137,138,233,153,164,34,10,34,114,101,118,101,97,108,34,32,61,32,34,227,131,149,227,130,161,227,130,164,227,131,
+171,227,129,174,229,160,180,230,137,128,227,130,146,232,161,168,231,164,186,34,10,34,111,118,101,114,119,114,105,116,101,34,32,61,32,34,228,184,138,230,155,184,227,129,141,34,10,34,100,101,116,101,99,116,95,109,117,108,116,105,102,105,108,101,115,95,
+100,114,111,112,34,32,61,32,34,232,164,135,230,149,176,227,129,174,227,131,149,227,130,161,227,130,164,227,131,171,227,129,140,227,131,137,227,131,173,227,131,131,227,131,151,227,129,149,227,130,140,227,129,190,227,129,151,227,129,159,227,128,130,227,
+130,187,227,131,131,227,131,136,227,131,170,227,130,185,227,131,136,227,130,146,228,189,156,227,130,138,227,129,190,227,129,153,227,129,139,63,34,10,34,99,97,110,99,101,108,34,32,61,32,34,227,130,173,227,131,163,227,131,179,227,130,187,227,131,171,34,
+10,34,116,104,101,114,101,95,105,115,95,117,112,100,97,116,101,34,32,61,32,34,230,150,176,227,129,151,227,129,132,227,131,144,227,131,188,227,130,184,227,131,167,227,131,179,227,129,140,227,131,170,227,131,170,227,131,188,227,130,185,227,129,149,227,
+130,140,227,129,166,227,129,132,227,129,190,227,129,153,227,128,130,92,110,227,130,181,227,130,164,227,131,136,227,129,139,227,130,137,227,131,128,227,130,166,227,131,179,227,131,173,227,131,188,227,131,137,227,129,151,227,129,190,227,129,153,227,129,
+139,239,188,159,34,10,34,116,104,101,114,101,95,105,115,95,110,111,95,117,112,100,97,116,101,34,32,61,32,34,230,156,128,230,150,176,227,131,144,227,131,188,227,130,184,227,131,167,227,131,179,227,130,146,229,136,169,231,148,168,227,129,151,227,129,166,
+227,129,132,227,129,190,227,129,153,227,128,130,34,10,34,117,112,100,97,116,101,34,32,61,32,34,227,130,162,227,131,131,227,131,151,227,131,135,227,131,188,227,131,136,34,10,34,99,104,101,99,107,95,117,112,100,97,116,101,34,32,61,32,34,230,156,128,230,
+150,176,231,137,136,227,130,146,227,131,129,227,130,167,227,131,131,227,130,175,34,10,34,102,97,105,108,101,100,95,116,111,95,103,101,116,95,117,112,100,97,116,101,34,32,61,32,34,227,130,162,227,131,131,227,131,151,227,131,135,227,131,188,227,131,136,
+227,129,174,229,143,150,229,190,151,227,129,171,229,164,177,230,149,151,227,129,151,227,129,190,227,129,151,227,129,159,227,128,130,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,116,97,114,116,95,115,101,116,34,32,61,32,34,227,131,171,
+227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,130,146,232,168,173,229,174,154,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,115,101,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,
+130,231,171,175,228,189,141,231,189,174,227,130,146,232,168,173,229,174,154,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,116,97,114,116,95,100,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,
+141,231,189,174,32,58,32,45,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,107,101,121,58,32,45,49,32,231,167,146,41,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,116,97,114,116,95,105,110,99,34,32,61,32,34,227,131,171,227,131,
+188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,32,58,32,43,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,107,101,121,58,32,43,49,32,231,167,146,41,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,115,116,97,114,116,95,
+114,101,115,101,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,130,146,230,155,178,227,129,174,229,133,136,233,160,173,227,129,171,232,168,173,229,174,154,34,10,34,116,111,111,108,116,105,112,
+95,108,111,111,112,95,101,110,100,95,100,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,32,58,32,45,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,107,101,121,58,32,45,49,32,231,167,146,
+41,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,105,110,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,32,58,32,43,48,46,49,32,231,167,146,32,40,115,104,105,102,116,32,
+107,101,121,58,32,43,49,32,231,167,146,41,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,101,110,100,95,114,101,115,101,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,228,186,134,228,189,141,231,189,174,227,130,146,230,
+155,178,227,129,174,231,181,130,231,171,175,227,129,171,232,168,173,229,174,154,34,10,34,116,111,111,108,116,105,112,95,108,111,111,112,95,114,101,115,101,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,175,132,229,155,178,227,130,146,227,
+131,170,227,130,187,227,131,131,227,131,136,34,10,34,116,111,111,108,116,105,112,95,112,105,116,99,104,95,100,101,99,34,32,61,32,34,233,159,179,231,168,139,32,58,32,45,49,32,229,141,138,233,159,179,34,10,34,116,111,111,108,116,105,112,95,112,105,116,
+99,104,95,105,110,99,34,32,61,32,34,233,159,179,231,168,139,32,58,32,43,49,32,229,141,138,233,159,179,34,10,34,116,111,111,108,116,105,112,95,115,112,101,101,100,95,100,101,99,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,45,
+49,32,37,32,40,115,104,105,102,116,32,107,101,121,58,32,45,49,48,32,37,41,34,10,34,116,111,111,108,116,105,112,95,115,112,101,101,100,95,105,110,99,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,43,49,32,37,32,40,115,104,105,
+102,116,32,107,101,121,58,32,43,49,48,32,37,41,34,10,34,116,111,111,108,116,105,112,95,110,101,119,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,130,146,228,189,156,230,136,144,34,10,34,116,111,111,108,116,105,112,
+95,114,101,109,111,118,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,130,146,229,137,138,233,153,164,34,10,34,116,111,111,108,116,105,112,95,97,100,100,116,111,95,112,108,97,121,108,105,115,116,34,32,61,32,34,
+112,108,97,121,108,105,115,116,227,129,171,230,155,178,227,130,146,232,191,189,229,138,160,34,10,34,99,114,101,97,116,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,130,146,228,189,156,230,136,144,34,10,34,114,
+101,110,97,109,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,121,108,105,115,116,227,129,174,229,144,141,231,167,176,229,164,137,230,155,180,34,10,34,114,101,109,111,118,101,95,112,108,97,121,108,105,115,116,34,32,61,32,34,112,108,97,
+121,108,105,115,116,227,129,174,229,137,138,233,153,164,34,10,34,97,100,100,116,111,108,105,115,116,95,115,101,108,101,99,116,34,32,61,32,34,227,131,149,227,130,161,227,130,164,227,131,171,227,130,146,233,129,184,230,138,158,34,10,34,97,100,100,116,111,
+108,105,115,116,95,99,117,114,114,101,110,116,34,32,61,32,34,231,143,190,229,156,168,229,134,141,231,148,159,227,129,149,227,130,140,227,129,166,227,129,132,227,130,139,227,131,149,227,130,161,227,130,164,227,131,171,227,130,146,232,191,189,229,138,160,
+34,10,34,117,112,100,97,116,101,95,97,118,97,105,108,97,98,108,101,34,32,61,32,34,227,130,162,227,131,131,227,131,151,227,131,135,227,131,188,227,131,136,227,129,140,227,129,130,227,130,138,227,129,190,227,129,153,34,10,34,118,111,108,117,109,101,34,
+32,61,32,34,233,159,179,233,135,143,34,10,34,111,107,34,32,61,32,34,79,75,34,10,34,99,97,110,99,101,108,34,32,61,32,34,227,130,173,227,131,163,227,131,179,227,130,187,227,131,171,34,10,34,99,104,101,99,107,34,32,61,32,34,233,150,139,227,129,143,34,10,
+34,111,112,101,110,95,109,97,110,117,97,108,34,32,61,32,34,227,131,158,227,131,139,227,131,165,227,130,162,227,131,171,227,130,146,233,150,139,227,129,143,34,10,34,102,105,114,115,116,95,108,97,117,110,99,104,34,32,61,32,34,77,101,108,105,115,115,97,
+227,130,146,227,131,128,227,130,166,227,131,179,227,131,173,227,131,188,227,131,137,227,129,151,227,129,166,227,129,132,227,129,159,227,129,160,227,129,141,227,129,130,227,130,138,227,129,140,227,129,168,227,129,134,227,129,148,227,129,150,227,129,132,
+227,129,190,227,129,153,227,128,130,92,110,227,129,190,227,129,154,227,129,175,227,129,152,227,130,129,227,129,171,227,128,129,230,155,178,227,130,146,233,150,139,227,129,132,227,129,166,227,129,191,227,129,190,227,129,151,227,130,135,227,129,134,239,
+188,129,34,10,34,108,111,97,100,95,102,97,105,108,101,100,34,32,61,32,34,227,131,149,227,130,161,227,130,164,227,131,171,227,129,174,232,170,173,227,129,191,232,190,188,227,129,191,227,129,171,229,164,177,230,149,151,227,129,151,227,129,190,227,129,151,
+227,129,159,227,128,130,34,10,34,71,111,32,117,112,32,116,111,32,112,97,114,101,110,116,32,100,105,114,101,99,116,111,114,121,34,32,61,32,34,228,184,138,227,129,174,227,131,135,227,130,163,227,131,172,227,130,175,227,131,136,227,131,170,227,129,184,34,
+10,10,34,109,101,116,114,111,110,111,109,101,95,115,119,105,116,99,104,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,32,79,78,47,79,70,70,34,10,34,109,101,116,114,111,110,111,109,101,95,98,112,109,95,101,100,105,
+116,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,66,80,77,227,130,146,232,168,173,229,174,154,34,10,34,109,101,116,114,111,110,111,109,101,95,98,112,109,95,100,101,99,34,32,61,32,34,227,131,161,227,
+131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,66,80,77,32,58,32,45,49,34,10,34,109,101,116,114,111,110,111,109,101,95,98,112,109,95,105,110,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,
+227,129,174,66,80,77,32,58,32,43,49,34,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,112,111,115,105,116,105,111,110,95,115,101,116,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,
+174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,141,231,189,174,227,130,146,231,143,190,229,156,168,227,129,174,229,134,141,231,148,159,228,189,141,231,189,174,227,129,171,232,168,173,229,174,154,34,10,34,109,101,116,114,111,110,
+111,109,101,95,97,99,99,101,110,116,95,112,111,115,105,116,105,111,110,95,100,101,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,
+141,231,189,174,32,58,32,45,48,46,49,231,167,146,34,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,112,111,115,105,116,105,111,110,95,105,110,99,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,
+160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,141,231,189,174,32,58,32,43,48,46,49,231,167,146,34,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,100,101,99,34,32,61,32,34,227,131,161,227,131,
+136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,32,58,32,45,49,34,10,34,109,101,116,114,111,110,111,109,101,95,97,99,99,101,110,116,95,105,110,99,34,32,61,32,34,227,131,161,227,
+131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,32,58,32,43,49,34,10,34,98,112,109,95,115,101,116,116,105,110,103,34,32,61,32,34,66,80,77,227,129,174,232,168,173,229,174,
+154,34,10,34,67,111,114,114,101,99,116,32,119,105,116,104,32,116,104,101,32,112,108,97,121,98,97,99,107,32,115,112,101,101,100,46,34,32,61,32,34,227,130,191,227,131,131,227,131,151,227,131,134,227,131,179,227,131,157,227,130,146,230,155,178,227,129,174,
+229,134,141,231,148,159,233,128,159,229,186,166,227,129,171,229,144,136,227,130,143,227,129,155,227,130,139,34,10,34,101,113,95,115,119,105,116,99,104,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,79,78,47,
+79,70,70,34,10,34,101,113,95,102,114,101,113,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,229,145,168,230,179,162,230,149,176,34,10,34,101,113,95,103,97,105,110,34,32,61,32,34,227,130,164,227,130,179,
+227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,227,130,178,227,130,164,227,131,179,34,10,34,101,113,95,113,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,81,229,185,133,34,10,34,111,117,116,112,
+117,116,95,109,111,100,101,34,32,61,32,34,229,135,186,229,138,155,227,131,162,227,131,188,227,131,137,34,10,34,118,111,108,117,109,101,95,109,117,115,105,99,34,32,61,32,34,233,159,179,230,165,189,227,129,174,227,131,156,227,131,170,227,131,165,227,131,
+188,227,131,160,34,10,34,118,111,108,117,109,101,95,98,97,108,97,110,99,101,34,32,61,32,34,233,159,179,230,165,189,47,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,
+227,131,160,227,131,144,227,131,169,227,131,179,227,130,185,34,10,34,118,111,108,117,109,101,95,109,101,116,114,111,110,111,109,101,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,
+170,227,131,165,227,131,188,227,131,160,34,10,34,97,100,100,95,109,97,114,107,101,114,34,32,61,32,34,227,131,158,227,131,188,227,130,171,227,131,188,227,130,146,232,191,189,229,138,160,34,10,0,0 };
 
 const char* jaJP_txt = (const char*) temp_binary_data_17;
 
@@ -2279,24 +2278,24 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
-        case 0xbb8f2dc6:  numBytes = 1116; return add_svg;
-        case 0xb1fd34da:  numBytes = 1126; return add_highlighted_svg;
-        case 0xc1a269a2:  numBytes = 1165; return arrow_left_svg;
-        case 0x5ea986b6:  numBytes = 1175; return arrow_left_highlighted_svg;
-        case 0xad54f90b:  numBytes = 1263; return arrow_right_svg;
-        case 0x53bb409f:  numBytes = 1273; return arrow_right_highlighted_svg;
-        case 0x6e376459:  numBytes = 2731; return playlist_add_svg;
-        case 0x30ca904c:  numBytes = 2087; return playlist_add_file_svg;
-        case 0x27cafe60:  numBytes = 2089; return playlist_add_file_highlighted_svg;
-        case 0x414126ed:  numBytes = 2733; return playlist_add_highlighted_svg;
-        case 0x58a0d7c8:  numBytes = 2000; return playlist_add_playing_svg;
-        case 0x1ce5ebdc:  numBytes = 2002; return playlist_add_playing_highlighted_svg;
-        case 0x01e0e27c:  numBytes = 2979; return playlist_edit_svg;
-        case 0xb8878890:  numBytes = 2981; return playlist_edit_highlighted_svg;
-        case 0xc6a6e0b6:  numBytes = 3230; return playlist_remove_svg;
-        case 0x87efffca:  numBytes = 3232; return playlist_remove_highlighted_svg;
-        case 0x4c8ea738:  numBytes = 3089; return enUS_txt;
-        case 0x9153efee:  numBytes = 4008; return jaJP_txt;
+        case 0xbb8f2dc6:  numBytes = 1108; return add_svg;
+        case 0xb1fd34da:  numBytes = 1118; return add_highlighted_svg;
+        case 0xc1a269a2:  numBytes = 1157; return arrow_left_svg;
+        case 0x5ea986b6:  numBytes = 1167; return arrow_left_highlighted_svg;
+        case 0xad54f90b:  numBytes = 1255; return arrow_right_svg;
+        case 0x53bb409f:  numBytes = 1265; return arrow_right_highlighted_svg;
+        case 0x6e376459:  numBytes = 2714; return playlist_add_svg;
+        case 0x30ca904c:  numBytes = 2073; return playlist_add_file_svg;
+        case 0x27cafe60:  numBytes = 2075; return playlist_add_file_highlighted_svg;
+        case 0x414126ed:  numBytes = 2716; return playlist_add_highlighted_svg;
+        case 0x58a0d7c8:  numBytes = 1988; return playlist_add_playing_svg;
+        case 0x1ce5ebdc:  numBytes = 1990; return playlist_add_playing_highlighted_svg;
+        case 0x01e0e27c:  numBytes = 2960; return playlist_edit_svg;
+        case 0xb8878890:  numBytes = 2962; return playlist_edit_highlighted_svg;
+        case 0xc6a6e0b6:  numBytes = 3211; return playlist_remove_svg;
+        case 0x87efffca:  numBytes = 3213; return playlist_remove_highlighted_svg;
+        case 0x4c8ea738:  numBytes = 3021; return enUS_txt;
+        case 0x9153efee:  numBytes = 3937; return jaJP_txt;
         case 0x78ded995:  numBytes = 121456; return logo_png;
         default: break;
     }
