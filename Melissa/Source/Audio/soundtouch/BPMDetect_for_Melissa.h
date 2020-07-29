@@ -63,7 +63,7 @@ namespace soundtouch
     #define MIN_BPM kBpmMin
 
     /// Maximum allowed BPM rate range. Used for calculating algorithm parametrs
-    #define MAX_BPM_RANGE 300
+    #define MAX_BPM_RANGE 200
 
     /// Maximum allowed BPM rate range. Used to restrict accepted result below a reasonable limit.
     #define MAX_BPM_VALID kBpmMax

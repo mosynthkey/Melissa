@@ -1689,7 +1689,7 @@ void MainComponent::bpmChanged(float bpm)
 {
     if (bpm == kBpmMeasureFailed)
     {
-        bpmButton_->setText("___");
+        bpmButton_->setText("---");
         bpmAnalyzeFinished_ = true;
     }
     else if (bpm == kBpmShouldMeasure)

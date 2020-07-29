@@ -216,7 +216,7 @@ public:
     
     virtual Font getComboBoxFont(ComboBox &) override
     {
-        return Font(MelissaUISettings::getFontSizeMain());
+        return Font(MelissaUISettings::getFontSizeSub());
     }
     
     virtual void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
