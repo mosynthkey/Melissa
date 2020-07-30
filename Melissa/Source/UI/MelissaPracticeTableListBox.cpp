@@ -95,41 +95,6 @@ void MelissaPracticeTableListBox::paintRowBackground(Graphics& g, int rowNumber,
 
 void MelissaPracticeTableListBox::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected)
 {
-    String text = "";
-    if (rowNumber < practiceList_.size())
-    {
-        auto prac = practiceList_[rowNumber];
-        switch (columnId)
-        {
-            case kColumn_Name + 1:
-            {
-                text = prac.name_;
-                break;
-            }
-            case kColumn_Speed + 1:
-            {
-                if (prac.speedMode_ == kSpeedMode_Basic)
-                {
-                    text = String(prac.speed_) + " %";
-                }
-                else
-                {
-                    text = String::formatted("%d %% -> %d %% (+%d / %d)", prac.speedIncStart_, prac.speedIncGoal_, prac.speedIncValue_, prac.speedIncPer_);
-                }
-                
-                break;
-            }
-            default:
-            {
-                return;
-            }
-        }
-    }
-    
-    g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-    g.setFont(MelissaUISettings::getFontSizeMain());
-    constexpr int xMargin = 10;
-    g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
 }
 
 Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, Component* existingComponentToUpdate)
@@ -143,6 +108,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         {
             auto l = new Label();
             l->setEditable(true, false);
+            l->setName("name");
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
             l->setFont(MelissaUISettings::getFontSizeSub());
@@ -170,6 +136,28 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
             return existingComponentToUpdate;
         }
     }
+    else if (columnId == kColumn_Speed + 1)
+    {
+        auto prac = practiceList_[rowNumber];
+        if (existingComponentToUpdate == nullptr)
+        {
+            auto l = new Label();
+            l->setEditable(true, false);
+            l->setName("speed");
+            l->setComponentID(String(rowNumber));
+            l->setText(String(prac.speed_) + " %",  dontSendNotification);
+            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->addListener(this);
+            return dynamic_cast<Component*>(l);
+        }
+        else
+        {
+            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            l->setText(String(prac.speed_) + "%", dontSendNotification);
+            return existingComponentToUpdate;
+        }
+    }
+        
     
     return nullptr;
 }
@@ -238,6 +226,15 @@ void MelissaPracticeTableListBox::labelTextChanged(Label* label)
 {
     const int rowIndex = label->getComponentID().getIntValue();
     if (practiceList_.size() <= rowIndex) return;
-    practiceList_[rowIndex].name_ = label->getText();
+    
+    if (label->getName() == "name")
+    {
+        practiceList_[rowIndex].name_ = label->getText();
+    }
+    else if (label->getName() == "speed")
+    {
+        const auto speed = label->getText().getIntValue();
+        if (kSpeedMin <= speed && speed <= kSpeedMax) practiceList_[rowIndex].speed_ = speed;
+    }
     dataSource_->overwritePracticeList(rowIndex, practiceList_[rowIndex]);
 }
