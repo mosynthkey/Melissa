@@ -622,6 +622,7 @@ void MainComponent::createUI()
         {
             if (event == MelissaIncDecButton::kEvent_Double)
             {
+                shouldInitializeBpmDetector_ = true;
                 model_->setBpm(kBpmShouldMeasure);
             }
             else if (event == MelissaIncDecButton::kEvent_Func)
