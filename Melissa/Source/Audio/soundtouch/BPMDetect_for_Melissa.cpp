@@ -550,7 +550,6 @@ float BPMDetect::getBpm()
 
     // calculate BPM
     float bpm = (float)(coeff / peakPos);
-    printf("bpm = %f\n", bpm);
     return (bpm >= MIN_BPM && bpm <= MAX_BPM_VALID) ? bpm : 0;
 }
 
