@@ -391,6 +391,11 @@ void MelissaWaveformControlComponent::markerUpdated()
             }
             else
             {
+                const auto markerPosRatio = markers_[markerIndex]->getPosition();
+                if (markerPosRatio < model->getLoopAPosRatio() || model->getLoopBPosRatio() < markerPosRatio)
+                {
+                    model->setLoopPosRatio(0.f, 1.f);
+                }
                 model->setPlayingPosRatio(markers_[markerIndex]->getPosition());
                 tableListBox_->selectRow(static_cast<int>(markerIndex));
             }
