@@ -243,13 +243,13 @@ void MelissaModel::setEqFreq(size_t band, float freq)
 
 void MelissaModel::setEqGain(size_t band, float gain)
 {
-    gain = std::clamp<float>(gain, kEqGainMin, kEqGainMax);
+    eqGain_ = gain = std::clamp<float>(gain, kEqGainMin, kEqGainMax);
     for (auto&& l : listeners_) l->eqGainChanged(band, gain);
 }
 
 void MelissaModel::setEqQ(size_t band, float eqQ)
 {
-    eqQ = std::clamp<float>(eqQ, kEqQMin, kEqQMax);
+    eqQ_ = eqQ = std::clamp<float>(eqQ, kEqQMin, kEqQMax);
     for (auto&& l : listeners_) l->eqQChanged(band, eqQ);
 }
 

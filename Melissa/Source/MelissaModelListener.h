@@ -26,7 +26,9 @@ enum OutputMode : int
 enum SpeedMode : int
 {
     kSpeedMode_Basic,
+#if defined(ENABLE_SPEED_TRAINING)
     kSpeedMode_Training,
+#endif
     kNumOfSpeedModes
 };
 
