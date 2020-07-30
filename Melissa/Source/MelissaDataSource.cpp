@@ -62,7 +62,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (p->hasProperty("metronome_volume")) previous_.metronomeVolume_ = p->getProperty("metronome_volume");
         if (p->hasProperty("volume_balance"))   previous_.volumeBalance_   = p->getProperty("volume_balance");
         
-        if (p->hasProperty("metronome_sw"))  previous_.metronomeSw_      = p->getProperty("metronome_sw");
+        //if (p->hasProperty("metronome_sw"))  previous_.metronomeSw_      = p->getProperty("metronome_sw");
         if (p->hasProperty("bpm"))           previous_.bpm_              = p->getProperty("bpm");
         if (p->hasProperty("accent"))        previous_.accent_           = p->getProperty("accent");
         if (p->hasProperty("beat_position")) previous_.beatPositionMSec_ = p->getProperty("beat_position");
@@ -75,7 +75,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (p->hasProperty("speed_inc_per"))   previous_.speedIncPer_   = p->getProperty("speed_inc_per");
         if (p->hasProperty("speed_inc_goal"))  previous_.speedIncGoal_  = p->getProperty("speed_inc_goal");
         
-        if (p->hasProperty("eq_sq"))     previous_.eqSw_   = p->getProperty("eq_sq");
+        if (p->hasProperty("eq_sw"))     previous_.eqSw_   = p->getProperty("eq_sw");
         if (p->hasProperty("eq_0_freq")) previous_.eqFreq_ = p->getProperty("eq_0_freq");
         if (p->hasProperty("eq_0_gain")) previous_.eqGain_ = p->getProperty("eq_0_gain");
         if (p->hasProperty("eq_0_q"))    previous_.eqQ_    = p->getProperty("eq_0_q");
@@ -142,9 +142,9 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                 song.bpm_              = obj->getProperty("bpm");
                 song.accent_           = obj->getProperty("accent");
                 song.beatPositionMSec_ = obj->getProperty("beat_position");
-                song.eqSw_             = obj->getProperty("eq_sq");
+                song.eqSw_             = obj->getProperty("eq_sw");
                 song.eqFreq_           = obj->getProperty("eq_0_freq");
-                song.eqGain_           = obj->getProperty("eq_0_gain");song.eqSw_             =
+                song.eqGain_           = obj->getProperty("eq_0_gain");
                 song.eqQ_              = obj->getProperty("eq_0_q");
                 song.memo_             = obj->getProperty("memo");
                 for (auto l : *(obj->getProperty("list").getArray()))
@@ -167,13 +167,15 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                     list.beatPositionMSec_ = l.getProperty("beat_position", 0.f);
 #endif
                     
+                    list.speed_         = l.getProperty("speed", 100);
+#if defined(ENABLE_SPEED_TRAINING)
                     const int speedMode = l.getProperty("speed_mode", kSpeedMode_Basic);
                     list.speedMode_     = static_cast<SpeedMode>(speedMode);
-                    list.speed_         = l.getProperty("speed", 100);
                     list.speedIncStart_ = l.getProperty("speed_inc_start", 70);
                     list.speedIncValue_ = l.getProperty("speed_inc_value", 1);
                     list.speedIncPer_   = l.getProperty("speed_inc_per", 10);
                     list.speedIncGoal_  = l.getProperty("speed_inc_goal", 100);
+#endif
                     
                     song.practiceList_.emplace_back(list);
                 }
@@ -247,7 +249,7 @@ void MelissaDataSource::saveSettingsFile()
     previous->setProperty("speed_inc_goal",  model_->getSpeedIncGoal());
 #endif
     
-    previous->setProperty("eq_sq",     model_->getEqSwitch());
+    previous->setProperty("eq_sw",     model_->getEqSwitch());
     previous->setProperty("eq_0_freq", model_->getEqFreq(0));
     previous->setProperty("eq_0_gain", model_->getEqGain(0));
     previous->setProperty("eq_0_q",    model_->getEqQ(0));
@@ -291,7 +293,7 @@ void MelissaDataSource::saveSettingsFile()
         obj->setProperty("bpm",              song.bpm_);
         obj->setProperty("accent",           song.accent_);
         obj->setProperty("beat_position",    song.beatPositionMSec_);
-        obj->setProperty("eq_sq",            song.eqSw_);
+        obj->setProperty("eq_sw",            song.eqSw_);
         obj->setProperty("eq_0_freq",        song.eqFreq_);
         obj->setProperty("eq_0_gain",        song.eqGain_);
         obj->setProperty("eq_0_q",           song.eqQ_);
@@ -316,13 +318,14 @@ void MelissaDataSource::saveSettingsFile()
             obj->setProperty("accent",        l.accent_);
             obj->setProperty("beat_position", l.beatPositionMSec_);
 #endif
-            
-            obj->setProperty("speed_mode",      l.speedMode_);
             obj->setProperty("speed",           l.speed_);
+#if defined(ENABLE_SPEED_TRAINING)
+            obj->setProperty("speed_mode",      l.speedMode_);
             obj->setProperty("speed_inc_start", l.speedIncStart_);
             obj->setProperty("speed_inc_value", l.speedIncValue_);
             obj->setProperty("speed_inc_per",   l.speedIncPer_);
             obj->setProperty("speed_inc_goal",  l.speedIncGoal_);
+#endif
             
             list.add(obj);
         }
@@ -410,7 +413,7 @@ void MelissaDataSource::restorePreviousState()
         model_->setMusicVolume(previous_.musicVolume_);
         model_->setMetronomeVolume(previous_.metronomeVolume_);
         model_->setMusicMetronomeBalance(previous_.volumeBalance_);
-        model_->setMetronomeSwitch(previous_.metronomeSw_);
+        model_->setMetronomeSwitch(false /* previous_.metronomeSw_ */);
         model_->setBpm(previous_.bpm_);
         model_->setAccent(previous_.accent_);
         model_->setBeatPositionMSec(previous_.beatPositionMSec_);
@@ -422,8 +425,8 @@ void MelissaDataSource::restorePreviousState()
         model_->setSpeedIncPer(previous_.speedIncPer_);
         model_->setSpeedIncGoal(previous_.speedIncGoal_);
 #endif
-        model_->setEqSwitch(previous_.metronomeSw_);
-        model_->setEqFreq(0, previous_.eqSw_);
+        model_->setEqSwitch(previous_.eqSw_);
+        model_->setEqFreq(0, previous_.eqFreq_);
         model_->setEqGain(0, previous_.eqGain_);
         model_->setEqQ(0, previous_.eqQ_);
     });

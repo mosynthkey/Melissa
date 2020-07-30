@@ -66,7 +66,7 @@ public:
         float metronomeVolume_;
         float volumeBalance_;
         
-        bool metronomeSw_;
+        //bool metronomeSw_;
         int bpm_;
         int accent_;
         float beatPositionMSec_;
@@ -95,7 +95,7 @@ public:
         filePath_(""), pitch_(0),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
-        metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
+        /* metronomeSw_(false), */ bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
         eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f),
         uiState_({0, 0})
@@ -158,19 +158,24 @@ public:
             float beatPositionMSec_;
 #endif
 
-            SpeedMode speedMode_;
             int speed_;
+#if defined(ENABLE_SPEED_TRAINING)
+            SpeedMode speedMode_;
             int speedIncStart_;
             int speedIncValue_;
             int speedIncPer_;
             int speedIncGoal_;
+#endif
             
             PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f),
 #if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
             outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
             metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
 #endif
-            speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
+            speed_(100)
+#if defined(ENABLE_SPEED_TRAINING)
+            ,speedMode_(kSpeedMode_Basic), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
+#endif
             {}
         };
         std::vector<PracticeList> practiceList_;
