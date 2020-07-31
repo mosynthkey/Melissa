@@ -632,7 +632,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setBpm(model_->getBpm() + sign);
+                model_->setBpm(std::clamp<int>(model_->getBpm() + sign, kBpmMin, kBpmMax));
             }
         };
         section->addAndMakeVisible(bpmButton_.get());
@@ -1719,7 +1719,7 @@ void MainComponent::beatPositionChanged(float beatPositionMSec)
 
 void MainComponent::accentChanged(int accent)
 {
-    accentButton_->setText(String(accent));
+    accentButton_->setText((accent == 0) ? "---" : String(accent));
 }
 
 void MainComponent::metronomeVolumeChanged(float volume)
