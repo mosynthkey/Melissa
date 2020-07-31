@@ -26,7 +26,7 @@ git submodule update --init
 4. Create and open a Xcode project file or Visual Studio solution on Projucer
 
 To build on Windows, please get ASIO driver or disable ASIO from Projucer.
-See [this](ThirdPary/asio/how to get asio sdk.md) for the detail.
+See (this)[ThirdPary/asio/how to get asio sdk.md] for the detail.
 
 ## Contact
 [Twitter](https://twitter.com/Melissa__Player)
