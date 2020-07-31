@@ -1495,23 +1495,30 @@ void MainComponent::run()
 {
     while (!shouldExit_)
     {
-        if (model_ != nullptr && audioEngine_->isBufferSet() && audioEngine_->needToProcess())
+        if (dataSource_->isFileLoaded())
         {
-            audioEngine_->process();
-        }
-        else if (!bpmAnalyzeFinished_)
-        {
-            if (shouldInitializeBpmDetector_)
+            if (audioEngine_->needToProcess())
             {
-                bpmDetector_->initialize(dataSource_->getSampleRate(), dataSource_->getBufferLength());
-                shouldInitializeBpmDetector_ = false;
+                audioEngine_->process();
             }
-            bpmDetector_->process(&bpmAnalyzeFinished_, &analyzedBpm_);
-            if (bpmAnalyzeFinished_) shouldUpdateBpm_ = true;
+            else if (!bpmAnalyzeFinished_)
+            {
+                if (shouldInitializeBpmDetector_)
+                {
+                    bpmDetector_->initialize(dataSource_->getSampleRate(), dataSource_->getBufferLength());
+                    shouldInitializeBpmDetector_ = false;
+                }
+                bpmDetector_->process(&bpmAnalyzeFinished_, &analyzedBpm_);
+                if (bpmAnalyzeFinished_) shouldUpdateBpm_ = true;
+            }
+            else
+            {
+                wait(100);
+            }
         }
         else
         {
-            wait(100);
+            wait(1000);
         }
     }
 }
