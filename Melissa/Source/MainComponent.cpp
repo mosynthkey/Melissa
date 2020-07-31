@@ -1497,7 +1497,7 @@ void MainComponent::run()
     {
         if (dataSource_->isFileLoaded())
         {
-            if (audioEngine_->needToProcess())
+            if (audioEngine_->isBufferSet() && audioEngine_->needToProcess())
             {
                 audioEngine_->process();
             }
