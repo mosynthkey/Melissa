@@ -192,6 +192,7 @@ void MelissaModel::setBpm(float bpm)
 
 void MelissaModel::setBeatPositionMSec(float beatPositionMSec)
 {
+    if (beatPositionMSec < 0) beatPositionMSec = 0;
     beatPositionMSec_ = beatPositionMSec;
     
     for (auto&& l : listeners_) l->beatPositionChanged(beatPositionMSec);
