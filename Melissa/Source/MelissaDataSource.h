@@ -203,6 +203,7 @@ public:
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
+    bool isFileLoaded() const { return audioSampleBuf_ != nullptr; }
     static String getCompatibleFileExtensions();
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
