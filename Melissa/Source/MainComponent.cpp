@@ -38,6 +38,7 @@ enum
     kMenuID_MainVersionCheck,
     kMenuID_MainPreferences,
     kMenuID_MainTutorial,
+    kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
 };
 
@@ -275,6 +276,7 @@ void MainComponent::createUI()
         menu.addItem(kMenuID_Manual, TRANS("open_manual"));
         menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
         menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
+        menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
 #if defined(ENABLE_TUTORIAL)
         menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
 #endif
@@ -299,6 +301,10 @@ void MainComponent::createUI()
         else if (result == kMenuID_MainTutorial)
         {
             showTutorial();
+        }
+        else if (result == kMenuID_TwitterShare)
+        {
+            URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
         }
     };
     addAndMakeVisible(menuButton_.get());

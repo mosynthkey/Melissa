@@ -66,3 +66,4 @@ countries: us
 "volume_balance" = "Music/Metronome volume balance"
 "volume_metronome" = "Metronome volume"
 "add_marker" = "Add marker"
+"twitter_share" = "Tweet"
