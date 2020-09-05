@@ -69,3 +69,4 @@ countries: ja
 "volume_balance" = "音楽/メトロノームのボリュームバランス"
 "volume_metronome" = "メトロノームのボリューム"
 "add_marker" = "マーカーを追加"
+"twitter_share" = "ツイートする"
