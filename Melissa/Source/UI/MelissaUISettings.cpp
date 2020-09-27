@@ -13,6 +13,10 @@ bool MelissaUISettings::isJa = false;
 bool MelissaUISettings::isMac = true;
 String MelissaUISettings::japaneseFontName_ = "YuGothic";
 String MelissaUISettings::latinFontName_    = "San Francisco";
+#elif defined(JUCE_LINUX)
+bool MelissaUISettings::isMac = false;
+String MelissaUISettings::japaneseFontName_ = "IPAGothic";
+String MelissaUISettings::latinFontName_    = "Verdana";
 
 #else
 bool MelissaUISettings::isMac = false;
