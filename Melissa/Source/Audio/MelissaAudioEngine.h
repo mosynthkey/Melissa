@@ -12,6 +12,7 @@
 #include <vector>
 #include "MelissaModelListener.h"
 #include "SoundTouch.h"
+#include <memory>
 
 class MelissaDataSource;
 class MelissaModel;

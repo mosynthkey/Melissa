@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include "MelissaModelListener.h"
 
 class MelissaMetronome : public MelissaModelListener
