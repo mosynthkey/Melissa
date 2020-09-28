@@ -7,6 +7,9 @@
 
 #pragma once
 
+static constexpr int kPitchMin = -24;
+static constexpr int kPitchMax = 24;
+
 static constexpr int kSpeedMin = 20;
 static constexpr int kSpeedMax = 200;
     
@@ -23,3 +26,8 @@ static constexpr int kBpmMin = 45;
 static constexpr int kBpmMax = 300;
 static constexpr int kBpmShouldMeasure = kBpmMin - 1;
 static constexpr int kBpmMeasureFailed = kBpmShouldMeasure - 1;
+
+static constexpr int kAccentMax = 16;
+
+static constexpr float kMusicVolumeMax = 2.f;
+

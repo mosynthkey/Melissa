@@ -20,6 +20,7 @@
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
+#include "MelissaShortcutManager.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
@@ -27,7 +28,6 @@
 
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaMetronome.h"
-#include "MelissaMIDIControlManager.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
@@ -324,8 +324,6 @@ private:
     File settingsDir_, settingsFile_;
     
     bool shouldExit_;
-    
-    MelissaMIDIControlManager midiControlManager_;
     
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     

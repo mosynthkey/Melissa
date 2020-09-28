@@ -8,10 +8,12 @@
 #include "MelissaUISettings.h"
 #include "MelissaPreferencesComponent.h"
 
+#define ENABLE_SHORTCUT_EDITOR
+
 MelissaPreferencesComponent::MelissaPreferencesComponent(AudioDeviceManager* audioDeviceManager) :
 audioDeviceManager_(audioDeviceManager)
 {
-    constexpr bool showMidiSelector = false;
+    constexpr bool showMidiSelector = true;
     deviceComponent_ = std::make_unique<AudioDeviceSelectorComponent>(*audioDeviceManager_, 0, 0, 0, 2, showMidiSelector, false, true, false);
     addAndMakeVisible(deviceComponent_.get());
     

@@ -194,6 +194,10 @@
       <FILE id="qbxqMN" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="rcGEPN" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="Zwbc7A" name="MelissaCommand.cpp" compile="1" resource="0"
+            file="Source/MelissaCommand.cpp"/>
+      <FILE id="KJ4fpo" name="MelissaCommand.h" compile="0" resource="0"
+            file="Source/MelissaCommand.h"/>
       <FILE id="HbcjE5" name="MelissaDataSource.cpp" compile="1" resource="0"
             file="Source/MelissaDataSource.cpp"/>
       <FILE id="skT0g0" name="MelissaDataSource.h" compile="0" resource="0"
@@ -201,15 +205,15 @@
       <FILE id="hgx51a" name="MelissaDefinitions.h" compile="0" resource="0"
             file="Source/MelissaDefinitions.h"/>
       <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>
-      <FILE id="EbvOl3" name="MelissaMIDIControlManager.cpp" compile="1"
-            resource="0" file="Source/MelissaMIDIControlManager.cpp"/>
-      <FILE id="BVlaQE" name="MelissaMIDIControlManager.h" compile="0" resource="0"
-            file="Source/MelissaMIDIControlManager.h"/>
       <FILE id="Pa0qWs" name="MelissaModel.cpp" compile="1" resource="0"
             file="Source/MelissaModel.cpp"/>
       <FILE id="k5pm9b" name="MelissaModel.h" compile="0" resource="0" file="Source/MelissaModel.h"/>
       <FILE id="ll23ca" name="MelissaModelListener.h" compile="0" resource="0"
             file="Source/MelissaModelListener.h"/>
+      <FILE id="EbvOl3" name="MelissaShortcutManager.cpp" compile="1" resource="0"
+            file="Source/MelissaShortcutManager.cpp"/>
+      <FILE id="BVlaQE" name="MelissaShortcutManager.h" compile="0" resource="0"
+            file="Source/MelissaShortcutManager.h"/>
       <FILE id="TIObTL" name="MelissaUpdateChecker.cpp" compile="1" resource="0"
             file="Source/MelissaUpdateChecker.cpp"/>
       <FILE id="CE0xXj" name="MelissaUpdateChecker.h" compile="0" resource="0"

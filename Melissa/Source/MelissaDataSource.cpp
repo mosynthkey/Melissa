@@ -40,11 +40,26 @@ void MelissaDataSource::loadSettingsFile(const File& file)
     if (settings.hasProperty("global"))
     {
         auto g = settings["global"].getDynamicObject();
-        if (g->hasProperty("version"))  global_.version_ = g->getProperty("version");
-        if (g->hasProperty("root_dir")) global_.rootDir_ = g->getProperty("root_dir");
-        if (g->hasProperty("width"))    global_.width_   = g->getProperty("width");
-        if (g->hasProperty("height"))   global_.height_  = g->getProperty("height");
-        if (g->hasProperty("device"))   global_.device_  = g->getProperty("device");
+        if (g->hasProperty("version"))  global_.version_  = g->getProperty("version");
+        if (g->hasProperty("root_dir")) global_.rootDir_  = g->getProperty("root_dir");
+        if (g->hasProperty("width"))    global_.width_    = g->getProperty("width");
+        if (g->hasProperty("height"))   global_.height_   = g->getProperty("height");
+        if (g->hasProperty("device"))   global_.device_   = g->getProperty("device");
+        
+        bool shortcutRegistered = false;
+        if (g->hasProperty("shortcut"))
+        {
+            auto shortcutDynamicObject = g->getProperty("shortcut").getDynamicObject();
+            if (shortcutDynamicObject != nullptr)
+            {
+                shortcutRegistered = true;
+                for (auto&& shortcut : shortcutDynamicObject->getProperties())
+                {
+                    registerShortcut(shortcut.name.toString(), shortcut.value.toString());
+                }
+            }
+        }
+        if (!shortcutRegistered) setDefaultShortcuts();
     }
     
     if (settings.hasProperty("previous"))
@@ -134,7 +149,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
                 song.filePath_         = obj->getProperty("file");
                 song.pitch_            = obj->getProperty("pitch");
                 const int outputMode   = obj->getProperty("output_mode");
-                song.outputMode_  = static_cast<OutputMode>(outputMode);
+                song.outputMode_       = static_cast<OutputMode>(outputMode);
                 song.musicVolume_      = obj->getProperty("volume");
                 song.metronomeVolume_  = obj->getProperty("metronome_volume");
                 song.volumeBalance_    = obj->getProperty("volume_balance");
@@ -221,6 +236,14 @@ void MelissaDataSource::saveSettingsFile()
     global->setProperty("width",    global_.width_);
     global->setProperty("height",   global_.height_);
     global->setProperty("device",   global_.device_);
+    auto shortcut = new DynamicObject();
+    {
+        for (auto&& s : global_.shortcut_)
+        {
+            shortcut->setProperty(s.first, s.second);
+        }
+    }
+    global->setProperty("shortcut", shortcut);
     settings->setProperty("global", global);
     
     auto previous = new DynamicObject();
@@ -399,6 +422,48 @@ void MelissaDataSource::disposeBuffer()
     if (audioSampleBuf_ == nullptr) return;
     audioSampleBuf_->clear();
     audioSampleBuf_ = nullptr;
+}
+
+void MelissaDataSource::setDefaultShortcuts()
+{
+    global_.shortcut_["spacebar"] = "StartStop";
+    global_.shortcut_["CC #41"] = "StartStop";
+    global_.shortcut_[","] = "Back";
+    global_.shortcut_["A"] = "SetLoopStart";
+    global_.shortcut_["B"] = "SetLoopEnd";
+    global_.shortcut_["M"] = "AddMarker";
+    global_.shortcut_["backspace"] = "ResetLoop";
+    global_.shortcut_["cursor up"] = "SetSpeed_Plus1";
+    global_.shortcut_["cursor down"] = "SetSpeed_Minus1";
+    global_.shortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
+    global_.shortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
+
+    global_.shortcut_["CC #0"] = "PlaybackPositionValue";
+    global_.shortcut_["CC #1"] = "PitchValue";
+    global_.shortcut_["CC #2"] = "SetSpeedValue";
+
+    global_.shortcut_["CC #43"] = "PlaybackPosition_Minus1Sec";
+    global_.shortcut_["CC #44"] = "PlaybackPosition_Plus1Sec";
+
+    global_.shortcut_["CC #16"] = "SetEqFreqValue";
+    global_.shortcut_["CC #17"] = "SetEqGainValue";
+    global_.shortcut_["CC #18"] = "SetEqQValue";
+}
+
+String MelissaDataSource::getAssignedShortcut(const String& eventName)
+{
+    if (global_.shortcut_.find(eventName) == global_.shortcut_.end()) return "";
+    return global_.shortcut_[eventName];
+}
+
+void MelissaDataSource::registerShortcut(const String& eventName, const String& command)
+{
+    global_.shortcut_[eventName] = command;
+}
+
+void MelissaDataSource::deregisterShortcut(const String& eventName)
+{
+    global_.shortcut_.erase(eventName);
 }
 
 void MelissaDataSource::restorePreviousState()
