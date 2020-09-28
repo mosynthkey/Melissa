@@ -1048,20 +1048,21 @@ void MainComponent::resized()
     
     // left-bottom part (Browser / Playlist / History)
     {
-        constexpr int32_t tabMargin = 2;
+        constexpr int kTabMargin = 2;
+        constexpr int kFileBrowseTabX = 20;
         int32_t browserWidth = 480;
-        int32_t w = (browserWidth - tabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
+        int32_t w = (browserWidth - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
         int32_t y = controlComponent_->getBottom() + kGradationHeight - 10;
         
-        int32_t x = 20;
+        int x = kFileBrowseTabX;
         browseToggleButton_ ->setBounds(x, y, w, 30);
-        x += (w + tabMargin);
+        x += (w + kTabMargin);
         playlistToggleButton_->setBounds(x, y, w, 30);
-        x += (w + tabMargin);
+        x += (w + kTabMargin);
         historyToggleButton_ ->setBounds(x, y, w, 30);
+        x += (w + 20);
         
         w = 200;
-        x = 20 + browserWidth + 20;
         practiceListToggleButton_->setBounds(x, y, w, 30);
         addToPracticeButton_->setBounds(x + w - 30, y + 6, 18, 18);
         x += (w + 2);
@@ -1073,16 +1074,17 @@ void MainComponent::resized()
         y += 40;
         {
             const int32_t h = getHeight() - 40 - y;
-            fileBrowserComponent_->setBounds(20, y, browserWidth, h);
-            playlistComponent_->setBounds(20, y, browserWidth, h);
-            historyTable_->setBounds(20, y, browserWidth, h);
+            fileBrowserComponent_->setBounds(kFileBrowseTabX, y, browserWidth, h);
+            playlistComponent_->setBounds(kFileBrowseTabX, y, browserWidth, h);
+            historyTable_->setBounds(kFileBrowseTabX, y, browserWidth, h);
         }
         
         {
+            const int x = practiceListToggleButton_->getX();
             const int32_t h = getHeight() - 40 - y;
-            practiceTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
-            markerTable_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
-            memoTextEditor_->setBounds(20 + browserWidth + 20, y, getWidth() - (20 + browserWidth) - 40, h);
+            practiceTable_->setBounds(x, y, getWidth() - x - 20, h);
+            markerTable_->setBounds(x, y, getWidth() - x - 20, h);
+            memoTextEditor_->setBounds(x, y, getWidth() - x - 20, h);
         }
     }
     
@@ -1297,70 +1299,7 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
 
 bool MainComponent::keyPressed(const KeyPress &key, Component* originatingComponent)
 {
-    const auto keyCode = key.getKeyCode();
-    
-    switch (keyCode)
-    {
-        case 32: // space
-        {
-            model_->togglePlaybackStatus();
-            return true;
-        }
-        case 44: // ,
-        {
-            model_->setPlayingPosRatio(model_->getLoopAPosRatio());
-            return true;
-        }
-        case 65: // a
-        {
-            model_->setLoopAPosRatio(model_->getPlayingPosRatio());
-            return true;
-        }
-        case 66: // b
-        {
-            model_->setLoopBPosRatio(model_->getPlayingPosRatio());
-            return true;
-        }
-        case 77: // m
-        {
-            dataSource_->addDefaultMarker(model_->getPlayingPosRatio());
-            break;
-        }
-        case 8: // delete
-        case 127:
-        {
-            model_->setLoopPosRatio(0.f, 1.f);
-            return true;
-        }
-        case 63232: // up
-        case 65574:
-        {
-            model_->setSpeed(model_->getSpeed() + 1);
-            return true;
-        }
-        case 63233: // down
-        case 65576:
-        {
-            model_->setSpeed(model_->getSpeed() - 1);
-            return true;
-        }
-        case 63234: // left
-        case 65573:
-        {
-            auto currentMSec = model_->getPlayingPosMSec();
-            model_->setPlayingPosMSec(currentMSec - 1000);
-            return true;
-        }
-        case 63235: // right
-        case 65575:
-        {
-            auto currentMSec = model_->getPlayingPosMSec();
-            model_->setPlayingPosMSec(currentMSec + 1000);
-            return true;
-        }
-    };
-    
-    return false;
+    return MelissaShortcutManager::getInstance()->processKeyboardMessage(key.getTextDescription());
 }
 
 void MainComponent::showPreferencesDialog()
@@ -1494,7 +1433,7 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 
 void MainComponent::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
 {
-    midiControlManager_.processMIDIMessage(message);
+    MelissaShortcutManager::getInstance()->processMIDIMessage(message);
 }
 
 void MainComponent::run()

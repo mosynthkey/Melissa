@@ -37,7 +37,7 @@ void MelissaModel::togglePlaybackStatus()
 
 void MelissaModel::setMusicVolume(float volume)
 {
-    if (volume < 0.f || 2.f < volume) return;
+    if (volume < 0.f || kMusicVolumeMax < volume) return;
     
     musicVolume_ = volume;
     for (auto&& l : listeners_) l->musicVolumeChanged(volume);
@@ -45,7 +45,7 @@ void MelissaModel::setMusicVolume(float volume)
 
 void MelissaModel::setPitch(int semitone)
 {
-    if (semitone < -24 || 24 < semitone) return;
+    if (semitone < kPitchMin || kPitchMax < semitone) return;
     
     semitone_ = semitone;
     for (auto&& l : listeners_) l->pitchChanged(semitone);
@@ -200,7 +200,7 @@ void MelissaModel::setBeatPositionMSec(float beatPositionMSec)
 
 void MelissaModel::setAccent(int accent)
 {
-    if (accent < 0 || 16 <= accent) return;
+    if (accent < 0 || kAccentMax <= accent) return;
     
     accent_ = accent;
     for (auto&& l : listeners_) l->accentChanged(accent);

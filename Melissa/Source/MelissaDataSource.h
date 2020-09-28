@@ -46,6 +46,7 @@ public:
         int width_;
         int height_;
         String device_;
+        std::map<String, String> shortcut_;
         
         Global() : version_(ProjectInfo::versionString), width_(1400), height_(860)
         {
@@ -211,6 +212,12 @@ public:
     double getSampleRate() const { return sampleRate_; }
     size_t getBufferLength() const { return (audioSampleBuf_ == nullptr ? 0 : audioSampleBuf_->getNumSamples()); }
     void disposeBuffer();
+    
+    // Shortcut
+    void setDefaultShortcuts();
+    String getAssignedShortcut(const String& eventName);
+    void registerShortcut(const String& eventName, const String& command);
+    void deregisterShortcut(const String& eventName);
     
     // Previous
     void restorePreviousState();
