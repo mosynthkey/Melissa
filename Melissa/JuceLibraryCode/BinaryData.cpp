@@ -105,8 +105,159 @@ static const unsigned char temp_binary_data_5[] =
 
 const char* arrow_right_highlighted_svg = (const char*) temp_binary_data_5;
 
-//================== playlist_add.svg ==================
+//================== next_button.svg ==================
 static const unsigned char temp_binary_data_6[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>next_button</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.403366815\">\n"
+"        <g id=\"A0-Copy-4\" transform=\"translate(-133.000000, -348.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M149,348 L149,365 L135,357.33 L135,364.5 L133,364.5 L133,348.5 L135,348.5 L135,355.67 L149,348 Z\" id=\"next_button\" transform=\"translate(141.000000, 356.500000) scale(-1, 1) translate(-141.000000, -356.500000) \"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* next_button_svg = (const char*) temp_binary_data_6;
+
+//================== prev_button.svg ==================
+static const unsigned char temp_binary_data_7[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>prev_button</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.403366815\">\n"
+"        <g id=\"A0-Copy-4\" transform=\"translate(-116.000000, -348.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M132,348 L132,365 L118,357.33 L118,364.5 L116,364.5 L116,348.5 L118,348.5 L118,355.67 L132,348 Z\" id=\"prev_button\"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* prev_button_svg = (const char*) temp_binary_data_7;
+
+//================== next_button_highlighted.svg ==================
+static const unsigned char temp_binary_data_8[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>next_button_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-4\" transform=\"translate(-133.000000, -329.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M149,329 L149,346 L135,338.33 L135,345.5 L133,345.5 L133,329.5 L135,329.5 L135,336.67 L149,329 Z\" id=\"next_button_highlighted\" transform=\"translate(141.000000, 337.500000) scale(-1, 1) translate(-141.000000, -337.500000) \">"
+"</path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* next_button_highlighted_svg = (const char*) temp_binary_data_8;
+
+//================== prev_button_highlighted.svg ==================
+static const unsigned char temp_binary_data_9[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>prev_button_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A0-Copy-4\" transform=\"translate(-116.000000, -329.000000)\" fill=\"#FFFFFF\">\n"
+"            <path d=\"M132,329 L132,346 L118,338.33 L118,345.5 L116,345.5 L116,329.5 L118,329.5 L118,336.67 L132,329 Z\" id=\"prev_button_highlighted\"></path>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* prev_button_highlighted_svg = (const char*) temp_binary_data_9;
+
+//================== loop_onesong.svg ==================
+static const unsigned char temp_binary_data_10[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>loop_onesong</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
+"        <g id=\"A6\" transform=\"translate(-536.000000, -454.000000)\" fill=\"#FFFFFF\">\n"
+"            <g id=\"loop_onesong\" transform=\"translate(536.000000, 454.000000)\">\n"
+"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\"></path>\n"
+"                <rect id=\"Rectangle\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
+"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\"></path>\n"
+"                <rect id=\"Rectangle\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
+"                <polygon id=\"Triangle\" points=\"3 3 6 9 0 9\"></polygon>\n"
+"                <polygon id=\"Triangle\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
+"                <rect id=\"Rectangle\" x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\"></rect>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* loop_onesong_svg = (const char*) temp_binary_data_10;
+
+//================== loop_onesong_highlighted.svg ==================
+static const unsigned char temp_binary_data_11[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>loop_onesong_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
+"        <g id=\"A6\" transform=\"translate(-536.000000, -430.000000)\" fill=\"#FFFFFF\">\n"
+"            <g id=\"loop_onesong_highlighted\" transform=\"translate(536.000000, 430.000000)\">\n"
+"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\"></path>\n"
+"                <rect id=\"Rectangle\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
+"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\"></path>\n"
+"                <rect id=\"Rectangle\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
+"                <polygon id=\"Triangle\" points=\"3 3 6 9 0 9\"></polygon>\n"
+"                <polygon id=\"Triangle\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
+"                <rect id=\"Rectangle\" x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\"></rect>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* loop_onesong_highlighted_svg = (const char*) temp_binary_data_11;
+
+//================== loop_playlist.svg ==================
+static const unsigned char temp_binary_data_12[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>loop_playlist</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.4\">\n"
+"        <g id=\"A6\" transform=\"translate(-570.000000, -454.000000)\">\n"
+"            <g id=\"loop_playlist\" transform=\"translate(570.000000, 454.000000)\">\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"7.5\" y=\"5.5\" width=\"13\" height=\"11\" rx=\"2\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"9.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"12.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(11.000000, 11.000000) rotate(90.000000) translate(-11.000000, -11.000000) \" points=\"11 9 13 13 9 13\"></polygon>\n"
+"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
+"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" points=\"3 3 6 9 0 9\"></polygon>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* loop_playlist_svg = (const char*) temp_binary_data_12;
+
+//================== loop_playlist_highlighted.svg ==================
+static const unsigned char temp_binary_data_13[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"    <title>loop_playlist_highlighted</title>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-570.000000, -430.000000)\">\n"
+"            <g id=\"loop_playlist_highlighted\" transform=\"translate(570.000000, 430.000000)\">\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"7.5\" y=\"5.5\" width=\"13\" height=\"11\" rx=\"2\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"9.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"12.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(11.000000, 11.000000) rotate(90.000000) translate(-11.000000, -11.000000) \" points=\"11 9 13 13 9 13\"></polygon>\n"
+"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
+"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
+"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" points=\"3 3 6 9 0 9\"></polygon>\n"
+"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
+"            </g>\n"
+"        </g>\n"
+"    </g>\n"
+"</svg>";
+
+const char* loop_playlist_highlighted_svg = (const char*) temp_binary_data_13;
+
+//================== playlist_add.svg ==================
+static const unsigned char temp_binary_data_14[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_add</title>\n"
@@ -131,10 +282,10 @@ static const unsigned char temp_binary_data_6[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_add_svg = (const char*) temp_binary_data_6;
+const char* playlist_add_svg = (const char*) temp_binary_data_14;
 
 //================== playlist_add_file.svg ==================
-static const unsigned char temp_binary_data_7[] =
+static const unsigned char temp_binary_data_15[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_add_file</title>\n"
@@ -156,10 +307,10 @@ static const unsigned char temp_binary_data_7[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_add_file_svg = (const char*) temp_binary_data_7;
+const char* playlist_add_file_svg = (const char*) temp_binary_data_15;
 
 //================== playlist_add_file_highlighted.svg ==================
-static const unsigned char temp_binary_data_8[] =
+static const unsigned char temp_binary_data_16[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_add_file_highlighted</title>\n"
@@ -181,10 +332,10 @@ static const unsigned char temp_binary_data_8[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_add_file_highlighted_svg = (const char*) temp_binary_data_8;
+const char* playlist_add_file_highlighted_svg = (const char*) temp_binary_data_16;
 
 //================== playlist_add_highlighted.svg ==================
-static const unsigned char temp_binary_data_9[] =
+static const unsigned char temp_binary_data_17[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_add_highlighted</title>\n"
@@ -209,10 +360,10 @@ static const unsigned char temp_binary_data_9[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_add_highlighted_svg = (const char*) temp_binary_data_9;
+const char* playlist_add_highlighted_svg = (const char*) temp_binary_data_17;
 
 //================== playlist_add_playing.svg ==================
-static const unsigned char temp_binary_data_10[] =
+static const unsigned char temp_binary_data_18[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_add_playing</title>\n"
@@ -231,10 +382,10 @@ static const unsigned char temp_binary_data_10[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_add_playing_svg = (const char*) temp_binary_data_10;
+const char* playlist_add_playing_svg = (const char*) temp_binary_data_18;
 
 //================== playlist_add_playing_highlighted.svg ==================
-static const unsigned char temp_binary_data_11[] =
+static const unsigned char temp_binary_data_19[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_add_playing_highlighted</title>\n"
@@ -253,10 +404,10 @@ static const unsigned char temp_binary_data_11[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_add_playing_highlighted_svg = (const char*) temp_binary_data_11;
+const char* playlist_add_playing_highlighted_svg = (const char*) temp_binary_data_19;
 
 //================== playlist_edit.svg ==================
-static const unsigned char temp_binary_data_12[] =
+static const unsigned char temp_binary_data_20[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_edit</title>\n"
@@ -284,10 +435,10 @@ static const unsigned char temp_binary_data_12[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_edit_svg = (const char*) temp_binary_data_12;
+const char* playlist_edit_svg = (const char*) temp_binary_data_20;
 
 //================== playlist_edit_highlighted.svg ==================
-static const unsigned char temp_binary_data_13[] =
+static const unsigned char temp_binary_data_21[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_edit_highlighted</title>\n"
@@ -315,10 +466,10 @@ static const unsigned char temp_binary_data_13[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_edit_highlighted_svg = (const char*) temp_binary_data_13;
+const char* playlist_edit_highlighted_svg = (const char*) temp_binary_data_21;
 
 //================== playlist_remove.svg ==================
-static const unsigned char temp_binary_data_14[] =
+static const unsigned char temp_binary_data_22[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_remove</title>\n"
@@ -347,10 +498,10 @@ static const unsigned char temp_binary_data_14[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_remove_svg = (const char*) temp_binary_data_14;
+const char* playlist_remove_svg = (const char*) temp_binary_data_22;
 
 //================== playlist_remove_highlighted.svg ==================
-static const unsigned char temp_binary_data_15[] =
+static const unsigned char temp_binary_data_23[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>playlist_remove_highlighted</title>\n"
@@ -379,10 +530,10 @@ static const unsigned char temp_binary_data_15[] =
 "    </g>\n"
 "</svg>";
 
-const char* playlist_remove_highlighted_svg = (const char*) temp_binary_data_15;
+const char* playlist_remove_highlighted_svg = (const char*) temp_binary_data_23;
 
 //================== en-US.txt ==================
-static const unsigned char temp_binary_data_16[] =
+static const unsigned char temp_binary_data_24[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -450,12 +601,72 @@ static const unsigned char temp_binary_data_16[] =
 "\"volume_music\" = \"Music volume\"\n"
 "\"volume_balance\" = \"Music/Metronome volume balance\"\n"
 "\"volume_metronome\" = \"Metronome volume\"\n"
-"\"add_marker\" = \"Add marker\"\n";
+"\"add_marker\" = \"Add marker\"\n"
+"\"twitter_share\" = \"Tweet\"\n"
+"\n"
+"\"StartStop\" = \"\"\n"
+"\"Back\" = \"\"\n"
+"\"PlaybackPositionValue\" = \"\"\n"
+"\"PlaybackPosition_Plus1Sec\" = \"\"\n"
+"\"PlaybackPosition_Minus1Sec\" = \"\"\n"
+"\"PlaybackPosition_Plus5Sec\" = \"\"\n"
+"\"PlaybackPosition_Minus5Sec\" = \"\"\n"
+"\"PitchValue\" = \"\"\n"
+"\"Pitch_Plus\" = \"\"\n"
+"\"Pitch_Minus\" = \"\"\n"
+"\"ResetLoop\" = \"\"\n"
+"\"ResetLoopStart\" = \"\"\n"
+"\"ResetLoopEnd\" = \"\"\n"
+"\"SetLoopStart\" = \"\"\n"
+"\"SetLoopEnd\" = \"\"\n"
+"\"SetLoopStartValue\" = \"\"\n"
+"\"SetLoopEndValue\" = \"\"\n"
+"\"SetLoopStart_Plus100MSec\" = \"\"\n"
+"\"SetLoopEnd_Minus100MSec\" = \"\"\n"
+"\"SetLoopStart_Plus1Sec\" = \"\"\n"
+"\"SetLoopEnd_Minus1Sec\" = \"\"\n"
+"\"SetSpeedValue\" = \"\"\n"
+"\"SetSpeed_Plus5\" = \"\"\n"
+"\"SetSpeed_Minus5\" = \"\"\n"
+"\"SetSpeed_Plus1\" = \"\"\n"
+"\"SetSpeed_Minus1\" = \"\"\n"
+"\"ResetSpeed\" = \"\"\n"
+"\"ToggleMetronome\" = \"\"\n"
+"\"SetAccentPosition\" = \"\"\n"
+"\"ToggleEq\" = \"\"\n"
+"\"SetEqFreqValue\" = \"\"\n"
+"\"SetEqGainValue\" = \"\"\n"
+"\"SetEqQValue\" = \"\"\n"
+"\"SetMusicVolumeValue\" = \"\"\n"
+"\"SetVolumeBalanceValue\" = \"\"\n"
+"\"SetMetronomeVolumeValue\" = \"\"\n"
+"\"AddPracticeList\" = \"\"\n"
+"\"SelectPracticeList_0\" = \"\"\n"
+"\"SelectPracticeList_1\" = \"\"\n"
+"\"SelectPracticeList_2\" = \"\"\n"
+"\"SelectPracticeList_3\" = \"\"\n"
+"\"SelectPracticeList_4\" = \"\"\n"
+"\"SelectPracticeList_5\" = \"\"\n"
+"\"SelectPracticeList_6\" = \"\"\n"
+"\"SelectPracticeList_7\" = \"\"\n"
+"\"SelectPracticeList_8\" = \"\"\n"
+"\"SelectPracticeList_9\" = \"\"\n"
+"\"AddMarker\" = \"\"\n"
+"\"SelectMarker_0\" = \"\"\n"
+"\"SelectMarker_1\" = \"\"\n"
+"\"SelectMarker_2\" = \"\"\n"
+"\"SelectMarker_3\" = \"\"\n"
+"\"SelectMarker_4\" = \"\"\n"
+"\"SelectMarker_5\" = \"\"\n"
+"\"SelectMarker_6\" = \"\"\n"
+"\"SelectMarker_7\" = \"\"\n"
+"\"SelectMarker_8\" = \"\"\n"
+"\"SelectMarker_9\" = \"\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_16;
+const char* enUS_txt = (const char*) temp_binary_data_24;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_17[] =
+static const unsigned char temp_binary_data_25[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,111,111,112,95,110,97,109,101,34,32,61,32,34,227,131,171,227,131,188,227,131,151,229,140,186,233,150,147,227,129,
 174,229,144,141,229,137,141,227,130,146,229,133,165,229,138,155,227,129,151,227,129,166,227,129,143,227,129,160,227,129,149,227,129,132,34,10,34,101,110,116,101,114,95,112,108,97,121,108,105,115,116,95,110,97,109,101,34,32,61,32,34,112,108,97,121,108,
@@ -514,12 +725,58 @@ static const unsigned char temp_binary_data_17[] =
 117,116,95,109,111,100,101,34,32,61,32,34,229,135,186,229,138,155,227,131,162,227,131,188,227,131,137,34,10,34,118,111,108,117,109,101,95,109,117,115,105,99,34,32,61,32,34,233,159,179,230,165,189,227,129,174,227,131,156,227,131,170,227,131,165,227,131,
 188,227,131,160,34,10,34,118,111,108,117,109,101,95,98,97,108,97,110,99,101,34,32,61,32,34,233,159,179,230,165,189,47,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,
 227,131,160,227,131,144,227,131,169,227,131,179,227,130,185,34,10,34,118,111,108,117,109,101,95,109,101,116,114,111,110,111,109,101,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,
-170,227,131,165,227,131,188,227,131,160,34,10,34,97,100,100,95,109,97,114,107,101,114,34,32,61,32,34,227,131,158,227,131,188,227,130,171,227,131,188,227,130,146,232,191,189,229,138,160,34,10,0,0 };
+170,227,131,165,227,131,188,227,131,160,34,10,34,97,100,100,95,109,97,114,107,101,114,34,32,61,32,34,227,131,158,227,131,188,227,130,171,227,131,188,227,130,146,232,191,189,229,138,160,34,10,34,116,119,105,116,116,101,114,95,115,104,97,114,101,34,32,
+61,32,34,227,131,132,227,130,164,227,131,188,227,131,136,227,129,153,227,130,139,34,10,10,34,83,116,97,114,116,83,116,111,112,34,32,61,32,34,229,134,141,231,148,159,47,229,129,156,230,173,162,34,10,34,66,97,99,107,34,32,61,32,34,229,133,136,233,160,173,
+227,129,184,230,136,187,227,130,139,34,10,34,80,108,97,121,98,97,99,107,80,111,115,105,116,105,111,110,86,97,108,117,101,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,229,164,137,230,155,180,34,10,34,80,108,97,121,98,97,99,107,80,111,
+115,105,116,105,111,110,95,80,108,117,115,49,83,101,99,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,32,58,32,43,49,231,167,146,34,10,34,80,108,97,121,98,97,99,107,80,111,115,105,116,105,111,110,95,77,105,110,117,115,49,83,101,99,34,
+32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,32,58,32,45,49,231,167,146,34,10,34,80,108,97,121,98,97,99,107,80,111,115,105,116,105,111,110,95,80,108,117,115,53,83,101,99,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,32,
+58,32,43,53,231,167,146,34,10,34,80,108,97,121,98,97,99,107,80,111,115,105,116,105,111,110,95,77,105,110,117,115,53,83,101,99,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,32,58,32,45,53,231,167,146,34,10,34,80,105,116,99,104,86,97,108,
+117,101,34,32,61,32,34,233,159,179,231,168,139,229,164,137,230,155,180,34,10,34,80,105,116,99,104,95,80,108,117,115,34,32,61,32,34,233,159,179,231,168,139,32,58,32,43,49,34,10,34,80,105,116,99,104,95,77,105,110,117,115,34,32,61,32,34,233,159,179,231,
+168,139,32,58,32,45,49,34,10,34,82,101,115,101,116,76,111,111,112,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,175,132,229,155,178,227,130,146,227,131,170,227,130,187,227,131,131,227,131,136,34,10,34,82,101,115,101,116,76,111,111,112,83,116,
+97,114,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,130,146,230,155,178,227,129,174,229,133,136,233,160,173,227,129,171,34,10,34,82,101,115,101,116,76,111,111,112,69,110,100,34,32,61,32,34,
+227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,227,130,146,230,155,178,227,129,174,230,156,171,229,176,190,227,129,171,34,10,34,83,101,116,76,111,111,112,83,116,97,114,116,34,32,61,32,34,229,134,141,231,148,159,228,
+189,141,231,189,174,227,130,146,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,129,171,232,168,173,229,174,154,34,10,34,83,101,116,76,111,111,112,69,110,100,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,
+189,174,227,130,146,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,227,129,171,232,168,173,229,174,154,34,10,34,83,101,116,76,111,111,112,83,116,97,114,116,86,97,108,117,101,34,32,61,32,34,227,131,171,227,131,188,
+227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,76,111,111,112,69,110,100,86,97,108,117,101,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,
+189,174,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,76,111,111,112,83,116,97,114,116,95,80,108,117,115,49,48,48,77,83,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,32,58,32,43,48,
+46,49,231,167,146,34,10,34,83,101,116,76,111,111,112,69,110,100,95,77,105,110,117,115,49,48,48,77,83,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,32,58,32,45,48,46,49,231,167,146,34,10,34,83,
+101,116,76,111,111,112,83,116,97,114,116,95,80,108,117,115,49,83,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,233,150,139,229,167,139,228,189,141,231,189,174,32,58,32,43,49,231,167,146,34,10,34,83,101,116,76,111,111,112,69,110,100,95,77,
+105,110,117,115,49,83,101,99,34,32,61,32,34,227,131,171,227,131,188,227,131,151,231,181,130,231,171,175,228,189,141,231,189,174,32,58,32,45,49,231,167,146,34,10,34,83,101,116,83,112,101,101,100,86,97,108,117,101,34,32,61,32,34,229,134,141,231,148,159,
+233,128,159,229,186,166,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,83,112,101,101,100,95,80,108,117,115,53,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,43,53,37,34,10,34,83,101,116,83,112,101,101,100,95,77,105,
+110,117,115,53,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,45,53,37,34,10,34,83,101,116,83,112,101,101,100,95,80,108,117,115,49,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,43,49,37,34,10,34,83,101,
+116,83,112,101,101,100,95,77,105,110,117,115,49,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,32,58,32,45,49,37,34,10,34,82,101,115,101,116,83,112,101,101,100,34,32,61,32,34,229,134,141,231,148,159,233,128,159,229,186,166,227,130,146,
+227,131,170,227,130,187,227,131,131,227,131,136,34,10,34,84,111,103,103,108,101,77,101,116,114,111,110,111,109,101,34,32,61,32,34,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,32,79,78,47,79,70,70,34,10,34,83,101,116,65,99,99,
+101,110,116,80,111,115,105,116,105,111,110,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,130,162,227,130,175,227,130,187,227,131,179,227,131,136,228,189,141,231,189,174,227,129,171,232,168,173,229,174,154,34,10,34,84,
+111,103,103,108,101,69,113,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,32,58,32,79,78,47,79,70,70,34,10,34,83,101,116,69,113,70,114,101,113,86,97,108,117,101,34,32,61,32,34,227,130,164,227,130,179,227,131,169,
+227,130,164,227,130,182,227,131,188,227,129,174,229,145,168,230,179,162,230,149,176,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,69,113,71,97,105,110,86,97,108,117,101,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,
+182,227,131,188,227,129,174,227,130,178,227,130,164,227,131,179,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,69,113,81,86,97,108,117,101,34,32,61,32,34,227,130,164,227,130,179,227,131,169,227,130,164,227,130,182,227,131,188,227,129,174,81,
+229,185,133,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,77,117,115,105,99,86,111,108,117,109,101,86,97,108,117,101,34,32,61,32,34,233,159,179,230,165,189,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,227,131,160,227,130,146,
+232,168,173,229,174,154,34,10,34,83,101,116,86,111,108,117,109,101,66,97,108,97,110,99,101,86,97,108,117,101,34,32,61,32,34,233,159,179,230,165,189,47,227,131,161,227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,
+131,170,227,131,165,227,131,188,227,131,160,227,131,144,227,131,169,227,131,179,227,130,185,227,130,146,232,168,173,229,174,154,34,10,34,83,101,116,77,101,116,114,111,110,111,109,101,86,111,108,117,109,101,86,97,108,117,101,34,32,61,32,34,227,131,161,
+227,131,136,227,131,173,227,131,142,227,131,188,227,131,160,227,129,174,227,131,156,227,131,170,227,131,165,227,131,188,227,131,160,232,168,173,229,174,154,34,10,34,65,100,100,80,114,97,99,116,105,99,101,76,105,115,116,34,32,61,32,34,231,183,180,231,
+191,146,227,131,170,227,130,185,227,131,136,227,129,171,232,191,189,229,138,160,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,48,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,49,227,130,146,
+233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,49,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,50,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,
+114,97,99,116,105,99,101,76,105,115,116,95,50,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,51,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,51,34,32,61,32,
+34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,52,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,52,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,
+136,53,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,53,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,54,227,130,146,233,129,184,230,138,158,34,10,34,83,101,
+108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,54,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,55,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,
+95,55,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,56,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,56,34,32,61,32,34,231,183,180,231,191,146,227,131,170,
+227,130,185,227,131,136,57,227,130,146,233,129,184,230,138,158,34,10,34,83,101,108,101,99,116,80,114,97,99,116,105,99,101,76,105,115,116,95,57,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,49,48,227,130,146,233,129,184,230,
+138,158,34,10,34,65,100,100,77,97,114,107,101,114,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,129,171,227,131,158,227,131,188,227,130,171,227,131,188,227,130,146,232,191,189,229,138,160,34,10,34,83,101,108,101,99,116,77,97,114,
+107,101,114,95,48,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,49,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,49,34,32,61,32,
+34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,50,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,50,34,32,61,32,34,229,134,141,231,148,159,228,
+189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,51,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,51,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,
+227,131,158,227,131,188,227,130,171,227,131,188,52,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,52,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,
+171,227,131,188,53,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,53,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,54,227,129,171,
+232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,54,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,55,227,129,171,232,168,173,229,174,154,34,10,
+34,83,101,108,101,99,116,77,97,114,107,101,114,95,55,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,56,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,
+114,107,101,114,95,56,34,32,61,32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,57,227,129,171,232,168,173,229,174,154,34,10,34,83,101,108,101,99,116,77,97,114,107,101,114,95,57,34,32,61,
+32,34,229,134,141,231,148,159,228,189,141,231,189,174,227,130,146,227,131,158,227,131,188,227,130,171,227,131,188,49,48,227,129,171,232,168,173,229,174,154,34,10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_17;
+const char* jaJP_txt = (const char*) temp_binary_data_25;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_18[] =
+static const unsigned char temp_binary_data_26[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,64,0,73,68,65,84,120,1,172,189,221,207,174,237,118,214,245,188,111,151,237,106,3,182,208,66,172,213,13,211,74,64,136,88,
 26,18,137,108,152,136,27,24,117,75,119,76,220,209,13,255,39,55,221,213,196,13,77,52,38,26,117,67,35,17,81,240,3,130,224,71,72,33,197,82,138,88,90,161,107,121,252,142,99,28,227,60,175,251,126,230,251,174,22,175,103,62,215,121,158,99,28,31,99,140,235,186,
 159,57,153,239,236,226,171,159,251,3,63,255,253,15,93,223,215,253,171,175,180,106,255,149,190,124,177,36,176,121,178,223,23,248,43,192,11,2,166,216,205,219,220,8,84,104,88,44,71,35,254,135,94,237,3,174,10,69,190,251,227,254,89,221,210,217,198,132,104,
@@ -2265,7 +2522,7 @@ static const unsigned char temp_binary_data_18[] =
 127,115,69,120,181,79,248,220,163,72,175,192,160,208,127,163,126,54,103,30,117,48,213,158,67,17,169,192,199,223,200,148,165,45,250,94,230,102,123,157,128,237,253,29,69,19,228,57,29,162,56,211,8,253,123,37,151,6,28,127,108,124,126,117,86,190,229,116,224,
 252,250,71,192,79,48,243,248,55,95,216,17,232,24,2,38,116,226,22,156,8,125,57,112,218,193,137,250,44,179,126,5,218,217,115,42,61,209,212,139,192,255,7,26,135,30,11,110,146,105,186,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_18;
+const char* logo_png = (const char*) temp_binary_data_26;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -2284,6 +2541,14 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x5ea986b6:  numBytes = 1167; return arrow_left_highlighted_svg;
         case 0xad54f90b:  numBytes = 1255; return arrow_right_svg;
         case 0x53bb409f:  numBytes = 1265; return arrow_right_highlighted_svg;
+        case 0x58f4b0a3:  numBytes = 695; return next_button_svg;
+        case 0xe0989163:  numBytes = 599; return prev_button_svg;
+        case 0xd04c5437:  numBytes = 697; return next_button_highlighted_svg;
+        case 0x836514f7:  numBytes = 601; return prev_button_highlighted_svg;
+        case 0xa4568785:  numBytes = 1356; return loop_onesong_svg;
+        case 0x2948e819:  numBytes = 1366; return loop_onesong_highlighted_svg;
+        case 0x424dc432:  numBytes = 2037; return loop_playlist_svg;
+        case 0x70d18946:  numBytes = 2047; return loop_playlist_highlighted_svg;
         case 0x6e376459:  numBytes = 2714; return playlist_add_svg;
         case 0x30ca904c:  numBytes = 2073; return playlist_add_file_svg;
         case 0x27cafe60:  numBytes = 2075; return playlist_add_file_highlighted_svg;
@@ -2294,8 +2559,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb8878890:  numBytes = 2962; return playlist_edit_highlighted_svg;
         case 0xc6a6e0b6:  numBytes = 3211; return playlist_remove_svg;
         case 0x87efffca:  numBytes = 3213; return playlist_remove_highlighted_svg;
-        case 0x4c8ea738:  numBytes = 3021; return enUS_txt;
-        case 0x9153efee:  numBytes = 3937; return jaJP_txt;
+        case 0x4c8ea738:  numBytes = 4443; return enUS_txt;
+        case 0x9153efee:  numBytes = 7060; return jaJP_txt;
         case 0x78ded995:  numBytes = 121456; return logo_png;
         default: break;
     }
@@ -2312,6 +2577,14 @@ const char* namedResourceList[] =
     "arrow_left_highlighted_svg",
     "arrow_right_svg",
     "arrow_right_highlighted_svg",
+    "next_button_svg",
+    "prev_button_svg",
+    "next_button_highlighted_svg",
+    "prev_button_highlighted_svg",
+    "loop_onesong_svg",
+    "loop_onesong_highlighted_svg",
+    "loop_playlist_svg",
+    "loop_playlist_highlighted_svg",
     "playlist_add_svg",
     "playlist_add_file_svg",
     "playlist_add_file_highlighted_svg",
@@ -2335,6 +2608,14 @@ const char* originalFilenames[] =
     "arrow_left_highlighted.svg",
     "arrow_right.svg",
     "arrow_right_highlighted.svg",
+    "next_button.svg",
+    "prev_button.svg",
+    "next_button_highlighted.svg",
+    "prev_button_highlighted.svg",
+    "loop_onesong.svg",
+    "loop_onesong_highlighted.svg",
+    "loop_playlist.svg",
+    "loop_playlist_highlighted.svg",
     "playlist_add.svg",
     "playlist_add_file.svg",
     "playlist_add_file_highlighted.svg",

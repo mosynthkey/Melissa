@@ -51,6 +51,8 @@ private:
     
     std::unique_ptr<soundtouch::SoundTouch> soundTouch_;
     
+    PlaybackMode playbackMode_;
+    
     int32_t originalSampleRate_;
     size_t originalBufferLength_;
     
@@ -72,6 +74,8 @@ private:
     
     float bufferForSoundTouch_[2 * processLength_];
     bool needToReset_;
+    bool loop_;
+    bool shouldProcess_;
     std::mutex mutex_;
     
 #if defined(ENABLE_SPEED_TRAINING)
@@ -91,8 +95,8 @@ private:
     bool eqSwitch_;
     std::unique_ptr<Equalizer> eq_;
     
-    
     // MelissaModelListener
+    void playbackModeChanged(PlaybackMode mode) override;
     void musicVolumeChanged(float volume) override;
     void pitchChanged(int semitone) override;
     void speedChanged(int speed) override;

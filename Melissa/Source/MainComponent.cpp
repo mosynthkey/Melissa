@@ -86,7 +86,7 @@ private:
     float ratio_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), shouldExit_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), nextFileNameShown_(false), shouldExit_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     
@@ -185,6 +185,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     
     deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
     
+    model_->setPlaybackMode(static_cast<PlaybackMode>(dataSource_->global_.playMode_));
+    
     dataSource_->restorePreviousState();
     uiState_ = dataSource_->getPreviousUIState();
     updateFileChooserTab(static_cast<FileChooserTab>(uiState_.selectedFileBrowserTab_));
@@ -208,6 +210,9 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
         MelissaModalDialog::show(component, TRANS("tutorial"));
     }
 #endif
+    
+    updatePlayBackModeButton();
+    showPreferencesDialog();
 }
 
 MainComponent::~MainComponent()
@@ -310,6 +315,18 @@ void MainComponent::createUI()
     addAndMakeVisible(menuButton_.get());
     
     {
+        iconImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
+        iconImages_[kIcon_PrevHighlighted] = Drawable::createFromImageData(BinaryData::prev_button_highlighted_svg, BinaryData::prev_button_highlighted_svgSize);
+        
+        iconImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
+        iconImages_[kIcon_NextHighlighted] = Drawable::createFromImageData(BinaryData::next_button_highlighted_svg, BinaryData::next_button_highlighted_svgSize);
+        
+        iconImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
+        iconImages_[kIcon_LoopOneSongHighlighted] = Drawable::createFromImageData(BinaryData::loop_onesong_highlighted_svg, BinaryData::loop_onesong_highlighted_svgSize);
+        
+        iconImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
+        iconImages_[kIcon_LoopPlaylistHighlighted] = Drawable::createFromImageData(BinaryData::loop_playlist_highlighted_svg, BinaryData::loop_playlist_highlighted_svgSize);
+        
         iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
         iconImages_[kIcon_ArrowLeftHighlighted] = Drawable::createFromImageData(BinaryData::arrow_left_highlighted_svg, BinaryData::arrow_left_highlighted_svgSize);
         
@@ -355,13 +372,36 @@ void MainComponent::createUI()
     {
         auto section = sectionComponents_[kSection_Song].get();
     
+        playbackModeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSongHighlighted].get(), iconImages_[kIcon_LoopOneSongHighlighted].get());
+        playbackModeButton_->onClick = [&]()
+        {
+            if (model_->getPlaybackMode() == kPlaybackMode_LoopOneSong)
+            {
+                model_->setLoopPosRatio(0.f, 1.f);
+                model_->setPlaybackMode(kPlaybackMode_LoopPlaylistSongs);
+            }
+            else
+            {
+                model_->setPlaybackMode(kPlaybackMode_LoopOneSong);
+            }
+            updatePlayBackModeButton();
+        };
+        section->addAndMakeVisible(playbackModeButton_.get());
+        
         playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
         playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
         section->addAndMakeVisible(playPauseButton_.get());
         
-        toHeadButton_ = make_unique<MelissaToHeadButton>("ToHeadButton");
-        toHeadButton_->onClick = [this]() { toHead(); };
-        section->addAndMakeVisible(toHeadButton_.get());
+        prevButton_ = make_unique<DrawableButton>("PrevButton", DrawableButton::ImageRaw);
+        prevButton_->setImages(iconImages_[kIcon_Prev].get(), iconImages_[kIcon_PrevHighlighted].get());
+        prevButton_->onClick = [this]() { prev(); };
+        section->addAndMakeVisible(prevButton_.get());
+        
+        nextButton_ = make_unique<DrawableButton>("NextButton", DrawableButton::ImageRaw);
+        nextButton_->setImages(iconImages_[kIcon_Next].get(), iconImages_[kIcon_NextHighlighted].get());
+        nextButton_->onClick = [this]() { next(); };
+        section->addAndMakeVisible(nextButton_.get());
         
         timeLabel_ = make_unique<Label>();
         timeLabel_->setJustificationType(Justification::centred);
@@ -1118,22 +1158,33 @@ void MainComponent::resized()
         int x = 10;
         const int centerY = 30 + (section->getHeight() - 30) / 2;
         
-        toHeadButton_->setSize(16, 16);
-        x += (toHeadButton_->getWidth() / 2);
-        toHeadButton_->setCentrePosition(x, centerY);
+        playbackModeButton_->setSize(28, 22);
+        x += (playbackModeButton_->getWidth() / 2);
+        playbackModeButton_->setCentrePosition(x, centerY);
+        x = playbackModeButton_->getRight() + 20;
         
-        x += 20;
+        prevButton_->setSize(16, 17);
+        x += (prevButton_->getWidth() / 2);
+        prevButton_->setCentrePosition(x, centerY);
+        x = prevButton_->getRight() + 10;
+        
         playPauseButton_->setSize(52, 52);
         x += (playPauseButton_->getWidth() / 2);
         playPauseButton_->setCentrePosition(x, centerY);
+        x = playPauseButton_->getRight() + 10;
+        
+        nextButton_->setSize(16, 17);
+        x += (nextButton_->getWidth() / 2);
+        nextButton_->setCentrePosition(x, centerY);
+        x = nextButton_->getRight() + 10;
         
         x = section->getWidth() - 10;
         pitchButton_->setSize(pitchSpeedOutputWidth, controlHeight);
         x -= pitchButton_->getWidth() / 2;
         pitchButton_->setCentrePosition(x, centerY + 14);
         
-        x = playPauseButton_->getRight() + 10;
-        const int labelWidth = (pitchButton_->getX() - 10) - (playPauseButton_->getRight() + 20);
+        x = nextButton_->getRight() + 10;
+        const int labelWidth = (pitchButton_->getX() - 10) - x;
         fileNameLabel_->setBounds(x, centerY - 20, labelWidth, 20);
         timeLabel_->setBounds(x, centerY, labelWidth, 20);
     }
@@ -1442,6 +1493,11 @@ void MainComponent::run()
     {
         if (dataSource_->isFileLoaded())
         {
+            if (model_->shouldLoadNextSong(true))
+            {
+                MessageManager::callAsync([&]() { loadNextSong(); });
+            }
+            
             if (audioEngine_->isBufferSet() && audioEngine_->needToProcess())
             {
                 audioEngine_->process();
@@ -1478,6 +1534,7 @@ void MainComponent::exitSignalSent()
     dataSource_->global_.height_  = getHeight();
     const auto stateXml = deviceManager.createStateXml();
     if (stateXml != nullptr) dataSource_->global_.device_  = stateXml->toString();
+    dataSource_->global_.playMode_ = static_cast<int>(model_->getPlaybackMode());
     
     const int selectedFileBrowserTab = (fileBrowserComponent_->isVisible()) ? 0 : (playlistComponent_->isVisible() ? 1 : 2);
     const int selectedPlaylist = playlistComponent_->getSelected();
@@ -1494,10 +1551,47 @@ void MainComponent::timerCallback()
     timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
     
+    const auto remainingTimeSec = (model_->getLengthMSec() - model_->getPlayingPosMSec()) / 1000.f;
+    if (model_->getPlaybackMode() == kPlaybackMode_LoopPlaylistSongs && model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && remainingTimeSec < 10)
+    {
+        if (!nextFileNameShown_)
+        {
+            const auto nextSongFilePath = getNextSongFilePath();
+            if (nextSongFilePath.isNotEmpty())
+            {
+                const auto songName = File(nextSongFilePath).getFileNameWithoutExtension();
+                fileNameLabel_->setText("Next ... \"" + songName + "\"");
+            }
+            nextFileNameShown_ = true;
+        }
+    }
+    else if (nextFileNameShown_)
+    {
+        const auto songName = File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension();
+        fileNameLabel_->setText(songName);
+        nextFileNameShown_ = false;
+    }
+    
     if (shouldUpdateBpm_)
     {
         model_->setBpm((analyzedBpm_ == 0) ? kBpmMeasureFailed : analyzedBpm_);
         shouldUpdateBpm_ = false;
+    }
+}
+
+void MainComponent::updatePlayBackModeButton()
+{
+    if (model_->getPlaybackMode() == kPlaybackMode_LoopOneSong)
+    {
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSongHighlighted].get(), iconImages_[kIcon_LoopOneSongHighlighted].get());
+        playbackModeButton_->setTooltip(TRANS("tooltip_playback_mode_one"));
+        nextButton_->setEnabled(false);
+    }
+    else
+    {
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopPlaylistHighlighted].get(), iconImages_[kIcon_LoopPlaylistHighlighted].get());
+        playbackModeButton_->setTooltip(TRANS("tooltip_playback_mode_playlist"));
+        nextButton_->setEnabled(true);
     }
 }
 
@@ -1531,10 +1625,37 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
 }
 
-void MainComponent::toHead()
+void MainComponent::prev()
 {
     if (model_ == nullptr) return;
-    model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+    
+    const auto mode = model_->getPlaybackMode();
+    if (mode == kPlaybackMode_LoopOneSong)
+    {
+        model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+    }
+    else if (mode == kPlaybackMode_LoopPlaylistSongs)
+    {
+        if (model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && model_->getPlayingPosMSec() < 1000)
+        {
+            loadPrevSong();
+        }
+        else
+        {
+            model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+        }
+    }
+}
+
+void MainComponent::next()
+{
+    if (model_ == nullptr) return;
+    
+    const auto mode = model_->getPlaybackMode();
+    if (mode == kPlaybackMode_LoopPlaylistSongs)
+    {
+        loadNextSong();
+    }
 }
 
 void MainComponent::resetLoop()
@@ -1542,44 +1663,104 @@ void MainComponent::resetLoop()
     model_->setLoopPosRatio(0.f, 1.f);
 }
 
-void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
+void MainComponent::loadPrevSong()
 {
-    // measure
-    const int marginNarrow = 10 * widthRatio;
-    int numOfGroups = 0;
-    int totalWidthOfAllComponents = 0;
-    int numOfComponents = 0;
-    for (auto&& group : components_)
+    const auto nextSongFilePath = getPrevSongFilePath();
+    if (nextSongFilePath.isNotEmpty())
     {
-        numOfGroups += group.size() - 1;
-        for (auto&& component : group)
-        {
-            totalWidthOfAllComponents += component->getWidth() * widthRatio;
-            ++numOfComponents;
-        }
-    }
-    const float marginWide = (bounds.getWidth() - totalWidthOfAllComponents - marginNarrow * numOfGroups) / static_cast<float>(components_.size() - 1);
-    
-    // arrange
-    if (marginWide < marginNarrow && 0.5f <= widthRatio)
-    {
-        arrangeEvenly(bounds, components_, widthRatio - 0.05);
+        dataSource_->loadFileAsync(nextSongFilePath);
     }
     else
     {
-        float x = bounds.getX(), y = bounds.getY();
-        for (auto&& group : components_)
+        model_->setPlaybackStatus(kPlaybackStatus_Pause);
+        model_->setPlayingPosRatio(0.f);
+    }
+}
+
+void MainComponent::loadNextSong()
+{
+    const auto nextSongFilePath = getNextSongFilePath();
+    if (nextSongFilePath.isNotEmpty())
+    {
+        dataSource_->loadFileAsync(nextSongFilePath);
+    }
+    else
+    {
+        model_->setPlaybackStatus(kPlaybackStatus_Pause);
+        model_->setPlayingPosRatio(0.f);
+    }
+}
+
+String MainComponent::getPrevSongFilePath()
+{
+    const auto currentFilePath = dataSource_->getCurrentSongFilePath();
+    String nextFilePathToLoad = "";
+    
+    MelissaDataSource::FilePathList filePathList;
+    
+    dataSource_->getPlaylist(playlistComponent_->getSelected(), filePathList);
+    
+    bool found = false;
+    int fileIndex = 0;
+    for (; fileIndex < filePathList.size(); ++fileIndex)
+    {
+        if (filePathList[fileIndex] == currentFilePath)
         {
-            for (auto&& component : group)
-            {
-                component->setTopLeftPosition(x, y);
-                component->setSize(component->getWidth() * widthRatio, component->getHeight());
-                x += component->getWidth();
-                x += marginNarrow;
-            }
-            x += (marginWide - marginNarrow);
+            found = true;
+            break;
         }
     }
+    
+    if (found)
+    {
+        --fileIndex;
+        if (0 <= fileIndex)
+        {
+            nextFilePathToLoad = filePathList[fileIndex];
+        }
+        else
+        {
+            nextFilePathToLoad = filePathList[filePathList.size() - 1];
+        }
+    }
+    
+    return File(nextFilePathToLoad).existsAsFile() ? nextFilePathToLoad : "";
+}
+
+String MainComponent::getNextSongFilePath()
+{
+    const auto currentFilePath = dataSource_->getCurrentSongFilePath();
+    String nextFilePathToLoad = "";
+    
+    MelissaDataSource::FilePathList filePathList;
+    
+    dataSource_->getPlaylist(playlistComponent_->getSelected(), filePathList);
+    
+    bool found = false;
+    int fileIndex = 0;
+    for (; fileIndex < filePathList.size(); ++fileIndex)
+    {
+        if (filePathList[fileIndex] == currentFilePath)
+        {
+            found = true;
+            break;
+        }
+    }
+    
+    if (found)
+    {
+        ++fileIndex;
+        if (fileIndex < filePathList.size())
+        {
+            nextFilePathToLoad = filePathList[fileIndex];
+        }
+        else
+        {
+            nextFilePathToLoad = filePathList[0];
+        }
+    }
+    
+    return File(nextFilePathToLoad).existsAsFile() ? nextFilePathToLoad : "";
 }
 
 void MainComponent::musicVolumeChanged(float volume)

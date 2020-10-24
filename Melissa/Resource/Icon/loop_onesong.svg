@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="22px" viewBox="0 0 28 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>loop_onesong</title>
+    <g id="Ver2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.8" opacity="0.4">
+        <g id="A6" transform="translate(-536.000000, -454.000000)" fill="#FFFFFF">
+            <g id="loop_onesong" transform="translate(536.000000, 454.000000)">
+                <path d="M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z" id="Rectangle"></path>
+                <rect id="Rectangle" x="24" y="2" width="2" height="11"></rect>
+                <path d="M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z" id="Rectangle"></path>
+                <rect id="Rectangle" x="2" y="9" width="2" height="11"></rect>
+                <polygon id="Triangle" points="3 3 6 9 0 9"></polygon>
+                <polygon id="Triangle" transform="translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) " points="25 13 28 19 22 19"></polygon>
+                <rect id="Rectangle" x="13" y="6" width="2" height="10" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

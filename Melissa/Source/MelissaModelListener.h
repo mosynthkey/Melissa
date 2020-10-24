@@ -14,6 +14,13 @@ enum PlaybackStatus
     kPlaybackStatus_Stop
 };
 
+enum PlaybackMode
+{
+    kPlaybackMode_LoopOneSong,
+    kPlaybackMode_LoopPlaylistSongs,
+    kNumOfPlaybackModes
+};
+
 enum OutputMode : int
 {
     kOutputMode_LR,
@@ -38,6 +45,7 @@ public:
     virtual ~MelissaModelListener() {};
     
     virtual void playbackStatusChanged(PlaybackStatus status) {}
+    virtual void playbackModeChanged(PlaybackMode mode) {}
     virtual void musicVolumeChanged(float volume) {}
     virtual void pitchChanged(int semitone) {}
     virtual void speedChanged(int speed) {}

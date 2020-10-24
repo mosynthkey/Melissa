@@ -45,6 +45,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (g->hasProperty("width"))    global_.width_    = g->getProperty("width");
         if (g->hasProperty("height"))   global_.height_   = g->getProperty("height");
         if (g->hasProperty("device"))   global_.device_   = g->getProperty("device");
+        if (g->hasProperty("playmode")) global_.playMode_ = g->getProperty("playmode");
         
         bool shortcutRegistered = false;
         if (g->hasProperty("shortcut"))
@@ -236,6 +237,7 @@ void MelissaDataSource::saveSettingsFile()
     global->setProperty("width",    global_.width_);
     global->setProperty("height",   global_.height_);
     global->setProperty("device",   global_.device_);
+    global->setProperty("playmode", global_.playMode_);
     auto shortcut = new DynamicObject();
     {
         for (auto&& s : global_.shortcut_)
@@ -448,6 +450,11 @@ void MelissaDataSource::setDefaultShortcuts()
     global_.shortcut_["CC #16"] = "SetEqFreqValue";
     global_.shortcut_["CC #17"] = "SetEqGainValue";
     global_.shortcut_["CC #18"] = "SetEqQValue";
+}
+
+std::map<String, String> MelissaDataSource::getAllAssignedShortcuts() const
+{
+    return global_.shortcut_;
 }
 
 String MelissaDataSource::getAssignedShortcut(const String& eventName)

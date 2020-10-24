@@ -46,6 +46,7 @@ public:
         int width_;
         int height_;
         String device_;
+        int playMode_;
         std::map<String, String> shortcut_;
         
         Global() : version_(ProjectInfo::versionString), width_(1400), height_(860)
@@ -215,6 +216,7 @@ public:
     
     // Shortcut
     void setDefaultShortcuts();
+    std::map<String, String> getAllAssignedShortcuts() const;
     String getAssignedShortcut(const String& eventName);
     void registerShortcut(const String& eventName, const String& command);
     void deregisterShortcut(const String& eventName);
