@@ -339,6 +339,7 @@ private:
     
     std::vector<float> timeIndicesMSec_;
     
+    bool prepareingNextSong_;
     void loadPrevSong();
     void loadNextSong();
     String getPrevSongFilePath();
