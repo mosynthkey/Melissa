@@ -35,7 +35,6 @@
 #include "MelissaPreferencesComponent.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
-#include "MelissaToHeadButton.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
@@ -127,11 +126,13 @@ public:
     // Timer
     void timerCallback() override;
     
+    void updatePlayBackModeButton();
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
     void updateListMemoTab(ListMemoTab tab);
     
-    void toHead();
+    void prev();
+    void next();
     void resetLoop();
     void addToPracticeList(String name);
     void saveMemo();
@@ -169,7 +170,9 @@ private:
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
-    std::unique_ptr<MelissaToHeadButton> toHeadButton_;
+    std::unique_ptr<DrawableButton> prevButton_;
+    std::unique_ptr<DrawableButton> nextButton_;
+    std::unique_ptr<DrawableButton> playbackModeButton_;
     
     std::unique_ptr<Label> timeLabel_;
     std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
@@ -191,6 +194,14 @@ private:
     
     enum
     {
+        kIcon_Prev,
+        kIcon_PrevHighlighted,
+        kIcon_Next,
+        kIcon_NextHighlighted,
+        kIcon_LoopOneSong,
+        kIcon_LoopOneSongHighlighted,
+        kIcon_LoopPlaylist,
+        kIcon_LoopPlaylistHighlighted,
         kIcon_ArrowLeft,
         kIcon_ArrowLeftHighlighted,
         kIcon_ArrowRight,
@@ -320,16 +331,18 @@ private:
     std::vector<Component*> lafList_;
     
     String fileName_, fileFullPath_;
-    
     File settingsDir_, settingsFile_;
-    
+    bool nextFileNameShown_;    
     bool shouldExit_;
     
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     
     std::vector<float> timeIndicesMSec_;
     
-    void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
+    void loadPrevSong();
+    void loadNextSong();
+    String getPrevSongFilePath();
+    String getNextSongFilePath();
     
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
