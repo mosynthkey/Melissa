@@ -9,6 +9,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaLookAndFeel.h"
+#include "MelissaShortcutComponent.h"
 
 // #define ENABLE_SHORTCUT_EDITOR
 
@@ -21,8 +22,7 @@ public:
     enum Tab
     {
         kTab_AudioMidi,
-        kTab_KeyShortCut,
-        kTab_MidiAssign,
+        kTab_ShortCut,
         kNumOfTabs
     };
     void updateTab();
@@ -36,6 +36,8 @@ private:
     
     AudioDeviceManager* audioDeviceManager_;
     std::unique_ptr<AudioDeviceSelectorComponent> deviceComponent_;
+    
+    std::unique_ptr<MelissaShortcutComponent> shortcutComponent_;
     
     MelissaLookAndFeel laf_;
     MelissaLookAndFeel_Tab tabLaf_;

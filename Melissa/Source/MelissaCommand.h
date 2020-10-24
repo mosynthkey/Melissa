@@ -15,7 +15,7 @@ class MelissaCommand
 {
 public:
     static void excuteCommand(const String& commandAsString, float value);
-    static String getFunctionDescription(const String& commandAsString);
+    static String getCommandDescription(const String& commandAsString);
     
     // Singleton
     static MelissaCommand* getInstance() { return &instance_; }
@@ -33,6 +33,5 @@ private:
     MelissaDataSource* dataSource_;
     MelissaModel* model_;
     
-    using DescriptionFunctionPair = std::pair<String, std::function<void(float)>>;
-    static inline std::map<String, DescriptionFunctionPair> commands_;
+    static inline std::map<String, std::function<void(float)>> commands_;
 };
