@@ -86,7 +86,7 @@ private:
     float ratio_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), nextFileNameShown_(false), shouldExit_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), nextFileNameShown_(false), shouldExit_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     
@@ -1019,7 +1019,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
     bufferToFill.clearActiveBufferRegion();
     
     float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
-    if (model_->getPlaybackStatus() == kPlaybackStatus_Playing)
+    if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
     {
         audioEngine_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
     }
@@ -1495,7 +1495,11 @@ void MainComponent::run()
         {
             if (model_->shouldLoadNextSong(true))
             {
-                MessageManager::callAsync([&]() { loadNextSong(); });
+                prepareingNextSong_ = true;
+                MessageManager::callAsync([&]() {
+                    loadNextSong();
+                    prepareingNextSong_ = false;
+                });
             }
             
             if (audioEngine_->isBufferSet() && audioEngine_->needToProcess())

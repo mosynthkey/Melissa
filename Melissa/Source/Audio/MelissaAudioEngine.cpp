@@ -368,6 +368,16 @@ void MelissaAudioEngine::resetProcessedBuffer()
     needToReset_ = false;
     shouldProcess_ = true;
     
+    if (playbackMode_ == kPlaybackMode_LoopOneSong)
+    {
+        loop_ = true;
+    }
+    else if (playbackMode_ == kPlaybackMode_LoopPlaylistSongs)
+    {
+        const bool loopRangeWholeSong = (aIndex_ == 0 && bIndex_ == originalBufferLength_);
+        loop_ = !loopRangeWholeSong;
+    }
+    
 #if defined(ENABLE_SPEED_TRAINING)
     count_ = 0;
 #endif
@@ -404,17 +414,7 @@ std::string MelissaAudioEngine::getStatusString() const
 void MelissaAudioEngine::playbackModeChanged(PlaybackMode mode)
 {
     if (playbackMode_ == mode) return;
-    
     playbackMode_ = mode;
-    if (playbackMode_ == kPlaybackMode_LoopOneSong)
-    {
-        loop_ = true;
-    }
-    else if (playbackMode_ == kPlaybackMode_LoopPlaylistSongs)
-    {
-        const bool loopRangeWholeSong = (aIndex_ == 0 && bIndex_ == originalBufferLength_);
-        loop_ = !loopRangeWholeSong;
-    }
     
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
