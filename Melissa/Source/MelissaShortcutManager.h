@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-class MelissaShortcutManager
+class MelissaShortcutManager : public Timer
 {
 public:
     // Singleton
@@ -31,8 +31,11 @@ private:
     ~MelissaShortcutManager() {}
     static MelissaShortcutManager instance_;
 
+    void timerCallback() override;
     bool processControlMessage(const String& controlMessage, float value);
     
     MelissaCommand* command_;
-    uint32 noteOnTimeCount[128];
+    
+    enum { maxNoteNumber = 128 };
+    int noteOnHistory[maxNoteNumber];
 };
