@@ -26,17 +26,11 @@ namespace BinaryData
     extern const char*   arrow_right_highlighted_svg;
     const int            arrow_right_highlighted_svgSize = 1265;
 
-    extern const char*   next_button_svg;
-    const int            next_button_svgSize = 695;
+    extern const char*   down_svg;
+    const int            down_svgSize = 618;
 
-    extern const char*   prev_button_svg;
-    const int            prev_button_svgSize = 599;
-
-    extern const char*   next_button_highlighted_svg;
-    const int            next_button_highlighted_svgSize = 697;
-
-    extern const char*   prev_button_highlighted_svg;
-    const int            prev_button_highlighted_svgSize = 601;
+    extern const char*   down_highlighted_svg;
+    const int            down_highlighted_svgSize = 620;
 
     extern const char*   loop_onesong_svg;
     const int            loop_onesong_svgSize = 1356;
@@ -49,6 +43,12 @@ namespace BinaryData
 
     extern const char*   loop_playlist_highlighted_svg;
     const int            loop_playlist_highlighted_svgSize = 2047;
+
+    extern const char*   next_button_svg;
+    const int            next_button_svgSize = 695;
+
+    extern const char*   next_button_highlighted_svg;
+    const int            next_button_highlighted_svgSize = 697;
 
     extern const char*   playlist_add_svg;
     const int            playlist_add_svgSize = 2714;
@@ -80,17 +80,29 @@ namespace BinaryData
     extern const char*   playlist_remove_highlighted_svg;
     const int            playlist_remove_highlighted_svgSize = 3213;
 
+    extern const char*   prev_button_svg;
+    const int            prev_button_svgSize = 599;
+
+    extern const char*   prev_button_highlighted_svg;
+    const int            prev_button_highlighted_svgSize = 601;
+
+    extern const char*   up_svg;
+    const int            up_svgSize = 516;
+
+    extern const char*   up_highlighted_svg;
+    const int            up_highlighted_svgSize = 518;
+
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 4443;
+    const int            enUS_txtSize = 4590;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 7060;
+    const int            jaJP_txtSize = 7224;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 121456;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 27;
+    const int namedResourceListSize = 31;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

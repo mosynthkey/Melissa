@@ -103,6 +103,21 @@ public:
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     
+    void moveSelected(int incDecValue)
+    {
+        if (target_ == kTarget_History) return;
+        
+        const int fromIndex = getSelectedRow();
+        const int toIndex   = getSelectedRow() + incDecValue;
+        if (toIndex < 0 || list_.size() <= toIndex) return;
+        
+        const size_t index = static_cast<size_t>(target_);
+        dataSource_->playlists_[index].list_.swap(fromIndex, toIndex);
+        selectRow(toIndex);
+        
+        updateList();
+    }
+    
     void updateList()
     {
         if (target_ == kTarget_History)

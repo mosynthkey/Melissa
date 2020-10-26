@@ -18,12 +18,9 @@
         <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>
         <FILE id="Z6gLOK" name="arrow_right_highlighted.svg" compile="0" resource="1"
               file="Resource/Icon/arrow_right_highlighted.svg"/>
-        <FILE id="bpsEcP" name="next_button.svg" compile="0" resource="1" file="Resource/Icon/next_button.svg"/>
-        <FILE id="EmNChd" name="prev_button.svg" compile="0" resource="1" file="Resource/Icon/prev_button.svg"/>
-        <FILE id="C6xnKZ" name="next_button_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/next_button_highlighted.svg"/>
-        <FILE id="BI2L5c" name="prev_button_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/prev_button_highlighted.svg"/>
+        <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="Resource/Icon/down.svg"/>
+        <FILE id="LBhT2M" name="down_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/down_highlighted.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="Resource/Icon/loop_onesong.svg"/>
         <FILE id="T6hmec" name="loop_onesong_highlighted.svg" compile="0" resource="1"
@@ -32,6 +29,9 @@
               file="Resource/Icon/loop_playlist.svg"/>
         <FILE id="Nn14Gr" name="loop_playlist_highlighted.svg" compile="0"
               resource="1" file="Resource/Icon/loop_playlist_highlighted.svg"/>
+        <FILE id="bpsEcP" name="next_button.svg" compile="0" resource="1" file="Resource/Icon/next_button.svg"/>
+        <FILE id="C6xnKZ" name="next_button_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/next_button_highlighted.svg"/>
         <FILE id="hK6blR" name="playlist_add.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_add.svg"/>
         <FILE id="QLXXHx" name="playlist_add_file.svg" compile="0" resource="1"
@@ -52,6 +52,12 @@
               file="Resource/Icon/playlist_remove.svg"/>
         <FILE id="XJKNra" name="playlist_remove_highlighted.svg" compile="0"
               resource="1" file="Resource/Icon/playlist_remove_highlighted.svg"/>
+        <FILE id="EmNChd" name="prev_button.svg" compile="0" resource="1" file="Resource/Icon/prev_button.svg"/>
+        <FILE id="BI2L5c" name="prev_button_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/prev_button_highlighted.svg"/>
+        <FILE id="vnhVAn" name="up.svg" compile="0" resource="1" file="Resource/Icon/up.svg"/>
+        <FILE id="Y80DCw" name="up_highlighted.svg" compile="0" resource="1"
+              file="Resource/Icon/up_highlighted.svg"/>
       </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
