@@ -41,6 +41,8 @@ private:
     std::unique_ptr<DrawableButton> renameButton_;
     std::unique_ptr<DrawableButton> removeButton_;
     
+    std::unique_ptr<DrawableButton> upButton_;
+    std::unique_ptr<DrawableButton> downButton_;
     std::unique_ptr<DrawableButton> addFileButton_;
     std::unique_ptr<DrawableButton> addPlayingButton_;
     
@@ -49,6 +51,10 @@ private:
     
     enum
     {
+        kIcon_Up,
+        kIcon_UpHighlighted,
+        kIcon_Down,
+        kIcon_DownHighlighted,
         kIcon_PlaylistAdd,
         kIcon_PlaylistAddHighlighted,
         kIcon_PlaylistAddFile,
