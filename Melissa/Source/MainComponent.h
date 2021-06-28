@@ -285,7 +285,7 @@ private:
         kSection_Speed,
         kSection_Metronome,
         kSection_Eq,
-        kSection_Output,
+        kSection_Mixer,
         kNumOfSections
     };
     std::array<std::unique_ptr<MelissaSectionComponent>, kNumOfSections> sectionComponents_;

@@ -9,7 +9,7 @@
 
 MelissaShortcutManager MelissaShortcutManager::instance_;
 
-MelissaShortcutManager::MelissaShortcutManager()
+MelissaShortcutManager::MelissaShortcutManager() : enable_(true)
 {
     command_ = MelissaCommand::getInstance();
 }
@@ -42,6 +42,23 @@ bool MelissaShortcutManager::processMIDIMessage(const MidiMessage& message)
     return false;
 }
 
+void MelissaShortcutManager::addListener(MelissaShortcutListener* listener)
+{
+    listeners_.emplace_back(listener);
+}
+
+void MelissaShortcutManager::removeListener(MelissaShortcutListener* listener)
+{
+    for (size_t listenerIndex = 0; listenerIndex < listeners_.size(); ++listenerIndex)
+    {
+        if (listeners_[listenerIndex] == listener)
+        {
+            listeners_.erase(listeners_.begin() + listenerIndex);
+            return;
+        }
+    }
+}
+
 void MelissaShortcutManager::timerCallback()
 {
     for (int noteNumber = 0; noteNumber < maxNoteNumber; ++noteNumber)
@@ -61,7 +78,12 @@ void MelissaShortcutManager::timerCallback()
 
 bool MelissaShortcutManager::processControlMessage(const String& controlMessage, float value)
 {
-    printf("%s - %f\n", controlMessage.toRawUTF8(), value);
-    command_->excuteCommand(MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage) , value);
+    for (auto&& l : listeners_)
+    {
+        MessageManager::callAsync([&, l, controlMessage]() { l->controlMessageReceived(controlMessage); });
+    }
+    
+    if (enable_) command_->excuteCommand(MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage) , value);
+    
     return true;
 }
