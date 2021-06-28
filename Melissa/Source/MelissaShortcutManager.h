@@ -12,6 +12,13 @@
 #include <string>
 #include <vector>
 
+class MelissaShortcutListener
+{
+public:
+    virtual ~MelissaShortcutListener() {};
+    virtual void controlMessageReceived(const String& controlMessage) = 0;
+};
+
 class MelissaShortcutManager : public Timer
 {
 public:
@@ -22,14 +29,19 @@ public:
     MelissaShortcutManager(MelissaShortcutManager&&) = delete;
     MelissaShortcutManager& operator=(MelissaShortcutManager&&) = delete;
     
+    void setEnable(bool enable) { enable_ = enable; }
     bool processKeyboardMessage(const String& keyboardDescription);
     bool processMIDIMessage(const MidiMessage& message);
+    
+    void addListener(MelissaShortcutListener* listener);
+    void removeListener(MelissaShortcutListener* listener);
     
 private:
     // Singleton
     MelissaShortcutManager();
     ~MelissaShortcutManager() {}
     static MelissaShortcutManager instance_;
+    bool enable_;
 
     void timerCallback() override;
     bool processControlMessage(const String& controlMessage, float value);
@@ -38,4 +50,6 @@ private:
     
     enum { maxNoteNumber = 128 };
     int noteOnHistory[maxNoteNumber];
+    
+    std::vector<MelissaShortcutListener*> listeners_;
 };

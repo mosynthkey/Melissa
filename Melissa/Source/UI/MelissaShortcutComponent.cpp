@@ -11,6 +11,8 @@
 #include "MelissaShortcutComponent.h"
 #include "MelissaUISettings.h"
 
+
+
 class MelissaShortcutComponent::ShortcutListBox : public MelissaDataSourceListener,
                                                   public TableListBox,
                                                   public TableListBoxModel
@@ -94,16 +96,58 @@ private:
 
 MelissaShortcutComponent::MelissaShortcutComponent()
 {
+    commandLabel_ = std::make_unique<Label>();
+    commandLabel_->setJustificationType(Justification::centred);
+    commandLabel_->setFont(MelissaUISettings::getFontSizeMain());
+    commandLabel_->setText("Command", dontSendNotification);
+    commandLabel_->setColour(Label::backgroundColourId, Colours::black);
+    commandLabel_->setColour(Label::textColourId, Colours::grey);
+    addAndMakeVisible(commandLabel_.get());
+    
+    assignCombobox_ = std::make_unique<MelissaCommandComboBox>();
+    assignCombobox_->onSelectedCommandChanged_ = [&](const String& command)
+    {
+        printf("command = %s\n", command.toRawUTF8());
+    };
+    addAndMakeVisible(assignCombobox_.get());
+    
     shortcutListBox_ = std::make_unique<ShortcutListBox>();
     addAndMakeVisible(shortcutListBox_.get());
+    
+    initAssignBox();
+    
+    shortcutManager_ = MelissaShortcutManager::getInstance();
+    shortcutManager_->setEnable(false);
+    shortcutManager_->addListener(this);
 }
 
 MelissaShortcutComponent::~MelissaShortcutComponent()
 {
+    shortcutManager_->removeListener(this);
+    shortcutManager_->setEnable(true);
+}
+
+void MelissaShortcutComponent::controlMessageReceived(const String& controlMessage)
+{
+    printf("controlMessageReceived : %s\n", controlMessage.toRawUTF8());
     
+    const auto assignedCommand = MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage);
+    commandLabel_->setText(controlMessage, dontSendNotification);
+    assignCombobox_->select(assignedCommand);
 }
 
 void MelissaShortcutComponent::resized()
 {
-    shortcutListBox_->setBounds(getLocalBounds().reduced(10, 10));
+    commandLabel_->setBounds(10, 10, 200, 30);
+    
+    int width = getWidth() - 30 - commandLabel_->getRight();
+    assignCombobox_->setBounds(commandLabel_->getRight(), 10, width, 30);
+    
+    width = getWidth() - 20;
+    int y = assignCombobox_->getBottom() + 40;
+    shortcutListBox_->setBounds(10, y, width, getHeight() - y);
+}
+
+void MelissaShortcutComponent::initAssignBox()
+{
 }

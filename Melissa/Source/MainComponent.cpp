@@ -360,7 +360,7 @@ void MainComponent::createUI()
         "Speed",
         "Metronome",
         "EQ",
-        "Output"
+        "Mixer"
     };
     for (size_t sectionIndex = 0; sectionIndex < kNumOfSections; ++sectionIndex)
     {
@@ -793,7 +793,7 @@ void MainComponent::createUI()
     }
     
     {
-        auto section = sectionComponents_[kSection_Output].get();
+        auto section = sectionComponents_[kSection_Mixer].get();
         
         outputModeComboBox_ = make_unique<ComboBox>();
         outputModeComboBox_->setTooltip(TRANS("output_mode"));
@@ -1142,7 +1142,7 @@ void MainComponent::resized()
     const int speedWidth = totalSectionWidth * 0.4;
     const int metronomeWidth = songWidth;
     const int eqWidth        = loopWidth;
-    const int outputWidth    = speedWidth;
+    const int mixerWidth     = speedWidth;
     constexpr int controlHeight = 30;
     constexpr int controlAWidthMin = 120; // incDecButton etc..
     constexpr int controlBWidthMin = controlAWidthMin + 20;
@@ -1301,8 +1301,8 @@ void MainComponent::resized()
     
     // Output
     {
-        auto section = sectionComponents_[kSection_Output].get();
-        section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, outputWidth, 100);
+        auto section = sectionComponents_[kSection_Mixer].get();
+        section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, mixerWidth, 100);
         
         const int controlWidth = (section->getWidth() - pitchSpeedOutputWidth - 10 * 5) / 3;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
