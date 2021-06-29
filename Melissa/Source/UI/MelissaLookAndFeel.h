@@ -237,7 +237,7 @@ public:
     
     virtual void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.1f));
+        g.setColour(Colour(MelissaUISettings::getTitleBarColour()));
         g.fillAll();
     }
     
