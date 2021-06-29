@@ -31,7 +31,12 @@ public:
     
     static uint32_t getDialogBackgoundColour()
     {
-        return 0xFF1B1F25;
+        return 0xff262C38;
+    }
+    
+    static uint32_t getTitleBarColour()
+    {
+        return 0xff38404D;
     }
     
     static int getFontSizeMain()
