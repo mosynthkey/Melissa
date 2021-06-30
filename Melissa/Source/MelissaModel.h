@@ -27,8 +27,8 @@ public:
     void setMusicVolume(float volume);
     float getMusicVolume() const { return musicVolume_; }
     
-    void setPitch(int semitone);
-    int getPitch() const  { return semitone_; }
+    void setPitch(float semitone);
+    float getPitch() const  { return semitone_; }
     
     void setSpeed(int speed);
     int getSpeed() const  { return speed_; }
@@ -122,7 +122,7 @@ private:
     float musicVolume_;
     float metronomeVolume_;
     float musicMetronomeBalance_;
-    int semitone_;
+    float semitone_;
     SpeedMode speedMode_;
     int speed_;
     int currentSpeed_;

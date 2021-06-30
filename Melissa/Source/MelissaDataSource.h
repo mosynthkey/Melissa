@@ -56,7 +56,7 @@ public:
     struct Previous
     {
         String filePath_;
-        int pitch_;
+        float pitch_;
         
         float aRatio_;
         float bRatio_;
@@ -92,7 +92,7 @@ public:
         UIState uiState_;
         
         Previous() :
-        filePath_(""), pitch_(0),
+        filePath_(""), pitch_(0.f),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         /* metronomeSw_(false), */ bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
@@ -116,7 +116,7 @@ public:
     struct Song
     {
         String filePath_;
-        int pitch_;
+        float pitch_;
         OutputMode outputMode_;
         float musicVolume_;
         float metronomeVolume_;
@@ -188,7 +188,7 @@ public:
         };
         std::vector<Marker> markers_;
         
-        Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
+        Song() : filePath_(""), pitch_(0.f), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
         eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
