@@ -41,19 +41,27 @@ public:
         return ss.str();
     }
     
-    static std::string getFormattedPitch(int32_t pitch)
+    static std::string getFormattedPitch(float pitch)
     {
-        if (pitch > 0)
-        {
-            return "# " + std::to_string(pitch);
-        }
-        else if (pitch == 0)
+        const int pitchInt = static_cast<int>(pitch * 10);
+        const int sign = (pitchInt > 0) ? 1 : (pitchInt == 0 ? 0 : -1);
+        
+        const int pitchFixed = std::abs(pitchInt) / 10;
+        const int pitchFrac  = std::abs(pitchInt) % 10;
+        
+        const std::string fracString = (pitchFrac == 0) ? "" : ("." + std::to_string(pitchFrac));
+        
+        if (sign == 0)
         {
             return "Original";
         }
+        else if (sign > 0)
+        {
+            return "# " + std::to_string(pitchFixed) + fracString;
+        }
         else
         {
-            return "b " + std::to_string(pitch * -1);
+            return "b " + std::to_string(pitchFixed) + fracString;
         }
     }
     

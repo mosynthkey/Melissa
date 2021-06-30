@@ -376,7 +376,8 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setPitch(model_->getPitch() + sign);
+                model_->setPitch(model_->getPitch() + sign * (b ? 0.1 : 1));
+                printf("pitch = %f\n", model_->getPitch());
             }
         };
         pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
@@ -1645,7 +1646,7 @@ void MainComponent::musicVolumeChanged(float volume)
     musicVolumeSlider_->setTooltip(TRANS("volume") + " : " + dbStr);
 }
 
-void MainComponent::pitchChanged(int semitone)
+void MainComponent::pitchChanged(float semitone)
 {
     pitchButton_->setText(MelissaUtility::getFormattedPitch(semitone));
 }

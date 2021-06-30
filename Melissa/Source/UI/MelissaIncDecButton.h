@@ -149,12 +149,12 @@ public:
         if (diffY_ > dragStep_)
         {
             diffY_ = 0;
-            onClick_(kEvent_Dec, false);
+            onClick_(kEvent_Dec, event.mods.isShiftDown());
         }
         else if (diffY_ < -1 * dragStep_)
         {
             diffY_ = 0;
-            onClick_(kEvent_Inc, false);
+            onClick_(kEvent_Inc, event.mods.isShiftDown());
         }
     }
     

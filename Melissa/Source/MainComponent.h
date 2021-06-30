@@ -335,7 +335,7 @@ private:
     
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
-    void pitchChanged(int semitone) override;
+    void pitchChanged(float semitone) override;
     void speedChanged(int speed) override;
     
 #if defined(ENABLE_SPEED_TRAINING)
