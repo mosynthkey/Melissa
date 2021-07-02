@@ -422,7 +422,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setPitch(model_->getPitch() + sign);
+                model_->setPitch(model_->getPitch() + sign * (b ? 0.1 : 1));
             }
         };
         pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
@@ -448,7 +448,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 1000 : 100));
+                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
             }
         };
         section->addAndMakeVisible(aButton_.get());
@@ -470,7 +470,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 1000 : 100));
+                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
             }
         };
         section->addAndMakeVisible(bButton_.get());
@@ -547,7 +547,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setSpeed(model_->getSpeed() + sign * (b ? 10 : 1));
+                model_->setSpeed(model_->getSpeed() + sign);
             }
         };
         speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
@@ -1775,7 +1775,7 @@ void MainComponent::musicVolumeChanged(float volume)
     musicVolumeSlider_->setTooltip(TRANS("volume") + " : " + dbStr);
 }
 
-void MainComponent::pitchChanged(int semitone)
+void MainComponent::pitchChanged(float semitone)
 {
     pitchButton_->setText(MelissaUtility::getFormattedPitch(semitone));
 }

@@ -5,6 +5,7 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include <regex>
 #include "MelissaModalDialog.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaUpdateChecker.h"
@@ -34,19 +35,25 @@ MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::getUpdateStatus()
 {
     if (status_ != kUpdateStatus_NotChecked) return status_;
     
-    const String latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString();
+    const std::string latestVersionNumberString = MelissaUpdateChecker::getLatestVersionNumberString().toStdString();
+    std::regex re("v(\\d+)\\.(\\d+)\\.(\\d+)");
+    std::smatch match;
     
-    if (latestVersionNumberString.isEmpty())
+    if (std::regex_match(latestVersionNumberString, match, re))
     {
-        status_ = kUpdateStatus_Failed;
-    }
-    else if (latestVersionNumberString == (String("v") + ProjectInfo::versionString))
-    {
-        status_ = kUpdateStatus_IsLatest;
+        const int latestVersionNumber = (std::stoi(match[1].str()) << 16) | (std::stoi(match[2].str()) << 8) | std::stoi(match[3].str());
+        if (latestVersionNumber > ProjectInfo::versionNumber)
+        {
+            status_ = kUpdateStatus_UpdateExists;
+        }
+        else
+        {
+            status_ = kUpdateStatus_IsLatest;
+        }
     }
     else
     {
-        status_ = kUpdateStatus_UpdateExists;
+        status_ = kUpdateStatus_Failed;
     }
     
     return status_;

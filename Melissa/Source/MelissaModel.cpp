@@ -43,7 +43,7 @@ void MelissaModel::setMusicVolume(float volume)
     for (auto&& l : listeners_) l->musicVolumeChanged(volume);
 }
 
-void MelissaModel::setPitch(int semitone)
+void MelissaModel::setPitch(float semitone)
 {
     if (semitone < kPitchMin || kPitchMax < semitone) return;
     
@@ -129,16 +129,15 @@ void MelissaModel::setLoopAPosMSec(float aPosMSec)
 
 void MelissaModel::setLoopBPosRatio(float bPosRatio)
 {
-    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio_)
+    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio_ && bPosRatio_ <= 1.f)
     {
-        bPosRatio_ = bPosRatio;
         for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
     }
 }
 
 void MelissaModel::setLoopBPosMSec(float bPosMSec)
 {
-    if (0 < lengthMSec_ && aPosRatio_  * lengthMSec_ < bPosMSec)
+    if (0 < lengthMSec_ && aPosRatio_ * lengthMSec_ < bPosMSec && bPosMSec <= lengthMSec_)
     {
         bPosRatio_ = bPosMSec / lengthMSec_;
         for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);

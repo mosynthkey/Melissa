@@ -68,8 +68,8 @@ private:
     float playingPosMSec_;
     
     int32_t speed_;
-    float processingSpeed_;
-    int32_t semitone_;
+    float   processingSpeed_;
+    float   semitone_;
     float   volume_;
     
     float bufferForSoundTouch_[2 * processLength_];
@@ -98,7 +98,7 @@ private:
     // MelissaModelListener
     void playbackModeChanged(PlaybackMode mode) override;
     void musicVolumeChanged(float volume) override;
-    void pitchChanged(int semitone) override;
+    void pitchChanged(float semitone) override;
     void speedChanged(int speed) override;
 #if defined(ENABLE_SPEED_TRAINING)
     void speedModeChanged(SpeedMode mode) override;

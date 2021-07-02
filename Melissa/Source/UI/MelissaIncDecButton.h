@@ -149,12 +149,12 @@ public:
         if (diffY_ > dragStep_)
         {
             diffY_ = 0;
-            onClick_(kEvent_Dec, false);
+            onClick_(kEvent_Dec, event.mods.isShiftDown());
         }
         else if (diffY_ < -1 * dragStep_)
         {
             diffY_ = 0;
-            onClick_(kEvent_Inc, false);
+            onClick_(kEvent_Inc, event.mods.isShiftDown());
         }
     }
     
@@ -166,7 +166,7 @@ public:
 
     void mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel) override
     {
-        onClick_((wheel.deltaY > 0) ? kEvent_Inc : kEvent_Dec, false);
+        onClick_((wheel.deltaY > 0) ? kEvent_Inc : kEvent_Dec, true);
     }
     
     void setText(const String& str)
