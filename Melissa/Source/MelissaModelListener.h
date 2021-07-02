@@ -47,7 +47,7 @@ public:
     virtual void playbackStatusChanged(PlaybackStatus status) {}
     virtual void playbackModeChanged(PlaybackMode mode) {}
     virtual void musicVolumeChanged(float volume) {}
-    virtual void pitchChanged(int semitone) {}
+    virtual void pitchChanged(float semitone) {}
     virtual void speedChanged(int speed) {}
 #if defined(ENABLE_SPEED_TRAINING)
     virtual void speedModeChanged(SpeedMode mode) {}

@@ -425,7 +425,7 @@ void MelissaAudioEngine::musicVolumeChanged(float volume)
     volume_ = volume;
 }
 
-void MelissaAudioEngine::pitchChanged(int semitone)
+void MelissaAudioEngine::pitchChanged(float semitone)
 {
     semitone_ = semitone;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
