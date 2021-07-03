@@ -129,8 +129,9 @@ void MelissaModel::setLoopAPosMSec(float aPosMSec)
 
 void MelissaModel::setLoopBPosRatio(float bPosRatio)
 {
-    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio_ && bPosRatio_ <= 1.f)
+    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio && bPosRatio <= 1.f)
     {
+        bPosRatio_ = bPosRatio;
         for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
     }
 }
