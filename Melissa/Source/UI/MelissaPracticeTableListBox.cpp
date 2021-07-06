@@ -45,6 +45,24 @@ private:
     float aRatio_, bRatio_;
 };
 
+class DoubleClickEditLabel : public Label
+{
+public:
+    DoubleClickEditLabel(MelissaPracticeTableListBox* owner, int rowNumber) : owner_(owner), rowNumber_(rowNumber)
+    {
+        setEditable(false, true);
+    }
+    
+    void mouseDown(const MouseEvent& event) override
+   {
+       owner_->selectRowsBasedOnModifierKeys(rowNumber_, event.mods, false);
+   }
+    
+private:
+    MelissaPracticeTableListBox* owner_;
+    int rowNumber_;
+};
+
 MelissaPracticeTableListBox::MelissaPracticeTableListBox(const String& componentName) :
 TableListBox(componentName, this),
 dataSource_(MelissaDataSource::getInstance())
@@ -106,8 +124,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new Label();
-            l->setEditable(true, false);
+            auto l = new DoubleClickEditLabel(this, rowNumber);
             l->setName("name");
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
@@ -117,7 +134,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         }
         else
         {
-            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            auto l = dynamic_cast<DoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(prac.name_, dontSendNotification);
             return existingComponentToUpdate;
         }
@@ -141,8 +158,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new Label();
-            l->setEditable(true, false);
+            auto l = new DoubleClickEditLabel(this, rowNumber);
             l->setName("speed");
             l->setComponentID(String(rowNumber));
             l->setText(String(prac.speed_) + " %",  dontSendNotification);
@@ -152,7 +168,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         }
         else
         {
-            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            auto l = dynamic_cast<DoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(String(prac.speed_) + "%", dontSendNotification);
             return existingComponentToUpdate;
         }
