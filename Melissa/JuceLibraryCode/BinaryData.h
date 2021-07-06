@@ -99,7 +99,7 @@ namespace BinaryData
     const int            jaJP_txtSize = 7525;
 
     extern const char*   logo_png;
-    const int            logo_pngSize = 121456;
+    const int            logo_pngSize = 110117;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 31;
