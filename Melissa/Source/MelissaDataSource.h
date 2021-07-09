@@ -32,6 +32,7 @@ public:
     virtual void practiceListUpdated() { }
     virtual void markerUpdated() { }
     virtual void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) { }
+    virtual void shortcutUpdated() { }
 };
 
 class MelissaDataSource : public AsyncUpdater
@@ -199,6 +200,7 @@ public:
     
     void setMelissaAudioEngine(MelissaAudioEngine* audioEngine) { audioEngine_ = audioEngine; }
     void addListener(MelissaDataSourceListener* listener) { listeners_.emplace_back(listener); }
+    void removeListener(MelissaDataSourceListener* listener);
     
     void loadSettingsFile(const File& file);
     void validateSettings();
@@ -215,7 +217,8 @@ public:
     void disposeBuffer();
     
     // Shortcut
-    void setDefaultShortcuts();
+    void setDefaultShortcut(const String& eventName);
+    void setDefaultShortcuts(bool removeAll = false);
     std::map<String, String> getAllAssignedShortcuts() const;
     String getAssignedShortcut(const String& eventName);
     void registerShortcut(const String& eventName, const String& command);
@@ -288,4 +291,5 @@ private:
     std::vector<MelissaDataSourceListener*> listeners_;
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
     bool wasPlaying_;
+    std::map<String, String> defaultShortcut_;
 };

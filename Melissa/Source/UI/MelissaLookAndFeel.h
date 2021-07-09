@@ -35,9 +35,9 @@ public:
     
     virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const auto& c = b.getLocalBounds();
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
-        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
+        const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
+        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 0.3f : 0.15f));
+        g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
     }
     
     virtual void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
@@ -237,7 +237,7 @@ public:
     
     virtual void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(Colour(MelissaUISettings::getTitleBarColour()));
+        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(0.3f));
         g.fillAll();
     }
     

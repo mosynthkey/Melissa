@@ -133,9 +133,9 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
     },
 };
 
-MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nullptr), noAssignMenuId_(1)
+MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nullptr), noAssignMenuId_(1), selectedCommand_("")
 {
-    popupMenu.setLookAndFeel(&laf_);
+    popupMenu_.setLookAndFeel(&laf_);
     
     int itemId = 0;
     
@@ -147,23 +147,23 @@ MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nul
         {
             subMenu.addItem(++itemId, TRANS(command));
         }
-        popupMenu.addSubMenu(TRANS(titleAndCommandList.first), subMenu);
+        popupMenu_.addSubMenu(TRANS(titleAndCommandList.first), subMenu);
     }
     
-    popupMenu.addItem(++itemId, TRANS("NoAssign"));
+    popupMenu_.addItem(++itemId, TRANS("NoAssign"));
     noAssignMenuId_ = itemId;
 }
 
 MelissaCommandComboBox::~MelissaCommandComboBox()
 {
-    popupMenu.setLookAndFeel(nullptr);
+    popupMenu_.setLookAndFeel(nullptr);
 }
 
 void MelissaCommandComboBox::select(const String& command)
 {
     if (command.isEmpty())
     {
-        setSelectedId(noAssignMenuId_);
+        //setSelectedId(noAssignMenuId_);
         setText(TRANS("NoAssign"));
         return;
     }
@@ -176,8 +176,9 @@ void MelissaCommandComboBox::select(const String& command)
             ++commandItemId;
             if (c == command)
             {
-                setSelectedId(commandItemId);
-                setText(TRANS(getSelectedCommand(commandItemId)));
+                //setSelectedId(commandItemId);
+                selectedCommand_ = getSelectedCommandWithItemId(commandItemId);
+                setText(TRANS(selectedCommand_));
                 return;
             }
         }
@@ -188,18 +189,20 @@ void MelissaCommandComboBox::showPopup()
 {
     auto option = PopupMenu::Options().withTargetComponent(this);
     
-    popupMenu.showMenuAsync(option, [&](int itemId)
+    popupMenu_.showMenuAsync(option, [&](int itemId)
     {
-        const auto command = getSelectedCommand(itemId);
-        setSelectedId(itemId);
-        setText(TRANS(command));
-        if (onSelectedCommandChanged_ != nullptr) onSelectedCommandChanged_(command);
+        if (itemId != 0) {
+            selectedCommand_ = getSelectedCommandWithItemId(itemId);
+            select(selectedCommand_);
+            
+            if (onSelectedCommandChanged_ != nullptr) onSelectedCommandChanged_(selectedCommand_);
+        }
         
         hidePopup();
     });
 }
 
-String MelissaCommandComboBox::getSelectedCommand(int itemId) const
+String MelissaCommandComboBox::getSelectedCommandWithItemId(int itemId) const
 {
     int commandItemId = 0;
     for (auto&& titleAndCommandList : commandList)

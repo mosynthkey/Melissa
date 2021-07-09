@@ -31,7 +31,7 @@ public:
     
     static uint32_t getDialogBackgoundColour()
     {
-        return 0xff262C38;
+        return 0xFF262930;
     }
     
     static uint32_t getTitleBarColour()
@@ -39,11 +39,16 @@ public:
         return 0xff38404D;
     }
     
+    static uint32_t getComponentBackgroundColour()
+    {
+        return 0xFF39404C;
+    }
+    
     static int getFontSizeMain()
     {
         if (isMac)
         {
-            return 17;
+            return 16;
         }
         else
         {

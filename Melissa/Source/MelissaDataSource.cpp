@@ -21,11 +21,47 @@ sampleRate_(0.f),
 currentSongFilePath_(""),
 wasPlaying_(false)
 {
+    // Default shortcuts
+    defaultShortcut_["spacebar"] = "StartStop";
+    defaultShortcut_["CC #41"] = "StartStop";
+    defaultShortcut_[","] = "Back";
+    defaultShortcut_["A"] = "SetLoopStart";
+    defaultShortcut_["B"] = "SetLoopEnd";
+    defaultShortcut_["M"] = "AddMarker";
+    defaultShortcut_["backspace"] = "ResetLoop";
+    defaultShortcut_["cursor up"] = "SetSpeed_Plus1";
+    defaultShortcut_["cursor down"] = "SetSpeed_Minus1";
+    defaultShortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
+    defaultShortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
+
+    defaultShortcut_["CC #0"] = "PlaybackPositionValue";
+    defaultShortcut_["CC #1"] = "PitchValue";
+    defaultShortcut_["CC #2"] = "SetSpeedValue";
+
+    defaultShortcut_["CC #43"] = "PlaybackPosition_Minus1Sec";
+    defaultShortcut_["CC #44"] = "PlaybackPosition_Plus1Sec";
+
+    defaultShortcut_["CC #16"] = "SetEqFreqValue";
+    defaultShortcut_["CC #17"] = "SetEqGainValue";
+    defaultShortcut_["CC #18"] = "SetEqQValue";
+    
     validateSettings();
 }
 
 MelissaDataSource::~MelissaDataSource()
 {
+}
+
+void MelissaDataSource::removeListener(MelissaDataSourceListener* listener)
+{
+    for (size_t listenerIndex = 0; listenerIndex < listeners_.size(); ++listenerIndex)
+    {
+        if (listeners_[listenerIndex] == listener)
+        {
+            listeners_.erase(listeners_.begin() + listenerIndex);
+            return;
+        }
+    }
 }
 
 void MelissaDataSource::loadSettingsFile(const File& file)
@@ -426,30 +462,23 @@ void MelissaDataSource::disposeBuffer()
     audioSampleBuf_ = nullptr;
 }
 
-void MelissaDataSource::setDefaultShortcuts()
+void MelissaDataSource::setDefaultShortcut(const String& eventName)
 {
-    global_.shortcut_["spacebar"] = "StartStop";
-    global_.shortcut_["CC #41"] = "StartStop";
-    global_.shortcut_[","] = "Back";
-    global_.shortcut_["A"] = "SetLoopStart";
-    global_.shortcut_["B"] = "SetLoopEnd";
-    global_.shortcut_["M"] = "AddMarker";
-    global_.shortcut_["backspace"] = "ResetLoop";
-    global_.shortcut_["cursor up"] = "SetSpeed_Plus1";
-    global_.shortcut_["cursor down"] = "SetSpeed_Minus1";
-    global_.shortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
-    global_.shortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
+    global_.shortcut_[eventName] = defaultShortcut_[eventName];
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
+}
 
-    global_.shortcut_["CC #0"] = "PlaybackPositionValue";
-    global_.shortcut_["CC #1"] = "PitchValue";
-    global_.shortcut_["CC #2"] = "SetSpeedValue";
-
-    global_.shortcut_["CC #43"] = "PlaybackPosition_Minus1Sec";
-    global_.shortcut_["CC #44"] = "PlaybackPosition_Plus1Sec";
-
-    global_.shortcut_["CC #16"] = "SetEqFreqValue";
-    global_.shortcut_["CC #17"] = "SetEqGainValue";
-    global_.shortcut_["CC #18"] = "SetEqQValue";
+void MelissaDataSource::setDefaultShortcuts(bool removeAll)
+{
+    if (removeAll) global_.shortcut_.clear();
+    
+    for (auto&& shortcut : defaultShortcut_)
+    {
+        global_.shortcut_[shortcut.first] = shortcut.second;
+    }
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
 }
 
 std::map<String, String> MelissaDataSource::getAllAssignedShortcuts() const
@@ -465,12 +494,22 @@ String MelissaDataSource::getAssignedShortcut(const String& eventName)
 
 void MelissaDataSource::registerShortcut(const String& eventName, const String& command)
 {
+    if (command.isEmpty())
+    {
+        deregisterShortcut(eventName);
+        return;
+    }
+    
     global_.shortcut_[eventName] = command;
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
 }
 
 void MelissaDataSource::deregisterShortcut(const String& eventName)
 {
     global_.shortcut_.erase(eventName);
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
 }
 
 void MelissaDataSource::restorePreviousState()
