@@ -11,8 +11,6 @@
 #include "MelissaShortcutComponent.h"
 #include "MelissaUISettings.h"
 
-
-
 class MelissaShortcutComponent::ShortcutListBox : public MelissaDataSourceListener,
                                                   public TableListBox,
                                                   public TableListBoxModel
@@ -25,10 +23,12 @@ public:
         kNumOfColumn
     };
     
-    ShortcutListBox(const String& componentName = "") :
-    TableListBox(componentName, this)
+    ShortcutListBox(MelissaShortcutComponent* owner, const String& componentName = "") :
+    TableListBox(componentName, this), owner_(owner)
     {
         dataSource_ = MelissaDataSource::getInstance();
+        dataSource_->addListener(this);
+        
         update();
         
         String headerTitles[kNumOfColumn] = { "Shortcut", "Command" };
@@ -41,17 +41,18 @@ public:
     
     ~ShortcutListBox()
     {
-        
+        dataSource_->removeListener(this);
     }
     
     void update()
     {
         shortcuts_.clear();
-        auto shortcuts = dataSource_->getAllAssignedShortcuts();
+        const auto shortcuts = dataSource_->getAllAssignedShortcuts();
         for (auto&& shortcut : shortcuts)
         {
             shortcuts_.emplace_back(std::make_pair(shortcut.first, shortcut.second));
         }
+        repaint();
     }
     
     int getNumRows() override
@@ -67,7 +68,7 @@ public:
     
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override
     {
-        auto shortcut = shortcuts_[rowNumber];
+        const auto shortcut = shortcuts_[rowNumber];
         String text = (columnId == 1) ? shortcut.first :  MelissaCommand::getCommandDescription(shortcut.second);
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
@@ -76,25 +77,25 @@ public:
         g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
     }
     
-    /*
-    int  getColumnAutoSizeWidth(int columnId) override
-    {
-        
-    }
-     */
-    
     void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override
     {
-        
+        const auto shortcut = shortcuts_[rowNumber];
+        owner_->controlMessageReceived(shortcut.first);
+    }
+    
+    void shortcutUpdated() override
+    {
+        update();
     }
     
 private:
+    MelissaShortcutComponent* owner_;
     MelissaDataSource* dataSource_;
     
     std::vector<std::pair<String, String>> shortcuts_;
 };
 
-MelissaShortcutComponent::MelissaShortcutComponent()
+MelissaShortcutComponent::MelissaShortcutComponent() : registerEditY_(0)
 {
     commandLabel_ = std::make_unique<Label>();
     commandLabel_->setJustificationType(Justification::centred);
@@ -107,12 +108,26 @@ MelissaShortcutComponent::MelissaShortcutComponent()
     assignCombobox_ = std::make_unique<MelissaCommandComboBox>();
     assignCombobox_->onSelectedCommandChanged_ = [&](const String& command)
     {
-        printf("command = %s\n", command.toRawUTF8());
+        MelissaDataSource::getInstance()->registerShortcut(commandLabel_->getText(), assignCombobox_->getSelectedCommand());
     };
     addAndMakeVisible(assignCombobox_.get());
     
-    shortcutListBox_ = std::make_unique<ShortcutListBox>();
+    shortcutListBox_ = std::make_unique<ShortcutListBox>(this);
     addAndMakeVisible(shortcutListBox_.get());
+    
+    resetButton_ = std::make_unique<TextButton>(TRANS("shortcut_reset"));
+    resetButton_->onClick = [&]()
+    {
+        MelissaDataSource::getInstance()->setDefaultShortcut(commandLabel_->getText());
+    };
+    addAndMakeVisible(resetButton_.get());
+    
+    resetAllButton_ = std::make_unique<TextButton>(TRANS("shortcut_reset_all"));
+    resetAllButton_->onClick = [&]()
+    {
+        MelissaDataSource::getInstance()->setDefaultShortcuts(true);
+    };
+    addAndMakeVisible(resetAllButton_.get());
     
     initAssignBox();
     
@@ -129,8 +144,6 @@ MelissaShortcutComponent::~MelissaShortcutComponent()
 
 void MelissaShortcutComponent::controlMessageReceived(const String& controlMessage)
 {
-    printf("controlMessageReceived : %s\n", controlMessage.toRawUTF8());
-    
     const auto assignedCommand = MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage);
     commandLabel_->setText(controlMessage, dontSendNotification);
     assignCombobox_->select(assignedCommand);
@@ -138,16 +151,38 @@ void MelissaShortcutComponent::controlMessageReceived(const String& controlMessa
 
 void MelissaShortcutComponent::resized()
 {
-    commandLabel_->setBounds(10, 10, 200, 30);
+    registerEditY_ = getHeight() - 200;
     
-    int width = getWidth() - 30 - commandLabel_->getRight();
-    assignCombobox_->setBounds(commandLabel_->getRight(), 10, width, 30);
+    int y = 40;
+    shortcutListBox_->setBounds(60, y, getWidth() - 120, registerEditY_ - 10 - y);
     
-    width = getWidth() - 20;
-    int y = assignCombobox_->getBottom() + 40;
-    shortcutListBox_->setBounds(10, y, width, getHeight() - y);
+    int margin = 20;
+    int width = (getWidth() - 120 - margin * 2) / 5;
+    y = registerEditY_ + 30 + 10;
+    commandLabel_->setBounds(60, y, width * 2, 30);
+    assignCombobox_->setBounds(commandLabel_->getRight() + margin, y, width * 2, 30);
+    resetButton_->setBounds(assignCombobox_->getRight() + margin, y, width, 30);
+    
+    width = 200;
+    resetAllButton_->setBounds(getWidth() - 60 - width, getHeight() - 60, width, 30);
+}
+
+void MelissaShortcutComponent::paint(Graphics& g)
+{
+    g.setColour(Colours::white);
+    g.setFont(MelissaUISettings::getFontSizeSub());
+    g.drawText(TRANS("shortcut_list"), 60, 0, getWidth() - 120, 30, Justification::left);
+    g.drawText(TRANS("shortcut_register_edit"), 60, registerEditY_, getWidth() - 120, 30, Justification::left);
+    
+    g.setFont(MelissaUISettings::getFontSizeSmall());
+    g.drawFittedText(TRANS("shortcut_explanation"), 60, registerEditY_ + 80, getWidth() - 120, 30 * 4, Justification::left, 4);
 }
 
 void MelissaShortcutComponent::initAssignBox()
 {
+    const auto shortcuts = MelissaDataSource::getInstance()->getAllAssignedShortcuts();
+    if (shortcuts.size() == 0) return;
+    
+    controlMessageReceived((shortcuts.begin())->first);
+    shortcutListBox_->selectRow(0);
 }

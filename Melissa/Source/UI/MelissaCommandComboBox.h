@@ -17,17 +17,19 @@ public:
     MelissaCommandComboBox();
     ~MelissaCommandComboBox();
     void select(const String& command);
+    String getSelectedCommand() const { return selectedCommand_; /* _getSelectedCommandWithItemId(getSelectedId()); */}
 
     std::function<void(const String& command)> onSelectedCommandChanged_;
     
 private:
     MelissaLookAndFeel laf_;
-    PopupMenu popupMenu;
+    PopupMenu popupMenu_;
     int noAssignMenuId_;
+    String selectedCommand_;
     std::vector<Listener*> listeners_;
     
     void showPopup() override;
-    String getSelectedCommand(int itemId) const;
+    String getSelectedCommandWithItemId(int itemId) const;
     void update();
 };
 

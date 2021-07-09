@@ -18,12 +18,15 @@ public:
     MelissaShortcutComponent();
     ~MelissaShortcutComponent();
     void resized() override;
+    void paint(Graphics& g) override;
     
     void controlMessageReceived(const String& controlMessage) override;
     
 private:
     std::unique_ptr<Label> commandLabel_;
     std::unique_ptr<MelissaCommandComboBox> assignCombobox_;
+    std::unique_ptr<TextButton> resetButton_;
+    std::unique_ptr<TextButton> resetAllButton_;
     
     class ShortcutListBox;
     std::unique_ptr<ShortcutListBox> shortcutListBox_;
@@ -31,4 +34,6 @@ private:
     void initAssignBox();
     
     MelissaShortcutManager* shortcutManager_;
+    
+    int registerEditY_;
 };

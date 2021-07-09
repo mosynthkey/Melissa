@@ -39,7 +39,7 @@ audioDeviceManager_(audioDeviceManager)
     }
     updateTab();
         
-    setSize(800, 600);
+    setSize(800, 700);
     
     setLookAndFeel(&laf_);
 

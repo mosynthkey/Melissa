@@ -114,7 +114,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     if (MelissaUISettings::isJa)
     {
 #ifdef DEBUG
-        File file("../../../../Resource/Language/ja-JP.txt");
+        File file = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("Resource/Language/ja-JP.txt");
+        printf("%s\n", file.getFullPathName().toRawUTF8());
         if (file.exists())
         {
             localizedStrings = file.loadFileAsString();
