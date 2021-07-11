@@ -52,7 +52,7 @@ public:
         {
             shortcuts_.emplace_back(std::make_pair(shortcut.first, shortcut.second));
         }
-        repaint();
+        updateContent();
     }
     
     int getNumRows() override
@@ -100,9 +100,8 @@ MelissaShortcutComponent::MelissaShortcutComponent() : registerEditY_(0)
     commandLabel_ = std::make_unique<Label>();
     commandLabel_->setJustificationType(Justification::centred);
     commandLabel_->setFont(MelissaUISettings::getFontSizeMain());
-    commandLabel_->setText("Command", dontSendNotification);
     commandLabel_->setColour(Label::backgroundColourId, Colours::black);
-    commandLabel_->setColour(Label::textColourId, Colours::grey);
+    commandLabel_->setColour(Label::textColourId, Colours::white);
     addAndMakeVisible(commandLabel_.get());
     
     assignCombobox_ = std::make_unique<MelissaCommandComboBox>();
@@ -147,6 +146,7 @@ void MelissaShortcutComponent::controlMessageReceived(const String& controlMessa
     const auto assignedCommand = MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage);
     commandLabel_->setText(controlMessage, dontSendNotification);
     assignCombobox_->select(assignedCommand);
+    assignCombobox_->setShortcut(controlMessage);
 }
 
 void MelissaShortcutComponent::resized()
