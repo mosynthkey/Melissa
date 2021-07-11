@@ -17,7 +17,8 @@ public:
     MelissaCommandComboBox();
     ~MelissaCommandComboBox();
     void select(const String& command);
-    String getSelectedCommand() const { return selectedCommand_; /* _getSelectedCommandWithItemId(getSelectedId()); */}
+    void setShortcut(const String& shortcut) { shortcut_ = shortcut; }
+    String getSelectedCommand() const { return selectedCommand_; }
 
     std::function<void(const String& command)> onSelectedCommandChanged_;
     
@@ -26,6 +27,7 @@ private:
     PopupMenu popupMenu_;
     int noAssignMenuId_;
     String selectedCommand_;
+    String shortcut_;
     std::vector<Listener*> listeners_;
     
     void showPopup() override;

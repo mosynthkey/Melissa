@@ -168,9 +168,25 @@ public:
             g.fillRect(area.reduced(2, 0));
         }
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, isActive ? 0.8f : 0.2f));
         g.setFont(MelissaUISettings::getFontSizeSub());
         g.drawText(text, area.reduced(10, 0), Justification::left);
+        
+        if (hasSubMenu)
+        {
+            constexpr int triWidth = 6;
+            constexpr int triHeight = 8;
+            
+            const int x0 = area.getRight() - triWidth - 10;
+            const int x1 = x0 + triWidth;
+            const int y0 = area.getY() + area.getHeight() / 2 - triHeight / 2;
+            const int y1 = y0 + triHeight / 2;
+            const int y2 = y1 + triHeight / 2;
+            
+            Path triangle;
+            triangle.addTriangle(x0, y0, x0, y2, x1, y1);
+            g.fillPath(triangle);
+        }
     }
     
     virtual void drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent &) override

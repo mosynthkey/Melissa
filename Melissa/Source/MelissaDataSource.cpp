@@ -23,7 +23,6 @@ wasPlaying_(false)
 {
     // Default shortcuts
     defaultShortcut_["spacebar"] = "StartStop";
-    defaultShortcut_["CC #41"] = "StartStop";
     defaultShortcut_[","] = "Back";
     defaultShortcut_["A"] = "SetLoopStart";
     defaultShortcut_["B"] = "SetLoopEnd";
@@ -37,9 +36,13 @@ wasPlaying_(false)
     defaultShortcut_["CC #0"] = "PlaybackPositionValue";
     defaultShortcut_["CC #1"] = "PitchValue";
     defaultShortcut_["CC #2"] = "SetSpeedValue";
+    
+    defaultShortcut_["CC #41"] = "StartStop";
 
     defaultShortcut_["CC #43"] = "PlaybackPosition_Minus1Sec";
     defaultShortcut_["CC #44"] = "PlaybackPosition_Plus1Sec";
+    
+    defaultShortcut_["CC #60"] = "AddMarker";
 
     defaultShortcut_["CC #16"] = "SetEqFreqValue";
     defaultShortcut_["CC #17"] = "SetEqGainValue";

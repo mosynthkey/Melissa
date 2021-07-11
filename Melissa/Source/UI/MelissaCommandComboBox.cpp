@@ -24,111 +24,118 @@ enum CommandCategory
     kNumOfCommandCategories
 };
 
-typedef std::pair<String, std::vector<String>> TitleAndCommandList;
+enum CommandType
+{
+    kCommandType_Switch,
+    kCommandType_Value,
+};
+
+typedef std::pair<String, CommandType> CommandAndType;
+typedef std::pair<String, std::vector<CommandAndType>> TitleAndCommandList;
 static const TitleAndCommandList commandList[kNumOfCommandCategories] =
 {
     {
         "Transport",
         {
-            "StartStop",
-            "Back",
-            "Next",
-            "PlaybackPositionValue",
-            "PlaybackPosition_Plus1Sec",
-            "PlaybackPosition_Minus1Sec",
-            "PlaybackPosition_Plus5Sec",
-            "PlaybackPosition_Minus5Sec",
+            { "StartStop", kCommandType_Switch },
+            { "Back", kCommandType_Switch },
+            { "Next", kCommandType_Switch },
+            { "PlaybackPositionValue", kCommandType_Value },
+            { "PlaybackPosition_Plus1Sec", kCommandType_Switch },
+            { "PlaybackPosition_Minus1Sec", kCommandType_Switch },
+            { "PlaybackPosition_Plus5Sec", kCommandType_Switch },
+            { "PlaybackPosition_Minus5Sec", kCommandType_Switch },
         }
     },
     {
         "Pitch",
         {
-            "PitchValue",
-            "Pitch_Plus",
-            "Pitch_Minus",
+            { "PitchValue", kCommandType_Value },
+            { "Pitch_Plus", kCommandType_Switch },
+            { "Pitch_Minus", kCommandType_Switch },
         }
     },
     {
         "Loop",
         {
-            "ResetLoop",
-            "ResetLoopStart",
-            "ResetLoopEnd",
-            "SetLoopStart",
-            "SetLoopEnd",
-            "SetLoopStartValue",
-            "SetLoopEndValue",
-            "SetLoopStart_Plus100MSec",
-            "SetLoopEnd_Minus100MSec",
-            "SetLoopStart_Plus1Sec",
-            "SetLoopEnd_Minus1Sec",
+            { "ResetLoop", kCommandType_Switch },
+            { "ResetLoopStart", kCommandType_Switch },
+            { "ResetLoopEnd", kCommandType_Switch },
+            { "SetLoopStart", kCommandType_Switch },
+            { "SetLoopEnd", kCommandType_Switch },
+            { "SetLoopStartValue", kCommandType_Value },
+            { "SetLoopEndValue", kCommandType_Value },
+            { "SetLoopStart_Plus100MSec", kCommandType_Switch },
+            { "SetLoopEnd_Minus100MSec", kCommandType_Switch },
+            { "SetLoopStart_Plus1Sec", kCommandType_Switch },
+            { "SetLoopEnd_Minus1Sec", kCommandType_Switch },
         }
     },
     {
         "Speed",
         {
-            "SetSpeedValue",
-            "SetSpeed_Plus5",
-            "SetSpeed_Minus5",
-            "SetSpeed_Plus1",
-            "SetSpeed_Minus1",
-            "ResetSpeed",
+            { "SetSpeedValue", kCommandType_Value },
+            { "SetSpeed_Plus5", kCommandType_Switch },
+            { "SetSpeed_Minus5", kCommandType_Switch },
+            { "SetSpeed_Plus1", kCommandType_Switch },
+            { "SetSpeed_Minus1", kCommandType_Switch },
+            { "ResetSpeed", kCommandType_Switch },
         }
     },
     {
         "Metronome",
         {
-            "ToggleMetronome",
-            "SetAccentPosition",
+            { "ToggleMetronome", kCommandType_Switch },
+            { "SetAccentPosition", kCommandType_Switch },
         }
     },
     {
         "EQ",
         {
-            "ToggleEq",
-            "SetEqFreqValue",
-            "SetEqGainValue",
-            "SetEqQValue",
+            { "ToggleEq", kCommandType_Switch },
+            { "SetEqFreqValue", kCommandType_Value },
+            { "SetEqGainValue", kCommandType_Value },
+            { "SetEqQValue", kCommandType_Value },
         }
     },
     {
         "Mixer",
         {
-            "SetMusicVolumeValue",
-            "SetVolumeBalanceValue",
-            "SetMetronomeVolumeValue",
+            { "SetMusicVolumeValue", kCommandType_Value },
+            { "SetVolumeBalanceValue", kCommandType_Value },
+            { "SetMetronomeVolumeValue", kCommandType_Value },
         }
     },
     {
         "PracticeList",
         {
-            "AddPracticeList",
-            "SelectPracticeList_0",
-            "SelectPracticeList_1",
-            "SelectPracticeList_2",
-            "SelectPracticeList_3",
-            "SelectPracticeList_4",
-            "SelectPracticeList_5",
-            "SelectPracticeList_6",
-            "SelectPracticeList_7",
-            "SelectPracticeList_8",
-            "SelectPracticeList_9",
+            { "AddPracticeList", kCommandType_Switch },
+            { "SelectPracticeList_0", kCommandType_Switch },
+            { "SelectPracticeList_1", kCommandType_Switch },
+            { "SelectPracticeList_2", kCommandType_Switch },
+            { "SelectPracticeList_3", kCommandType_Switch },
+            { "SelectPracticeList_4", kCommandType_Switch },
+            { "SelectPracticeList_5", kCommandType_Switch },
+            { "SelectPracticeList_6", kCommandType_Switch },
+            { "SelectPracticeList_7", kCommandType_Switch },
+            { "SelectPracticeList_8", kCommandType_Switch },
+            { "SelectPracticeList_9", kCommandType_Switch },
         }
     },
     {
         "Marker",
         {
-            "AddMarker",
-            "SelectMarker_0",
-            "SelectMarker_1",
-            "SelectMarker_2",
-            "SelectMarker_3",
-            "SelectMarker_4",
-            "SelectMarker_5",
-            "SelectMarker_6",
-            "SelectMarker_7",
-            "SelectMarker_8",
-            "SelectMarker_9",
+            { "AddMarker", kCommandType_Switch },
+            { "SelectMarker_0", kCommandType_Switch },
+            { "SelectMarker_1", kCommandType_Switch },
+            { "SelectMarker_2", kCommandType_Switch },
+            { "SelectMarker_3", kCommandType_Switch },
+            { "SelectMarker_4", kCommandType_Switch },
+            { "SelectMarker_5", kCommandType_Switch },
+            { "SelectMarker_6", kCommandType_Switch },
+            { "SelectMarker_7", kCommandType_Switch },
+            { "SelectMarker_8", kCommandType_Switch },
+            { "SelectMarker_9", kCommandType_Switch },
         }
     },
 };
@@ -137,21 +144,12 @@ MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nul
 {
     popupMenu_.setLookAndFeel(&laf_);
     
-    int itemId = 0;
-    
+    noAssignMenuId_ = 0;
     for (auto&& titleAndCommandList : commandList)
     {
-        PopupMenu subMenu;
-        
-        for (auto&& command : titleAndCommandList.second)
-        {
-            subMenu.addItem(++itemId, TRANS(command));
-        }
-        popupMenu_.addSubMenu(TRANS(titleAndCommandList.first), subMenu);
+        noAssignMenuId_ += titleAndCommandList.second.size();
     }
-    
-    popupMenu_.addItem(++itemId, TRANS("NoAssign"));
-    noAssignMenuId_ = itemId;
+    ++noAssignMenuId_;
 }
 
 MelissaCommandComboBox::~MelissaCommandComboBox()
@@ -174,7 +172,7 @@ void MelissaCommandComboBox::select(const String& command)
         for (auto&& c : titleAndCommandList.second)
         {
             ++commandItemId;
-            if (c == command)
+            if (c.first == command)
             {
                 //setSelectedId(commandItemId);
                 selectedCommand_ = getSelectedCommandWithItemId(commandItemId);
@@ -189,6 +187,26 @@ void MelissaCommandComboBox::showPopup()
 {
     auto option = PopupMenu::Options().withTargetComponent(this);
     
+    const bool isSwitch = !(shortcut_.startsWith("CC #"));
+    
+    // build popup menu
+    popupMenu_.clear();
+    int itemId = 0;
+    for (auto&& titleAndCommandList : commandList)
+    {
+        PopupMenu subMenu;
+        
+        for (auto&& command : titleAndCommandList.second)
+        {
+            String menu = TRANS(command.first);
+            if (command.second == kCommandType_Value) menu += " [CC]";
+            subMenu.addItem(++itemId, menu, isSwitch ? (command.second == kCommandType_Switch) : true);
+        }
+        popupMenu_.addSubMenu(TRANS(titleAndCommandList.first), subMenu);
+    }
+    popupMenu_.addItem(++itemId, TRANS("NoAssign"));
+    
+    // show popup menu
     popupMenu_.showMenuAsync(option, [&](int itemId)
     {
         if (itemId != 0) {
@@ -210,7 +228,7 @@ String MelissaCommandComboBox::getSelectedCommandWithItemId(int itemId) const
         for (auto&& command : titleAndCommandList.second)
         {
             ++commandItemId;
-            if (commandItemId == itemId) return command;
+            if (commandItemId == itemId) return command.first;
         }
     }
     
