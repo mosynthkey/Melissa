@@ -40,7 +40,7 @@ shouldCorrect_(false)
 
 void MelissaTapTempoButton::paint(Graphics& g)
 {
-    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(0.8f));
+    g.setColour(MelissaUISettings::getAccentColour(isMouseOver() ? 1.f : 0.6f));
     g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
     
     g.setFont(font_);

@@ -84,8 +84,11 @@ int MelissaMarkerListBox::getNumRows()
 
 void MelissaMarkerListBox::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected)
 {
-    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
-    g.fillAll(colour);
+    if (rowIsSelected)
+    {
+        const auto colour = MelissaUISettings::getSubColour();
+        g.fillAll(colour);
+    }
 }
 
 void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected)

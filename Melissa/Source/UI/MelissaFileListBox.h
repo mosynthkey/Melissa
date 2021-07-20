@@ -95,8 +95,11 @@ public:
         const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
         const String fileName = File(fullPath).getFileName();
         
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
-        g.fillAll();
+        if (rowIsSelected)
+        {
+            g.setColour(MelissaUISettings::getSubColour());
+            g.fillAll();
+        }
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         g.setFont(MelissaUISettings::getFontSizeMain());

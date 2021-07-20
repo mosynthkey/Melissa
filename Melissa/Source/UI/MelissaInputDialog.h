@@ -11,7 +11,7 @@
 #include "MelissaHost.h"
 #include "MelissaModalDialog.h"
 
-class MelissaInputDialog : public Component
+class MelissaInputDialog : public Component, public TextEditor::Listener
 {
 public:
     MelissaInputDialog(const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) : onClick_(onClick)
@@ -36,6 +36,7 @@ public:
         textEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
+        textEditor_->addListener(this);
         addAndMakeVisible(textEditor_.get());
         
         okButton_ = std::make_unique<TextButton>();
@@ -53,6 +54,13 @@ public:
         cancelButton_->setButtonText(TRANS("cancel"));
         cancelButton_->onClick = [&]() { MelissaModalDialog::close(); };
         addAndMakeVisible(cancelButton_.get());
+    }
+    
+    void textEditorReturnKeyPressed(TextEditor& editor) override
+    {
+        const String text = textEditor_->getText();
+        onClick_(text);
+        MelissaModalDialog::close();
     }
     
 private:

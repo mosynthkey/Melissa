@@ -12,12 +12,13 @@
 #include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
-class MelissaDialog : public Component
+class MelissaDialog : public Component, public KeyListener
 {
 public:
     MelissaDialog(std::shared_ptr<Component> contentComponent, const String& title, bool closeOnClickingOutside);
     void paint(Graphics& g) override;
     void resized() override;
+    bool keyPressed(const KeyPress &key, Component* originatingComponent) override;
     
 private:
     std::unique_ptr<BackgroundButton> backgroundButton_;

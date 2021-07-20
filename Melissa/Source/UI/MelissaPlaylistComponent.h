@@ -47,7 +47,7 @@ private:
     std::unique_ptr<DrawableButton> addPlayingButton_;
     
     std::unique_ptr<MelissaFileListBox> listBox_;
-    MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_FileBrowser laf_;
     
     enum
     {
