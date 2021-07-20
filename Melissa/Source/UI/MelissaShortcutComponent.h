@@ -36,4 +36,5 @@ private:
     MelissaShortcutManager* shortcutManager_;
     
     int registerEditY_;
+    Rectangle<int> listRect_;
 };

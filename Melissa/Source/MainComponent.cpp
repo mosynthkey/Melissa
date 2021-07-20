@@ -12,6 +12,7 @@
 #include "MelissaDefinitions.h"
 #include "MelissaInputDialog.h"
 #include "MelissaOptionDialog.h"
+#include "MelissaShortcutComponent.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
@@ -37,6 +38,7 @@ enum
     kMenuID_Manual,
     kMenuID_MainVersionCheck,
     kMenuID_MainPreferences,
+    kMenuID_MainShortcut,
     kMenuID_MainTutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
@@ -84,6 +86,21 @@ public:
     
 private:
     float ratio_;
+};
+
+class MainComponent::RoundedComponent : public Component
+{
+public:
+    RoundedComponent(const Colour& colour) : colour_(colour) {}
+    
+private:
+    void paint(Graphics& g)
+    {
+        g.setColour(colour_);
+        g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), 6);
+    }
+    
+    Colour colour_;
 };
 
 MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), nextFileNameShown_(false), shouldExit_(false), prepareingNextSong_(false)
@@ -213,7 +230,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
 #endif
     
     updatePlayBackModeButton();
-    showPreferencesDialog();
+    showAudioMidiSettingsDialog();
 }
 
 MainComponent::~MainComponent()
@@ -267,8 +284,8 @@ void MainComponent::createUI()
     
 #if JUCE_MAC
     extraAppleMenuItems_ = make_unique<PopupMenu>();
-    extraAppleMenuItems_->addItem("About Melissa", [&]() { showAboutDialog(); });
-    extraAppleMenuItems_->addItem("Preferences",   [&]() { showPreferencesDialog(); });
+    extraAppleMenuItems_->addItem(TRANS("about_melissa"), [&]() { showAboutDialog(); });
+    extraAppleMenuItems_->addItem(TRANS("preferences"),   [&]() { showAudioMidiSettingsDialog(); });
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #endif
@@ -281,7 +298,9 @@ void MainComponent::createUI()
         menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
         menu.addItem(kMenuID_Manual, TRANS("open_manual"));
         menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
-        menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
+        menu.addSeparator();
+        menu.addItem(kMenuID_MainPreferences, TRANS("audio_midi_settings"));
+        menu.addItem(kMenuID_MainShortcut, TRANS("shortcut_settings"));
         menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
 #if defined(ENABLE_TUTORIAL)
         menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
@@ -302,7 +321,11 @@ void MainComponent::createUI()
         }
         else if (result == kMenuID_MainPreferences)
         {
-            showPreferencesDialog();
+            showAudioMidiSettingsDialog();
+        }
+        else if (result == kMenuID_MainShortcut)
+        {
+            showShortcutDialog();
         }
         else if (result == kMenuID_MainTutorial)
         {
@@ -347,7 +370,7 @@ void MainComponent::createUI()
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
-    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::getMainColour()).withAlpha(0.06f));
+    controlComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
     addAndMakeVisible(controlComponent_.get());
     
     bottomComponent_ = make_unique<MelissaBottomControlComponent>();
@@ -846,13 +869,19 @@ void MainComponent::createUI()
         section->addAndMakeVisible(metronomeVolumeSlider_.get());
     }
     
+    fileComponent_ = std::make_unique<RoundedComponent>(MelissaUISettings::getSubColour());
+    addAndMakeVisible(fileComponent_.get());
+    
+    listComponent_ = std::make_unique<RoundedComponent>(MelissaUISettings::getSubColour());
+    addAndMakeVisible(listComponent_.get());
+    
     browseToggleButton_ = make_unique<ToggleButton>();
     browseToggleButton_->setButtonText("File browser");
     browseToggleButton_->setLookAndFeel(&tabLaf_);
     browseToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     browseToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
     browseToggleButton_->setToggleState(true, dontSendNotification);
-    addAndMakeVisible(browseToggleButton_.get());
+    fileComponent_->addAndMakeVisible(browseToggleButton_.get());
     
     playlistToggleButton_ = make_unique<ToggleButton>();
     playlistToggleButton_->setButtonText("Playlist");
@@ -860,7 +889,7 @@ void MainComponent::createUI()
     playlistToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     playlistToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Playlist); };
     playlistToggleButton_->setToggleState(false, dontSendNotification);
-    addAndMakeVisible(playlistToggleButton_.get());
+    fileComponent_->addAndMakeVisible(playlistToggleButton_.get());
     
     historyToggleButton_ = make_unique<ToggleButton>();
     historyToggleButton_->setButtonText("History");
@@ -868,18 +897,18 @@ void MainComponent::createUI()
     historyToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     historyToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_History); };
     historyToggleButton_->setToggleState(false, dontSendNotification);
-    addAndMakeVisible(historyToggleButton_.get());
+    fileComponent_->addAndMakeVisible(historyToggleButton_.get());
 
     historyTable_ = make_unique<MelissaFileListBox>();
     historyTable_->setTarget(MelissaFileListBox::kTarget_History);
     historyTable_->setLookAndFeel(&laf_);
-    addAndMakeVisible(historyTable_.get());
+    fileComponent_->addAndMakeVisible(historyTable_.get());
 
     practiceTable_ = make_unique<MelissaPracticeTableListBox>();
-    addAndMakeVisible(practiceTable_.get());
+    listComponent_->addAndMakeVisible(practiceTable_.get());
     
     markerTable_ = make_unique<MelissaMarkerListBox>();
-    addAndMakeVisible(markerTable_.get());
+    listComponent_->addAndMakeVisible(markerTable_.get());
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
@@ -891,7 +920,7 @@ void MainComponent::createUI()
         dataSource_->saveMemo(memoTextEditor_->getText());
     };
     memoTextEditor_->setReturnKeyStartsNewLine(true);
-    addAndMakeVisible(memoTextEditor_.get());
+    listComponent_->addAndMakeVisible(memoTextEditor_.get());
     
     auto createAndAddTab = [&](const String& title, ListMemoTab tab)
     {
@@ -900,7 +929,7 @@ void MainComponent::createUI()
         b->setLookAndFeel(&tabLaf_);
         b->setRadioGroupId(kListMemoTabGroup);
         b->onClick = [&, tab]() { updateListMemoTab(tab); };
-        addAndMakeVisible(b.get());
+        listComponent_->addAndMakeVisible(b.get());
         return b;
     };
 
@@ -926,7 +955,7 @@ void MainComponent::createUI()
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
     };
-    addAndMakeVisible(addToPracticeButton_.get());
+    listComponent_->addAndMakeVisible(addToPracticeButton_.get());
     
     addMarkerButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addMarkerButton_->setTooltip(TRANS("add_marker"));
@@ -936,17 +965,16 @@ void MainComponent::createUI()
         markerListToggleButton_->setToggleState(true, sendNotification);
         dataSource_->addDefaultMarker(model_->getPlayingPosRatio());
     };
-    addAndMakeVisible(addMarkerButton_.get());
+    listComponent_->addAndMakeVisible(addMarkerButton_.get());
 
     wildCardFilter_ = make_unique<WildcardFileFilter>(MelissaDataSource::getCompatibleFileExtensions(), "*", "Music Files");
-    fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
+    fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles |   FileBrowserComponent::filenameBoxIsReadOnly,
                                                               File::getSpecialLocation(File::userHomeDirectory),
                                                               wildCardFilter_.get(),
                                                               nullptr);
-    fileBrowserComponent_->setColour(ListBox::backgroundColourId, Colours::transparentWhite);
-    fileBrowserComponent_->setLookAndFeel(&simpleTextEditorLaf_);
+    fileBrowserComponent_->setLookAndFeel(&browserLaf_);
     fileBrowserComponent_->addListener(this);
-    addAndMakeVisible(fileBrowserComponent_.get());
+    fileComponent_->addAndMakeVisible(fileBrowserComponent_.get());
     
     
     labelInfo_[kLabel_MetronomeBpm]     = { "BPM",             bpmButton_.get() };
@@ -980,7 +1008,7 @@ void MainComponent::createUI()
     
     // Set List
     playlistComponent_ = make_unique<MelissaPlaylistComponent>();
-    addChildComponent(playlistComponent_.get());
+    fileComponent_->addChildComponent(playlistComponent_.get());
     
     tooltipWindow_ = std::make_unique<TooltipWindow>(bottomComponent_.get(), 0);
     tooltipWindow_->setLookAndFeel(&laf_);
@@ -1041,6 +1069,10 @@ void MainComponent::paint(Graphics& g)
     const int h = getHeight();
     const int xCenter = w / 2;
     const int yCenter = h / 2;
+    
+    g.fillAll(MelissaUISettings::getMainColour());
+    
+    /*
     const auto gradationColour = MelissaUISettings::getBackGroundGradationColour();
     //const int playButtonCenterY = controlComponent_->getY() + controlComponent_->getHeight() / 2;
     g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), 0, getHeight(), true));
@@ -1062,6 +1094,7 @@ void MainComponent::paint(Graphics& g)
         }
         offset = !offset;
     }
+     */
     
     Colour colours[] = { Colour(0x00000000), Colour(0x50000000) };
     
@@ -1087,54 +1120,11 @@ void MainComponent::resized()
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
-    // left-bottom part (Browser / Playlist / History)
-    {
-        constexpr int kTabMargin = 2;
-        constexpr int kFileBrowseTabX = 20;
-        int32_t browserWidth = 480;
-        int32_t w = (browserWidth - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
-        int32_t y = controlComponent_->getBottom() + kGradationHeight - 10;
-        
-        int x = kFileBrowseTabX;
-        browseToggleButton_ ->setBounds(x, y, w, 30);
-        x += (w + kTabMargin);
-        playlistToggleButton_->setBounds(x, y, w, 30);
-        x += (w + kTabMargin);
-        historyToggleButton_ ->setBounds(x, y, w, 30);
-        x += (w + 20);
-        
-        w = 200;
-        practiceListToggleButton_->setBounds(x, y, w, 30);
-        addToPracticeButton_->setBounds(x + w - 30, y + 6, 18, 18);
-        x += (w + 2);
-        markerListToggleButton_->setBounds(x, y, w, 30);
-        addMarkerButton_->setBounds(x + w - 30, y + 6, 18, 18);
-        x += (w + 2);
-        memoToggleButton_->setBounds(x, y, w, 30);
-        
-        y += 40;
-        {
-            const int32_t h = getHeight() - 40 - y;
-            fileBrowserComponent_->setBounds(kFileBrowseTabX, y, browserWidth, h);
-            playlistComponent_->setBounds(kFileBrowseTabX, y, browserWidth, h);
-            historyTable_->setBounds(kFileBrowseTabX, y, browserWidth, h);
-        }
-        
-        {
-            const int x = practiceListToggleButton_->getX();
-            const int32_t h = getHeight() - 40 - y;
-            practiceTable_->setBounds(x, y, getWidth() - x - 20, h);
-            markerTable_->setBounds(x, y, getWidth() - x - 20, h);
-            memoTextEditor_->setBounds(x, y, getWidth() - x - 20, h);
-        }
-    }
-    
     // Bottom
     bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
     
     int y = controlComponent_->getY() + 10;
     
-    // TODO : adjust
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
     const int totalSectionWidth = getWidth() - sectionMarginX * 4;
@@ -1314,6 +1304,47 @@ void MainComponent::resized()
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
     }
     
+    // File component (Browser / Playlist / History)
+    {
+        int y = controlComponent_->getBottom() + kGradationHeight - 10;
+        int h = (bottomComponent_->getY() - 10) - y;
+        fileComponent_->setBounds(10, y, songWidth, h);
+        int x = fileComponent_->getRight() + 10;
+        listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
+        const int kTabMargin = 2;
+        int tabWidth = (fileComponent_->getWidth() - 20 - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
+        
+        x = 10;
+        browseToggleButton_ ->setBounds(x, 10, tabWidth, 30);
+        x += (tabWidth + kTabMargin);
+        playlistToggleButton_->setBounds(x, 10, tabWidth, 30);
+        x += (tabWidth + kTabMargin);
+        historyToggleButton_ ->setBounds(x, 10, tabWidth, 30);
+        
+        int w = fileComponent_->getWidth() - 20;
+        h = fileComponent_->getHeight() - 60;
+        fileBrowserComponent_->setBounds(10, 50, w, h);
+        playlistComponent_->setBounds(10, 50, w, h);
+        historyTable_->setBounds(10, 50, w, h);
+        
+        x = 10;
+        y = 10;
+        practiceListToggleButton_->setBounds(x, y, tabWidth, 30);
+        addToPracticeButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
+        x += (tabWidth + 2);
+        markerListToggleButton_->setBounds(x, y, tabWidth, 30);
+        addMarkerButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
+        x += (tabWidth + 2);
+        memoToggleButton_->setBounds(x, y, tabWidth, 30);
+        
+        x = 10;
+        y = 50;
+        h = fileComponent_->getHeight() - 60;
+        practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+    }
+    
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
     {
         auto b = labelInfo_[label_i].second->getBoundsInParent();
@@ -1354,10 +1385,18 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
     return MelissaShortcutManager::getInstance()->processKeyboardMessage(key.getTextDescription());
 }
 
-void MainComponent::showPreferencesDialog()
+void MainComponent::showAudioMidiSettingsDialog()
 {
-    auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
-    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("preferences"));
+    auto component = std::make_shared<AudioDeviceSelectorComponent>(deviceManager, 0, 0, 0, 2, true, false, true, false);
+    component->setSize(getWidth() * 0.6f, getHeight() * 0.8f);
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("audio_midi_settings"));
+}
+
+void MainComponent::showShortcutDialog()
+{
+    auto component = std::make_shared<MelissaShortcutComponent>();
+    component->setSize(getWidth() * 0.6f, getHeight() * 0.8f);
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("shortcut_settings"));
 }
 
 void MainComponent::showAboutDialog()

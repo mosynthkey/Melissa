@@ -63,7 +63,7 @@ void MelissaPreferencesComponent::updateTab()
 
 void MelissaPreferencesComponent::paint(Graphics& g)
 {
-    g.fillAll(Colour(MelissaUISettings::getDialogBackgoundColour()));
+    g.fillAll(MelissaUISettings::getMainColour());
 }
 
 void MelissaPreferencesComponent::resized()

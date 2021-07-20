@@ -17,16 +17,18 @@ title_(title)
 void MelissaSectionComponent::paint(Graphics& g)
 {
     constexpr int kRound = 6;
-    const auto colour = Colour(MelissaUISettings::getMainColour());
+    const auto colour = MelissaUISettings::getMainColour();
+    
+    // body
+    g.setColour(colour);
+    g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), kRound);
     
     // title
-    g.setColour(Colour(MelissaUISettings::getTitleBarColour()));
-    MelissaUtility::fillRoundRectangle(g, 0, 0, getWidth(), 30, kRound, kRound, 0, 0);
     g.setColour(Colours::white);
     g.setFont(MelissaUISettings::getFontSizeMain());
     g.drawText(title_, 0, 0, getWidth(), 30, Justification::centred);
     
-    // body
-    g.setColour(colour.withAlpha(0.06f));
-    MelissaUtility::fillRoundRectangle(g, 0, 30, getWidth(), getHeight() - 30, 0, 0, kRound, kRound);
+    // line
+    g.setColour(MelissaUISettings::getSubColour());
+    g.fillRect(10, 30, getWidth() - 20, 1);
 }

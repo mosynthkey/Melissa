@@ -25,9 +25,9 @@ public:
         const float aX = (w - lineWidth - xMargin * 2) * aRatio_ + xMargin;
         const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + xMargin + lineWidth;
         
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.1f));
+        g.setColour(MelissaUISettings::getAccentColour(0.6f));
         g.fillRoundedRectangle(xMargin, (h - lineWidth) / 2.f, w - xMargin * 2, lineWidth, lineWidth / 2);
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.4f));
+        g.setColour(MelissaUISettings::getAccentColour());
         g.fillRoundedRectangle(aX,      (h - lineWidth) / 2.f, bX - aX,         lineWidth, lineWidth / 2);
     }
     
@@ -107,8 +107,12 @@ int MelissaPracticeTableListBox::getNumRows()
 
 void MelissaPracticeTableListBox::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected)
 {
-    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
-    g.fillAll(colour);
+    if (rowIsSelected)
+    {
+        const auto colour = MelissaUISettings::getSubColour();
+        g.setColour(colour);
+        g.fillRoundedRectangle(2, 1, width - 4, height - 2, 1);
+    }
 }
 
 void MelissaPracticeTableListBox::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected)

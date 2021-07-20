@@ -14,34 +14,29 @@
 class MelissaUISettings
 {
 public:
-    static std::pair<uint32_t, uint32_t> getBackGroundGradationColour()
+    static Colour getTextColour(float alpha = 1.f)
     {
-        return { 0xFF1D2534, 0xFF090C10 };
+        return Colour(0xFFFFFF).withAlpha(alpha);
     }
     
-    static uint32_t getMainColour()
+    static Colour getWaveformColour(float alpha = 1.f)
     {
-        return 0xffddeaff;
+        return Colour(0xFFD9E8FF).withAlpha(alpha);
     }
     
-    static uint32_t getAccentColour()
+    static Colour getMainColour(float alpha = 1.f)
     {
-        return 0xff87BBFF;
+        return Colour(0xFF181823).withAlpha(alpha);
     }
     
-    static uint32_t getDialogBackgoundColour()
+    static Colour getSubColour(float alpha = 1.f)
     {
-        return 0xFF262930;
+        return Colour(0xFF303340).withAlpha(alpha);
     }
     
-    static uint32_t getTitleBarColour()
+    static Colour getAccentColour(float alpha = 1.f)
     {
-        return 0xff38404D;
-    }
-    
-    static uint32_t getComponentBackgroundColour()
-    {
-        return 0xFF39404C;
+        return Colour(0xFF7DB2FF).withAlpha(alpha);
     }
     
     static int getFontSizeMain()

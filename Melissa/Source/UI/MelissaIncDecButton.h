@@ -130,10 +130,9 @@ public:
     
     void paint(Graphics& g) override
     {
-        constexpr float t = 1.4f; // thickness
-        const auto b = getLocalBounds().reduced(t, t);
-        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(b.toFloat(), b.getHeight() / 2, t);
+        const auto b = getLocalBounds();
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
     }
     
     void mouseDown(const MouseEvent& event) override

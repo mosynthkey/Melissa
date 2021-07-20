@@ -138,7 +138,8 @@ public:
     void saveMemo();
     
     var getSongSetting(String fileName);
-    void showPreferencesDialog();
+    void showAudioMidiSettingsDialog();
+    void showShortcutDialog();
     void showAboutDialog();
     void showBPMSettingDialog();
     
@@ -168,6 +169,9 @@ private:
     std::unique_ptr<MelissaMarkerMemoComponent> markerMemoComponent_;
     std::unique_ptr<Label> controlComponent_;
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
+    class RoundedComponent;
+    std::unique_ptr<RoundedComponent> fileComponent_;
+    std::unique_ptr<RoundedComponent> listComponent_;
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
     std::unique_ptr<DrawableButton> prevButton_;
@@ -320,6 +324,7 @@ private:
     std::unique_ptr<Label> labels_[kNumOfLabels];
     
     MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_FileBrowser browserLaf_;
     MelissaLookAndFeel_Tab tabLaf_;
     MelissaLookAndFeel_Memo memoLaf_;
     MelissaLookAndFeel_SlideToggleButton slideToggleLaf_;

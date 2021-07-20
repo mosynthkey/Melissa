@@ -33,6 +33,8 @@ closeOnClickingOutside_(closeOnClickingOutside)
     addAndMakeVisible(closeButton_.get());
     
     addAndMakeVisible(contentComponent.get());
+    
+    addKeyListener(this);
 }
 
 void MelissaDialog::paint(Graphics& g)
@@ -42,7 +44,7 @@ void MelissaDialog::paint(Graphics& g)
     const int dialogWidth  = kMargin + contentComponent_->getWidth()  + kMargin;
     const int dialogHeight = kMargin + kCloseButtonSize + kMargin + contentComponent_->getHeight() + kMargin;
     
-    g.setColour(Colour(MelissaUISettings::getDialogBackgoundColour()));
+    g.setColour(MelissaUISettings::getMainColour());
     g.fillRoundedRectangle((getWidth() - dialogWidth) / 2, (getHeight() - dialogHeight) / 2, dialogWidth, dialogHeight, 4);
 }
 
@@ -58,6 +60,12 @@ void MelissaDialog::resized()
     closeButton_->setBounds(x + kMargin, y + kMargin, kCloseButtonSize, kCloseButtonSize);
     titleLabel_->setBounds(x + kMargin, y + kMargin, dialogWidth - kMargin * 2, kCloseButtonSize);
     contentComponent_->setTopLeftPosition(closeButton_->getX(), closeButton_->getBottom() + kMargin);
+}
+
+bool MelissaDialog::keyPressed(const KeyPress &key, Component* originatingComponent)
+{
+    printf("%s\n", key.getTextDescription().toRawUTF8());
+    return true;
 }
 
 Component* MelissaModalDialog::parentComponent_ = nullptr;

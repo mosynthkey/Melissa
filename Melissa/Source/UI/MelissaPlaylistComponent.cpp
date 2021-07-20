@@ -59,6 +59,7 @@ void MelissaPlaylistComponent::createUI()
     
     playlistComboBox_ = std::make_unique<ComboBox>();
     playlistComboBox_->onChange = [&]() { updateList(); };
+    playlistComboBox_->setLookAndFeel(&laf_);
     addAndMakeVisible(playlistComboBox_.get());
     
     createButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);

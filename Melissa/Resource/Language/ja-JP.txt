@@ -3,6 +3,8 @@ countries: ja
 
 "about_melissa" = "Melissaについて"
 "preferences" = "設定"
+"audio_midi_settings" = "Audio / MIDI 設定"
+"shortcut_settings" = "ショートカット設定"
 "enter_loop_name" = "ループ区間の名前を入力してください"
 "enter_playlist_name" = "playlistの名前を入力してください"
 "are_you_sure" = "よろしいですか?"
@@ -50,7 +52,6 @@ countries: ja
 "first_launch" = "Melissaをダウンロードしていただきありがとうございます。\nまずはじめに、曲を開いてみましょう！"
 "load_failed" = "ファイルの読み込みに失敗しました。"
 "Go up to parent directory" = "上のディレクトリへ"
-
 "metronome_switch" = "メトロノーム ON/OFF"
 "metronome_bpm_edit" = "メトロノームのBPMを設定"
 "metronome_bpm_dec" = "メトロノームのBPM : -1"
@@ -77,7 +78,6 @@ countries: ja
 "shortcut_explanation" = "新規 : 登録したいキーを押下 または MIDIコントローラーの操作子を操作して認識させた後、一覧から選択してください。\n編集 : 上のリストから選択し、一覧から変更してください。"
 "shortcut_list" = "ショートカット一覧"
 "shortcut_register_edit" = "登録 / 編集"
-
 "StartStop" = "再生/停止"
 "Back" = "先頭へ戻る"
 "Next" = "次の曲へ"
@@ -137,7 +137,6 @@ countries: ja
 "SelectMarker_7" = "再生位置をマーカー8に設定"
 "SelectMarker_8" = "再生位置をマーカー9に設定"
 "SelectMarker_9" = "再生位置をマーカー10に設定"
-
 "Transport" = "再生/停止 再生位置"
 "Pitch" = "音程"
 "Loop" = "ループ"

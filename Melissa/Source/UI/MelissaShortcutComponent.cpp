@@ -62,8 +62,11 @@ public:
     
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override
     {
-        const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
-        g.fillAll(colour);
+        if (rowIsSelected)
+        {
+            const auto colour = MelissaUISettings::getSubColour();
+            g.fillAll(colour);
+        }
     }
     
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override
@@ -154,7 +157,9 @@ void MelissaShortcutComponent::resized()
     registerEditY_ = getHeight() - 200;
     
     int y = 40;
-    shortcutListBox_->setBounds(60, y, getWidth() - 120, registerEditY_ - 10 - y);
+    
+    listRect_ = Rectangle(60, y, getWidth() - 120, registerEditY_ - 10 - y);
+    shortcutListBox_->setBounds(listRect_.reduced(10));
     
     int margin = 20;
     int width = (getWidth() - 120 - margin * 2) / 5;
@@ -169,12 +174,19 @@ void MelissaShortcutComponent::resized()
 
 void MelissaShortcutComponent::paint(Graphics& g)
 {
+    g.setFont(MelissaUISettings::getFontSizeMain());
+    
     g.setColour(Colours::white);
-    g.setFont(MelissaUISettings::getFontSizeSub());
     g.drawText(TRANS("shortcut_list"), 60, 0, getWidth() - 120, 30, Justification::left);
+    
+    g.setColour(MelissaUISettings::getSubColour());
+    g.fillRoundedRectangle(listRect_.toFloat(), 0);
+    
+    g.setColour(Colours::white);
     g.drawText(TRANS("shortcut_register_edit"), 60, registerEditY_, getWidth() - 120, 30, Justification::left);
     
-    g.setFont(MelissaUISettings::getFontSizeSmall());
+    g.setColour(Colours::white);
+    g.setFont(MelissaUISettings::getFontSizeSub());
     g.drawFittedText(TRANS("shortcut_explanation"), 60, registerEditY_ + 80, getWidth() - 120, 30 * 4, Justification::left, 4);
 }
 

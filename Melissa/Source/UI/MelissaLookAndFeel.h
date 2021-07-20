@@ -19,11 +19,14 @@ class MelissaLookAndFeel : public LookAndFeel_V4
 public:
     MelissaLookAndFeel()
     {
+        baseColour_ = MelissaUISettings::getMainColour();
+        highlightColour_ = MelissaUISettings::getSubColour();
+        
         setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         setColour(ListBox::backgroundColourId, Colours::transparentWhite);
         setColour(DirectoryContentsDisplayComponent::highlightColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
-        setColour(ListBox::outlineColourId, Colours::white.withAlpha(0.4f));
-        setColour(TableListBox::outlineColourId, Colours::white.withAlpha(0.4f));
+        setColour(TableListBox::backgroundColourId, baseColour_);
+        setColour(ListBox::outlineColourId, Colours::transparentWhite);
     }
     
     virtual ~MelissaLookAndFeel() {};
@@ -36,7 +39,7 @@ public:
     virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
-        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 0.3f : 0.15f));
+        g.setColour(Colour(MelissaUISettings::getSubColour()));
         g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
     }
     
@@ -68,8 +71,8 @@ public:
         const float h = c.getHeight() - lineThickness - 1;
         const float cornerSize = (c.getHeight() - 12 - lineThickness) / 2;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(xOffset, yOffset + 6, w, h - 12, cornerSize, lineThickness);
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRoundedRectangle(xOffset, yOffset + 6, w, h - 12, cornerSize);
         
         {
             Rectangle<int> rect(xOffset + lineThickness, yOffset + 6 + 1, (sliderPos - 1) - (xOffset + lineThickness) - 4, h - 12 - 2);
@@ -81,7 +84,7 @@ public:
             const int y1 = rect.getY() + 1 + rect.getHeight();
             
             //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
-            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4));
+            g.setColour(MelissaUISettings::getAccentColour(s.isMouseOver() ? 1.f : 0.6f));
             
             Path path;
             path.addArc(x0, y0, r, r, M_PI, 2 * M_PI);
@@ -92,6 +95,8 @@ public:
             path.lineTo(x1, y1);
             path.closeSubPath();
             g.fillPath(path);
+            
+            
         }
     }
     
@@ -154,38 +159,47 @@ public:
     
     virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override
     {
-        g.fillAll(Colour(MelissaUISettings::getDialogBackgoundColour()));
+        g.fillAll(baseColour_);
     }
     
     virtual void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
     {
-        g.setColour(Colour(MelissaUISettings::getDialogBackgoundColour()));
+        g.setColour(highlightColour_);
         g.fillRect(area);
         
-        if (isHighlighted)
+        if (isSeparator)
         {
-            g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.1f));
-            g.fillRect(area.reduced(2, 0));
+            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
+            const auto separatorRect = Rectangle<int>(10, area.getHeight() / 2 - 0.5f, area.getWidth() - 20, 1);
+            g.fillRect(separatorRect);
         }
-        
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, isActive ? 0.8f : 0.2f));
-        g.setFont(MelissaUISettings::getFontSizeSub());
-        g.drawText(text, area.reduced(10, 0), Justification::left);
-        
-        if (hasSubMenu)
+        else
         {
-            constexpr int triWidth = 6;
-            constexpr int triHeight = 8;
+            if (isHighlighted)
+            {
+                g.setColour(baseColour_);
+                g.fillRect(area.reduced(2, 0));
+            }
             
-            const int x0 = area.getRight() - triWidth - 10;
-            const int x1 = x0 + triWidth;
-            const int y0 = area.getY() + area.getHeight() / 2 - triHeight / 2;
-            const int y1 = y0 + triHeight / 2;
-            const int y2 = y1 + triHeight / 2;
+            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, isActive ? 0.8f : 0.2f));
+            g.setFont(MelissaUISettings::getFontSizeSub());
+            g.drawText(text, area.reduced(10, 0), Justification::left);
             
-            Path triangle;
-            triangle.addTriangle(x0, y0, x0, y2, x1, y1);
-            g.fillPath(triangle);
+            if (hasSubMenu)
+            {
+                constexpr int triWidth = 6;
+                constexpr int triHeight = 8;
+                
+                const int x0 = area.getRight() - triWidth - 10;
+                const int x1 = x0 + triWidth;
+                const int y0 = area.getY() + area.getHeight() / 2 - triHeight / 2;
+                const int y1 = y0 + triHeight / 2;
+                const int y2 = y1 + triHeight / 2;
+                
+                Path triangle;
+                triangle.addTriangle(x0, y0, x0, y2, x1, y1);
+                g.fillPath(triangle);
+            }
         }
     }
     
@@ -193,11 +207,11 @@ public:
     {
         if (isMouseOverBar)
         {
-            g.fillAll(Colour(MelissaUISettings::getDialogBackgoundColour()));
+            g.fillAll(baseColour_);
         }
         else
         {
-            g.fillAll(Colour(MelissaUISettings::getMainColour()).withAlpha(0.8f));
+            g.fillAll(Colour(MelissaUISettings::getMainColour(0.8f)));
         }
     }
     
@@ -208,22 +222,23 @@ public:
     
     virtual void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
     {
-        // no background
+        const auto& c = te.getLocalBounds();
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRoundedRectangle(0, 0, c.getWidth(), c.getHeight(), c.getHeight() / 2);
     }
     
     virtual void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
     {
-        const auto& c = te.getLocalBounds();
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
+
     }
      
     virtual void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
     {
-        const auto& c = cb.getLocalBounds();
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
+        const auto b = cb.getLocalBounds();
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
         
+        g.setColour(MelissaUISettings::getTextColour(0.5f));
         constexpr int triHeight = 6;
         constexpr int triWidth = 12;
         g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
@@ -253,8 +268,10 @@ public:
     
     virtual void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(0.3f));
+        g.setColour(baseColour_);
         g.fillAll();
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRect(10, c.getHeight() - 2, c.getWidth() - 20, 1);
     }
     
     virtual void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
@@ -263,6 +280,115 @@ public:
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
+    
+    virtual Font getPopupMenuFont() override
+    {
+        return Font(MelissaUISettings::getFontSizeMain());
+    }
+    
+    
+    virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
+    {
+        return Font(MelissaUISettings::getFontSizeMain());
+    }
+    
+    virtual Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
+    {
+        if (bottomComponent_ == nullptr)
+        {
+            int w, h;
+            std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaUISettings::getFontSizeSub()), tipText);
+            w += 10;
+            h += 4;
+            
+            return Rectangle<int> (screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 12) : screenPos.x + 24,
+                                   screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 6)  : screenPos.y + 6,
+                                   w, h).constrainedWithin(parentArea);
+        }
+        else
+        {
+            return bottomComponent_->getLocalBounds().reduced(20, 0).withWidth(bottomComponent_->getWidth() / 2);
+        }
+    }
+    
+    virtual void drawTooltip(Graphics& g, const String& text, int width, int height) override
+    {
+        Rectangle<int> bounds (width, height);
+        
+        if (bottomComponent_ == nullptr)
+        {
+            g.setColour(Colours::white.withAlpha(0.8f));
+            g.fillRoundedRectangle(0, 0, width, height, height / 2);
+            
+            g.setColour(Colours::black/* Colour(MelissaUISettings::getDialogBackgoundColour())*/);
+            g.fillRoundedRectangle(1, 1, width - 2, height - 2, (height - 2) / 2);
+        }
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillAll();
+        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setFont(Font(MelissaUISettings::getFontSizeSub()));
+        g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
+    }
+    
+private:
+    Component* bottomComponent_;
+    std::unique_ptr<Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
+    
+    Colour baseColour_, highlightColour_;
+};
+
+class MelissaLookAndFeel_Tab : public LookAndFeel_V4
+{
+public:
+    virtual ~MelissaLookAndFeel_Tab() {};
+    
+    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        /*
+        float alpha = 0.2f;
+        if (tb.getToggleState())
+        {
+            alpha = 0.8f;
+        }
+        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            alpha = 0.6f;
+        }
+        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
+
+        g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
+         */
+        
+        g.setColour(MelissaUISettings::getMainColour());
+        g.fillRoundedRectangle(0, 0, tb.getWidth(), tb.getHeight(), 6);
+        
+        float alpha = 0.2f;
+        if (tb.getToggleState())
+        {
+            alpha = 0.8f;
+        }
+        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            alpha = 0.6f;
+        }
+        g.setColour(MelissaUISettings::getTextColour(alpha));
+        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        
+    }
+};
+
+class MelissaLookAndFeel_FileBrowser : public MelissaLookAndFeel
+{
+public:
+    MelissaLookAndFeel_FileBrowser()
+    {
+        setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getSubColour());
+        setColour(DirectoryContentsDisplayComponent::textColourId, Colours::white);
+        setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, Colours::white);
+    }
+    
+    virtual ~MelissaLookAndFeel_FileBrowser() {};
     
     virtual void drawFileBrowserRow(Graphics& g, int width, int height,
                             const File&, const String& filename, Image* icon,
@@ -308,17 +434,6 @@ public:
 
     }
     
-    virtual Font getPopupMenuFont() override
-    {
-        return Font(MelissaUISettings::getFontSizeMain());
-    }
-    
-    
-    virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
-    {
-        return Font(MelissaUISettings::getFontSizeMain());
-    }
-    
     virtual Button* createFileBrowserGoUpButton() override
     {
         auto goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
@@ -358,69 +473,33 @@ public:
         }
     }
     
-    virtual Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
+    virtual void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
     {
-        if (bottomComponent_ == nullptr)
-        {
-            int w, h;
-            std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaUISettings::getFontSizeSub()), tipText);
-            w += 10;
-            h += 4;
-            
-            return Rectangle<int> (screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 12) : screenPos.x + 24,
-                                   screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 6)  : screenPos.y + 6,
-                                   w, h).constrainedWithin(parentArea);
-        }
-        else
-        {
-            return bottomComponent_->getLocalBounds().reduced(20, 0).withWidth(bottomComponent_->getWidth() / 2);
-        }
-    }
-    
-    virtual void drawTooltip(Graphics& g, const String& text, int width, int height) override
-    {
-        Rectangle<int> bounds (width, height);
+        const auto b = cb.getLocalBounds();
+        g.setColour(MelissaUISettings::getMainColour());
+        g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
         
-        if (bottomComponent_ == nullptr)
-        {
-            g.setColour(Colours::white.withAlpha(0.8f));
-            g.fillRoundedRectangle(0, 0, width, height, height / 2);
-            
-            g.setColour(Colours::black/* Colour(MelissaUISettings::getDialogBackgoundColour())*/);
-            g.fillRoundedRectangle(1, 1, width - 2, height - 2, (height - 2) / 2);
-        }
-        g.setGradientFill(ColourGradient(Colour(0xFF1A1A1A), 0, height, Colour(0xFF1C222B), width, 0, true));
-        g.fillAll();
-        g.setColour(Colours::white.withAlpha(0.8f));
-        g.setFont(Font(MelissaUISettings::getFontSizeSub()));
-        g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
+        g.setColour(MelissaUISettings::getTextColour(0.5f));
+        constexpr int triHeight = 6;
+        constexpr int triWidth = 12;
+        g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
+        g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
     }
     
-private:
-    Component* bottomComponent_;
-    std::unique_ptr<Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
-};
-
-class MelissaLookAndFeel_Tab : public LookAndFeel_V4
-{
-public:
-    virtual ~MelissaLookAndFeel_Tab() {};
-    
-    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
     {
-        float alpha = 0.2f;
-        if (tb.getToggleState())
-        {
-            alpha = 0.8f;
-        }
-        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
-        {
-            alpha = 0.6f;
-        }
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
-        g.setFont(MelissaUISettings::getFontSizeMain());
-        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
-        g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
+        // no background
+    }
+    
+    virtual void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    {
+        // no background
+    }
+    
+    virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        g.setColour(MelissaUISettings::getMainColour());
+        g.fillRoundedRectangle(0.f, 0.f, b.getWidth(), b.getHeight(), b.getHeight() / 2);
     }
 };
 
@@ -431,14 +510,11 @@ public:
     
     void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
     {
-        // no background
+        g.fillAll(MelissaUISettings::getMainColour());
     }
     
     void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
     {
-        const auto& c = te.getLocalBounds();
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRect(c, lineThickness);
     }
     
     void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
@@ -577,15 +653,14 @@ public:
         
         const auto& c = s.getLocalBounds();
         
-        const int lineThickness = 4;
         const int faderThickness = 8;
         
-        g.setColour(Colours::white.withAlpha(0.4f));
+        g.setColour(MelissaUISettings::getSubColour());
         g.fillRoundedRectangle(0, (c.getHeight() - lineThickness) / 2, c.getWidth(), lineThickness, lineThickness / 2);
         
         const float ratio = (sliderPos - x) / width;
         const float faderXPos = (c.getWidth() - faderThickness) * ratio;
-        g.setColour(Colours::white.withAlpha(1.f));
+        g.setColour(MelissaUISettings::getAccentColour());
         g.fillRoundedRectangle(faderXPos, 0, faderThickness, c.getHeight(), lineThickness / 2);
     }
 };
