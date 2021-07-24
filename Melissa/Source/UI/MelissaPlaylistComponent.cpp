@@ -114,7 +114,7 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(removeButton_.get());
     
     upButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-    upButton_->setTooltip(TRANS("up"));
+    upButton_->setTooltip(TRANS("playlist_up"));
     upButton_->setImages(iconImages_[kIcon_Up].get(), iconHighlightedImages_[kIcon_Up].get());
     upButton_->onClick = [&]()
     {
@@ -123,7 +123,7 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(upButton_.get());
     
     downButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-    downButton_->setTooltip(TRANS("down"));
+    downButton_->setTooltip(TRANS("playlist_down"));
     downButton_->setImages(iconImages_[kIcon_Down].get(), iconHighlightedImages_[kIcon_Down].get());
     downButton_->onClick = [&]()
     {

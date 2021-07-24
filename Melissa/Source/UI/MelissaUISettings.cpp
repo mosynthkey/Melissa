@@ -7,6 +7,7 @@
 
 #include "MelissaUISettings.h"
 
+bool MelissaUISettings::isDarkMode = true;
 bool MelissaUISettings::isJa = false;
 
 #if defined(JUCE_MAC)

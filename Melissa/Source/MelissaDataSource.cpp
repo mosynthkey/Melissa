@@ -85,6 +85,8 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             }
         }
         if (!shortcutRegistered) setDefaultShortcuts();
+        
+        if (g->hasProperty("ui_theme")) global_.uiTheme_ = g->getProperty("ui_theme");
     }
     
     if (settings.hasProperty("previous"))
@@ -270,6 +272,7 @@ void MelissaDataSource::saveSettingsFile()
         }
     }
     global->setProperty("shortcut", shortcut);
+    global->setProperty("ui_theme", global_.uiTheme_);
     settings->setProperty("global", global);
     
     auto previous = new DynamicObject();
@@ -491,6 +494,14 @@ void MelissaDataSource::registerShortcut(const String& eventName, const String& 
     global_.shortcut_[eventName] = command;
     
     for (auto&& l : listeners_) l->shortcutUpdated();
+}
+
+void MelissaDataSource::setUITheme(const String& uiTheme)
+{
+    if (uiTheme == "System_Dark" || uiTheme == "System_Light")
+    {
+        global_.uiTheme_ = uiTheme;
+    }
 }
 
 void MelissaDataSource::deregisterShortcut(const String& eventName)

@@ -27,9 +27,6 @@ String MelissaUpdateChecker::getLatestVersionNumberString()
 
     auto versionString = json->getProperty ("tag_name").toString();
     if (versionString.isEmpty()) return "";
-    
-    auto bodyString = json->getProperty ("body").toString();
-    printf("%s\n", bodyString.toRawUTF8());
 
     return versionString;
 }
