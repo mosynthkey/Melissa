@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
               headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
-              version="2.0.1" companyName="MasakiOno" companyCopyright="Copyright(c) 2021 Masaki Ono"
+              version="2.5.0" companyName="MasakiOno" companyCopyright="Copyright(c) 2021 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
               jucerFormatVersion="1">
@@ -10,54 +10,26 @@
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <GROUP id="{C5AC6B22-7389-6732-F819-CB34CCC7D946}" name="Icon">
         <FILE id="z4vMz6" name="add.svg" compile="0" resource="1" file="Resource/Icon/add.svg"/>
-        <FILE id="eccUTb" name="add_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/add_highlighted.svg"/>
         <FILE id="QqaTr6" name="arrow_left.svg" compile="0" resource="1" file="Resource/Icon/arrow_left.svg"/>
-        <FILE id="tHvaA1" name="arrow_left_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/arrow_left_highlighted.svg"/>
         <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>
-        <FILE id="Z6gLOK" name="arrow_right_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/arrow_right_highlighted.svg"/>
         <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="Resource/Icon/down.svg"/>
-        <FILE id="LBhT2M" name="down_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/down_highlighted.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="Resource/Icon/loop_onesong.svg"/>
-        <FILE id="T6hmec" name="loop_onesong_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/loop_onesong_highlighted.svg"/>
         <FILE id="VQA9um" name="loop_playlist.svg" compile="0" resource="1"
               file="Resource/Icon/loop_playlist.svg"/>
-        <FILE id="Nn14Gr" name="loop_playlist_highlighted.svg" compile="0"
-              resource="1" file="Resource/Icon/loop_playlist_highlighted.svg"/>
         <FILE id="bpsEcP" name="next_button.svg" compile="0" resource="1" file="Resource/Icon/next_button.svg"/>
-        <FILE id="C6xnKZ" name="next_button_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/next_button_highlighted.svg"/>
         <FILE id="hK6blR" name="playlist_add.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_add.svg"/>
-        <FILE id="QLXXHx" name="playlist_add_file.svg" compile="0" resource="1"
+        <FILE id="Y8Sfap" name="playlist_add_file.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_add_file.svg"/>
-        <FILE id="zDT4Id" name="playlist_add_file_highlighted.svg" compile="0"
-              resource="1" file="Resource/Icon/playlist_add_file_highlighted.svg"/>
-        <FILE id="JWOY48" name="playlist_add_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/playlist_add_highlighted.svg"/>
         <FILE id="lGdnPw" name="playlist_add_playing.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_add_playing.svg"/>
-        <FILE id="HK4cgr" name="playlist_add_playing_highlighted.svg" compile="0"
-              resource="1" file="Resource/Icon/playlist_add_playing_highlighted.svg"/>
         <FILE id="HMTx7c" name="playlist_edit.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_edit.svg"/>
-        <FILE id="LnvnTV" name="playlist_edit_highlighted.svg" compile="0"
-              resource="1" file="Resource/Icon/playlist_edit_highlighted.svg"/>
         <FILE id="y1rw8c" name="playlist_remove.svg" compile="0" resource="1"
               file="Resource/Icon/playlist_remove.svg"/>
-        <FILE id="XJKNra" name="playlist_remove_highlighted.svg" compile="0"
-              resource="1" file="Resource/Icon/playlist_remove_highlighted.svg"/>
         <FILE id="EmNChd" name="prev_button.svg" compile="0" resource="1" file="Resource/Icon/prev_button.svg"/>
-        <FILE id="BI2L5c" name="prev_button_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/prev_button_highlighted.svg"/>
         <FILE id="vnhVAn" name="up.svg" compile="0" resource="1" file="Resource/Icon/up.svg"/>
-        <FILE id="Y80DCw" name="up_highlighted.svg" compile="0" resource="1"
-              file="Resource/Icon/up_highlighted.svg"/>
       </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="Resource/Language/en-US.txt"/>
@@ -144,6 +116,8 @@
               file="Source/UI/MelissaCommandComboBox.cpp"/>
         <FILE id="C0xuSm" name="MelissaCommandComboBox.h" compile="0" resource="0"
               file="Source/UI/MelissaCommandComboBox.h"/>
+        <FILE id="lUG0cz" name="MelissaDoubleClickEditLabel.h" compile="1"
+              resource="0" file="Source/UI/MelissaDoubleClickEditLabel.h"/>
         <FILE id="vQExoN" name="MelissaFileListBox.h" compile="0" resource="0"
               file="Source/UI/MelissaFileListBox.h"/>
         <FILE id="e3sPoO" name="MelissaIncDecButton.h" compile="0" resource="0"
@@ -193,6 +167,10 @@
               file="Source/UI/MelissaShortcutComponent.cpp"/>
         <FILE id="lg92rj" name="MelissaShortcutComponent.h" compile="0" resource="0"
               file="Source/UI/MelissaShortcutComponent.h"/>
+        <FILE id="P2N1U2" name="MelissaShortcutPopupComponent.cpp" compile="1"
+              resource="0" file="Source/UI/MelissaShortcutPopupComponent.cpp"/>
+        <FILE id="d90Sfs" name="MelissaShortcutPopupComponent.h" compile="0"
+              resource="0" file="Source/UI/MelissaShortcutPopupComponent.h"/>
         <FILE id="g3JdDU" name="MelissaSimpleTextButton.h" compile="0" resource="0"
               file="Source/UI/MelissaSimpleTextButton.h"/>
         <FILE id="EpXZNq" name="MelissaTapTempoButton.cpp" compile="1" resource="0"

@@ -24,7 +24,7 @@ void MelissaSectionComponent::paint(Graphics& g)
     g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), kRound);
     
     // title
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     g.setFont(MelissaUISettings::getFontSizeMain());
     g.drawText(title_, 0, 0, getWidth(), 30, Justification::centred);
     

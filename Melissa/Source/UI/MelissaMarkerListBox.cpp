@@ -6,6 +6,7 @@
 //
 
 #include <numeric>
+#include "MelissaDoubleClickEditLabel.h"
 #include "MelissaMarkerListBox.h"
 
 class MarkerColourLabel : public Component
@@ -54,8 +55,10 @@ dataSource_(MelissaDataSource::getInstance())
     }
     setOutlineThickness(1);
     
-    popupMenu_ = std::make_shared<PopupMenu>();
     setLookAndFeel(&laf_);
+    
+    popupMenu_ = std::make_shared<PopupMenu>();
+    popupMenu_->setLookAndFeel(&laf_);
 }
 
 MelissaMarkerListBox::~MelissaMarkerListBox()
@@ -116,7 +119,7 @@ void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, i
         }
     }
     
-    g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+    g.setColour(MelissaUISettings::getTextColour());
     g.setFont(MelissaUISettings::getFontSizeMain());
     constexpr int xMargin = 10;
     g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
@@ -149,17 +152,16 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         auto marker = markers_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new Label();
-            l->setEditable(true, false);
+            auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
         else
         {
-            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(marker.memo_, dontSendNotification);
             return existingComponentToUpdate;
         }

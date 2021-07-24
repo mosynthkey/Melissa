@@ -21,6 +21,7 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaShortcutManager.h"
+#include "MelissaShortcutPopupComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
@@ -162,6 +163,8 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
+    std::unique_ptr<MelissaShortcutPopupComponent> shortcutPopup_;
+    
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;
     
@@ -199,23 +202,17 @@ private:
     enum
     {
         kIcon_Prev,
-        kIcon_PrevHighlighted,
         kIcon_Next,
-        kIcon_NextHighlighted,
         kIcon_LoopOneSong,
-        kIcon_LoopOneSongHighlighted,
         kIcon_LoopPlaylist,
-        kIcon_LoopPlaylistHighlighted,
         kIcon_ArrowLeft,
-        kIcon_ArrowLeftHighlighted,
         kIcon_ArrowRight,
-        kIcon_ArrowRightHighlighted,
         kIcon_Add,
-        kIcon_AddHighlighted,
         kNumOfIcons
     };
     
     std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
+    std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
     
 #if defined(ENABLE_SPEED_TRAINING)
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;

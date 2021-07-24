@@ -22,11 +22,17 @@ public:
         baseColour_ = MelissaUISettings::getMainColour();
         highlightColour_ = MelissaUISettings::getSubColour();
         
-        setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        setColour(Label::textColourId, MelissaUISettings::getTextColour());
+        setColour(ComboBox::textColourId, MelissaUISettings::getTextColour());
         setColour(ListBox::backgroundColourId, Colours::transparentWhite);
-        setColour(DirectoryContentsDisplayComponent::highlightColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
+        setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getTextColour());
         setColour(TableListBox::backgroundColourId, baseColour_);
         setColour(ListBox::outlineColourId, Colours::transparentWhite);
+        setColour(TextEditor::highlightColourId, highlightColour_);
+        
+        setColour(TextEditor::textColourId, MelissaUISettings::getTextColour());
+        setColour(TextEditor::highlightedTextColourId, MelissaUISettings::getTextColour());
+        setColour(TextEditor::highlightColourId, MelissaUISettings::getAccentColour(0.5f));
     }
     
     virtual ~MelissaLookAndFeel() {};
@@ -38,14 +44,14 @@ public:
     
     virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
         g.setColour(Colour(MelissaUISettings::getSubColour()));
         g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
     }
     
     virtual void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
+        g.setColour(MelissaUISettings::getTextColour(highlighted ? 0.8f : 0.4f));
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
@@ -96,8 +102,11 @@ public:
             path.closeSubPath();
             g.fillPath(path);
             
-            
+            g.setColour(MelissaUISettings::getAccentColour());
+            g.fillEllipse(x2, y0, rect.getHeight(), rect.getHeight());
         }
+        
+        
     }
     
     virtual void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override
@@ -169,7 +178,7 @@ public:
         
         if (isSeparator)
         {
-            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.2f));
+            g.setColour(MelissaUISettings::getTextColour(0.2f));
             const auto separatorRect = Rectangle<int>(10, area.getHeight() / 2 - 0.5f, area.getWidth() - 20, 1);
             g.fillRect(separatorRect);
         }
@@ -181,7 +190,7 @@ public:
                 g.fillRect(area.reduced(2, 0));
             }
             
-            g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, isActive ? 0.8f : 0.2f));
+            g.setColour(MelissaUISettings::getTextColour(isActive ? 0.8f : 0.2f));
             g.setFont(MelissaUISettings::getFontSizeSub());
             g.drawText(text, area.reduced(10, 0), Justification::left);
             
@@ -276,7 +285,7 @@ public:
     
     virtual void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
-        g.setColour(Colours::white);
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
@@ -317,7 +326,7 @@ public:
         
         if (bottomComponent_ == nullptr)
         {
-            g.setColour(Colours::white.withAlpha(0.8f));
+            g.setColour(MelissaUISettings::getTextColour());
             g.fillRoundedRectangle(0, 0, width, height, height / 2);
             
             g.setColour(Colours::black/* Colour(MelissaUISettings::getDialogBackgoundColour())*/);
@@ -325,7 +334,7 @@ public:
         }
         g.setColour(MelissaUISettings::getSubColour());
         g.fillAll();
-        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(Font(MelissaUISettings::getFontSizeSub()));
         g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
     }
@@ -344,23 +353,8 @@ public:
     
     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        /*
-        float alpha = 0.2f;
-        if (tb.getToggleState())
-        {
-            alpha = 0.8f;
-        }
-        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
-        {
-            alpha = 0.6f;
-        }
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
-
-        g.fillRect(0, tb.getHeight() - 1, tb.getWidth(), 1);
-         */
-        
         g.setColour(MelissaUISettings::getMainColour());
-        g.fillRoundedRectangle(0, 0, tb.getWidth(), tb.getHeight(), 6);
+        MelissaUtility::fillRoundRectangle(g, 0, 0, tb.getWidth(), tb.getHeight(), 6, 6, 0, 0);
         
         float alpha = 0.2f;
         if (tb.getToggleState())
@@ -383,9 +377,14 @@ class MelissaLookAndFeel_FileBrowser : public MelissaLookAndFeel
 public:
     MelissaLookAndFeel_FileBrowser()
     {
+        setColour(Label::textColourId, MelissaUISettings::getTextColour());
         setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getSubColour());
-        setColour(DirectoryContentsDisplayComponent::textColourId, Colours::white);
-        setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, Colours::white);
+        setColour(DirectoryContentsDisplayComponent::textColourId, MelissaUISettings::getTextColour());
+        setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, MelissaUISettings::getTextColour());
+        setColour(ComboBox::textColourId, MelissaUISettings::getTextColour());
+        
+        setColour(FileBrowserComponent::currentPathBoxTextColourId, MelissaUISettings::getTextColour());
+        setColour(FileBrowserComponent::filenameBoxTextColourId, MelissaUISettings::getTextColour());
     }
     
     virtual ~MelissaLookAndFeel_FileBrowser() {};
@@ -442,11 +441,11 @@ public:
         arrowPath.addArrow ({ 50.0f, 100.0f, 50.0f, 0.0f }, 40.0f, 100.0f, 50.0f);
 
         DrawablePath arrowImage;
-        arrowImage.setFill(Colours::white.withAlpha(0.4f));
+        arrowImage.setFill(MelissaUISettings::getTextColour(0.4f));
         arrowImage.setPath(arrowPath);
         
         DrawablePath arrowImageHighlighted;
-        arrowImageHighlighted.setFill(Colours::white.withAlpha(0.8f));
+        arrowImageHighlighted.setFill(MelissaUISettings::getTextColour());
         arrowImageHighlighted.setPath(arrowPath);
 
         goUpButton->setImages(&arrowImage, &arrowImageHighlighted);
@@ -459,7 +458,7 @@ public:
         const auto w = browserComp.getWidth();
         const auto h = browserComp.getHeight();
         
-        const int goUpButtonWidth = 60;
+        const int goUpButtonWidth = 30;
         const int margin = 10;
         const int controlHeight = 30;
         currentPathBox->setBounds(0, 0, w - goUpButtonWidth - margin, controlHeight);
@@ -499,11 +498,11 @@ public:
     virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(MelissaUISettings::getMainColour());
-        g.fillRoundedRectangle(0.f, 0.f, b.getWidth(), b.getHeight(), b.getHeight() / 2);
+        g.fillRoundedRectangle(0.f, 0.f, b.getWidth(), b.getHeight(), 6);
     }
 };
 
-class MelissaLookAndFeel_Memo : public LookAndFeel_V4
+class MelissaLookAndFeel_Memo : public MelissaLookAndFeel
 {
 public:
     virtual ~MelissaLookAndFeel_Memo() {};
@@ -681,7 +680,7 @@ public:
     
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        g.setColour(Colours::white.withAlpha(shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
+        g.setColour(MelissaUISettings::getTextColour(shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
         g.setFont(fontSize_);
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), justification_);
     }

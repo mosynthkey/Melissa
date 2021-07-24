@@ -84,7 +84,7 @@ private:
         g.setColour(MelissaUISettings::getSubColour());
         g.fillEllipse(t / 2, t / 2, w - t - 1, h - t - 1);
         
-        g.setColour(MelissaUISettings::getAccentColour());
+        g.setColour(MelissaUISettings::getAccentColour(on ? 1.f : 0.6f));
         if (drawPlayIcon_)
         {
             const int x0 = (w - triW) * 4.f / 7.f;

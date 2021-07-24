@@ -1,9 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="17px" viewBox="0 0 16 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>next_button</title>
-    <g id="Ver2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.8" opacity="0.403366815">
-        <g id="A0-Copy-4" transform="translate(-133.000000, -348.000000)" fill="#FFFFFF">
-            <path d="M149,348 L149,365 L135,357.33 L135,364.5 L133,364.5 L133,348.5 L135,348.5 L135,355.67 L149,348 Z" id="next_button" transform="translate(141.000000, 356.500000) scale(-1, 1) translate(-141.000000, -356.500000) "></path>
-        </g>
-    </g>
+<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="next_button" fill-rule="evenodd" clip-rule="evenodd" d="M14 0.5H16V16.5H14V9.32464C13.9727 9.34317 13.9442 9.36066 13.9143 9.37701L1.48047 16.1889C0.814054 16.554 0 16.0718 0 15.3119V1.68809C0 0.928215 0.814052 0.44598 1.48047 0.811078L13.9143 7.62299C13.9442 7.63934 13.9727 7.65683 14 7.67536V0.5Z" fill="white"/>
 </svg>

@@ -142,6 +142,8 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
 
 MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nullptr), noAssignMenuId_(1), selectedCommand_("")
 {
+    setWantsKeyboardFocus(false);
+    
     popupMenu_.setLookAndFeel(&laf_);
     
     noAssignMenuId_ = 0;

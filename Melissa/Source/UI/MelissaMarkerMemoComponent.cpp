@@ -8,6 +8,7 @@
 #include <vector>
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaModel.h"
+#include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
 MelissaMarkerMemoComponent::MelissaMarkerMemoComponent()
@@ -88,7 +89,7 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
     for (auto&& info : markerLabelInfo)
     {
         g.setFont(font_);
-        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setColour(MelissaUISettings::getTextColour());
         g.drawText(info.memo_, info.x_, 0, info.width_, h - lineHeight, Justification::centred);
         
         g.setColour(info.colour_);

@@ -25,7 +25,7 @@ public:
         MelissaModel::getInstance()->addListener(this);
         
         current_ = std::make_unique<Label>();
-        current_->setColour(Label::backgroundColourId, Colour(0x80ffffff));
+        current_->setColour(Label::backgroundColourId, MelissaUISettings::getAccentColour());
         current_->setInterceptsMouseClicks(false, false);
         addAndMakeVisible(current_.get());
     };
@@ -49,11 +49,11 @@ public:
             }
             else if (loopAStripIndex_ != -1 && loopAStripIndex_ <= iStrip && iStrip <= loopBStripIndex_)
             {
-                g.setColour(colour.withAlpha(0.6f));
+                g.setColour(colour.withAlpha(0.8f));
             }
             else
             {
-                g.setColour(colour.withAlpha(0.2f));
+                g.setColour(colour.withAlpha(0.4f));
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }

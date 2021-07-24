@@ -32,21 +32,6 @@ wasPlaying_(false)
     defaultShortcut_["cursor down"] = "SetSpeed_Minus1";
     defaultShortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
     defaultShortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
-
-    defaultShortcut_["CC #0"] = "PlaybackPositionValue";
-    defaultShortcut_["CC #1"] = "PitchValue";
-    defaultShortcut_["CC #2"] = "SetSpeedValue";
-    
-    defaultShortcut_["CC #41"] = "StartStop";
-
-    defaultShortcut_["CC #43"] = "PlaybackPosition_Minus1Sec";
-    defaultShortcut_["CC #44"] = "PlaybackPosition_Plus1Sec";
-    
-    defaultShortcut_["CC #60"] = "AddMarker";
-
-    defaultShortcut_["CC #16"] = "SetEqFreqValue";
-    defaultShortcut_["CC #17"] = "SetEqGainValue";
-    defaultShortcut_["CC #18"] = "SetEqQValue";
     
     validateSettings();
 }
