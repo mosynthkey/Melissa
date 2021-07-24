@@ -19,23 +19,29 @@ class MelissaLookAndFeel : public LookAndFeel_V4
 public:
     MelissaLookAndFeel()
     {
-        baseColour_ = MelissaUISettings::getMainColour();
-        highlightColour_ = MelissaUISettings::getSubColour();
-        
+        updateColour();
+    }
+    
+    virtual ~MelissaLookAndFeel() {};
+    
+    virtual void updateColour()
+    {
         setColour(Label::textColourId, MelissaUISettings::getTextColour());
         setColour(ComboBox::textColourId, MelissaUISettings::getTextColour());
         setColour(ListBox::backgroundColourId, Colours::transparentWhite);
+        setColour(ListBox::textColourId, MelissaUISettings::getTextColour());
         setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getTextColour());
-        setColour(TableListBox::backgroundColourId, baseColour_);
+        setColour(TableListBox::backgroundColourId, MelissaUISettings::getMainColour());
         setColour(ListBox::outlineColourId, Colours::transparentWhite);
-        setColour(TextEditor::highlightColourId, highlightColour_);
+        setColour(TextEditor::highlightColourId, MelissaUISettings::getSubColour());
         
         setColour(TextEditor::textColourId, MelissaUISettings::getTextColour());
         setColour(TextEditor::highlightedTextColourId, MelissaUISettings::getTextColour());
         setColour(TextEditor::highlightColourId, MelissaUISettings::getAccentColour(0.5f));
+        
+        setColour(ToggleButton::tickDisabledColourId, MelissaUISettings::getTextColour(0.2f));
+        setColour(ToggleButton::tickColourId, MelissaUISettings::getTextColour());
     }
-    
-    virtual ~MelissaLookAndFeel() {};
     
     virtual void setBottomComponent(Component* bottomComponent)
     {
@@ -168,12 +174,12 @@ public:
     
     virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override
     {
-        g.fillAll(baseColour_);
+        g.fillAll(MelissaUISettings::getMainColour());
     }
     
     virtual void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
     {
-        g.setColour(highlightColour_);
+        g.setColour(MelissaUISettings::getMainColour());
         g.fillRect(area);
         
         if (isSeparator)
@@ -186,8 +192,8 @@ public:
         {
             if (isHighlighted)
             {
-                g.setColour(baseColour_);
-                g.fillRect(area.reduced(2, 0));
+                g.setColour(MelissaUISettings::getSubColour());
+                g.fillRect(area.reduced(2, 2));
             }
             
             g.setColour(MelissaUISettings::getTextColour(isActive ? 0.8f : 0.2f));
@@ -216,7 +222,7 @@ public:
     {
         if (isMouseOverBar)
         {
-            g.fillAll(baseColour_);
+            g.fillAll(MelissaUISettings::getMainColour());
         }
         else
         {
@@ -277,7 +283,7 @@ public:
     
     virtual void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
     {
-        g.setColour(baseColour_);
+        g.setColour(MelissaUISettings::getMainColour());
         g.fillAll();
         g.setColour(MelissaUISettings::getSubColour());
         g.fillRect(10, c.getHeight() - 2, c.getWidth() - 20, 1);
@@ -342,8 +348,6 @@ public:
 private:
     Component* bottomComponent_;
     std::unique_ptr<Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
-    
-    Colour baseColour_, highlightColour_;
 };
 
 class MelissaLookAndFeel_Tab : public LookAndFeel_V4
@@ -354,21 +358,30 @@ public:
     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(MelissaUISettings::getMainColour());
-        MelissaUtility::fillRoundRectangle(g, 0, 0, tb.getWidth(), tb.getHeight(), 6, 6, 0, 0);
         
-        float alpha = 0.2f;
+        float textAlpha;
         if (tb.getToggleState())
         {
-            alpha = 0.8f;
+            MelissaUtility::fillRoundRectangle(g, 0, 0, tb.getWidth(), tb.getHeight(), 6, 6, 0, 0);
+            textAlpha = 1.f;
+            
+            g.setColour(MelissaUISettings::getAccentColour());
+            g.fillRect(0, tb.getHeight() - 2, tb.getWidth(), 2);
         }
         else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
         {
-            alpha = 0.6f;
+            MelissaUtility::fillRoundRectangle(g, 1, 1, tb.getWidth() - 2, tb.getHeight() - 2, 6, 6, 0, 0);
+            textAlpha = 0.6f;
         }
-        g.setColour(MelissaUISettings::getTextColour(alpha));
+        else
+        {
+            MelissaUtility::fillRoundRectangle(g, 1, 1, tb.getWidth() - 2, tb.getHeight() - 2, 6, 6, 0, 0);
+            textAlpha = 0.2f;
+        }
+        
+        g.setColour(MelissaUISettings::getTextColour(textAlpha));
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
-        
     }
 };
 
@@ -377,6 +390,15 @@ class MelissaLookAndFeel_FileBrowser : public MelissaLookAndFeel
 public:
     MelissaLookAndFeel_FileBrowser()
     {
+        updateColour();
+    }
+    
+    virtual ~MelissaLookAndFeel_FileBrowser() {};
+    
+    void updateColour() override
+    {
+        MelissaLookAndFeel::updateColour();
+        
         setColour(Label::textColourId, MelissaUISettings::getTextColour());
         setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getSubColour());
         setColour(DirectoryContentsDisplayComponent::textColourId, MelissaUISettings::getTextColour());
@@ -386,8 +408,6 @@ public:
         setColour(FileBrowserComponent::currentPathBoxTextColourId, MelissaUISettings::getTextColour());
         setColour(FileBrowserComponent::filenameBoxTextColourId, MelissaUISettings::getTextColour());
     }
-    
-    virtual ~MelissaLookAndFeel_FileBrowser() {};
     
     virtual void drawFileBrowserRow(Graphics& g, int width, int height,
                             const File&, const String& filename, Image* icon,

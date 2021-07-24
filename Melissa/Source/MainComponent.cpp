@@ -118,11 +118,27 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
+    // load setting file
+    settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
+    if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
+    
+    bool isFirstLaunch = false;
+    settingsFile_ = settingsDir_.getChildFile("Settings.json");
+    if (!settingsFile_.existsAsFile())
+    {
+        isFirstLaunch = true;
+    }
+    dataSource_->loadSettingsFile(settingsFile_);
+    
     bpmDetector_ = std::make_unique<MelissaBPMDetector>();
     analyzedBpm_ = -1.f;
     bpmAnalyzeFinished_ = true;
     shouldInitializeBpmDetector_ = false;
     shouldUpdateBpm_ = false;
+    
+    MelissaUISettings::isDarkMode = (dataSource_->getUITheme() == "System_Dark");
+    laf_.updateColour();
+    browserLaf_.updateColour();
     
     MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
@@ -179,19 +195,6 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     startTimer(1000 / 10);
     
     addKeyListener(this);
-    
-    bool isFirstLaunch = false;
-    
-    // load setting file
-    settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
-    if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
-    
-    settingsFile_ = settingsDir_.getChildFile("Settings.json");
-    if (!settingsFile_.existsAsFile())
-    {
-        isFirstLaunch = true;
-    }
-    dataSource_->loadSettingsFile(settingsFile_);
     
     auto rootDir = File(dataSource_->global_.rootDir_);
     rootDir.setAsCurrentWorkingDirectory();

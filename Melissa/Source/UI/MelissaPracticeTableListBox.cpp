@@ -92,9 +92,7 @@ void MelissaPracticeTableListBox::paintRowBackground(Graphics& g, int rowNumber,
 {
     if (rowIsSelected)
     {
-        const auto colour = MelissaUISettings::getSubColour();
-        g.setColour(colour);
-        g.fillRoundedRectangle(2, 1, width - 4, height - 2, 1);
+        g.fillAll(MelissaUISettings::getSubColour());
     }
 }
 
@@ -176,6 +174,7 @@ int MelissaPracticeTableListBox::getColumnAutoSizeWidth(int columnId)
 
 void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
 {
+    selectRow(rowNumber);
     if (e.mods.isRightButtonDown())
     {
         enum

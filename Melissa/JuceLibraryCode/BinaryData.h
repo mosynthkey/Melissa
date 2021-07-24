@@ -21,10 +21,10 @@ namespace BinaryData
     const int            down_svgSize = 524;
 
     extern const char*   loop_onesong_svg;
-    const int            loop_onesong_svgSize = 1476;
+    const int            loop_onesong_svgSize = 891;
 
     extern const char*   loop_playlist_svg;
-    const int            loop_playlist_svgSize = 2248;
+    const int            loop_playlist_svgSize = 1337;
 
     extern const char*   next_button_svg;
     const int            next_button_svgSize = 429;
@@ -51,10 +51,10 @@ namespace BinaryData
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 7051;
+    const int            enUS_txtSize = 7462;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 8106;
+    const int            jaJP_txtSize = 8224;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110117;

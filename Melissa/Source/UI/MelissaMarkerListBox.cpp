@@ -89,8 +89,7 @@ void MelissaMarkerListBox::paintRowBackground(Graphics& g, int rowNumber, int wi
 {
     if (rowIsSelected)
     {
-        const auto colour = MelissaUISettings::getSubColour();
-        g.fillAll(colour);
+        g.fillAll(MelissaUISettings::getSubColour());
     }
 }
 
@@ -188,6 +187,7 @@ int MelissaMarkerListBox::getColumnAutoSizeWidth(int columnId)
 
 void MelissaMarkerListBox::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
 {
+    selectRow(rowNumber);
     if (e.mods.isRightButtonDown())
     {
         enum

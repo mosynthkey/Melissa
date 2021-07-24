@@ -33,6 +33,8 @@ public:
     virtual void markerUpdated() { }
     virtual void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) { }
     virtual void shortcutUpdated() { }
+    virtual void colourChanged(const Colour& mainColour, const Colour& subColour, const Colour& accentColour, const Colour& textColour, const Colour& waveformColour) { }
+    virtual void fontChanged(const Font& mainFont, const Font& subFont, const Font& miniFont) { }
 };
 
 class MelissaDataSource : public AsyncUpdater
@@ -49,8 +51,9 @@ public:
         String device_;
         int playMode_;
         std::map<String, String> shortcut_;
+        String uiTheme_;
         
-        Global() : version_(ProjectInfo::versionString), width_(1400), height_(860)
+        Global() : version_(ProjectInfo::versionString), width_(1400), height_(860), uiTheme_("System_Dark")
         {
             rootDir_ = File::getSpecialLocation(File::userMusicDirectory).getFullPathName();
         }
@@ -223,6 +226,10 @@ public:
     String getAssignedShortcut(const String& eventName);
     void registerShortcut(const String& eventName, const String& command);
     void deregisterShortcut(const String& eventName);
+    
+    // UI Theme
+    String getUITheme() const { return global_.uiTheme_; }
+    void setUITheme(const String& uiTheme_);
     
     // Previous
     void restorePreviousState();
