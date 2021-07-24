@@ -61,15 +61,21 @@ void MelissaShortcutManager::removeListener(MelissaShortcutListener* listener)
 
 void MelissaShortcutManager::timerCallback()
 {
+    auto noteNumberToString = [](int noteNumber) {
+        String noteName[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+        const int noteNumberInOct = -2 + noteNumber / 12;
+        return noteName[noteNumber % 12] + String(noteNumberInOct);
+    };
+    
     for (int noteNumber = 0; noteNumber < maxNoteNumber; ++noteNumber)
     {
         if (2 <= noteOnHistory[noteNumber])
         {
-            processControlMessage(String("NoteOnDouble ") + String(noteNumber), 1.f);
+            processControlMessage(String("NoteOnDouble ") + noteNumberToString(noteNumber), 1.f);
         }
         else if (noteOnHistory[noteNumber] == 1)
         {
-            processControlMessage(String("NoteOn ") + String(noteNumber), 1.f);
+            processControlMessage(String("NoteOn ") + noteNumberToString(noteNumber), 1.f);
         }
         noteOnHistory[noteNumber] = 0;
     }

@@ -1,9 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="17px" viewBox="0 0 16 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>prev_button</title>
-    <g id="Ver2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.8" opacity="0.403366815">
-        <g id="A0-Copy-4" transform="translate(-116.000000, -348.000000)" fill="#FFFFFF">
-            <path d="M132,348 L132,365 L118,357.33 L118,364.5 L116,364.5 L116,348.5 L118,348.5 L118,355.67 L132,348 Z" id="prev_button"></path>
-        </g>
-    </g>
+<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="prev_button" fill-rule="evenodd" clip-rule="evenodd" d="M2 0.5H0V16.5H2V9.32464C2.02727 9.34317 2.05582 9.36066 2.08566 9.37701L14.5195 16.1889C15.1859 16.554 16 16.0718 16 15.3119V1.68809C16 0.928215 15.1859 0.44598 14.5195 0.811078L2.08567 7.62299C2.05582 7.63934 2.02727 7.65683 2 7.67536V0.5Z" fill="white"/>
 </svg>

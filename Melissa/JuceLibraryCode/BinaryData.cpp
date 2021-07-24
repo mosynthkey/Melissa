@@ -12,584 +12,189 @@ static const unsigned char temp_binary_data_0[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>add</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
-"        <g id=\"A6\" transform=\"translate(-1525.000000, -911.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M1534,911 C1538.97056,911 1543,915.029437 1543,920 C1543,924.970563 1538.97056,929 1534,929 C1529.02944,929 1525,924.970563 1525,920 C1525,915.029437 1529.02944,911 1534,911 Z M1534,915 C1533.44772,915 1533,915.447715 1533,916 L"
-"1533,916 L1533,919 L1530,919 C1529.44772,919 1529,919.447715 1529,920 C1529,920.552285 1529.44772,921 1530,921 L1530,921 L1533,921 L1533,924 C1533,924.552285 1533.44772,925 1534,925 C1534.55228,925 1535,924.552285 1535,924 L1535,924 L1535,921 L1538,9"
-"21 C1538.55228,921 1539,920.552285 1539,920 C1539,919.447715 1538.55228,919 1538,919 L1538,919 L1535,919 L1535,916 C1535,915.447715 1534.55228,915 1534,915 Z\" id=\"add\"></path>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1525.000000, -992.000000)\" fill=\"#FFFFFF\">\n"
+"            <g id=\"add\" transform=\"translate(1525.000000, 992.000000)\">\n"
+"                <path d=\"M9,18 C13.9706,18 18,13.9706 18,9 C18,4.02944 13.9706,0 9,0 C4.02944,0 0,4.02944 0,9 C0,13.9706 4.02944,18 9,18 Z M8,5 C8,4.44772 8.44772,4 9,4 C9.55228,4 10,4.44772 10,5 L10,8 L13,8 C13.5523,8 14,8.44772 14,9 C14,9.55228 13"
+".5523,10 13,10 L10,10 L10,13 C10,13.5523 9.55228,14 9,14 C8.44772,14 8,13.5523 8,13 L8,10 L5,10 C4.44772,10 4,9.55228 4,9 C4,8.44772 4.44772,8 5,8 L8,8 L8,5 Z\" id=\"Shape\"></path>\n"
+"            </g>\n"
 "        </g>\n"
 "    </g>\n"
 "</svg>";
 
 const char* add_svg = (const char*) temp_binary_data_0;
 
-//================== add_highlighted.svg ==================
-static const unsigned char temp_binary_data_1[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>add_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A6\" transform=\"translate(-1524.000000, -874.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M1533,874 C1537.97056,874 1542,878.029437 1542,883 C1542,887.970563 1537.97056,892 1533,892 C1528.02944,892 1524,887.970563 1524,883 C1524,878.029437 1528.02944,874 1533,874 Z M1533,878 C1532.44772,878 1532,878.447715 1532,879 L"
-"1532,879 L1532,882 L1529,882 C1528.44772,882 1528,882.447715 1528,883 C1528,883.552285 1528.44772,884 1529,884 L1529,884 L1532,884 L1532,887 C1532,887.552285 1532.44772,888 1533,888 C1533.55228,888 1534,887.552285 1534,887 L1534,887 L1534,884 L1537,8"
-"84 C1537.55228,884 1538,883.552285 1538,883 C1538,882.447715 1537.55228,882 1537,882 L1537,882 L1534,882 L1534,879 C1534,878.447715 1533.55228,878 1533,878 Z\" id=\"add_highlighted\"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* add_highlighted_svg = (const char*) temp_binary_data_1;
-
 //================== arrow_left.svg ==================
-static const unsigned char temp_binary_data_2[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>arrow_left</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -220.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M552.7,220 C553.086599,220 553.4,220.313401 553.4,220.7 L553.4,224.969 L560.373909,220.943782 C560.708714,220.750483 561.136827,220.865195 561.330127,221.2 C561.523427,221.534805 561.408714,221.962918 561.073909,222.156218 L554."
-"416,226 L571.3,226 C571.686599,226 572,226.313401 572,226.7 C572,227.086599 571.686599,227.4 571.3,227.4 L554.417,227.4 L561.073909,231.243782 C561.408714,231.437082 561.523427,231.865195 561.330127,232.2 C561.136827,232.534805 560.708714,232.649517 "
-"560.373909,232.456218 L553.4,228.43 L553.4,233.3 C553.4,233.686599 553.086599,234 552.7,234 C552.313401,234 552,233.686599 552,233.3 L552,220.7 C552,220.313401 552.313401,220 552.7,220 Z\" id=\"arrow_left\"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_1[] =
+"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.7 0C0.313401 0 0 0.313401 0 0.7V6.7V13.3C0 13.6866 0.313401 14 0.7 14C1.0866 14 1.4 13.6866 1.4 13.3V8.42983L8.37391 12.4562C8.70871 12.6495 9.13683 12.5348 9.33013 12.2C9.52343 11.8652 9.40871"
+" 11.4371 9.07391 11.2438L2.41628 7.4H19.3C19.6866 7.4 20 7.0866 20 6.7C20 6.3134 19.6866 6 19.3 6H2.41628L9.07391 2.15622C9.40871 1.96292 9.52343 1.53481 9.33013 1.2C9.13683 0.865195 8.70871 0.750483 8.37391 0.943782L1.4 4.97017V0.7C1.4 0.313401 1.08"
+"66 0 0.7 0Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* arrow_left_svg = (const char*) temp_binary_data_2;
-
-//================== arrow_left_highlighted.svg ==================
-static const unsigned char temp_binary_data_3[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>arrow_left_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-552.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M552.7,235 C553.086599,235 553.4,235.313401 553.4,235.7 L553.4,239.969 L560.373909,235.943782 C560.708714,235.750483 561.136827,235.865195 561.330127,236.2 C561.523427,236.534805 561.408714,236.962918 561.073909,237.156218 L554."
-"416,241 L571.3,241 C571.686599,241 572,241.313401 572,241.7 C572,242.086599 571.686599,242.4 571.3,242.4 L554.417,242.4 L561.073909,246.243782 C561.408714,246.437082 561.523427,246.865195 561.330127,247.2 C561.136827,247.534805 560.708714,247.649517 "
-"560.373909,247.456218 L553.4,243.43 L553.4,248.3 C553.4,248.686599 553.086599,249 552.7,249 C552.313401,249 552,248.686599 552,248.3 L552,235.7 C552,235.313401 552.313401,235 552.7,235 Z\" id=\"arrow_left_highlighted\"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* arrow_left_highlighted_svg = (const char*) temp_binary_data_3;
+const char* arrow_left_svg = (const char*) temp_binary_data_1;
 
 //================== arrow_right.svg ==================
-static const unsigned char temp_binary_data_4[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>arrow_right</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -220.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M580.7,220 C581.086599,220 581.4,220.313401 581.4,220.7 L581.4,224.969 L588.373909,220.943782 C588.708714,220.750483 589.136827,220.865195 589.330127,221.2 C589.523427,221.534805 589.408714,221.962918 589.073909,222.156218 L582."
-"416,226 L599.3,226 C599.686599,226 600,226.313401 600,226.7 C600,227.086599 599.686599,227.4 599.3,227.4 L582.417,227.4 L589.073909,231.243782 C589.408714,231.437082 589.523427,231.865195 589.330127,232.2 C589.136827,232.534805 588.708714,232.649517 "
-"588.373909,232.456218 L581.4,228.43 L581.4,233.3 C581.4,233.686599 581.086599,234 580.7,234 C580.313401,234 580,233.686599 580,233.3 L580,220.7 C580,220.313401 580.313401,220 580.7,220 Z\" id=\"arrow_right\" transform=\"translate(590.000000, 227.0000"
-"00) scale(-1, 1) translate(-590.000000, -227.000000) \"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_2[] =
+"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M19.3 0C19.6866 0 20 0.313401 20 0.7V6.7V13.3C20 13.6866 19.6866 14 19.3 14C18.9134 14 18.6 13.6866 18.6 13.3V8.42983L11.6261 12.4562C11.2913 12.6495 10.8632 12.5348 10.6699 12.2C10.4766 11.8652 1"
+"0.5913 11.4371 10.9261 11.2438L17.5837 7.4H0.700001C0.3134 7.4 0 7.0866 0 6.7C0 6.3134 0.3134 6 0.700001 6H17.5837L10.9261 2.15622C10.5913 1.96292 10.4766 1.53481 10.6699 1.2C10.8632 0.865195 11.2913 0.750483 11.6261 0.943782L18.6 4.97017V0.7C18.6 0."
+"313401 18.9134 0 19.3 0Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* arrow_right_svg = (const char*) temp_binary_data_4;
-
-//================== arrow_right_highlighted.svg ==================
-static const unsigned char temp_binary_data_5[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"20px\" height=\"14px\" viewBox=\"0 0 20 14\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>arrow_right_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A0-Copy-2\" transform=\"translate(-580.000000, -235.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M580.7,235 C581.086599,235 581.4,235.313401 581.4,235.7 L581.4,239.969 L588.373909,235.943782 C588.708714,235.750483 589.136827,235.865195 589.330127,236.2 C589.523427,236.534805 589.408714,236.962918 589.073909,237.156218 L582."
-"416,241 L599.3,241 C599.686599,241 600,241.313401 600,241.7 C600,242.086599 599.686599,242.4 599.3,242.4 L582.417,242.4 L589.073909,246.243782 C589.408714,246.437082 589.523427,246.865195 589.330127,247.2 C589.136827,247.534805 588.708714,247.649517 "
-"588.373909,247.456218 L581.4,243.43 L581.4,248.3 C581.4,248.686599 581.086599,249 580.7,249 C580.313401,249 580,248.686599 580,248.3 L580,235.7 C580,235.313401 580.313401,235 580.7,235 Z\" id=\"arrow_right_highlighted\" transform=\"translate(590.0000"
-"00, 242.000000) scale(-1, 1) translate(-590.000000, -242.000000) \"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* arrow_right_highlighted_svg = (const char*) temp_binary_data_5;
+const char* arrow_right_svg = (const char*) temp_binary_data_2;
 
 //================== down.svg ==================
-static const unsigned char temp_binary_data_6[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"18px\" height=\"16px\" viewBox=\"0 0 18 16\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>down</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.404854911\">\n"
-"        <g id=\"A6\" transform=\"translate(-1388.000000, -826.000000)\" fill=\"#FFFFFF\">\n"
-"            <polygon id=\"down\" transform=\"translate(1397.000000, 834.000000) scale(1, -1) translate(-1397.000000, -834.000000) \" points=\"1397 826 1406 842 1388 842\"></polygon>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_3[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM14.1362 20.5192C14.5221 21.1807 15.4779 21.1807 15.8638 20.5192L21.1227 11.5"
+"038C21.5116 10.8372 21.0308 10 20.259 10H9.74103C8.96924 10 8.48837 10.8372 8.87726 11.5038L14.1362 20.5192Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* down_svg = (const char*) temp_binary_data_6;
-
-//================== down_highlighted.svg ==================
-static const unsigned char temp_binary_data_7[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"18px\" height=\"16px\" viewBox=\"0 0 18 16\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>down_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A6\" transform=\"translate(-1388.000000, -794.000000)\" fill=\"#FFFFFF\">\n"
-"            <polygon id=\"down_highlighted\" transform=\"translate(1397.000000, 802.000000) scale(1, -1) translate(-1397.000000, -802.000000) \" points=\"1397 794 1406 810 1388 810\"></polygon>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* down_highlighted_svg = (const char*) temp_binary_data_7;
+const char* down_svg = (const char*) temp_binary_data_3;
 
 //================== loop_onesong.svg ==================
-static const unsigned char temp_binary_data_8[] =
+static const unsigned char temp_binary_data_4[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"<svg width=\"32px\" height=\"28px\" viewBox=\"0 0 32 28\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>loop_onesong</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.4\">\n"
-"        <g id=\"A6\" transform=\"translate(-536.000000, -454.000000)\" fill=\"#FFFFFF\">\n"
-"            <g id=\"loop_onesong\" transform=\"translate(536.000000, 454.000000)\">\n"
-"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\"></path>\n"
-"                <rect id=\"Rectangle\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
-"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\"></path>\n"
-"                <rect id=\"Rectangle\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
-"                <polygon id=\"Triangle\" points=\"3 3 6 9 0 9\"></polygon>\n"
-"                <polygon id=\"Triangle\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
-"                <rect id=\"Rectangle\" x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\"></rect>\n"
+"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
+"        <g id=\"A6\" transform=\"translate(-1305.000000, -912.000000)\" fill=\"#FFFFFF\">\n"
+"            <g id=\"loop_onesong\" transform=\"translate(1305.000000, 912.000000)\">\n"
+"                <g id=\"Group-6\">\n"
+"                    <path d=\"M4,0 L29,0 C29.5522847,-1.01453063e-16 30,0.44771525 30,1 L30,3 L30,3 L4,3 C3.44771525,3 3,2.55228475 3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\"></path>\n"
+"                    <rect id=\"Rectangle\" x=\"27\" y=\"3\" width=\"3\" height=\"14\"></rect>\n"
+"                    <path d=\"M2,25 L28,25 C28.5522847,25 29,25.4477153 29,26 L29,27 C29,27.5522847 28.5522847,28 28,28 L3,28 C2.44771525,28 2,27.5522847 2,27 L2,25 L2,25 Z\" id=\"Rectangle\"></path>\n"
+"                    <rect id=\"Rectangle\" x=\"2\" y=\"11\" width=\"3\" height=\"14\"></rect>\n"
+"                    <polygon id=\"Triangle\" points=\"3.5 4 7 11 0 11\"></polygon>\n"
+"                    <polygon id=\"Triangle\" transform=\"translate(28.500000, 20.500000) scale(1, -1) translate(-28.500000, -20.500000) \" points=\"28.5 17 32 24 25 24\"></polygon>\n"
+"                </g>\n"
+"                <rect id=\"Rectangle\" x=\"15\" y=\"8\" width=\"2\" height=\"12\" rx=\"1\"></rect>\n"
 "            </g>\n"
 "        </g>\n"
 "    </g>\n"
 "</svg>";
 
-const char* loop_onesong_svg = (const char*) temp_binary_data_8;
-
-//================== loop_onesong_highlighted.svg ==================
-static const unsigned char temp_binary_data_9[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>loop_onesong_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A6\" transform=\"translate(-536.000000, -430.000000)\" fill=\"#FFFFFF\">\n"
-"            <g id=\"loop_onesong_highlighted\" transform=\"translate(536.000000, 430.000000)\">\n"
-"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\"></path>\n"
-"                <rect id=\"Rectangle\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
-"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\"></path>\n"
-"                <rect id=\"Rectangle\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
-"                <polygon id=\"Triangle\" points=\"3 3 6 9 0 9\"></polygon>\n"
-"                <polygon id=\"Triangle\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
-"                <rect id=\"Rectangle\" x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\"></rect>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* loop_onesong_highlighted_svg = (const char*) temp_binary_data_9;
+const char* loop_onesong_svg = (const char*) temp_binary_data_4;
 
 //================== loop_playlist.svg ==================
-static const unsigned char temp_binary_data_10[] =
+static const unsigned char temp_binary_data_5[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+"<svg width=\"32px\" height=\"28px\" viewBox=\"0 0 32 28\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>loop_playlist</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.4\">\n"
-"        <g id=\"A6\" transform=\"translate(-570.000000, -454.000000)\">\n"
-"            <g id=\"loop_playlist\" transform=\"translate(570.000000, 454.000000)\">\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"7.5\" y=\"5.5\" width=\"13\" height=\"11\" rx=\"2\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"9.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"12.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(11.000000, 11.000000) rotate(90.000000) translate(-11.000000, -11.000000) \" points=\"11 9 13 13 9 13\"></polygon>\n"
-"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
-"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" points=\"3 3 6 9 0 9\"></polygon>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* loop_playlist_svg = (const char*) temp_binary_data_10;
-
-//================== loop_playlist_highlighted.svg ==================
-static const unsigned char temp_binary_data_11[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"28px\" height=\"22px\" viewBox=\"0 0 28 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>loop_playlist_highlighted</title>\n"
+"    <defs>\n"
+"        <filter id=\"filter-1\">\n"
+"            <feColorMatrix in=\"SourceGraphic\" type=\"matrix\" values=\"0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0\"></feColorMatrix>\n"
+"        </filter>\n"
+"    </defs>\n"
 "    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
-"        <g id=\"A6\" transform=\"translate(-570.000000, -430.000000)\">\n"
-"            <g id=\"loop_playlist_highlighted\" transform=\"translate(570.000000, 430.000000)\">\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"7.5\" y=\"5.5\" width=\"13\" height=\"11\" rx=\"2\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"9.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"13.5\" y=\"12.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(11.000000, 11.000000) rotate(90.000000) translate(-11.000000, -11.000000) \" points=\"11 9 13 13 9 13\"></polygon>\n"
-"                <path d=\"M4,0 L25,0 C25.5522847,-1.01453063e-16 26,0.44771525 26,1 L26,2 L26,2 L3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"24\" y=\"2\" width=\"2\" height=\"11\"></rect>\n"
-"                <path d=\"M2,20 L25,20 L25,21 C25,21.5522847 24.5522847,22 24,22 L3,22 C2.44771525,22 2,21.5522847 2,21 L2,20 L2,20 Z\" id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                <rect id=\"Rectangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" x=\"2\" y=\"9\" width=\"2\" height=\"11\"></rect>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" points=\"3 3 6 9 0 9\"></polygon>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(25.000000, 16.000000) scale(1, -1) translate(-25.000000, -16.000000) \" points=\"25 13 28 19 22 19\"></polygon>\n"
+"        <g id=\"loop_playlist\" transform=\"translate(-1345.000000, -912.000000)\" filter=\"url(#filter-1)\">\n"
+"            <g transform=\"translate(1345.000000, 912.000000)\">\n"
+"                <g id=\"Group-4\" transform=\"translate(9.000000, 8.000000)\">\n"
+"                    <rect id=\"Rectangle\" stroke=\"#FFFFFF\" x=\"0.5\" y=\"0.5\" width=\"13\" height=\"11\" rx=\"2\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke=\"#FFFFFF\" x=\"6.5\" y=\"4.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <rect id=\"Rectangle\" stroke=\"#FFFFFF\" x=\"6.5\" y=\"7.5\" width=\"5\" height=\"1\" rx=\"0.5\"></rect>\n"
+"                    <polygon id=\"Triangle\" fill=\"#FFFFFF\" transform=\"translate(4.000000, 6.000000) rotate(90.000000) translate(-4.000000, -6.000000) \" points=\"4 4 6 8 2 8\"></polygon>\n"
+"                </g>\n"
+"                <g id=\"Group-6\" fill=\"#FFFFFF\">\n"
+"                    <path d=\"M4,0 L29,0 C29.5522847,-1.01453063e-16 30,0.44771525 30,1 L30,3 L30,3 L4,3 C3.44771525,3 3,2.55228475 3,2 L3,1 C3,0.44771525 3.44771525,1.01453063e-16 4,0 Z\" id=\"Rectangle\"></path>\n"
+"                    <rect id=\"Rectangle\" x=\"27\" y=\"3\" width=\"3\" height=\"14\"></rect>\n"
+"                    <path d=\"M2,25 L28,25 C28.5522847,25 29,25.4477153 29,26 L29,27 C29,27.5522847 28.5522847,28 28,28 L3,28 C2.44771525,28 2,27.5522847 2,27 L2,25 L2,25 Z\" id=\"Rectangle\"></path>\n"
+"                    <rect id=\"Rectangle\" x=\"2\" y=\"11\" width=\"3\" height=\"14\"></rect>\n"
+"                    <polygon id=\"Triangle\" points=\"3.5 4 7 11 0 11\"></polygon>\n"
+"                    <polygon id=\"Triangle\" transform=\"translate(28.500000, 20.500000) scale(1, -1) translate(-28.500000, -20.500000) \" points=\"28.5 17 32 24 25 24\"></polygon>\n"
+"                </g>\n"
 "            </g>\n"
 "        </g>\n"
 "    </g>\n"
 "</svg>";
 
-const char* loop_playlist_highlighted_svg = (const char*) temp_binary_data_11;
+const char* loop_playlist_svg = (const char*) temp_binary_data_5;
 
 //================== next_button.svg ==================
-static const unsigned char temp_binary_data_12[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>next_button</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.403366815\">\n"
-"        <g id=\"A0-Copy-4\" transform=\"translate(-133.000000, -348.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M149,348 L149,365 L135,357.33 L135,364.5 L133,364.5 L133,348.5 L135,348.5 L135,355.67 L149,348 Z\" id=\"next_button\" transform=\"translate(141.000000, 356.500000) scale(-1, 1) translate(-141.000000, -356.500000) \"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_6[] =
+"<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path id=\"next_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M14 0.5H16V16.5H14V9.32464C13.9727 9.34317 13.9442 9.36066 13.9143 9.37701L1.48047 16.1889C0.814054 16.554 0 16.0718 0 15.3119V1.68809C0 0.928215 0.814052 0.44598 1.48047 0.8110"
+"78L13.9143 7.62299C13.9442 7.63934 13.9727 7.65683 14 7.67536V0.5Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* next_button_svg = (const char*) temp_binary_data_12;
-
-//================== next_button_highlighted.svg ==================
-static const unsigned char temp_binary_data_13[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>next_button_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A0-Copy-4\" transform=\"translate(-133.000000, -329.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M149,329 L149,346 L135,338.33 L135,345.5 L133,345.5 L133,329.5 L135,329.5 L135,336.67 L149,329 Z\" id=\"next_button_highlighted\" transform=\"translate(141.000000, 337.500000) scale(-1, 1) translate(-141.000000, -337.500000) \">"
-"</path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* next_button_highlighted_svg = (const char*) temp_binary_data_13;
+const char* next_button_svg = (const char*) temp_binary_data_6;
 
 //================== playlist_add.svg ==================
-static const unsigned char temp_binary_data_14[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_add</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
-"        <g id=\"A6\" transform=\"translate(-1255.000000, -915.000000)\">\n"
-"            <g id=\"playlist_add\" transform=\"translate(1255.000000, 915.000000)\">\n"
-"                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
-"4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
-"0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
-"\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
-"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_7[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM14 8C14 7.44769 14.4477 7 15 7C15.5523 7 16 7.44769 16 8V14H22C22.5523 14 23"
+" 14.4477 23 15C23 15.5523 22.5523 16 22 16H16V22C16 22.5523 15.5523 23 15 23C14.4477 23 14 22.5523 14 22V16H8C7.44772 16 7 15.5523 7 15C7 14.4477 7.44772 14 8 14H14V8Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* playlist_add_svg = (const char*) temp_binary_data_14;
+const char* playlist_add_svg = (const char*) temp_binary_data_7;
 
 //================== playlist_add_file.svg ==================
-static const unsigned char temp_binary_data_15[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_add_file</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
-"        <g id=\"A6\" transform=\"translate(-1490.000000, -914.000000)\">\n"
-"            <g id=\"playlist_add_file\" transform=\"translate(1490.000000, 914.000000)\">\n"
-"                <g id=\"Group\">\n"
-"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
-"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
-"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,8.5 L6,8.5 C6.69035594,8.5 7.31535594,8.22017797 7.76776695,7.76776695 C8.22017797,7.31535594 8.5,6.69035594 8.5,6 L8.5,6 L8.5,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\""
-"#FFFFFF\"></path>\n"
-"                    <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477"
-"153,22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22"
-" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                </g>\n"
-"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_8[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM13 6V10C13 10.5523 12.5523 11 12 11H8L13 6ZM16 8V10C16 12.2091 14.2091 14 12"
+" 14H10V22H20V8H16ZM14 10C14 11.1046 13.1046 12 12 12H10H8V14V22C8 23.1046 8.89543 24 10 24H20C21.1046 24 22 23.1046 22 22V8C22 6.89543 21.1046 6 20 6H16H14V8V10Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* playlist_add_file_svg = (const char*) temp_binary_data_15;
-
-//================== playlist_add_file_highlighted.svg ==================
-static const unsigned char temp_binary_data_16[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_add_file_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
-"        <g id=\"A6\" transform=\"translate(-1490.000000, -872.000000)\">\n"
-"            <g id=\"playlist_add_file_highlighted\" transform=\"translate(1490.000000, 872.000000)\">\n"
-"                <g id=\"Group\">\n"
-"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
-"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
-"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,8.5 L6,8.5 C6.69035594,8.5 7.31535594,8.22017797 7.76776695,7.76776695 C8.22017797,7.31535594 8.5,6.69035594 8.5,6 L8.5,6 L8.5,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\""
-"#FFFFFF\"></path>\n"
-"                    <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477"
-"153,22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22"
-" L20,22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                </g>\n"
-"                <path d=\"M7,0 L7,6 C7,6.55228475 6.55228475,7 6,7 L0,7 L0,7 L7,0 Z\" id=\"Rectangle\" fill=\"#D8D8D8\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* playlist_add_file_highlighted_svg = (const char*) temp_binary_data_16;
-
-//================== playlist_add_highlighted.svg ==================
-static const unsigned char temp_binary_data_17[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_add_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
-"        <g id=\"A6\" transform=\"translate(-1255.000000, -873.000000)\">\n"
-"            <g id=\"playlist_add_highlighted\" transform=\"translate(1255.000000, 873.000000)\">\n"
-"                <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.6527898,1"
-"4.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.0606602 C"
-"0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>"
-"\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
-"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* playlist_add_highlighted_svg = (const char*) temp_binary_data_17;
+const char* playlist_add_file_svg = (const char*) temp_binary_data_8;
 
 //================== playlist_add_playing.svg ==================
-static const unsigned char temp_binary_data_18[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_add_playing</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
-"        <g id=\"A6\" transform=\"translate(-1449.000000, -915.000000)\">\n"
-"            <g id=\"playlist_add_playing\" transform=\"translate(1449.000000, 915.000000)\">\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
-"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                <path d=\"M12,0.5 C15.1756373,0.5 18.0506373,1.78718134 20.131728,3.86827202 C22.2128187,5.94936269 23.5,8.82436269 23.5,12 C23.5,13.2129308 23.3123225,14.3820286 22.9640482,15.4794775 C21.780564,14.8540406 20.4316401,14.5 19,14.5 C16"
-".6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C7.77173607,23.0505786 5.33601003,21.7331954 3.55282854,19.8038307 C1.65792344,17.7535834 0.5,15.0120085 0.5,12 C0.5,8.82436269 1.78718134,5.9493"
-"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_9[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 6C0 2.68629 2.68629 0 6 0H24C27.3137 0 30 2.68629 30 6V24C30 27.3137 27.3137 30 24 30H6C2.68629 30 0 27.3137 0 24V6ZM12.5145 9.9087L19.5708 14.1425C20.2182 14.5309 20.2182 15.4691 19.5708 15.85"
+"75L12.5145 20.0913C11.848 20.4912 11 20.0111 11 19.2338V10.7662C11 9.9889 11.848 9.50878 12.5145 9.9087ZM24 15C24 19.9706 19.9706 24 15 24C10.0294 24 6 19.9706 6 15C6 10.0294 10.0294 6 15 6C19.9706 6 24 10.0294 24 15ZM26 15C26 21.0751 21.0751 26 15 2"
+"6C8.92487 26 4 21.0751 4 15C4 8.92487 8.92487 4 15 4C21.0751 4 26 8.92487 26 15Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* playlist_add_playing_svg = (const char*) temp_binary_data_18;
-
-//================== playlist_add_playing_highlighted.svg ==================
-static const unsigned char temp_binary_data_19[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_add_playing_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
-"        <g id=\"A6\" transform=\"translate(-1449.000000, -873.000000)\">\n"
-"            <g id=\"playlist_add_playing_highlighted\" transform=\"translate(1449.000000, 873.000000)\">\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19,19 C18.4477153,19 18,19.4477153 18,20 L18,20 L18,22 L16,22 C15.4477153,"
-"22 15,22.4477153 15,23 C15,23.5522847 15.4477153,24 16,24 L16,24 L18,24 L18,26 C18,26.5522847 18.4477153,27 19,27 C19.5522847,27 20,26.5522847 20,26 L20,26 L20,24 L22,24 C22.5522847,24 23,23.5522847 23,23 C23,22.4477153 22.5522847,22 22,22 L22,22 L20"
-",22 L20,20 C20,19.4477153 19.5522847,19 19,19 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\" fill=\"#FFFFFF\"></path>\n"
-"                <path d=\"M12,0.5 C15.1756373,0.5 18.0506373,1.78718134 20.131728,3.86827202 C22.2128187,5.94936269 23.5,8.82436269 23.5,12 C23.5,13.2129308 23.3123225,14.3820286 22.9640482,15.4794775 C21.780564,14.8540406 20.4316401,14.5 19,14.5 C16"
-".6527898,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C7.77173607,23.0505786 5.33601003,21.7331954 3.55282854,19.8038307 C1.65792344,17.7535834 0.5,15.0120085 0.5,12 C0.5,8.82436269 1.78718134,5.9493"
-"6269 3.86827202,3.86827202 C5.94936269,1.78718134 8.82436269,0.5 12,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></path>\n"
-"                <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(12.500000, 11.500000) rotate(90.000000) translate(-12.500000, -11.500000) \" points=\"12.5 8 16 15 9 15\"></polygon>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* playlist_add_playing_highlighted_svg = (const char*) temp_binary_data_19;
+const char* playlist_add_playing_svg = (const char*) temp_binary_data_9;
 
 //================== playlist_edit.svg ==================
-static const unsigned char temp_binary_data_20[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_edit</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
-"        <g id=\"A6\" transform=\"translate(-1292.000000, -915.000000)\">\n"
-"            <g id=\"playlist_edit\" transform=\"translate(1292.000000, 915.000000)\">\n"
-"                <g id=\"Group-5\">\n"
-"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
-"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
-"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
-"                </g>\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.30"
-"71885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3"
-"637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z\" id=\"Combined-Shape\" fill-opacity=\"0"
-".8\" fill=\"#FFFFFF\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_10[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM18.7784 5.52512C18.5393 5.38705 18.2335 5.46899 18.0954 5.70813L16.8787 7.81"
+"561L20.3659 9.82896L19.89 10.6532L16.4028 8.63985L10.2996 19.211L10.2914 19.2246C9.68897 20.2681 9.14978 23.2154 10.0216 23.7188C10.8935 24.2222 13.2182 22.2091 13.7788 21.2381L13.779 21.2382L21.5828 7.72159C21.7209 7.48245 21.639 7.17665 21.3998 7.0"
+"3858L18.7784 5.52512Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* playlist_edit_svg = (const char*) temp_binary_data_20;
-
-//================== playlist_edit_highlighted.svg ==================
-static const unsigned char temp_binary_data_21[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_edit_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
-"        <g id=\"A6\" transform=\"translate(-1292.000000, -873.000000)\">\n"
-"            <g id=\"playlist_edit_highlighted\" transform=\"translate(1292.000000, 873.000000)\">\n"
-"                <g id=\"Group-5\">\n"
-"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
-"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
-"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
-"                </g>\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M19.6339746,19.9019238 L16.6339746,25.0980762 L16.5845144,25.1928316 C16.30"
-"71885,25.7751975 16.0910436,27.0940159 16.5,27.330127 C16.9330127,27.580127 18.0875983,26.5803261 18.3660254,26.0980762 L18.3660254,26.0980762 L21.3660254,20.9019238 L19.6339746,19.9019238 Z M21.0669873,18.419873 C20.827841,18.2818018 20.5220458,18.3"
-"637394 20.3839746,18.6028857 L20.3839746,18.6028857 L20.1339746,19.0358984 L21.8660254,20.0358984 L22.1160254,19.6028857 C22.2540966,19.3637394 22.172159,19.0579442 21.9330127,18.919873 L21.9330127,18.919873 Z\" id=\"Combined-Shape\" fill-opacity=\"0"
-".8\" fill=\"#FFFFFF\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* playlist_edit_highlighted_svg = (const char*) temp_binary_data_21;
+const char* playlist_edit_svg = (const char*) temp_binary_data_10;
 
 //================== playlist_remove.svg ==================
-static const unsigned char temp_binary_data_22[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_remove</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" opacity=\"0.400948661\">\n"
-"        <g id=\"A6\" transform=\"translate(-1329.000000, -915.000000)\">\n"
-"            <g id=\"playlist_remove\" transform=\"translate(1329.000000, 915.000000)\">\n"
-"                <g id=\"Group-5\">\n"
-"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
-"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
-"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
-"                </g>\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M17.5857864,20.1715729 C17.1952621,19.7810486 16.5620972,19.7810486 16.1715"
-"729,20.1715729 C15.7810486,20.5620972 15.7810486,21.1952621 16.1715729,21.5857864 L16.1715729,21.5857864 L17.5857864,23 L16.1715729,24.4142136 C15.7810486,24.8047379 15.7810486,25.4379028 16.1715729,25.8284271 C16.5620972,26.2189514 17.1952621,26.218"
-"9514 17.5857864,25.8284271 L17.5857864,25.8284271 L19,24.4142136 L20.4142136,25.8284271 C20.8047379,26.2189514 21.4379028,26.2189514 21.8284271,25.8284271 C22.2189514,25.4379028 22.2189514,24.8047379 21.8284271,24.4142136 L21.8284271,24.4142136 L20.4"
-"142136,23 L21.8284271,21.5857864 C22.2189514,21.1952621 22.2189514,20.5620972 21.8284271,20.1715729 C21.4379028,19.7810486 20.8047379,19.7810486 20.4142136,20.1715729 L20.4142136,20.1715729 L19,21.5857864 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\""
-" fill=\"#FFFFFF\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_11[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM9.34191 10.7524C8.95139 10.3618 8.95139 9.72867 9.34191 9.33815C9.73244 8.94"
+"762 10.3656 8.94762 10.7561 9.33815L14.9988 13.5808L19.2414 9.33815C19.6319 8.94762 20.2651 8.94762 20.6556 9.33815C21.0461 9.72867 21.0461 10.3618 20.6556 10.7524L16.413 14.995L20.6556 19.2376C21.0461 19.6282 21.0461 20.2613 20.6556 20.6519C20.2651 "
+"21.0424 19.6319 21.0424 19.2414 20.6519L14.9988 16.4092L10.7561 20.6519C10.3656 21.0424 9.73244 21.0424 9.34191 20.6519C8.95139 20.2613 8.95139 19.6282 9.34191 19.2376L13.5846 14.995L9.34191 10.7524Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* playlist_remove_svg = (const char*) temp_binary_data_22;
-
-//================== playlist_remove_highlighted.svg ==================
-static const unsigned char temp_binary_data_23[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"26px\" height=\"30px\" viewBox=\"0 0 26 30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>playlist_remove_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
-"        <g id=\"A6\" transform=\"translate(-1329.000000, -873.000000)\">\n"
-"            <g id=\"playlist_remove_highlighted\" transform=\"translate(1329.000000, 873.000000)\">\n"
-"                <g id=\"Group-5\">\n"
-"                    <path d=\"M18,0.5 C18.4142136,0.5 18.7892136,0.667893219 19.0606602,0.939339828 C19.3321068,1.21078644 19.5,1.58578644 19.5,2.00003656 L19.5,2.00003656 L19.500915,14.5145296 C19.3351741,14.5048888 19.1681578,14.5 19,14.5 C16.65278"
-"98,14.5 14.5277898,15.4513949 12.9895924,16.9895924 C11.4513949,18.5277898 10.5,20.6527898 10.5,23 C10.5,23.1681518 10.5048885,23.3351623 10.5145285,23.5008974 L10.5145285,23.5008974 L2,23.5 C1.58578644,23.5 1.21078644,23.3321068 0.939339828,23.06066"
-"02 C0.667893219,22.7892136 0.5,22.4142136 0.5,22 L0.5,22 L0.5,2 C0.5,1.58578644 0.667893219,1.21078644 0.939339828,0.939339828 C1.21078644,0.667893219 1.58578644,0.5 2,0.5 L2,0.5 Z\" id=\"Combined-Shape\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\"></p"
-"ath>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"4.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"9.5\" y=\"7.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"10.5\" width=\"13\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"13.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <rect id=\"Rectangle\" stroke-opacity=\"0.8\" stroke=\"#FFFFFF\" x=\"3.5\" y=\"16.5\" width=\"7\" height=\"1\" rx=\"0.5\"></rect>\n"
-"                    <polygon id=\"Triangle\" fill-opacity=\"0.8\" fill=\"#FFFFFF\" transform=\"translate(6.000000, 6.000000) rotate(90.000000) translate(-6.000000, -6.000000) \" points=\"6 4 8 8 4 8\"></polygon>\n"
-"                </g>\n"
-"                <path d=\"M19,16 C22.8659932,16 26,19.1340068 26,23 C26,26.8659932 22.8659932,30 19,30 C15.1340068,30 12,26.8659932 12,23 C12,19.1340068 15.1340068,16 19,16 Z M17.5857864,20.1715729 C17.1952621,19.7810486 16.5620972,19.7810486 16.1715"
-"729,20.1715729 C15.7810486,20.5620972 15.7810486,21.1952621 16.1715729,21.5857864 L16.1715729,21.5857864 L17.5857864,23 L16.1715729,24.4142136 C15.7810486,24.8047379 15.7810486,25.4379028 16.1715729,25.8284271 C16.5620972,26.2189514 17.1952621,26.218"
-"9514 17.5857864,25.8284271 L17.5857864,25.8284271 L19,24.4142136 L20.4142136,25.8284271 C20.8047379,26.2189514 21.4379028,26.2189514 21.8284271,25.8284271 C22.2189514,25.4379028 22.2189514,24.8047379 21.8284271,24.4142136 L21.8284271,24.4142136 L20.4"
-"142136,23 L21.8284271,21.5857864 C22.2189514,21.1952621 22.2189514,20.5620972 21.8284271,20.1715729 C21.4379028,19.7810486 20.8047379,19.7810486 20.4142136,20.1715729 L20.4142136,20.1715729 L19,21.5857864 Z\" id=\"Combined-Shape\" fill-opacity=\"0.8\""
-" fill=\"#FFFFFF\"></path>\n"
-"            </g>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* playlist_remove_highlighted_svg = (const char*) temp_binary_data_23;
+const char* playlist_remove_svg = (const char*) temp_binary_data_11;
 
 //================== prev_button.svg ==================
-static const unsigned char temp_binary_data_24[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>prev_button</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.403366815\">\n"
-"        <g id=\"A0-Copy-4\" transform=\"translate(-116.000000, -348.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M132,348 L132,365 L118,357.33 L118,364.5 L116,364.5 L116,348.5 L118,348.5 L118,355.67 L132,348 Z\" id=\"prev_button\"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_12[] =
+"<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path id=\"prev_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2 0.5H0V16.5H2V9.32464C2.02727 9.34317 2.05582 9.36066 2.08566 9.37701L14.5195 16.1889C15.1859 16.554 16 16.0718 16 15.3119V1.68809C16 0.928215 15.1859 0.44598 14.5195 0.811078"
+"L2.08567 7.62299C2.05582 7.63934 2.02727 7.65683 2 7.67536V0.5Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* prev_button_svg = (const char*) temp_binary_data_24;
-
-//================== prev_button_highlighted.svg ==================
-static const unsigned char temp_binary_data_25[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"16px\" height=\"17px\" viewBox=\"0 0 16 17\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>prev_button_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A0-Copy-4\" transform=\"translate(-116.000000, -329.000000)\" fill=\"#FFFFFF\">\n"
-"            <path d=\"M132,329 L132,346 L118,338.33 L118,345.5 L116,345.5 L116,329.5 L118,329.5 L118,336.67 L132,329 Z\" id=\"prev_button_highlighted\"></path>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* prev_button_highlighted_svg = (const char*) temp_binary_data_25;
+const char* prev_button_svg = (const char*) temp_binary_data_12;
 
 //================== up.svg ==================
-static const unsigned char temp_binary_data_26[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"18px\" height=\"16px\" viewBox=\"0 0 18 16\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>up</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\" opacity=\"0.404854911\">\n"
-"        <g id=\"A6\" transform=\"translate(-1354.000000, -826.000000)\" fill=\"#FFFFFF\">\n"
-"            <polygon id=\"up\" points=\"1363 826 1372 842 1354 842\"></polygon>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
+static const unsigned char temp_binary_data_13[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM15.8638 9.48077C15.4779 8.81927 14.5221 8.81927 14.1362 9.48077L8.87726 18.4"
+"962C8.48837 19.1628 8.96924 20 9.74103 20H20.259C21.0308 20 21.5116 19.1628 21.1227 18.4962L15.8638 9.48077Z\" fill=\"white\"/>\n"
+"</svg>\n";
 
-const char* up_svg = (const char*) temp_binary_data_26;
-
-//================== up_highlighted.svg ==================
-static const unsigned char temp_binary_data_27[] =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<svg width=\"18px\" height=\"16px\" viewBox=\"0 0 18 16\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-"    <title>up_highlighted</title>\n"
-"    <g id=\"Ver2\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" fill-opacity=\"0.8\">\n"
-"        <g id=\"A6\" transform=\"translate(-1354.000000, -800.000000)\" fill=\"#FFFFFF\">\n"
-"            <polygon id=\"up_highlighted\" points=\"1363 800 1372 816 1354 816\"></polygon>\n"
-"        </g>\n"
-"    </g>\n"
-"</svg>";
-
-const char* up_highlighted_svg = (const char*) temp_binary_data_27;
+const char* up_svg = (const char*) temp_binary_data_13;
 
 //================== en-US.txt ==================
-static const unsigned char temp_binary_data_28[] =
+static const unsigned char temp_binary_data_14[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -740,10 +345,10 @@ static const unsigned char temp_binary_data_28[] =
 "\"Marker\" = \"Marker\"\n"
 "\"NoAssign\" = \"No assign\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_28;
+const char* enUS_txt = (const char*) temp_binary_data_14;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_29[] =
+static const unsigned char temp_binary_data_15[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,97,117,100,105,111,95,109,105,100,105,95,115,101,116,116,105,110,103,115,34,32,61,32,34,65,117,100,105,111,32,47,32,77,73,68,73,32,232,168,
 173,229,174,154,34,10,34,115,104,111,114,116,99,117,116,95,115,101,116,116,105,110,103,115,34,32,61,32,34,227,130,183,227,131,167,227,131,188,227,131,136,227,130,171,227,131,131,227,131,136,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,
@@ -866,10 +471,10 @@ static const unsigned char temp_binary_data_29[] =
 76,105,115,116,34,32,61,32,34,231,183,180,231,191,146,227,131,170,227,130,185,227,131,136,34,10,34,77,97,114,107,101,114,34,32,61,32,34,227,131,158,227,131,188,227,130,171,227,131,188,34,10,34,78,111,65,115,115,105,103,110,34,32,61,32,34,230,156,170,
 229,137,178,227,130,138,229,189,147,227,129,166,34,10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_29;
+const char* jaJP_txt = (const char*) temp_binary_data_15;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_30[] =
+static const unsigned char temp_binary_data_16[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,9,112,72,89,115,0,0,22,37,0,0,22,37,1,73,82,36,240,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,1,173,186,73,68,65,
 84,120,1,236,189,77,200,117,219,150,30,52,198,58,95,85,170,82,41,13,152,152,148,73,35,154,164,20,209,16,43,1,109,216,144,160,32,68,18,20,20,43,8,118,76,176,173,4,27,5,98,203,134,54,4,109,216,73,207,78,80,20,27,74,16,109,105,39,130,160,16,176,97,25,144,
 34,104,253,166,126,238,189,231,222,123,206,247,238,225,187,214,28,207,207,152,107,189,231,222,106,105,227,238,115,222,111,239,189,126,230,28,127,207,51,198,156,107,174,181,243,159,250,231,126,254,21,235,149,239,127,245,254,150,215,27,63,71,189,255,155,
@@ -2439,7 +2044,7 @@ static const unsigned char temp_binary_data_30[] =
 122,216,161,214,180,19,63,95,157,104,99,77,67,84,76,76,15,63,131,253,127,206,69,173,100,6,151,247,107,188,232,106,33,151,41,190,158,188,59,250,24,90,228,87,215,117,121,110,134,164,231,253,103,112,169,72,219,174,234,186,236,179,44,134,30,57,254,76,231,
 52,160,164,20,127,133,63,85,147,179,124,247,127,134,45,65,156,248,57,41,205,255,7,64,83,3,240,199,222,243,39,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_30;
+const char* logo_png = (const char*) temp_binary_data_16;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -2452,34 +2057,20 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
-        case 0xbb8f2dc6:  numBytes = 1108; return add_svg;
-        case 0xb1fd34da:  numBytes = 1118; return add_highlighted_svg;
-        case 0xc1a269a2:  numBytes = 1157; return arrow_left_svg;
-        case 0x5ea986b6:  numBytes = 1167; return arrow_left_highlighted_svg;
-        case 0xad54f90b:  numBytes = 1255; return arrow_right_svg;
-        case 0x53bb409f:  numBytes = 1265; return arrow_right_highlighted_svg;
-        case 0x5514f147:  numBytes = 618; return down_svg;
-        case 0x29fcbedb:  numBytes = 620; return down_highlighted_svg;
-        case 0xa4568785:  numBytes = 1356; return loop_onesong_svg;
-        case 0x2948e819:  numBytes = 1366; return loop_onesong_highlighted_svg;
-        case 0x424dc432:  numBytes = 2037; return loop_playlist_svg;
-        case 0x70d18946:  numBytes = 2047; return loop_playlist_highlighted_svg;
-        case 0x58f4b0a3:  numBytes = 695; return next_button_svg;
-        case 0xd04c5437:  numBytes = 697; return next_button_highlighted_svg;
-        case 0x6e376459:  numBytes = 2714; return playlist_add_svg;
-        case 0x30ca904c:  numBytes = 2073; return playlist_add_file_svg;
-        case 0x27cafe60:  numBytes = 2075; return playlist_add_file_highlighted_svg;
-        case 0x414126ed:  numBytes = 2716; return playlist_add_highlighted_svg;
-        case 0x58a0d7c8:  numBytes = 1988; return playlist_add_playing_svg;
-        case 0x1ce5ebdc:  numBytes = 1990; return playlist_add_playing_highlighted_svg;
-        case 0x01e0e27c:  numBytes = 2960; return playlist_edit_svg;
-        case 0xb8878890:  numBytes = 2962; return playlist_edit_highlighted_svg;
-        case 0xc6a6e0b6:  numBytes = 3211; return playlist_remove_svg;
-        case 0x87efffca:  numBytes = 3213; return playlist_remove_highlighted_svg;
-        case 0xe0989163:  numBytes = 599; return prev_button_svg;
-        case 0x836514f7:  numBytes = 601; return prev_button_highlighted_svg;
-        case 0xcdfe36c0:  numBytes = 516; return up_svg;
-        case 0x9a1496d4:  numBytes = 518; return up_highlighted_svg;
+        case 0xbb8f2dc6:  numBytes = 917; return add_svg;
+        case 0xc1a269a2:  numBytes = 626; return arrow_left_svg;
+        case 0xad54f90b:  numBytes = 639; return arrow_right_svg;
+        case 0x5514f147:  numBytes = 524; return down_svg;
+        case 0xa4568785:  numBytes = 1476; return loop_onesong_svg;
+        case 0x424dc432:  numBytes = 2248; return loop_playlist_svg;
+        case 0x58f4b0a3:  numBytes = 429; return next_button_svg;
+        case 0x6e376459:  numBytes = 583; return playlist_add_svg;
+        case 0x30ca904c:  numBytes = 577; return playlist_add_file_svg;
+        case 0x58a0d7c8:  numBytes = 746; return playlist_add_playing_svg;
+        case 0x01e0e27c:  numBytes = 687; return playlist_edit_svg;
+        case 0xc6a6e0b6:  numBytes = 865; return playlist_remove_svg;
+        case 0xe0989163:  numBytes = 426; return prev_button_svg;
+        case 0xcdfe36c0:  numBytes = 524; return up_svg;
         case 0x4c8ea738:  numBytes = 7051; return enUS_txt;
         case 0x9153efee:  numBytes = 8106; return jaJP_txt;
         case 0x78ded995:  numBytes = 110117; return logo_png;
@@ -2493,33 +2084,19 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 const char* namedResourceList[] =
 {
     "add_svg",
-    "add_highlighted_svg",
     "arrow_left_svg",
-    "arrow_left_highlighted_svg",
     "arrow_right_svg",
-    "arrow_right_highlighted_svg",
     "down_svg",
-    "down_highlighted_svg",
     "loop_onesong_svg",
-    "loop_onesong_highlighted_svg",
     "loop_playlist_svg",
-    "loop_playlist_highlighted_svg",
     "next_button_svg",
-    "next_button_highlighted_svg",
     "playlist_add_svg",
     "playlist_add_file_svg",
-    "playlist_add_file_highlighted_svg",
-    "playlist_add_highlighted_svg",
     "playlist_add_playing_svg",
-    "playlist_add_playing_highlighted_svg",
     "playlist_edit_svg",
-    "playlist_edit_highlighted_svg",
     "playlist_remove_svg",
-    "playlist_remove_highlighted_svg",
     "prev_button_svg",
-    "prev_button_highlighted_svg",
     "up_svg",
-    "up_highlighted_svg",
     "enUS_txt",
     "jaJP_txt",
     "logo_png"
@@ -2528,33 +2105,19 @@ const char* namedResourceList[] =
 const char* originalFilenames[] =
 {
     "add.svg",
-    "add_highlighted.svg",
     "arrow_left.svg",
-    "arrow_left_highlighted.svg",
     "arrow_right.svg",
-    "arrow_right_highlighted.svg",
     "down.svg",
-    "down_highlighted.svg",
     "loop_onesong.svg",
-    "loop_onesong_highlighted.svg",
     "loop_playlist.svg",
-    "loop_playlist_highlighted.svg",
     "next_button.svg",
-    "next_button_highlighted.svg",
     "playlist_add.svg",
     "playlist_add_file.svg",
-    "playlist_add_file_highlighted.svg",
-    "playlist_add_highlighted.svg",
     "playlist_add_playing.svg",
-    "playlist_add_playing_highlighted.svg",
     "playlist_edit.svg",
-    "playlist_edit_highlighted.svg",
     "playlist_remove.svg",
-    "playlist_remove_highlighted.svg",
     "prev_button.svg",
-    "prev_button_highlighted.svg",
     "up.svg",
-    "up_highlighted.svg",
     "en-US.txt",
     "ja-JP.txt",
     "logo.png"

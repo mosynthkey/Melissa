@@ -101,7 +101,7 @@ public:
             g.fillAll();
         }
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }

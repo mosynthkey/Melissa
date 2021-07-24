@@ -6,6 +6,7 @@
 //
 
 #include <numeric>
+#include "MelissaDoubleClickEditLabel.h"
 #include "MelissaPracticeTableListBox.h"
 
 class LoopRangeComponent : public Component
@@ -43,24 +44,6 @@ public:
     
 private:
     float aRatio_, bRatio_;
-};
-
-class DoubleClickEditLabel : public Label
-{
-public:
-    DoubleClickEditLabel(MelissaPracticeTableListBox* owner, int rowNumber) : owner_(owner), rowNumber_(rowNumber)
-    {
-        setEditable(false, true);
-    }
-    
-    void mouseDown(const MouseEvent& event) override
-   {
-       owner_->selectRowsBasedOnModifierKeys(rowNumber_, event.mods, false);
-   }
-    
-private:
-    MelissaPracticeTableListBox* owner_;
-    int rowNumber_;
 };
 
 MelissaPracticeTableListBox::MelissaPracticeTableListBox(const String& componentName) :
@@ -128,17 +111,18 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new DoubleClickEditLabel(this, rowNumber);
+            auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setName("name");
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
             l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
         else
         {
-            auto l = dynamic_cast<DoubleClickEditLabel*>(existingComponentToUpdate);
+            auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(prac.name_, dontSendNotification);
             return existingComponentToUpdate;
         }
@@ -162,17 +146,18 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new DoubleClickEditLabel(this, rowNumber);
+            auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setName("speed");
             l->setComponentID(String(rowNumber));
             l->setText(String(prac.speed_) + " %",  dontSendNotification);
             l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
         else
         {
-            auto l = dynamic_cast<DoubleClickEditLabel*>(existingComponentToUpdate);
+            auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(String(prac.speed_) + "%", dontSendNotification);
             return existingComponentToUpdate;
         }

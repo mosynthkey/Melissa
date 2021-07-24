@@ -74,7 +74,7 @@ public:
         const auto shortcut = shortcuts_[rowNumber];
         String text = (columnId == 1) ? shortcut.first :  MelissaCommand::getCommandDescription(shortcut.second);
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaUISettings::getFontSizeMain());
         constexpr int xMargin = 10;
         g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
@@ -176,16 +176,16 @@ void MelissaShortcutComponent::paint(Graphics& g)
 {
     g.setFont(MelissaUISettings::getFontSizeMain());
     
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     g.drawText(TRANS("shortcut_list"), 60, 0, getWidth() - 120, 30, Justification::left);
     
     g.setColour(MelissaUISettings::getSubColour());
     g.fillRoundedRectangle(listRect_.toFloat(), 0);
     
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     g.drawText(TRANS("shortcut_register_edit"), 60, registerEditY_, getWidth() - 120, 30, Justification::left);
     
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     g.setFont(MelissaUISettings::getFontSizeSub());
     g.drawFittedText(TRANS("shortcut_explanation"), 60, registerEditY_ + 80, getWidth() - 120, 30 * 4, Justification::left, 4);
 }

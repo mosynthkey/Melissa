@@ -27,7 +27,7 @@ public:
         
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlighted ? 0.8f : 0.4f));
+        g.setColour(MelissaUISettings::getTextColour(highlighted ? 0.8f : 0.4f));
         g.drawRect((getWidth() - lineLength) / 2, (getHeight() - lineWidth) / 2, lineLength, lineWidth);
         if (type_ == kType_IncButton)
         {
@@ -76,7 +76,7 @@ public:
         label_->setInterceptsMouseClicks(false, true);
         label_->setJustificationType(Justification::centred);
         label_->setFont(Font(MelissaUISettings::getFontSizeSub()));
-        label_->setColour(Label::textColourId, Colour(0xddffffff));
+        label_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         addAndMakeVisible(label_.get());
         
         decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClick_ != nullptr) onClick_(kEvent_Dec, b); });
