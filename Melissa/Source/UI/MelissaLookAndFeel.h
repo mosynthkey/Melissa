@@ -57,7 +57,7 @@ public:
     virtual void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
-        g.setColour(MelissaUISettings::getTextColour(highlighted ? 0.8f : 0.4f));
+        g.setColour(MelissaUISettings::getTextColour(highlighted ? 1.f : 0.8f));
         g.setFont(MelissaUISettings::getFontSizeMain());
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }

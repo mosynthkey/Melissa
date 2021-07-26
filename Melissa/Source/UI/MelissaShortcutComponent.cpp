@@ -167,7 +167,7 @@ void MelissaShortcutComponent::resized()
     assignCombobox_->setBounds(commandLabel_->getRight() + margin, y, width * 2, 30);
     resetButton_->setBounds(assignCombobox_->getRight() + margin, y, width, 30);
     
-    width = 220;
+    width = 240;
     resetAllButton_->setBounds(getWidth() - 60 - width, getHeight() - 60, width, 30);
 }
 
