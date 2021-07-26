@@ -12,10 +12,10 @@ namespace BinaryData
     const int            add_svgSize = 917;
 
     extern const char*   arrow_left_svg;
-    const int            arrow_left_svgSize = 626;
+    const int            arrow_left_svgSize = 423;
 
     extern const char*   arrow_right_svg;
-    const int            arrow_right_svgSize = 639;
+    const int            arrow_right_svgSize = 500;
 
     extern const char*   down_svg;
     const int            down_svgSize = 524;
@@ -33,10 +33,10 @@ namespace BinaryData
     const int            playlist_add_svgSize = 583;
 
     extern const char*   playlist_add_file_svg;
-    const int            playlist_add_file_svgSize = 577;
+    const int            playlist_add_file_svgSize = 1169;
 
     extern const char*   playlist_add_playing_svg;
-    const int            playlist_add_playing_svgSize = 746;
+    const int            playlist_add_playing_svgSize = 1442;
 
     extern const char*   playlist_edit_svg;
     const int            playlist_edit_svgSize = 687;
@@ -51,10 +51,10 @@ namespace BinaryData
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 7462;
+    const int            enUS_txtSize = 7631;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 8224;
+    const int            jaJP_txtSize = 8437;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110117;

@@ -34,12 +34,14 @@ enum
 
 enum
 {
-    kMenuID_MainAbout = 1000,
+    kMenuID_About = 1000,
     kMenuID_Manual,
-    kMenuID_MainVersionCheck,
-    kMenuID_MainPreferences,
-    kMenuID_MainShortcut,
-    kMenuID_MainTutorial,
+    kMenuID_VersionCheck,
+    kMenuID_Preferences,
+    kMenuID_Shortcut,
+    kMenuID_UITheme_Dark,
+    kMenuID_UITheme_Light,
+    kMenuID_Tutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
 };
@@ -140,7 +142,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     laf_.updateColour();
     browserLaf_.updateColour();
     
-    MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
+    MelissaUISettings::isJa = false; //(SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
     
     String localizedStrings = "";
@@ -297,19 +299,26 @@ void MainComponent::createUI()
     {
         PopupMenu menu;
         menu.setLookAndFeel(&laf_);
-        menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
+        menu.addItem(kMenuID_About, TRANS("about_melissa"));
         menu.addItem(kMenuID_Manual, TRANS("open_manual"));
-        menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
+        menu.addItem(kMenuID_VersionCheck, TRANS("check_update"));
         menu.addSeparator();
-        menu.addItem(kMenuID_MainPreferences, TRANS("audio_midi_settings"));
-        menu.addItem(kMenuID_MainShortcut, TRANS("shortcut_settings"));
+        menu.addItem(kMenuID_Preferences, TRANS("audio_midi_settings"));
+        menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
+        
+        PopupMenu uiThemeMenu;
+        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, MelissaUISettings::isDarkMode);
+        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, !MelissaUISettings::isDarkMode);
+        menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
+        
+        menu.addSeparator();
         menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
 #if defined(ENABLE_TUTORIAL)
-        menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
+        menu.addItem(kMenuID_Tutorial, TRANS("tutorial"));
 #endif
         const auto result = menu.show();
         model_->setPlaybackStatus(kPlaybackStatus_Stop);
-        if (result == kMenuID_MainAbout)
+        if (result == kMenuID_About)
         {
             showAboutDialog();
         }
@@ -317,25 +326,38 @@ void MainComponent::createUI()
         {
             URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
         }
-        else if (result == kMenuID_MainVersionCheck)
+        else if (result == kMenuID_VersionCheck)
         {
             showUpdateDialog(true);
         }
-        else if (result == kMenuID_MainPreferences)
+        else if (result == kMenuID_Preferences)
         {
             showAudioMidiSettingsDialog();
         }
-        else if (result == kMenuID_MainShortcut)
+        else if (result == kMenuID_Shortcut)
         {
             showShortcutDialog();
         }
-        else if (result == kMenuID_MainTutorial)
+        else if (result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
+        {
+            File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
+            dataSource_->setUITheme(result == kMenuID_UITheme_Dark ? "System_Dark" : "System_Light");
+            JUCEApplicationBase::quit();
+        }
+        else if (result == kMenuID_Tutorial)
         {
             showTutorial();
         }
         else if (result == kMenuID_TwitterShare)
         {
-            URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+            if (MelissaUISettings::isJa)
+            {
+                URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+            }
+            else
+            {
+                URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+            }
         }
     };
     addAndMakeVisible(menuButton_.get());
@@ -348,7 +370,7 @@ void MainComponent::createUI()
         iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
         iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
         iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
-        for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.6f));
+        for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
         
         iconHighlightedImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
         iconHighlightedImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
@@ -1067,51 +1089,7 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics& g)
 {
-    const int w = getWidth();
-    const int h = getHeight();
-    const int xCenter = w / 2;
-    const int yCenter = h / 2;
-    
     g.fillAll(MelissaUISettings::getMainColour());
-    
-    /*
-    const auto gradationColour = MelissaUISettings::getBackGroundGradationColour();
-    //const int playButtonCenterY = controlComponent_->getY() + controlComponent_->getHeight() / 2;
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), 0, getHeight(), true));
-    g.fillRect(0, 0, w / 2, h);
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), w, getHeight(), true));
-    g.fillRect(w / 2, 0, w / 2, h);
-    
-    constexpr int interval = 6;
-    bool offset = true;
-    g.setColour(Colours::white.withAlpha(0.08f));
-    for (int y_i = 0; y_i < getHeight(); y_i += interval)
-    {
-        if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i && y_i < bottomComponent_->getY()))
-        {
-            for (int x_i = offset ? interval / 2 : 0; x_i < getWidth(); x_i += interval)
-            {
-                g.fillRect(x_i, y_i, 1, 1);
-            }
-        }
-        offset = !offset;
-    }
-     */
-    /*
-    Colour colours[] = { Colour(0x00000000), Colour(0x50000000) };
-    
-    int y = controlComponent_->getY() - kGradationHeight;
-    g.setGradientFill(ColourGradient(colours[0], xCenter, y, colours[1], xCenter, y + kGradationHeight, false));
-    g.fillRect(0, y, w, kGradationHeight);
-    
-    y = controlComponent_->getBottom();
-    g.setGradientFill(ColourGradient(colours[1], xCenter, y, colours[0], xCenter, y + kGradationHeight, false));
-    g.fillRect(0, y, w, kGradationHeight);
-    
-    y = bottomComponent_->getY() - kGradationHeight;
-    g.setGradientFill(ColourGradient(colours[0], xCenter, y, colours[1], xCenter, y + kGradationHeight, false));
-    g.fillRect(0, y, w, kGradationHeight);
-     */
 }
 
 void MainComponent::resized()
@@ -1326,6 +1304,7 @@ void MainComponent::resized()
         x += (tabWidth + kTabMargin);
         historyToggleButton_ ->setBounds(x, 10, tabWidth, 30);
         
+        tabWidth = 200;
         int w = fileComponent_->getWidth() - 20;
         h = fileComponent_->getHeight() - 60;
         fileBrowserComponent_->setBounds(10, 50, w, h);

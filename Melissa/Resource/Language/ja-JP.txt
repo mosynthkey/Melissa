@@ -149,3 +149,8 @@ countries: ja
 "PracticeList" = "練習リスト"
 "Marker" = "マーカー"
 "NoAssign" = "未割り当て"
+"ui_theme" = "UI配色"
+"ui_theme_dark" = "ダーク"
+"ui_theme_light" = "ライト"
+"restart_to_apply" = "変更を適応するにはMelissaを再起動してください"
+"ui_theme_change" = "UI配色の変更"

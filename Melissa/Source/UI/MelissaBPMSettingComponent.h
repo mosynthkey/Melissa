@@ -55,6 +55,7 @@ public:
         
         const auto bpm = model_->getBpm();
         bpmEditor_ = std::make_unique<TextEditor>();
+        bpmEditor_->applyColourToAllText(MelissaUISettings::getTextColour());
         bpmEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
         bpmEditor_->setJustification(Justification::centred);
         bpmEditor_->setBounds(getWidth() - margin - textEditorWidth, margin, textEditorWidth, controlHeight);

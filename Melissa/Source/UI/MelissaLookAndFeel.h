@@ -198,7 +198,7 @@ public:
             
             g.setColour(MelissaUISettings::getTextColour(isActive ? 0.8f : 0.2f));
             g.setFont(MelissaUISettings::getFontSizeSub());
-            g.drawText(text, area.reduced(10, 0), Justification::left);
+            g.drawText(text, area.reduced(25, 0), Justification::left);
             
             if (hasSubMenu)
             {
@@ -214,6 +214,12 @@ public:
                 Path triangle;
                 triangle.addTriangle(x0, y0, x0, y2, x1, y1);
                 g.fillPath(triangle);
+            }
+            
+            if (isTicked)
+            {
+                g.setColour(MelissaUISettings::getAccentColour());
+                g.fillEllipse(10, (area.getHeight() - 5) / 2, 5, 5);
             }
         }
     }
@@ -602,7 +608,7 @@ public:
         g.fillRoundedRectangle(insideRect, insideRect.getHeight() / 2);
         
         const auto textX = outsideRect.getRight() + 8;
-        g.setColour(Colours::white);
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(font_);
         g.drawText(tb.getButtonText(), textX, 0, tb.getWidth() - textX, tb.getHeight(), Justification::left);
         

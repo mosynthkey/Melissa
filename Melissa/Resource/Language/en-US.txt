@@ -149,3 +149,8 @@ countries: us
 "PracticeList" = "Practice list"
 "Marker" = "Marker"
 "NoAssign" = "No assign"
+"ui_theme" = "UI Theme"
+"ui_theme_dark" = "Dark"
+"ui_theme_light" = "Light"
+"restart_to_apply" = "Please restart Melissa to apply"
+"ui_theme_change" = "Change UI theme"

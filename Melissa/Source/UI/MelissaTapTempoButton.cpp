@@ -44,7 +44,7 @@ void MelissaTapTempoButton::paint(Graphics& g)
     g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
     
     g.setFont(font_);
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     g.drawText("Tap", getLocalBounds(), Justification::centred);
 }
     

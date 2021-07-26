@@ -155,7 +155,7 @@ public:
         g.setColour(MelissaUISettings::getAccentColour(highlighted ? 1.f : 0.6f));
         g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
         
-        g.setColour(Colours::white);
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(font_);
         g.drawText(title_, 0, 0, getWidth(), getHeight(), Justification::centred);
     }
