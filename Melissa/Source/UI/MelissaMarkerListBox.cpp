@@ -155,6 +155,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
+            l->setFont(MelissaUISettings::getFontSizeSub());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
