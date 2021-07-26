@@ -158,7 +158,7 @@ void MelissaShortcutComponent::resized()
     int y = 40;
     
     listRect_ = Rectangle(60, y, getWidth() - 120, registerEditY_ - 10 - y);
-    shortcutListBox_->setBounds(listRect_.reduced(10));
+    shortcutListBox_->setBounds(listRect_.reduced(2));
     
     int margin = 20;
     int width = (getWidth() - 120 - margin * 2) / 5;

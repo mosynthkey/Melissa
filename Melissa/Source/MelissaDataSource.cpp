@@ -502,6 +502,10 @@ void MelissaDataSource::setUITheme(const String& uiTheme)
     {
         global_.uiTheme_ = uiTheme;
     }
+    else
+    {
+        global_.uiTheme_ = "System_Dark";
+    }
 }
 
 void MelissaDataSource::deregisterShortcut(const String& eventName)

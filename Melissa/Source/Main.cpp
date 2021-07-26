@@ -20,7 +20,7 @@ public:
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
-    bool moreThanOneInstanceAllowed() override       { return false; }
+    bool moreThanOneInstanceAllowed() override       { return true; }
 
     //==============================================================================
     void initialise (const String& commandLine) override
@@ -28,6 +28,11 @@ public:
         // This method is where you should put your application's initialisation code..
 
         mainWindow.reset (new MainWindow (getApplicationName()));
+        
+        // workaround (https://forum.juce.com/t/moving-documentwindow-in-front-of-all-other-windows/10630/16)
+        mainWindow->setAlwaysOnTop(true);
+        mainWindow->setWantsKeyboardFocus(true);
+        mainWindow->setAlwaysOnTop(false);
     }
 
     void shutdown() override
@@ -50,6 +55,7 @@ public:
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
+        if (commandLine != "--relaunch") quit();
     }
 
     //==============================================================================
