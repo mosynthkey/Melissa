@@ -142,7 +142,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     laf_.updateColour();
     browserLaf_.updateColour();
     
-    MelissaUISettings::isJa = false; //(SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
+    MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
     getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
     
     String localizedStrings = "";
