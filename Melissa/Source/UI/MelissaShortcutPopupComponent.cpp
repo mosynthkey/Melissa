@@ -43,10 +43,10 @@ void MelissaShortcutPopupComponent::paint(Graphics& g)
     const int textWidth = MelissaUtility::getStringSize(Font(MelissaUISettings::getFontSizeSub()), text_).first;
     const int x = (getWidth() - textWidth) / 2;
     
-    
     g.setColour(MelissaUISettings::getSubColour());
     g.fillRoundedRectangle(x, 0, textWidth, 30, 6);
     
+    g.setFont(MelissaUISettings::getFontSizeSub());
     g.setColour(MelissaUISettings::getTextColour());
     g.drawText(text_, x, 0, textWidth, 30, 6, Justification::centred);
 }
