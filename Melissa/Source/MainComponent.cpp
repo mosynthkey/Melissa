@@ -219,6 +219,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     
     if (isFirstLaunch)
     {
+        dataSource_->setDefaultShortcuts(true);
         const std::vector<String> options = { TRANS("ok") };
         auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("first_launch"), options, [&](size_t yesno) { showFileChooser(); });
         MelissaModalDialog::show(dialog, "Melissa", false);
