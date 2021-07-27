@@ -455,9 +455,15 @@ void MelissaDataSource::disposeBuffer()
 
 void MelissaDataSource::setDefaultShortcut(const String& eventName)
 {
-    global_.shortcut_[eventName] = defaultShortcut_[eventName];
-    
-    for (auto&& l : listeners_) l->shortcutUpdated();
+    if (defaultShortcut_.find(eventName) == defaultShortcut_.end())
+    {
+        deregisterShortcut(eventName);
+    }
+    else
+    {
+        global_.shortcut_[eventName] = defaultShortcut_[eventName];
+        for (auto&& l : listeners_) l->shortcutUpdated();
+    }
 }
 
 void MelissaDataSource::setDefaultShortcuts(bool removeAll)
@@ -496,6 +502,13 @@ void MelissaDataSource::registerShortcut(const String& eventName, const String& 
     for (auto&& l : listeners_) l->shortcutUpdated();
 }
 
+void MelissaDataSource::deregisterShortcut(const String& eventName)
+{
+    global_.shortcut_.erase(eventName);
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
+}
+
 void MelissaDataSource::setUITheme(const String& uiTheme)
 {
     if (uiTheme == "System_Dark" || uiTheme == "System_Light")
@@ -506,13 +519,6 @@ void MelissaDataSource::setUITheme(const String& uiTheme)
     {
         global_.uiTheme_ = "System_Dark";
     }
-}
-
-void MelissaDataSource::deregisterShortcut(const String& eventName)
-{
-    global_.shortcut_.erase(eventName);
-    
-    for (auto&& l : listeners_) l->shortcutUpdated();
 }
 
 void MelissaDataSource::restorePreviousState()

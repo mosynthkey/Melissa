@@ -8,10 +8,13 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+
 #include "MelissaCommandComboBox.h"
+#include "MelissaDataSource.h"
 #include "MelissaShortcutManager.h"
 
 class MelissaShortcutComponent : public Component,
+                                 public MelissaDataSourceListener,
                                  public MelissaShortcutListener
 {
 public:
@@ -32,6 +35,7 @@ private:
     std::unique_ptr<ShortcutListBox> shortcutListBox_;
     
     void initAssignBox();
+    void shortcutUpdated() override;
     
     MelissaShortcutManager* shortcutManager_;
     

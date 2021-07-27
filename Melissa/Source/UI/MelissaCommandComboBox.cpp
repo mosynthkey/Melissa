@@ -5,10 +5,10 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include "MelissaCommand.h"
 #include "MelissaCommandComboBox.h"
 #include "MelissaDataSource.h"
 #include "MelissaUISettings.h"
-
 
 enum CommandCategory
 {
@@ -80,6 +80,18 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
             { "SetSpeed_Plus1", kCommandType_Switch },
             { "SetSpeed_Minus1", kCommandType_Switch },
             { "ResetSpeed", kCommandType_Switch },
+            
+            { "SetSpeedPreset_40", kCommandType_Switch },
+            { "SetSpeedPreset_50", kCommandType_Switch },
+            { "SetSpeedPreset_60", kCommandType_Switch },
+            { "SetSpeedPreset_70", kCommandType_Switch },
+            { "SetSpeedPreset_75", kCommandType_Switch },
+            { "SetSpeedPreset_80", kCommandType_Switch },
+            { "SetSpeedPreset_85", kCommandType_Switch },
+            { "SetSpeedPreset_90", kCommandType_Switch },
+            { "SetSpeedPreset_95", kCommandType_Switch },
+            { "SetSpeedPreset_105", kCommandType_Switch },
+            
         }
     },
     {
@@ -178,7 +190,7 @@ void MelissaCommandComboBox::select(const String& command)
             {
                 //setSelectedId(commandItemId);
                 selectedCommand_ = getSelectedCommandWithItemId(commandItemId);
-                setText(TRANS(selectedCommand_));
+                setText(MelissaCommand::getInstance()->getCommandDescription(selectedCommand_));
                 return;
             }
         }
@@ -200,7 +212,7 @@ void MelissaCommandComboBox::showPopup()
         
         for (auto&& command : titleAndCommandList.second)
         {
-            String menu = TRANS(command.first);
+            String menu = MelissaCommand::getInstance()->getCommandDescription(command.first);
             if (command.second == kCommandType_Value) menu += " [CC]";
             subMenu.addItem(++itemId, menu, isSwitch ? (command.second == kCommandType_Switch) : true);
         }

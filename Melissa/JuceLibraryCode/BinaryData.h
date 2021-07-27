@@ -33,7 +33,7 @@ namespace BinaryData
     const int            playlist_add_svgSize = 583;
 
     extern const char*   playlist_add_file_svg;
-    const int            playlist_add_file_svgSize = 1169;
+    const int            playlist_add_file_svgSize = 1155;
 
     extern const char*   playlist_add_playing_svg;
     const int            playlist_add_playing_svgSize = 1442;
@@ -51,10 +51,10 @@ namespace BinaryData
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 7631;
+    const int            enUS_txtSize = 7683;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 8437;
+    const int            jaJP_txtSize = 8468;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110117;
