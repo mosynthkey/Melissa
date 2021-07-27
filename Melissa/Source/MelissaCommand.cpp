@@ -46,7 +46,7 @@ MelissaCommand::MelissaCommand()
     };
     commands_["PitchValue"] = [&](float value)
     {
-        model_->setPitch(value * (kPitchMax - kPitchMin) + kPitchMin);
+        model_->setPitch(static_cast<int>(value * (kPitchMax - kPitchMin) + kPitchMin));
     };
     commands_["Pitch_Plus"] = [&](float value)
     {
@@ -128,6 +128,16 @@ MelissaCommand::MelissaCommand()
     {
         if (value == 1.f) model_->setSpeed(100);
     };
+    
+    for (int speed : speedPresets)
+    {
+        if (speed == 100) continue;
+        String name = "SetSpeedPreset_" + String(speed);
+        commands_[name] = [&, speed](float value)
+        {
+            if (value == 1.f) model_->setSpeed(speed);
+        };
+    }
 
     // Metronome
     commands_["ToggleMetronome"] = [&](float value)
@@ -160,7 +170,7 @@ MelissaCommand::MelissaCommand()
     // Output
     commands_["SetMusicVolumeValue"] = [&](float value)
     {
-        if (value == 1.f) model_->setMusicVolume(2.f * value);
+        model_->setMusicVolume(2.f * value);
     };
     commands_["SetVolumeBalanceValue"] = [&](float value)
     {
@@ -300,6 +310,13 @@ void MelissaCommand::excuteCommand(const String& commandAsString, float value)
 
 String MelissaCommand::getCommandDescription(const String& commandAsString)
 {
-    return TRANS(commandAsString);
+    if (commandAsString.startsWith("SetSpeedPreset_"))
+    {
+        return (TRANS("SetSpeedPreset") + commandAsString.substring(15) + " %");
+    }
+    else
+    {
+        return TRANS(commandAsString);
+    }
 }
 

@@ -5,6 +5,7 @@
 //  Copyright(c) 2021 Masaki Ono
 //
 
+#include "MelissaCommand.h"
 #include "MelissaDataSource.h"
 #include "MelissaShortcutPopupComponent.h"
 #include "MelissaUISettings.h"
@@ -25,7 +26,7 @@ void MelissaShortcutPopupComponent::show(const String& text)
     const auto assignedShortcut = MelissaDataSource::getInstance()->getAssignedShortcut(text);
     if (assignedShortcut.isEmpty()) return;
     
-    text_ = text + String(" : ") + TRANS(assignedShortcut);
+    text_ = text + String(" : ") + MelissaCommand::getInstance()->getCommandDescription(assignedShortcut);
     
     repaint();
     

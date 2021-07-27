@@ -340,9 +340,13 @@ void MainComponent::createUI()
         }
         else if (result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
         {
-            File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
-            dataSource_->setUITheme(result == kMenuID_UITheme_Dark ? "System_Dark" : "System_Light");
-            JUCEApplicationBase::quit();
+            const std::vector<String> options = { TRANS("ok") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index){
+                dataSource_->setUITheme(result == kMenuID_UITheme_Dark ? "System_Dark" : "System_Light");
+                File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
+                JUCEApplicationBase::quit();
+            });
+            MelissaModalDialog::show(dialog, TRANS("ui_theme"));
         }
         else if (result == kMenuID_Tutorial)
         {
@@ -606,7 +610,6 @@ void MainComponent::createUI()
         
         speedPresetComponent_ = make_unique<Component>();
         speedModeNormalComponent_->addAndMakeVisible(speedPresetComponent_.get());
-        const int speedPresets[kNumOfSpeedPresets] = { 40, 50, 60, 70, 75, 80, 85, 90, 95, 100, 105 };
         constexpr int presetButtonMargin = 4;
         constexpr int controlHeight = 30;
         int speedButtonX = 0;
@@ -1379,7 +1382,7 @@ void MainComponent::showAudioMidiSettingsDialog()
 void MainComponent::showShortcutDialog()
 {
     auto component = std::make_shared<MelissaShortcutComponent>();
-    component->setSize(getWidth() * 0.6f, getHeight() * 0.8f);
+    component->setSize(getWidth() * 0.8f, getHeight() * 0.8f);
     MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("shortcut_settings"));
 }
 

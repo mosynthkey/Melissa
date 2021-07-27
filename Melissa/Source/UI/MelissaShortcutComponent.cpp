@@ -53,6 +53,7 @@ public:
             shortcuts_.emplace_back(std::make_pair(shortcut.first, shortcut.second));
         }
         updateContent();
+        repaint();
     }
     
     int getNumRows() override
@@ -135,12 +136,15 @@ MelissaShortcutComponent::MelissaShortcutComponent() : registerEditY_(0)
     shortcutManager_ = MelissaShortcutManager::getInstance();
     shortcutManager_->setEnable(false);
     shortcutManager_->addListener(this);
+    
+    MelissaDataSource::getInstance()->addListener(this);
 }
 
 MelissaShortcutComponent::~MelissaShortcutComponent()
 {
     shortcutManager_->removeListener(this);
     shortcutManager_->setEnable(true);
+    MelissaDataSource::getInstance()->removeListener(this);
 }
 
 void MelissaShortcutComponent::controlMessageReceived(const String& controlMessage)
@@ -196,4 +200,9 @@ void MelissaShortcutComponent::initAssignBox()
     
     controlMessageReceived((shortcuts.begin())->first);
     shortcutListBox_->selectRow(0);
+}
+
+void MelissaShortcutComponent::shortcutUpdated()
+{
+    controlMessageReceived(commandLabel_->getText());
 }
