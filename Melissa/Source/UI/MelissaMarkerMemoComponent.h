@@ -38,6 +38,7 @@ private:
         Colour colour_;
         bool shorten_;
         int originalWidth_;
+        int markerIndex_;
     };
     std::vector<MelissaMarkerLabelInfo> markerLabelInfo_;
 };

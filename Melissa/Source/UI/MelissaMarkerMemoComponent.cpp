@@ -23,8 +23,10 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
     dataSource_->getMarkers(markers);
     
     markerLabelInfo_.clear();
-    for (auto&& m : markers)
+    
+    for (int markerIndex = 0; markerIndex < markers.size(); ++markerIndex)
     {
+        const auto& m = markers[markerIndex];
         if (m.memo_.isEmpty()) continue;
         
         MelissaMarkerLabelInfo info;
@@ -35,6 +37,7 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
         info.posRatio_ = m.position_;
         info.x_ = m.position_ * getWidth() - info.width_ / 2;
         info.shorten_ = false;
+        info.markerIndex_ = markerIndex;
         markerLabelInfo_.emplace_back(info);
     }
     if (markerLabelInfo_.size() == 0) return;
@@ -95,7 +98,7 @@ void MelissaMarkerMemoComponent::mouseDown(const MouseEvent& event)
         const auto& info = markerLabelInfo_[infoIndex];
         if (info.x_ <= x && x <= info.x_ + info.width_)
         {
-            if (listener_ != nullptr) listener_->markerClicked(infoIndex, event.mods.isShiftDown());
+            if (listener_ != nullptr) listener_->markerClicked(info.markerIndex_, event.mods.isShiftDown());
         }
     }
 }
