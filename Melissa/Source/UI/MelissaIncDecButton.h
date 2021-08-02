@@ -27,7 +27,7 @@ public:
         
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlighted ? 0.8f : 0.4f));
+        g.setColour(MelissaUISettings::getTextColour(highlighted ? 0.8f : 0.4f));
         g.drawRect((getWidth() - lineLength) / 2, (getHeight() - lineWidth) / 2, lineLength, lineWidth);
         if (type_ == kType_IncButton)
         {
@@ -75,8 +75,8 @@ public:
         label_ = std::make_unique<Label>();
         label_->setInterceptsMouseClicks(false, true);
         label_->setJustificationType(Justification::centred);
-        label_->setFont(Font(MelissaUISettings::getFontSizeSub()));
-        label_->setColour(Label::textColourId, Colour(0xddffffff));
+        label_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)));
+        label_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         addAndMakeVisible(label_.get());
         
         decButton_ = std::make_unique<IncDecButton>(IncDecButton::kType_DecButton, [this](bool b) { if (onClick_ != nullptr) onClick_(kEvent_Dec, b); });
@@ -97,7 +97,7 @@ public:
         
         funcButton_ = std::make_unique<MelissaRoundButton>(funcButtonTitle);
         funcButton_->setTooltip(funcTooltipStr);
-        funcButton_->setFont(MelissaUISettings::getFontSizeSub());
+        funcButton_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
         funcButton_->onClick =  [this]() { if (onClick_ != nullptr) onClick_(kEvent_Func, false); };
         addAndMakeVisible(funcButton_.get());
     }
@@ -130,10 +130,9 @@ public:
     
     void paint(Graphics& g) override
     {
-        constexpr float t = 1.4f; // thickness
-        const auto b = getLocalBounds().reduced(t, t);
-        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f));
-        g.drawRoundedRectangle(b.toFloat(), b.getHeight() / 2, t);
+        const auto b = getLocalBounds();
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
     }
     
     void mouseDown(const MouseEvent& event) override
@@ -149,12 +148,12 @@ public:
         if (diffY_ > dragStep_)
         {
             diffY_ = 0;
-            onClick_(kEvent_Dec, false);
+            onClick_(kEvent_Dec, event.mods.isShiftDown());
         }
         else if (diffY_ < -1 * dragStep_)
         {
             diffY_ = 0;
-            onClick_(kEvent_Inc, false);
+            onClick_(kEvent_Inc, event.mods.isShiftDown());
         }
     }
     
@@ -166,7 +165,7 @@ public:
 
     void mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel) override
     {
-        onClick_((wheel.deltaY > 0) ? kEvent_Inc : kEvent_Dec, false);
+        onClick_((wheel.deltaY > 0) ? kEvent_Inc : kEvent_Dec, true);
     }
     
     void setText(const String& str)

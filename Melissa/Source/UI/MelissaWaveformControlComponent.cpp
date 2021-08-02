@@ -25,7 +25,7 @@ public:
         MelissaModel::getInstance()->addListener(this);
         
         current_ = std::make_unique<Label>();
-        current_->setColour(Label::backgroundColourId, Colour(0x80ffffff));
+        current_->setColour(Label::backgroundColourId, MelissaUISettings::getAccentColour());
         current_->setInterceptsMouseClicks(false, false);
         addAndMakeVisible(current_.get());
     };
@@ -37,7 +37,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        Colour colour(MelissaUISettings::getMainColour());
+        Colour colour = MelissaUISettings::getWaveformColour();
         for (size_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
         {
             const int32_t height = previewBuffer_[iStrip] * getHeight();
@@ -53,7 +53,7 @@ public:
             }
             else
             {
-                g.setColour(colour.withAlpha(0.2f));
+                g.setColour(colour.withAlpha(0.4f));
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
         }
@@ -206,7 +206,7 @@ public:
         
         if (isMouseOn_)
         {
-            g.setColour(Colours::black.withAlpha(0.3f));
+            g.setColour(Colours::black.withAlpha(0.2f));
             g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
             g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight, bodyWidth, getHeight() - headHeight);
         }
@@ -261,7 +261,7 @@ private:
 
 MelissaWaveformControlComponent::MelissaWaveformControlComponent() :
 timeSec_(0),
-tableListBox_(nullptr)
+listener_(nullptr)
 {
     MelissaDataSource::getInstance()->addListener(this);
     
@@ -284,7 +284,7 @@ tableListBox_(nullptr)
     posTooltip_ = std::make_unique<Label>();
     posTooltip_->setSize(100, 30);
     posTooltip_->setJustificationType(Justification::centred);
-    posTooltip_->setFont(MelissaUISettings::getFontSizeSmall());
+    posTooltip_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
     addChildComponent(posTooltip_.get());
 }
 
@@ -345,7 +345,7 @@ void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t
     {
         auto l = std::make_unique<Label>();
         l->setJustificationType(Justification::centred);
-        l->setFont(MelissaUISettings::getFontSizeSmall());
+        l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
         l->setText(text, dontSendNotification);
         l->setSize(MelissaUtility::getStringSize(l->getFont(), l->getText()).first, 20);
         addAndMakeVisible(l.get());
@@ -379,26 +379,9 @@ void MelissaWaveformControlComponent::markerUpdated()
         marker->setPosition(m.position_);
         marker->setColour(Colour::fromRGB(m.colourR_, m.colourG_, m.colourB_));
         marker->setMemo(m.memo_);
-        marker->onClick_ = [&, markerIndex](bool isShiftKeyDown)
+        marker->onClick_ = [&, markerIndex, this](bool isShiftKeyDown)
         {
-            auto model = MelissaModel::getInstance();
-            if (isShiftKeyDown)
-            {
-                const auto markerPosSec  = markers_[markerIndex]->getPosition() * timeSec_;
-                const auto startPosRatio = std::clamp<float>((markerPosSec - 3) / timeSec_, 0, 1.f);
-                const auto endPosSec     = std::clamp<float>((markerPosSec + 3) / timeSec_, 0, 1.f);
-                model->setLoopPosRatio(startPosRatio, endPosSec);
-            }
-            else
-            {
-                const auto markerPosRatio = markers_[markerIndex]->getPosition();
-                if (markerPosRatio < model->getLoopAPosRatio() || model->getLoopBPosRatio() < markerPosRatio)
-                {
-                    model->setLoopPosRatio(0.f, 1.f);
-                }
-                model->setPlayingPosRatio(markers_[markerIndex]->getPosition());
-                tableListBox_->selectRow(static_cast<int>(markerIndex));
-            }
+            if (listener_ != nullptr) listener_->markerClicked(markerIndex, isShiftKeyDown);
         };
         
         markerBaseComponent_->addAndMakeVisible(marker.get());

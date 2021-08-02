@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
 #include <string>
+#include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaUISettings.h"
 
 class MelissaScrollLabel : public Component, public Timer
 {
@@ -29,7 +30,7 @@ public:
     
     void paint(Graphics& g) override
     {
-        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(font_);
         g.drawText(text_, position_, 0, textWidth_, getHeight(), Justification::left);
     }

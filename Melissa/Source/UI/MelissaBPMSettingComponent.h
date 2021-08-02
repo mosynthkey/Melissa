@@ -31,14 +31,14 @@ public:
         constexpr int margin = 10;
         //constexpr int checkboxWidth = 30;
         
-        circleToggleLaf_.setFont(Font(MelissaUISettings::getFontSizeMain()));
+        circleToggleLaf_.setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         
         setSize(380, margin + (controlHeight + margin) * 3);
         
         {
             auto l = std::make_unique<Label>();
             l->setText("BPM :", dontSendNotification);
-            l->setFont(Font(MelissaUISettings::getFontSizeMain()));
+            l->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
             l->setBounds(margin, margin, MelissaUtility::getStringSize(l->getFont(), l->getText()).first, controlHeight);
             addAndMakeVisible(l.get());
             labels_.emplace_back(std::move(l));
@@ -47,7 +47,7 @@ public:
         {
             auto l = std::make_unique<Label>();
             l->setText("Tap tempo :", dontSendNotification);
-            l->setFont(Font(MelissaUISettings::getFontSizeMain()));
+            l->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
             l->setBounds(margin, margin + (controlHeight + margin) * 1, MelissaUtility::getStringSize(l->getFont(), l->getText()).first, controlHeight);
             addAndMakeVisible(l.get());
             labels_.emplace_back(std::move(l));
@@ -55,7 +55,8 @@ public:
         
         const auto bpm = model_->getBpm();
         bpmEditor_ = std::make_unique<TextEditor>();
-        bpmEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+        bpmEditor_->applyColourToAllText(MelissaUISettings::getTextColour());
+        bpmEditor_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         bpmEditor_->setJustification(Justification::centred);
         bpmEditor_->setBounds(getWidth() - margin - textEditorWidth, margin, textEditorWidth, controlHeight);
         bpmEditor_->setInputRestrictions(3, "0123456789");
@@ -68,7 +69,7 @@ public:
         addAndMakeVisible(bpmEditor_.get());
         
         tapTempoButton_ = std::make_unique<MelissaTapTempoButton>();
-        tapTempoButton_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+        tapTempoButton_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         tapTempoButton_->setBounds(getWidth() - margin - textEditorWidth, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         tapTempoButton_->correctWithPlaybackSpeed(true);
         addAndMakeVisible(tapTempoButton_.get());

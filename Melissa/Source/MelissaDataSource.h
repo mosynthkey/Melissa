@@ -32,6 +32,9 @@ public:
     virtual void practiceListUpdated() { }
     virtual void markerUpdated() { }
     virtual void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) { }
+    virtual void shortcutUpdated() { }
+    virtual void colourChanged(const Colour& mainColour, const Colour& subColour, const Colour& accentColour, const Colour& textColour, const Colour& waveformColour) { }
+    virtual void fontChanged(const Font& mainFont, const Font& subFont, const Font& miniFont) { }
 };
 
 class MelissaDataSource : public AsyncUpdater
@@ -46,9 +49,19 @@ public:
         int width_;
         int height_;
         String device_;
+        int playMode_;
         std::map<String, String> shortcut_;
+        String uiTheme_;
+        String fontName_;
+        enum FontSize
+        {
+            kFontSize_Main,
+            kFontSize_Sub,
+            kFontSize_Small,
+            kNumFontSizes
+        };
         
-        Global() : version_(ProjectInfo::versionString), width_(1400), height_(860)
+        Global() : version_(ProjectInfo::versionString), width_(1400), height_(860), uiTheme_("System_Dark")
         {
             rootDir_ = File::getSpecialLocation(File::userMusicDirectory).getFullPathName();
         }
@@ -57,7 +70,7 @@ public:
     struct Previous
     {
         String filePath_;
-        int pitch_;
+        float pitch_;
         
         float aRatio_;
         float bRatio_;
@@ -93,7 +106,7 @@ public:
         UIState uiState_;
         
         Previous() :
-        filePath_(""), pitch_(0),
+        filePath_(""), pitch_(0.f),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         /* metronomeSw_(false), */ bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
@@ -117,7 +130,7 @@ public:
     struct Song
     {
         String filePath_;
-        int pitch_;
+        float pitch_;
         OutputMode outputMode_;
         float musicVolume_;
         float metronomeVolume_;
@@ -189,7 +202,7 @@ public:
         };
         std::vector<Marker> markers_;
         
-        Song() : filePath_(""), pitch_(0), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
+        Song() : filePath_(""), pitch_(0.f), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
         eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), memo_("") {}
@@ -198,11 +211,18 @@ public:
     
     void setMelissaAudioEngine(MelissaAudioEngine* audioEngine) { audioEngine_ = audioEngine; }
     void addListener(MelissaDataSourceListener* listener) { listeners_.emplace_back(listener); }
+    void removeListener(MelissaDataSourceListener* listener);
     
     void loadSettingsFile(const File& file);
     void validateSettings();
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
+    
+    // Font
+    void initFontSettings(const String& fontName = "");
+    bool isFontAvailable(const String& fontName) const;
+    String getFontName() const { return global_.fontName_; }
+    Font getFont(Global::FontSize size) const;
     
     bool isFileLoaded() const { return audioSampleBuf_ != nullptr; }
     static String getCompatibleFileExtensions();
@@ -214,10 +234,16 @@ public:
     void disposeBuffer();
     
     // Shortcut
-    void setDefaultShortcuts();
+    void setDefaultShortcut(const String& eventName);
+    void setDefaultShortcuts(bool removeAll = false);
+    std::map<String, String> getAllAssignedShortcuts() const;
     String getAssignedShortcut(const String& eventName);
     void registerShortcut(const String& eventName, const String& command);
     void deregisterShortcut(const String& eventName);
+    
+    // UI Theme
+    String getUITheme() const { return global_.uiTheme_; }
+    void setUITheme(const String& uiTheme_);
     
     // Previous
     void restorePreviousState();
@@ -286,4 +312,5 @@ private:
     std::vector<MelissaDataSourceListener*> listeners_;
     std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
     bool wasPlaying_;
+    std::map<String, String> defaultShortcut_;
 };

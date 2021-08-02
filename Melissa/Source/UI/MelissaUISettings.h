@@ -14,78 +14,30 @@
 class MelissaUISettings
 {
 public:
-    static std::pair<uint32_t, uint32_t> getBackGroundGradationColour()
+    static Colour getTextColour(float alpha = 1.f)
     {
-        return { 0xFF1D2534, 0xFF090C10 };
+        return isDarkMode ? Colour(0xFFFFFF).withAlpha(alpha) : Colour(0xFF000000).withAlpha(alpha);
     }
     
-    static uint32_t getMainColour()
+    static Colour getWaveformColour(float alpha = 1.f)
     {
-        return 0xffddeaff;
+        return isDarkMode ? Colour(0xFFD9E8FF).withAlpha(alpha) : Colour(0xFF89B8FF).withAlpha(alpha);
     }
     
-    static uint32_t getAccentColour()
+    static Colour getMainColour(float alpha = 1.f)
     {
-        return 0xff87BBFF;
+        return isDarkMode ? Colour(0xFF181823).withAlpha(alpha) : Colour(0xFFFFFFFF).withAlpha(alpha);
     }
     
-    static uint32_t getDialogBackgoundColour()
+    static Colour getSubColour(float alpha = 1.f)
     {
-        return 0xFF1B1F25;
+        return isDarkMode ? Colour(0xFF303340).withAlpha(alpha) : Colour(0xFFE6E8EC).withAlpha(alpha);
     }
     
-    static int getFontSizeMain()
+    static Colour getAccentColour(float alpha = 1.f)
     {
-        if (isMac)
-        {
-            return 17;
-        }
-        else
-        {
-            return 21;
-        }
+        return isDarkMode ? Colour(0xFF7DB2FF).withAlpha(alpha) : Colour(0xFF7DB2FF).withAlpha(alpha);
     }
     
-    static int getFontSizeSub()
-    {
-        return getFontSizeMain() - 2;
-    }
-    
-    static int getFontSizeSmall()
-    {
-        return getFontSizeMain() - 5;
-    }
-    
-    static String getFontName()
-    {
-        if (fontName_.isNotEmpty()) return fontName_;
-
-        useJapaneseFont_ = isJapaneseFontAvailable();
-        fontName_ = useJapaneseFont_ ? japaneseFontName_ : latinFontName_;
-        
-        return fontName_;
-    }
-
-    static bool isJapaneseFontAvailable()
-    {
-        Array<Font> availableFonts;
-        Font::findFonts(availableFonts);
-
-        for (auto&& font : availableFonts)
-        {
-            if (font.getTypefaceName() == japaneseFontName_) return true;
-        }
-
-        return false;
-    }
-    
-    static bool isJa;
-    static bool isMac;
-
-private:
-    static String fontName_;
-    static bool useJapaneseFont_;
-
-    static String japaneseFontName_;
-    static String latinFontName_;
+    static inline bool isDarkMode = "true";
 };

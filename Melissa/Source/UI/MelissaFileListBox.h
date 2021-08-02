@@ -95,12 +95,30 @@ public:
         const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
         const String fileName = File(fullPath).getFileName();
         
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.1f : 0.f));
-        g.fillAll();
+        if (rowIsSelected)
+        {
+            g.setColour(MelissaUISettings::getSubColour());
+            g.fillAll();
+        }
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setColour(MelissaUISettings::getTextColour());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
+    }
+    
+    void moveSelected(int incDecValue)
+    {
+        if (target_ == kTarget_History) return;
+        
+        const int fromIndex = getSelectedRow();
+        const int toIndex   = getSelectedRow() + incDecValue;
+        if (toIndex < 0 || list_.size() <= toIndex) return;
+        
+        const size_t index = static_cast<size_t>(target_);
+        dataSource_->playlists_[index].list_.swap(fromIndex, toIndex);
+        selectRow(toIndex);
+        
+        updateList();
     }
     
     void updateList()

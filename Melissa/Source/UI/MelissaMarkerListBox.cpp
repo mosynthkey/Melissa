@@ -6,6 +6,7 @@
 //
 
 #include <numeric>
+#include "MelissaDoubleClickEditLabel.h"
 #include "MelissaMarkerListBox.h"
 
 class MarkerColourLabel : public Component
@@ -54,8 +55,10 @@ dataSource_(MelissaDataSource::getInstance())
     }
     setOutlineThickness(1);
     
-    popupMenu_ = std::make_shared<PopupMenu>();
     setLookAndFeel(&laf_);
+    
+    popupMenu_ = std::make_shared<PopupMenu>();
+    popupMenu_->setLookAndFeel(&laf_);
 }
 
 MelissaMarkerListBox::~MelissaMarkerListBox()
@@ -84,8 +87,10 @@ int MelissaMarkerListBox::getNumRows()
 
 void MelissaMarkerListBox::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected)
 {
-    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
-    g.fillAll(colour);
+    if (rowIsSelected)
+    {
+        g.fillAll(MelissaUISettings::getSubColour());
+    }
 }
 
 void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected)
@@ -113,8 +118,8 @@ void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, i
         }
     }
     
-    g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
-    g.setFont(MelissaUISettings::getFontSizeMain());
+    g.setColour(MelissaUISettings::getTextColour());
+    g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     constexpr int xMargin = 10;
     g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
 }
@@ -146,17 +151,17 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         auto marker = markers_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new Label();
-            l->setEditable(true, false);
+            auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
         else
         {
-            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(marker.memo_, dontSendNotification);
             return existingComponentToUpdate;
         }
@@ -183,6 +188,7 @@ int MelissaMarkerListBox::getColumnAutoSizeWidth(int columnId)
 
 void MelissaMarkerListBox::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
 {
+    selectRow(rowNumber);
     if (e.mods.isRightButtonDown())
     {
         enum

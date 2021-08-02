@@ -8,6 +8,7 @@
 #include <vector>
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaModel.h"
+#include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
 MelissaMarkerMemoComponent::MelissaMarkerMemoComponent()
@@ -18,22 +19,14 @@ MelissaMarkerMemoComponent::MelissaMarkerMemoComponent()
 
 void MelissaMarkerMemoComponent::paint(Graphics& g)
 {
-    struct MelissaMarkerLabelInfo
-    {
-        int x_, width_;
-        float posRatio_;
-        String memo_;
-        Colour colour_;
-        bool shorten_;
-        int originalWidth_;
-    };
-    
     std::vector<MelissaDataSource::Song::Marker> markers;
     dataSource_->getMarkers(markers);
     
-    std::vector<MelissaMarkerLabelInfo> markerLabelInfo;
-    for (auto&& m : markers)
+    markerLabelInfo_.clear();
+    
+    for (int markerIndex = 0; markerIndex < markers.size(); ++markerIndex)
     {
+        const auto& m = markers[markerIndex];
         if (m.memo_.isEmpty()) continue;
         
         MelissaMarkerLabelInfo info;
@@ -44,16 +37,17 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
         info.posRatio_ = m.position_;
         info.x_ = m.position_ * getWidth() - info.width_ / 2;
         info.shorten_ = false;
-        markerLabelInfo.emplace_back(info);
+        info.markerIndex_ = markerIndex;
+        markerLabelInfo_.emplace_back(info);
     }
-    if (markerLabelInfo.size() == 0) return;
+    if (markerLabelInfo_.size() == 0) return;
 
-    const size_t numOfLabels = markerLabelInfo.size();
+    const size_t numOfLabels = markerLabelInfo_.size();
     for (size_t markerIndex = 0; markerIndex < numOfLabels; ++markerIndex)
     {
-        auto& markerInfo = markerLabelInfo[markerIndex];
-        const int x_min = (markerIndex == 0) ? 0 : (markerLabelInfo[markerIndex - 1].x_ + markerLabelInfo[markerIndex - 1].width_);
-        const int x_max = ((markerIndex == numOfLabels - 1) ? 1.f : (markerInfo.posRatio_ + markerLabelInfo[markerIndex + 1].posRatio_) / 2.f) * getWidth();
+        auto& markerInfo = markerLabelInfo_[markerIndex];
+        const int x_min = (markerIndex == 0) ? 0 : (markerLabelInfo_[markerIndex - 1].x_ + markerLabelInfo_[markerIndex - 1].width_);
+        const int x_max = ((markerIndex == numOfLabels - 1) ? 1.f : (markerInfo.posRatio_ + markerLabelInfo_[markerIndex + 1].posRatio_) / 2.f) * getWidth();
         const int w_max = x_max - x_min;
         
         if (w_max <= markerInfo.width_)
@@ -75,20 +69,20 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
             markerInfo.x_ = markerInfo.posRatio_ * getWidth() - markerInfo.width_ / 2;
         }
         
-        if (1 <= markerIndex && markerLabelInfo[markerIndex - 1].shorten_)
+        if (1 <= markerIndex && markerLabelInfo_[markerIndex - 1].shorten_)
         {
-            auto width = markerInfo.x_ - markerLabelInfo[markerIndex - 1].x_;
-            if (markerLabelInfo[markerIndex - 1].originalWidth_ < width) width = markerLabelInfo[markerIndex - 1].originalWidth_;
-            markerLabelInfo[markerIndex - 1].width_ = width;
+            auto width = markerInfo.x_ - markerLabelInfo_[markerIndex - 1].x_;
+            if (markerLabelInfo_[markerIndex - 1].originalWidth_ < width) width = markerLabelInfo_[markerIndex - 1].originalWidth_;
+            markerLabelInfo_[markerIndex - 1].width_ = width;
         }
     }
 
     const auto h = getHeight();
     constexpr auto lineHeight = 4;
-    for (auto&& info : markerLabelInfo)
+    for (auto&& info : markerLabelInfo_)
     {
         g.setFont(font_);
-        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setColour(MelissaUISettings::getTextColour());
         g.drawText(info.memo_, info.x_, 0, info.width_, h - lineHeight, Justification::centred);
         
         g.setColour(info.colour_);
@@ -96,3 +90,15 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
     }
 }
 
+void MelissaMarkerMemoComponent::mouseDown(const MouseEvent& event)
+{
+    const int x = event.getMouseDownX();
+    for (size_t infoIndex = 0; infoIndex < markerLabelInfo_.size(); ++infoIndex)
+    {
+        const auto& info = markerLabelInfo_[infoIndex];
+        if (info.x_ <= x && x <= info.x_ + info.width_)
+        {
+            if (listener_ != nullptr) listener_->markerClicked(info.markerIndex_, event.mods.isShiftDown());
+        }
+    }
+}

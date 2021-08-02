@@ -8,10 +8,11 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaLookAndFeel.h"
 #include "MelissaHost.h"
 #include "MelissaModalDialog.h"
 
-class MelissaInputDialog : public Component
+class MelissaInputDialog : public Component, public TextEditor::Listener
 {
 public:
     MelissaInputDialog(const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) : onClick_(onClick)
@@ -27,15 +28,17 @@ public:
         setSize(width, height);
         
         label_ = std::make_unique<Label>();
-        label_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+        label_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
         textEditor_ = std::make_unique<TextEditor>();
-        textEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+        textEditor_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
+        textEditor_->applyColourToAllText(MelissaUISettings::getTextColour());
+        textEditor_->addListener(this);
         addAndMakeVisible(textEditor_.get());
         
         okButton_ = std::make_unique<TextButton>();
@@ -53,10 +56,25 @@ public:
         cancelButton_->setButtonText(TRANS("cancel"));
         cancelButton_->onClick = [&]() { MelissaModalDialog::close(); };
         addAndMakeVisible(cancelButton_.get());
+        
+        setLookAndFeel(&laf_);
+    }
+    
+    ~MelissaInputDialog()
+    {
+        setLookAndFeel(nullptr);
+    }
+    
+    void textEditorReturnKeyPressed(TextEditor& editor) override
+    {
+        const String text = textEditor_->getText();
+        onClick_(text);
+        MelissaModalDialog::close();
     }
     
 private:
     MelissaHost* host_;
+    MelissaLookAndFeel laf_;
     std::unique_ptr<Label> label_;
     std::unique_ptr<TextEditor> textEditor_;
     std::unique_ptr<TextButton> okButton_;

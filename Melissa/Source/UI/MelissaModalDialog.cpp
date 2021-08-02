@@ -6,6 +6,7 @@
 //
 
 #include "MelissaModalDialog.h"
+#include "MelissaDataSource.h"
 
 enum
 {
@@ -24,7 +25,7 @@ closeOnClickingOutside_(closeOnClickingOutside)
     titleLabel_ = std::make_unique<Label>();
     titleLabel_->setJustificationType(Justification::centred);
     titleLabel_->setText(title, dontSendNotification);
-    titleLabel_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+    titleLabel_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
     addAndMakeVisible(titleLabel_.get());
     
     closeButton_ = std::make_unique<CloseButton>();
@@ -42,7 +43,7 @@ void MelissaDialog::paint(Graphics& g)
     const int dialogWidth  = kMargin + contentComponent_->getWidth()  + kMargin;
     const int dialogHeight = kMargin + kCloseButtonSize + kMargin + contentComponent_->getHeight() + kMargin;
     
-    g.setColour(Colour(MelissaUISettings::getDialogBackgoundColour()));
+    g.setColour(MelissaUISettings::getMainColour());
     g.fillRoundedRectangle((getWidth() - dialogWidth) / 2, (getHeight() - dialogHeight) / 2, dialogWidth, dialogHeight, 4);
 }
 

@@ -11,6 +11,7 @@
 #include "MelissaDataSource.h"
 #include "MelissaLabel.h"
 #include "MelissaLoopRangeComponent.h"
+#include "MelissaMarkerListener.h"
 #include "MelissaModel.h"
 #include "MelissaWaveformMouseEventComponent.h"
 
@@ -27,7 +28,7 @@ public:
     void setPlayPosition(float ratio);
     void showTimeTooltip(float posRatio);
     void hideTimeTooltip();
-    void setMarkerTableListBox(TableListBox* tableListBox) { tableListBox_ = tableListBox; }
+    void setMarkerListener(MelissaMarkerListener* listener) { listener_ = listener; }
     
     // MelissaDataSourceListener
     void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
@@ -54,5 +55,5 @@ private:
     std::unique_ptr<Label> posTooltip_;
     float timeSec_;
     
-    TableListBox* tableListBox_;
+    MelissaMarkerListener* listener_;
 };
