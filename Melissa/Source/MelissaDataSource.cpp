@@ -448,17 +448,22 @@ bool MelissaDataSource::isFontAvailable(const String& fontName) const
 
 Font MelissaDataSource::getFont(Global::FontSize size) const
 {
+    int fontSizeOffset = 0;
+#ifdef JUCE_WINDOWS
+    fontSizeOffset = 2;
+#endif
+
     if (size == Global::kFontSize_Main)
     {
-        return Font(global_.fontName_, 17, Font::plain);
+        return Font(global_.fontName_, 17 + fontSizeOffset, Font::plain);
     }
     else if (size == Global::kFontSize_Sub)
     {
-        return Font(global_.fontName_, 15, Font::plain);
+        return Font(global_.fontName_, 15 + fontSizeOffset, Font::plain);
     }
     else
     {
-        return Font(global_.fontName_, 13, Font::plain);
+        return Font(global_.fontName_, 13 + fontSizeOffset, Font::plain);
     }
 }
 
