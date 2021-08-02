@@ -6,6 +6,7 @@
 //
 
 #include "MelissaModalDialog.h"
+#include "MelissaDataSource.h"
 
 enum
 {
@@ -24,7 +25,7 @@ closeOnClickingOutside_(closeOnClickingOutside)
     titleLabel_ = std::make_unique<Label>();
     titleLabel_->setJustificationType(Justification::centred);
     titleLabel_->setText(title, dontSendNotification);
-    titleLabel_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+    titleLabel_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
     addAndMakeVisible(titleLabel_.get());
     
     closeButton_ = std::make_unique<CloseButton>();

@@ -5,8 +5,9 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
-#include "MelissaDefinitions.h"
 #include "MelissaCommand.h"
+#include "MelissaDefinitions.h"
+#include "MelissaModelListener.h"
 #include "MelissaUtility.h"
 
 MelissaCommand MelissaCommand::instance_;
@@ -16,6 +17,14 @@ MelissaCommand::MelissaCommand()
     dataSource_ = MelissaDataSource::getInstance();
     model_ = MelissaModel::getInstance();
     
+    commands_["Start"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPlaybackStatus(kPlaybackStatus_Playing);
+    };
+    commands_["Stop"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPlaybackStatus(kPlaybackStatus_Stop);
+    };
     commands_["StartStop"] = [&](float value)
     {
         if (value == 1.f) model_->togglePlaybackStatus();

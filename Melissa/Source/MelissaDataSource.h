@@ -52,6 +52,14 @@ public:
         int playMode_;
         std::map<String, String> shortcut_;
         String uiTheme_;
+        String fontName_;
+        enum FontSize
+        {
+            kFontSize_Main,
+            kFontSize_Sub,
+            kFontSize_Small,
+            kNumFontSizes
+        };
         
         Global() : version_(ProjectInfo::versionString), width_(1400), height_(860), uiTheme_("System_Dark")
         {
@@ -209,6 +217,12 @@ public:
     void validateSettings();
     void saveSettingsFile();
     const String& getCurrentSongFilePath() { return currentSongFilePath_; }
+    
+    // Font
+    void initFontSettings(const String& fontName = "");
+    bool isFontAvailable(const String& fontName) const;
+    String getFontName() const { return global_.fontName_; }
+    Font getFont(Global::FontSize size) const;
     
     bool isFileLoaded() const { return audioSampleBuf_ != nullptr; }
     static String getCompatibleFileExtensions();

@@ -119,7 +119,7 @@ void MelissaMarkerListBox::paintCell(Graphics& g, int rowNumber, int columnId, i
     }
     
     g.setColour(MelissaUISettings::getTextColour());
-    g.setFont(MelissaUISettings::getFontSizeMain());
+    g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     constexpr int xMargin = 10;
     g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
 }
@@ -155,7 +155,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
             l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }

@@ -113,7 +113,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
             l->setName("name");
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
@@ -148,7 +148,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
             l->setName("speed");
             l->setComponentID(String(rowNumber));
             l->setText(String(prac.speed_) + " %",  dontSendNotification);
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);

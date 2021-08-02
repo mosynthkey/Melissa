@@ -37,6 +37,8 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
     {
         "Transport",
         {
+            { "Start", kCommandType_Switch },
+            { "Stop", kCommandType_Switch },
             { "StartStop", kCommandType_Switch },
             { "Back", kCommandType_Switch },
             { "Next", kCommandType_Switch },

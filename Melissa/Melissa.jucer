@@ -169,6 +169,8 @@
               file="Source/UI/MelissaMarkerListBox.cpp"/>
         <FILE id="eNBL9S" name="MelissaMarkerListBox.h" compile="0" resource="0"
               file="Source/UI/MelissaMarkerListBox.h"/>
+        <FILE id="uBdWEv" name="MelissaMarkerListener.h" compile="0" resource="0"
+              file="Source/UI/MelissaMarkerListener.h"/>
         <FILE id="jUguhW" name="MelissaMarkerMemoComponent.cpp" compile="1"
               resource="0" file="Source/UI/MelissaMarkerMemoComponent.cpp"/>
         <FILE id="gg9VzE" name="MelissaMarkerMemoComponent.h" compile="0" resource="0"
@@ -187,10 +189,6 @@
               resource="0" file="Source/UI/MelissaPracticeTableListBox.cpp"/>
         <FILE id="xpEycd" name="MelissaPracticeTableListBox.h" compile="0"
               resource="0" file="Source/UI/MelissaPracticeTableListBox.h"/>
-        <FILE id="zm5URy" name="MelissaPreferencesComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaPreferencesComponent.cpp"/>
-        <FILE id="DCmI8k" name="MelissaPreferencesComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaPreferencesComponent.h"/>
         <FILE id="o7R50o" name="MelissaScrollLabel.h" compile="0" resource="0"
               file="Source/UI/MelissaScrollLabel.h"/>
         <FILE id="o9CA46" name="MelissaSectionComponent.cpp" compile="1" resource="0"
@@ -215,8 +213,6 @@
               file="Source/UI/MelissaTutorialComponent.cpp"/>
         <FILE id="l5fTTn" name="MelissaTutorialComponent.h" compile="0" resource="0"
               file="Source/UI/MelissaTutorialComponent.h"/>
-        <FILE id="uoIf3r" name="MelissaUISettings.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaUISettings.cpp"/>
         <FILE id="FUEDk0" name="MelissaUISettings.h" compile="0" resource="0"
               file="Source/UI/MelissaUISettings.h"/>
         <FILE id="aIEwhW" name="MelissaWaveformControlComponent.cpp" compile="1"

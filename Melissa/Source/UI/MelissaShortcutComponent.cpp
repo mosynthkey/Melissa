@@ -75,7 +75,7 @@ public:
         String text = (columnId == 1) ? shortcut.first :  MelissaCommand::getCommandDescription(shortcut.second);
         
         g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         constexpr int xMargin = 10;
         g.drawText(text, xMargin, 0, width - xMargin * 2, height, Justification::left);
     }
@@ -102,7 +102,7 @@ MelissaShortcutComponent::MelissaShortcutComponent() : registerEditY_(0)
 {
     commandLabel_ = std::make_unique<Label>();
     commandLabel_->setJustificationType(Justification::centred);
-    commandLabel_->setFont(MelissaUISettings::getFontSizeMain());
+    commandLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     commandLabel_->setColour(Label::backgroundColourId, Colours::black);
     commandLabel_->setColour(Label::textColourId, Colours::white);
     addAndMakeVisible(commandLabel_.get());
@@ -177,7 +177,7 @@ void MelissaShortcutComponent::resized()
 
 void MelissaShortcutComponent::paint(Graphics& g)
 {
-    g.setFont(MelissaUISettings::getFontSizeMain());
+    g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     
     g.setColour(MelissaUISettings::getTextColour());
     g.drawText(TRANS("shortcut_list"), 60, 0, getWidth() - 120, 30, Justification::left);
@@ -189,7 +189,7 @@ void MelissaShortcutComponent::paint(Graphics& g)
     g.drawText(TRANS("shortcut_register_edit"), 60, registerEditY_, getWidth() - 120, 30, Justification::left);
     
     g.setColour(MelissaUISettings::getTextColour());
-    g.setFont(MelissaUISettings::getFontSizeSub());
+    g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
     g.drawFittedText(TRANS("shortcut_explanation"), 60, registerEditY_ + 80, getWidth() - 120, 30 * 4, Justification::left, 4);
 }
 

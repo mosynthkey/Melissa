@@ -47,6 +47,16 @@ void MelissaTapTempoButton::paint(Graphics& g)
     g.setColour(MelissaUISettings::getTextColour());
     g.drawText("Tap", getLocalBounds(), Justification::centred);
 }
+
+void MelissaTapTempoButton::mouseMove(const MouseEvent &event)
+{
+    repaint();
+}
+
+void MelissaTapTempoButton::mouseExit(const MouseEvent &event)
+{
+    repaint();
+}
     
 void MelissaTapTempoButton::mouseDown(const MouseEvent& event)
 {
