@@ -6,6 +6,7 @@
 //
 
 #include <numeric>
+#include "MelissaDoubleClickEditLabel.h"
 #include "MelissaPracticeTableListBox.h"
 
 class LoopRangeComponent : public Component
@@ -25,9 +26,9 @@ public:
         const float aX = (w - lineWidth - xMargin * 2) * aRatio_ + xMargin;
         const float bX = (w - lineWidth - xMargin * 2) * bRatio_ + xMargin + lineWidth;
         
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.1f));
+        g.setColour(MelissaUISettings::getAccentColour(0.6f));
         g.fillRoundedRectangle(xMargin, (h - lineWidth) / 2.f, w - xMargin * 2, lineWidth, lineWidth / 2);
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.4f));
+        g.setColour(MelissaUISettings::getAccentColour());
         g.fillRoundedRectangle(aX,      (h - lineWidth) / 2.f, bX - aX,         lineWidth, lineWidth / 2);
     }
     
@@ -89,8 +90,10 @@ int MelissaPracticeTableListBox::getNumRows()
 
 void MelissaPracticeTableListBox::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected)
 {
-    const auto colour = Colour(MelissaUISettings::getMainColour()).withAlpha(rowIsSelected ? 0.2f : 0.f);
-    g.fillAll(colour);
+    if (rowIsSelected)
+    {
+        g.fillAll(MelissaUISettings::getSubColour());
+    }
 }
 
 void MelissaPracticeTableListBox::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected)
@@ -106,18 +109,18 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new Label();
-            l->setEditable(true, false);
+            auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setName("name");
             l->setComponentID(String(rowNumber));
             l->setText(prac.name_, dontSendNotification);
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
         else
         {
-            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(prac.name_, dontSendNotification);
             return existingComponentToUpdate;
         }
@@ -141,18 +144,18 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         auto prac = practiceList_[rowNumber];
         if (existingComponentToUpdate == nullptr)
         {
-            auto l = new Label();
-            l->setEditable(true, false);
+            auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setName("speed");
             l->setComponentID(String(rowNumber));
             l->setText(String(prac.speed_) + " %",  dontSendNotification);
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
         else
         {
-            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(String(prac.speed_) + "%", dontSendNotification);
             return existingComponentToUpdate;
         }
@@ -171,6 +174,7 @@ int MelissaPracticeTableListBox::getColumnAutoSizeWidth(int columnId)
 
 void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
 {
+    selectRow(rowNumber);
     if (e.mods.isRightButtonDown())
     {
         enum

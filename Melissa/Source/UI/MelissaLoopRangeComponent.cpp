@@ -31,15 +31,15 @@ void MelissaLoopRangeComponent::paint(Graphics& g)
     rect.setX(aRatio_ * width);
     rect.setWidth((bRatio_ - aRatio_) * width);
     
-    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(0.2f));
+    g.setColour(MelissaUISettings::getAccentColour(0.2f));
     g.fillRect(rect);
     
     const auto loopStartRect = getLoopStartEdgeRect();
-    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(mouseOnLoopStartEdge_ ? 1.f : 0.75f));
+    g.setColour(MelissaUISettings::getAccentColour(mouseOnLoopStartEdge_ ? 1.f : 0.6f));
     g.fillRect(loopStartRect);
     
     const auto loopEndRect = getLoopEndEdgeRect();
-    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(mouseOnLoopEndEdge_ ? 1.f : 0.75f));
+    g.setColour(MelissaUISettings::getAccentColour(mouseOnLoopEndEdge_ ? 1.f : 0.6f));
     g.fillRect(loopEndRect);
 }
 

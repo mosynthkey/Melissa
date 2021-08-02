@@ -9,64 +9,58 @@
 namespace BinaryData
 {
     extern const char*   add_svg;
-    const int            add_svgSize = 1108;
-
-    extern const char*   add_highlighted_svg;
-    const int            add_highlighted_svgSize = 1118;
+    const int            add_svgSize = 917;
 
     extern const char*   arrow_left_svg;
-    const int            arrow_left_svgSize = 1157;
-
-    extern const char*   arrow_left_highlighted_svg;
-    const int            arrow_left_highlighted_svgSize = 1167;
+    const int            arrow_left_svgSize = 423;
 
     extern const char*   arrow_right_svg;
-    const int            arrow_right_svgSize = 1255;
+    const int            arrow_right_svgSize = 500;
 
-    extern const char*   arrow_right_highlighted_svg;
-    const int            arrow_right_highlighted_svgSize = 1265;
+    extern const char*   down_svg;
+    const int            down_svgSize = 524;
+
+    extern const char*   loop_onesong_svg;
+    const int            loop_onesong_svgSize = 891;
+
+    extern const char*   loop_playlist_svg;
+    const int            loop_playlist_svgSize = 1337;
+
+    extern const char*   next_button_svg;
+    const int            next_button_svgSize = 429;
 
     extern const char*   playlist_add_svg;
-    const int            playlist_add_svgSize = 2714;
+    const int            playlist_add_svgSize = 583;
 
     extern const char*   playlist_add_file_svg;
-    const int            playlist_add_file_svgSize = 2073;
-
-    extern const char*   playlist_add_file_highlighted_svg;
-    const int            playlist_add_file_highlighted_svgSize = 2075;
-
-    extern const char*   playlist_add_highlighted_svg;
-    const int            playlist_add_highlighted_svgSize = 2716;
+    const int            playlist_add_file_svgSize = 1155;
 
     extern const char*   playlist_add_playing_svg;
-    const int            playlist_add_playing_svgSize = 1988;
-
-    extern const char*   playlist_add_playing_highlighted_svg;
-    const int            playlist_add_playing_highlighted_svgSize = 1990;
+    const int            playlist_add_playing_svgSize = 1442;
 
     extern const char*   playlist_edit_svg;
-    const int            playlist_edit_svgSize = 2960;
-
-    extern const char*   playlist_edit_highlighted_svg;
-    const int            playlist_edit_highlighted_svgSize = 2962;
+    const int            playlist_edit_svgSize = 687;
 
     extern const char*   playlist_remove_svg;
-    const int            playlist_remove_svgSize = 3211;
+    const int            playlist_remove_svgSize = 865;
 
-    extern const char*   playlist_remove_highlighted_svg;
-    const int            playlist_remove_highlighted_svgSize = 3213;
+    extern const char*   prev_button_svg;
+    const int            prev_button_svgSize = 426;
+
+    extern const char*   up_svg;
+    const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 3021;
+    const int            enUS_txtSize = 7852;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 3937;
+    const int            jaJP_txtSize = 8651;
 
     extern const char*   logo_png;
-    const int            logo_pngSize = 121456;
+    const int            logo_pngSize = 110117;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 19;
+    const int namedResourceListSize = 17;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

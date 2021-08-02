@@ -5,6 +5,7 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include "BinaryData.h"
 #include "MelissaInputDialog.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
@@ -36,28 +37,34 @@ dataSource_(MelissaDataSource::getInstance())
 
 void MelissaPlaylistComponent::createUI()
 {
+    iconImages_[kIcon_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+    iconImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
     iconImages_[kIcon_PlaylistAdd] = Drawable::createFromImageData(BinaryData::playlist_add_svg, BinaryData::playlist_add_svgSize);
-    iconImages_[kIcon_PlaylistAddHighlighted] = Drawable::createFromImageData(BinaryData::playlist_add_highlighted_svg, BinaryData::playlist_add_highlighted_svgSize);
-    
     iconImages_[kIcon_PlaylistAddFile] = Drawable::createFromImageData(BinaryData::playlist_add_file_svg, BinaryData::playlist_add_file_svgSize);
-    iconImages_[kIcon_PlaylistAddFileHighlighted] = Drawable::createFromImageData(BinaryData::playlist_add_file_highlighted_svg, BinaryData::playlist_add_file_highlighted_svgSize);
-    
     iconImages_[kIcon_PlaylistAddPlaying] = Drawable::createFromImageData(BinaryData::playlist_add_playing_svg, BinaryData::playlist_add_playing_svgSize);
-    iconImages_[kIcon_PlaylistAddPlayingHighlighted] = Drawable::createFromImageData(BinaryData::playlist_add_playing_highlighted_svg, BinaryData::playlist_add_playing_highlighted_svgSize);
-
     iconImages_[kIcon_PlaylistEdit] = Drawable::createFromImageData(BinaryData::playlist_edit_svg, BinaryData::playlist_edit_svgSize);
-    iconImages_[kIcon_PlaylistEditHighlighted] = Drawable::createFromImageData(BinaryData::playlist_edit_highlighted_svg, BinaryData::playlist_edit_highlighted_svgSize);
-    
     iconImages_[kIcon_PlaylistRemove] = Drawable::createFromImageData(BinaryData::playlist_remove_svg, BinaryData::playlist_remove_svgSize);
-    iconImages_[kIcon_PlaylistRemoveHighlighted] = Drawable::createFromImageData(BinaryData::playlist_remove_highlighted_svg, BinaryData::playlist_remove_highlighted_svgSize);
+    for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+    for (auto&& image : iconImages_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
+    
+    iconHighlightedImages_[kIcon_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+    iconHighlightedImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+    iconHighlightedImages_[kIcon_PlaylistAdd] = Drawable::createFromImageData(BinaryData::playlist_add_svg, BinaryData::playlist_add_svgSize);
+    iconHighlightedImages_[kIcon_PlaylistAddFile] = Drawable::createFromImageData(BinaryData::playlist_add_file_svg, BinaryData::playlist_add_file_svgSize);
+    iconHighlightedImages_[kIcon_PlaylistAddPlaying] = Drawable::createFromImageData(BinaryData::playlist_add_playing_svg, BinaryData::playlist_add_playing_svgSize);
+    iconHighlightedImages_[kIcon_PlaylistEdit] = Drawable::createFromImageData(BinaryData::playlist_edit_svg, BinaryData::playlist_edit_svgSize);
+    iconHighlightedImages_[kIcon_PlaylistRemove] = Drawable::createFromImageData(BinaryData::playlist_remove_svg, BinaryData::playlist_remove_svgSize);
+    for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+    for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour());
     
     playlistComboBox_ = std::make_unique<ComboBox>();
     playlistComboBox_->onChange = [&]() { updateList(); };
+    playlistComboBox_->setLookAndFeel(&laf_);
     addAndMakeVisible(playlistComboBox_.get());
     
     createButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     createButton_->setTooltip(TRANS("create_playlist"));
-    createButton_->setImages(iconImages_[kIcon_PlaylistAdd].get(), iconImages_[kIcon_PlaylistAddHighlighted].get());
+    createButton_->setImages(iconImages_[kIcon_PlaylistAdd].get(), iconHighlightedImages_[kIcon_PlaylistAdd].get());
     createButton_->onClick = [&]()
     {
         auto inputDialog = std::make_shared<MelissaInputDialog>(TRANS("enter_playlist_name"), "Playlist", [&](const String& name) {
@@ -71,7 +78,7 @@ void MelissaPlaylistComponent::createUI()
     
     renameButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     renameButton_->setTooltip(TRANS("rename_playlist"));
-    renameButton_->setImages(iconImages_[kIcon_PlaylistEdit].get(), iconImages_[kIcon_PlaylistEditHighlighted].get());
+    renameButton_->setImages(iconImages_[kIcon_PlaylistEdit].get(), iconHighlightedImages_[kIcon_PlaylistEdit].get());
     renameButton_->onClick = [&]()
     {
         const int index = playlistComboBox_->getSelectedItemIndex();
@@ -87,7 +94,7 @@ void MelissaPlaylistComponent::createUI()
     
     removeButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     removeButton_->setTooltip(TRANS("remove_playlist"));
-    removeButton_->setImages(iconImages_[kIcon_PlaylistRemove].get(), iconImages_[kIcon_PlaylistRemoveHighlighted].get());
+    removeButton_->setImages(iconImages_[kIcon_PlaylistRemove].get(), iconHighlightedImages_[kIcon_PlaylistRemove].get());
     removeButton_->onClick = [&]()
     {
         const std::vector<String> options = { TRANS("remove"), TRANS("cancel") };
@@ -106,9 +113,27 @@ void MelissaPlaylistComponent::createUI()
     };
     addAndMakeVisible(removeButton_.get());
     
+    upButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    upButton_->setTooltip(TRANS("playlist_up"));
+    upButton_->setImages(iconImages_[kIcon_Up].get(), iconHighlightedImages_[kIcon_Up].get());
+    upButton_->onClick = [&]()
+    {
+        listBox_->moveSelected(-1);
+    };
+    addAndMakeVisible(upButton_.get());
+    
+    downButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    downButton_->setTooltip(TRANS("playlist_down"));
+    downButton_->setImages(iconImages_[kIcon_Down].get(), iconHighlightedImages_[kIcon_Down].get());
+    downButton_->onClick = [&]()
+    {
+        listBox_->moveSelected(+1);
+    };
+    addAndMakeVisible(downButton_.get());
+    
     addFileButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addFileButton_->setTooltip(TRANS("addtolist_select"));
-    addFileButton_->setImages(iconImages_[kIcon_PlaylistAddFile].get(), iconImages_[kIcon_PlaylistAddFileHighlighted].get());
+    addFileButton_->setImages(iconImages_[kIcon_PlaylistAddFile].get(), iconHighlightedImages_[kIcon_PlaylistAddFile].get());
     addFileButton_->onClick = [&]()
     {
        fileChooser_ = std::make_unique<FileChooser>(TRANS("choose_file_playlist"), File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
@@ -131,7 +156,7 @@ void MelissaPlaylistComponent::createUI()
     
     addPlayingButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addPlayingButton_->setTooltip(TRANS("addtolist_current"));
-    addPlayingButton_->setImages(iconImages_[kIcon_PlaylistAddPlaying].get(), iconImages_[kIcon_PlaylistAddPlayingHighlighted].get());
+    addPlayingButton_->setImages(iconImages_[kIcon_PlaylistAddPlaying].get(), iconHighlightedImages_[kIcon_PlaylistAddPlaying].get());
     addPlayingButton_->onClick = [&]()
     {
         const int index = playlistComboBox_->getSelectedItemIndex();
@@ -183,8 +208,10 @@ void MelissaPlaylistComponent::resized()
     const int w = getWidth();
     const int h = getHeight();
     const int margin = 10;
-    const int controlWidth = 28;
+    const int controlWidth = 30;
     const int controlHeight = 30;
+    const int upDownButtonWidth = 30;
+    const int upDownButtonHeight = 30;
     
     playlistComboBox_->setBounds(0, 0, w - (controlWidth + margin) * 3, controlHeight);
     
@@ -193,6 +220,11 @@ void MelissaPlaylistComponent::resized()
     removeButton_->setBounds(w - (controlWidth + margin) * 1 + margin, 0, controlWidth, controlHeight);
     
     listBox_->setBounds(0, 40, w, h - (controlHeight + margin) * 2);
+    
+    upButton_->setSize(upDownButtonWidth, upDownButtonHeight);
+    upButton_->setCentrePosition(upDownButtonWidth / 2, h - controlHeight / 2);
+    downButton_->setSize(upDownButtonWidth, upDownButtonHeight);
+    downButton_->setCentrePosition(upButton_->getRight() + margin + upDownButtonWidth / 2, h - controlHeight / 2);
     
     addFileButton_->setBounds(w - controlWidth - (controlWidth + margin), h - controlHeight, controlWidth, controlHeight);
     addPlayingButton_->setBounds(w - controlWidth, h - controlHeight, controlWidth, controlHeight);

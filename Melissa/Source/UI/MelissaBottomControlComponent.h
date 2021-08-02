@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDataSource.h"
 #include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
@@ -22,8 +23,8 @@ public:
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlighted ? 0.8f : 0.4f));
-        g.setFont(MelissaUISettings::getFontSizeSmall());
+        g.setColour(MelissaUISettings::getTextColour(highlighted ? 0.8f : 0.4f));
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::right);
     }
 };

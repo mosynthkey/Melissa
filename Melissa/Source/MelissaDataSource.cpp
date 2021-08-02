@@ -7,6 +7,7 @@
 
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
+#include "MelissaUISettings.h"
 
 enum
 {
@@ -21,11 +22,35 @@ sampleRate_(0.f),
 currentSongFilePath_(""),
 wasPlaying_(false)
 {
+    // Default shortcuts
+    defaultShortcut_["spacebar"] = "StartStop";
+    defaultShortcut_[","] = "Back";
+    defaultShortcut_["A"] = "SetLoopStart";
+    defaultShortcut_["B"] = "SetLoopEnd";
+    defaultShortcut_["M"] = "AddMarker";
+    defaultShortcut_["backspace"] = "ResetLoop";
+    defaultShortcut_["cursor up"] = "SetSpeed_Plus1";
+    defaultShortcut_["cursor down"] = "SetSpeed_Minus1";
+    defaultShortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
+    defaultShortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
+    
     validateSettings();
 }
 
 MelissaDataSource::~MelissaDataSource()
 {
+}
+
+void MelissaDataSource::removeListener(MelissaDataSourceListener* listener)
+{
+    for (size_t listenerIndex = 0; listenerIndex < listeners_.size(); ++listenerIndex)
+    {
+        if (listeners_[listenerIndex] == listener)
+        {
+            listeners_.erase(listeners_.begin() + listenerIndex);
+            return;
+        }
+    }
 }
 
 void MelissaDataSource::loadSettingsFile(const File& file)
@@ -45,6 +70,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (g->hasProperty("width"))    global_.width_    = g->getProperty("width");
         if (g->hasProperty("height"))   global_.height_   = g->getProperty("height");
         if (g->hasProperty("device"))   global_.device_   = g->getProperty("device");
+        if (g->hasProperty("playmode")) global_.playMode_ = g->getProperty("playmode");
         
         bool shortcutRegistered = false;
         if (g->hasProperty("shortcut"))
@@ -60,6 +86,9 @@ void MelissaDataSource::loadSettingsFile(const File& file)
             }
         }
         if (!shortcutRegistered) setDefaultShortcuts();
+        
+        if (g->hasProperty("ui_theme")) global_.uiTheme_ = g->getProperty("ui_theme");
+        initFontSettings(g->hasProperty("font_name") ? g->getProperty("font_name") : "");
     }
     
     if (settings.hasProperty("previous"))
@@ -111,7 +140,8 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         {
             for (auto history : *array)
             {
-                history_.add(history.toString());
+                File file(history);
+                if (file.existsAsFile()) history_.add(history.toString());
             }
         }
     }
@@ -224,6 +254,8 @@ void MelissaDataSource::validateSettings()
         playlists_.emplace_back(playlist);
     }
     for (auto&& l : listeners_) l->playlistUpdated(0);
+    
+    initFontSettings();
 }
 
 void MelissaDataSource::saveSettingsFile()
@@ -236,6 +268,7 @@ void MelissaDataSource::saveSettingsFile()
     global->setProperty("width",    global_.width_);
     global->setProperty("height",   global_.height_);
     global->setProperty("device",   global_.device_);
+    global->setProperty("playmode", global_.playMode_);
     auto shortcut = new DynamicObject();
     {
         for (auto&& s : global_.shortcut_)
@@ -244,6 +277,8 @@ void MelissaDataSource::saveSettingsFile()
         }
     }
     global->setProperty("shortcut", shortcut);
+    global->setProperty("ui_theme", global_.uiTheme_);
+    global->setProperty("font_name", global_.fontName_);
     settings->setProperty("global", global);
     
     auto previous = new DynamicObject();
@@ -375,7 +410,62 @@ void MelissaDataSource::saveSettingsFile()
     settingsFile_.replaceWithText(JSON::toString(settings));
 }
 
+void MelissaDataSource::initFontSettings(const String& fontName)
+{
+    StringArray fontCandidates;
+    if (!fontName.isEmpty()) fontCandidates.add(fontName);
+    
+#if defined(JUCE_MAC)
+    fontCandidates.addArray(StringArray { "YuGothic", "San Francisco" });
+#elif defined(JUCE_WINDOWS)
+    fontCandidates.addArray(StringArray { "Meiryo UI", "Tahoma" });
+#else
+    fontCandidates.addArray(StringArray { "IPAGothic", "Verdana", "Bitstream Vera Sans", "Luxi Sans", "Liberation Sans", "DejaVu Sans", "Sans" });
+#endif
+    
+    for (auto&& font : fontCandidates)
+    {
+        if (isFontAvailable(font))
+        {
+            global_.fontName_ = font;
+            break;
+        }
+    }
+}
 
+bool MelissaDataSource::isFontAvailable(const String& fontName) const
+{
+    Array<Font> availableFonts;
+    Font::findFonts(availableFonts);
+
+    for (auto&& font : availableFonts)
+    {
+        if (font.getTypefaceName() == fontName) return true;
+    }
+
+    return false;
+}
+
+Font MelissaDataSource::getFont(Global::FontSize size) const
+{
+    int fontSizeOffset = 0;
+#ifdef JUCE_WINDOWS
+    fontSizeOffset = 2;
+#endif
+
+    if (size == Global::kFontSize_Main)
+    {
+        return Font(global_.fontName_, 17 + fontSizeOffset, Font::plain);
+    }
+    else if (size == Global::kFontSize_Sub)
+    {
+        return Font(global_.fontName_, 15 + fontSizeOffset, Font::plain);
+    }
+    else
+    {
+        return Font(global_.fontName_, 13 + fontSizeOffset, Font::plain);
+    }
+}
 
 String MelissaDataSource::getCompatibleFileExtensions()
 {
@@ -424,30 +514,34 @@ void MelissaDataSource::disposeBuffer()
     audioSampleBuf_ = nullptr;
 }
 
-void MelissaDataSource::setDefaultShortcuts()
+void MelissaDataSource::setDefaultShortcut(const String& eventName)
 {
-    global_.shortcut_["spacebar"] = "StartStop";
-    global_.shortcut_["CC #41"] = "StartStop";
-    global_.shortcut_[","] = "Back";
-    global_.shortcut_["A"] = "SetLoopStart";
-    global_.shortcut_["B"] = "SetLoopEnd";
-    global_.shortcut_["M"] = "AddMarker";
-    global_.shortcut_["backspace"] = "ResetLoop";
-    global_.shortcut_["cursor up"] = "SetSpeed_Plus1";
-    global_.shortcut_["cursor down"] = "SetSpeed_Minus1";
-    global_.shortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
-    global_.shortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
+    if (defaultShortcut_.find(eventName) == defaultShortcut_.end())
+    {
+        deregisterShortcut(eventName);
+    }
+    else
+    {
+        global_.shortcut_[eventName] = defaultShortcut_[eventName];
+        for (auto&& l : listeners_) l->shortcutUpdated();
+    }
+}
 
-    global_.shortcut_["CC #0"] = "PlaybackPositionValue";
-    global_.shortcut_["CC #1"] = "PitchValue";
-    global_.shortcut_["CC #2"] = "SetSpeedValue";
+void MelissaDataSource::setDefaultShortcuts(bool removeAll)
+{
+    if (removeAll) global_.shortcut_.clear();
+    
+    for (auto&& shortcut : defaultShortcut_)
+    {
+        global_.shortcut_[shortcut.first] = shortcut.second;
+    }
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
+}
 
-    global_.shortcut_["CC #43"] = "PlaybackPosition_Minus1Sec";
-    global_.shortcut_["CC #44"] = "PlaybackPosition_Plus1Sec";
-
-    global_.shortcut_["CC #16"] = "SetEqFreqValue";
-    global_.shortcut_["CC #17"] = "SetEqGainValue";
-    global_.shortcut_["CC #18"] = "SetEqQValue";
+std::map<String, String> MelissaDataSource::getAllAssignedShortcuts() const
+{
+    return global_.shortcut_;
 }
 
 String MelissaDataSource::getAssignedShortcut(const String& eventName)
@@ -458,12 +552,34 @@ String MelissaDataSource::getAssignedShortcut(const String& eventName)
 
 void MelissaDataSource::registerShortcut(const String& eventName, const String& command)
 {
+    if (command.isEmpty())
+    {
+        deregisterShortcut(eventName);
+        return;
+    }
+    
     global_.shortcut_[eventName] = command;
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
 }
 
 void MelissaDataSource::deregisterShortcut(const String& eventName)
 {
     global_.shortcut_.erase(eventName);
+    
+    for (auto&& l : listeners_) l->shortcutUpdated();
+}
+
+void MelissaDataSource::setUITheme(const String& uiTheme)
+{
+    if (uiTheme == "System_Dark" || uiTheme == "System_Light")
+    {
+        global_.uiTheme_ = uiTheme;
+    }
+    else
+    {
+        global_.uiTheme_ = "System_Dark";
+    }
 }
 
 void MelissaDataSource::restorePreviousState()

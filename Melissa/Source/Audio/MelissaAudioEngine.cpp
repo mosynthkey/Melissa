@@ -180,8 +180,8 @@ private:
 };
 
 MelissaAudioEngine::MelissaAudioEngine() :
-model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true),
+model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(48000), playbackMode_(kPlaybackMode_LoopOneSong), originalBufferLength_(0), outputSampleRate_(48000),
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
@@ -234,6 +234,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& tim
     if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
     {
         mutex_.unlock();
+        if (!shouldProcess_) model_->setShouldLoadNextSongFromDsp();
         return;
     }
     sampleIndexStretcher_->getStretchedSampleIndices(bufferLength, timeQue_);
@@ -289,24 +290,31 @@ void MelissaAudioEngine::process()
         {
             if (readIndex_ > bIndex_)
             {
-                readIndex_ = aIndex_;
-#if defined(ENABLE_SPEED_TRAINING)
-                ++count_;
-                
-                if (speedMode_ == kSpeedMode_Training && speedIncPer_ != 0)
+                if (loop_)
                 {
-                    const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
-                    currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
-                    if (currentSpeed_ > speedIncGoal_) currentSpeed_ = speedIncGoal_;
-                    soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
-                }
+                    readIndex_ = aIndex_;
+#if defined(ENABLE_SPEED_TRAINING)
+                    ++count_;
+                    
+                    if (speedMode_ == kSpeedMode_Training && speedIncPer_ != 0)
+                    {
+                        const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
+                        currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
+                        if (currentSpeed_ > speedIncGoal_) currentSpeed_ = speedIncGoal_;
+                        soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
+                    }
 #endif
+                }
+                else
+                {
+                    shouldProcess_ = false;
+                }
             }
             mutex_.lock();
             sampleIndexStretcher_->putSampleIndex(readIndex_);
             mutex_.unlock();
-            bufferForSoundTouch_[iSample * 2 + 0] = dataSource_->readBuffer(0, readIndex_);
-            bufferForSoundTouch_[iSample * 2 + 1] = dataSource_->readBuffer(1, readIndex_);
+            bufferForSoundTouch_[iSample * 2 + 0] = shouldProcess_ ? dataSource_->readBuffer(0, readIndex_) : 0.f;
+            bufferForSoundTouch_[iSample * 2 + 1] = shouldProcess_ ? dataSource_->readBuffer(1, readIndex_) : 0.f;
             ++readIndex_;
         }
         
@@ -324,7 +332,7 @@ void MelissaAudioEngine::process()
 
 bool MelissaAudioEngine::needToProcess() const
 {
-    return (processedBufferQue_.size() < queLength_);
+    return needToReset_ || (shouldProcess_ && (processedBufferQue_.size() < queLength_));
 }
 
 bool MelissaAudioEngine::isBufferSet() const
@@ -358,6 +366,17 @@ void MelissaAudioEngine::resetProcessedBuffer()
     if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
     readIndex_ = processStartIndex_;
     needToReset_ = false;
+    shouldProcess_ = true;
+    
+    if (playbackMode_ == kPlaybackMode_LoopOneSong)
+    {
+        loop_ = true;
+    }
+    else if (playbackMode_ == kPlaybackMode_LoopPlaylistSongs)
+    {
+        const bool loopRangeWholeSong = (aIndex_ == 0 && bIndex_ == originalBufferLength_);
+        loop_ = !loopRangeWholeSong;
+    }
     
 #if defined(ENABLE_SPEED_TRAINING)
     count_ = 0;
@@ -392,12 +411,21 @@ std::string MelissaAudioEngine::getStatusString() const
     return ss.str();
 }
 
+void MelissaAudioEngine::playbackModeChanged(PlaybackMode mode)
+{
+    if (playbackMode_ == mode) return;
+    playbackMode_ = mode;
+    
+    processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
+    needToReset_ = true;
+}
+
 void MelissaAudioEngine::musicVolumeChanged(float volume)
 {
     volume_ = volume;
 }
 
-void MelissaAudioEngine::pitchChanged(int semitone)
+void MelissaAudioEngine::pitchChanged(float semitone)
 {
     semitone_ = semitone;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;

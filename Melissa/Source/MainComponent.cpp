@@ -12,6 +12,7 @@
 #include "MelissaDefinitions.h"
 #include "MelissaInputDialog.h"
 #include "MelissaOptionDialog.h"
+#include "MelissaShortcutComponent.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
@@ -33,11 +34,15 @@ enum
 
 enum
 {
-    kMenuID_MainAbout = 1000,
+    kMenuID_About = 1000,
     kMenuID_Manual,
-    kMenuID_MainVersionCheck,
-    kMenuID_MainPreferences,
-    kMenuID_MainTutorial,
+    kMenuID_VersionCheck,
+    kMenuID_Preferences,
+    kMenuID_Shortcut,
+    kMenuID_UITheme_Dark,
+    kMenuID_UITheme_Light,
+    kMenuID_RevealSettingsFile,
+    kMenuID_Tutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
 };
@@ -78,7 +83,7 @@ public:
         }
         path.lineTo(w, h - lineWidth / 2);
         
-        g.setColour(Colours::white.withAlpha(0.4f));
+        g.setColour(MelissaUISettings::getTextColour(0.4f));
         g.strokePath (path, juce::PathStrokeType(lineWidth));
     }
     
@@ -86,10 +91,24 @@ private:
     float ratio_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), shouldExit_(false)
+class MainComponent::RoundedComponent : public Component
+{
+public:
+    RoundedComponent(const Colour& colour) : colour_(colour) {}
+    
+private:
+    void paint(Graphics& g)
+    {
+        g.setColour(colour_);
+        g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), 6);
+    }
+    
+    Colour colour_;
+};
+
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
-    
     metronome_ = std::make_unique<MelissaMetronome>();
     
     model_ = MelissaModel::getInstance();
@@ -97,9 +116,23 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     model_->addListener(dynamic_cast<MelissaModelListener*>(audioEngine_.get()));    
     model_->addListener(this);
     
+    isLangJapanese_ = (SystemStats::getDisplayLanguage() == "ja-JP");
+    
     dataSource_ = MelissaDataSource::getInstance();
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
+    
+    // load setting file
+    settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
+    if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
+    
+    bool isFirstLaunch = false;
+    settingsFile_ = settingsDir_.getChildFile("Settings.json");
+    if (!settingsFile_.existsAsFile())
+    {
+        isFirstLaunch = true;
+    }
+    dataSource_->loadSettingsFile(settingsFile_);
     
     bpmDetector_ = std::make_unique<MelissaBPMDetector>();
     analyzedBpm_ = -1.f;
@@ -107,14 +140,19 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     shouldInitializeBpmDetector_ = false;
     shouldUpdateBpm_ = false;
     
-    MelissaUISettings::isJa  = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
-    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
+    MelissaUISettings::isDarkMode = (dataSource_->getUITheme() == "System_Dark");
+    simpleTextButtonLaf_.setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
+    laf_.updateColour();
+    browserLaf_.updateColour();
+    
+    getLookAndFeel().setDefaultSansSerifTypefaceName(dataSource_->getFontName());
     
     String localizedStrings = "";
-    if (MelissaUISettings::isJa)
+    if (isLangJapanese_)
     {
 #ifdef DEBUG
-        File file("../../../../Resource/Language/ja-JP.txt");
+        File file = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("Resource/Language/ja-JP.txt");
+        printf("%s\n", file.getFullPathName().toRawUTF8());
         if (file.exists())
         {
             localizedStrings = file.loadFileAsString();
@@ -162,19 +200,6 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     
     addKeyListener(this);
     
-    bool isFirstLaunch = false;
-    
-    // load setting file
-    settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
-    if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
-    
-    settingsFile_ = settingsDir_.getChildFile("Settings.json");
-    if (!settingsFile_.existsAsFile())
-    {
-        isFirstLaunch = true;
-    }
-    dataSource_->loadSettingsFile(settingsFile_);
-    
     auto rootDir = File(dataSource_->global_.rootDir_);
     rootDir.setAsCurrentWorkingDirectory();
     fileBrowserComponent_->setRoot(rootDir);
@@ -185,6 +210,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     
     deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
     
+    model_->setPlaybackMode(static_cast<PlaybackMode>(dataSource_->global_.playMode_));
+    
     dataSource_->restorePreviousState();
     uiState_ = dataSource_->getPreviousUIState();
     updateFileChooserTab(static_cast<FileChooserTab>(uiState_.selectedFileBrowserTab_));
@@ -194,6 +221,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     
     if (isFirstLaunch)
     {
+        dataSource_->setDefaultShortcuts(true);
         const std::vector<String> options = { TRANS("ok") };
         auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("first_launch"), options, [&](size_t yesno) { showFileChooser(); });
         MelissaModalDialog::show(dialog, "Melissa", false);
@@ -208,6 +236,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
         MelissaModalDialog::show(component, TRANS("tutorial"));
     }
 #endif
+    
+    updatePlayBackModeButton();
 }
 
 MainComponent::~MainComponent()
@@ -261,8 +291,8 @@ void MainComponent::createUI()
     
 #if JUCE_MAC
     extraAppleMenuItems_ = make_unique<PopupMenu>();
-    extraAppleMenuItems_->addItem("About Melissa", [&]() { showAboutDialog(); });
-    extraAppleMenuItems_->addItem("Preferences",   [&]() { showPreferencesDialog(); });
+    extraAppleMenuItems_->addItem(TRANS("about_melissa"), [&]() { showAboutDialog(); });
+    extraAppleMenuItems_->addItem(TRANS("preferences"),   [&]() { showAudioMidiSettingsDialog(); });
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #endif
@@ -272,17 +302,33 @@ void MainComponent::createUI()
     {
         PopupMenu menu;
         menu.setLookAndFeel(&laf_);
-        menu.addItem(kMenuID_MainAbout, TRANS("about_melissa"));
+        menu.addItem(kMenuID_About, TRANS("about_melissa"));
         menu.addItem(kMenuID_Manual, TRANS("open_manual"));
-        menu.addItem(kMenuID_MainVersionCheck, TRANS("check_update"));
-        menu.addItem(kMenuID_MainPreferences, TRANS("preferences"));
+        menu.addItem(kMenuID_VersionCheck, TRANS("check_update"));
+        menu.addSeparator();
+        menu.addItem(kMenuID_Preferences, TRANS("audio_midi_settings"));
+        menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
+        
+        PopupMenu uiThemeMenu;
+        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, MelissaUISettings::isDarkMode);
+        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, !MelissaUISettings::isDarkMode);
+        menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
+        
+        menu.addSeparator();
         menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
+        
 #if defined(ENABLE_TUTORIAL)
-        menu.addItem(kMenuID_MainTutorial, TRANS("tutorial"));
+        menu.addItem(kMenuID_Tutorial, TRANS("tutorial"));
 #endif
+        
+        menu.addSeparator();
+        PopupMenu advancedMenu;
+        advancedMenu.addItem(kMenuID_RevealSettingsFile, TRANS("reveal_settings_file"));
+        menu.addSubMenu(TRANS("advanced_settings"), advancedMenu);
+        
         const auto result = menu.show();
         model_->setPlaybackStatus(kPlaybackStatus_Stop);
-        if (result == kMenuID_MainAbout)
+        if (result == kMenuID_About)
         {
             showAboutDialog();
         }
@@ -290,46 +336,84 @@ void MainComponent::createUI()
         {
             URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
         }
-        else if (result == kMenuID_MainVersionCheck)
+        else if (result == kMenuID_VersionCheck)
         {
             showUpdateDialog(true);
         }
-        else if (result == kMenuID_MainPreferences)
+        else if (result == kMenuID_Preferences)
         {
-            showPreferencesDialog();
+            showAudioMidiSettingsDialog();
         }
-        else if (result == kMenuID_MainTutorial)
+        else if (result == kMenuID_Shortcut)
+        {
+            showShortcutDialog();
+        }
+        else if (result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
+        {
+            const std::vector<String> options = { TRANS("ok") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index){
+                dataSource_->setUITheme(result == kMenuID_UITheme_Dark ? "System_Dark" : "System_Light");
+                File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
+                JUCEApplicationBase::quit();
+            });
+            MelissaModalDialog::show(dialog, TRANS("ui_theme"));
+        }
+        else if (result == kMenuID_Tutorial)
         {
             showTutorial();
         }
         else if (result == kMenuID_TwitterShare)
         {
-            URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+            if (isLangJapanese_)
+            {
+                URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+            }
+            else
+            {
+                URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+            }
+        }
+        else if (result == kMenuID_RevealSettingsFile)
+        {
+            settingsFile_.revealToUser();
         }
     };
     addAndMakeVisible(menuButton_.get());
     
     {
+        iconImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
+        iconImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
+        iconImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
+        iconImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
         iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
-        iconImages_[kIcon_ArrowLeftHighlighted] = Drawable::createFromImageData(BinaryData::arrow_left_highlighted_svg, BinaryData::arrow_left_highlighted_svgSize);
-        
         iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
-        iconImages_[kIcon_ArrowRightHighlighted] = Drawable::createFromImageData(BinaryData::arrow_right_highlighted_svg, BinaryData::arrow_right_highlighted_svgSize);
-        
         iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
-        iconImages_[kIcon_AddHighlighted] = Drawable::createFromImageData(BinaryData::add_highlighted_svg, BinaryData::add_highlighted_svgSize);
+        for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
+        
+        iconHighlightedImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
+        iconHighlightedImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
+        iconHighlightedImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
+        iconHighlightedImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
+        iconHighlightedImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
+        iconHighlightedImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
+        iconHighlightedImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
+        for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
     }
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     addAndMakeVisible(waveformComponent_.get());
     
     markerMemoComponent_ = make_unique<MelissaMarkerMemoComponent>();
-    markerMemoComponent_->setFont(MelissaUISettings::getFontSizeMain());
+    markerMemoComponent_->setMarkerListener(this);
+    markerMemoComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
     addAndMakeVisible(markerMemoComponent_.get());
+    
+    shortcutPopup_ = std::make_unique<MelissaShortcutPopupComponent>();
+    addChildComponent(shortcutPopup_.get());
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
-    controlComponent_->setColour(Label::backgroundColourId, Colour(MelissaUISettings::getMainColour()).withAlpha(0.06f));
+    controlComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
     addAndMakeVisible(controlComponent_.get());
     
     bottomComponent_ = make_unique<MelissaBottomControlComponent>();
@@ -343,7 +427,7 @@ void MainComponent::createUI()
         "Speed",
         "Metronome",
         "EQ",
-        "Output"
+        "Mixer"
     };
     for (size_t sectionIndex = 0; sectionIndex < kNumOfSections; ++sectionIndex)
     {
@@ -355,17 +439,41 @@ void MainComponent::createUI()
     {
         auto section = sectionComponents_[kSection_Song].get();
     
+        playbackModeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSong].get(), iconHighlightedImages_[kIcon_LoopOneSong].get());
+        playbackModeButton_->onClick = [&]()
+        {
+            if (model_->getPlaybackMode() == kPlaybackMode_LoopOneSong)
+            {
+                model_->setLoopPosRatio(0.f, 1.f);
+                model_->setPlaybackMode(kPlaybackMode_LoopPlaylistSongs);
+            }
+            else
+            {
+                model_->setPlaybackMode(kPlaybackMode_LoopOneSong);
+            }
+            updatePlayBackModeButton();
+        };
+        section->addAndMakeVisible(playbackModeButton_.get());
+        
         playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
         playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
         section->addAndMakeVisible(playPauseButton_.get());
         
-        toHeadButton_ = make_unique<MelissaToHeadButton>("ToHeadButton");
-        toHeadButton_->onClick = [this]() { toHead(); };
-        section->addAndMakeVisible(toHeadButton_.get());
+        prevButton_ = make_unique<DrawableButton>("PrevButton", DrawableButton::ImageRaw);
+        prevButton_->setImages(iconImages_[kIcon_Prev].get(), iconHighlightedImages_[kIcon_Prev].get());
+        prevButton_->onClick = [this]() { prev(); };
+        section->addAndMakeVisible(prevButton_.get());
+        
+        nextButton_ = make_unique<DrawableButton>("NextButton", DrawableButton::ImageRaw);
+        nextButton_->setImages(iconImages_[kIcon_Next].get(), iconHighlightedImages_[kIcon_Next].get());
+        nextButton_->onClick = [this]() { next(); };
+        section->addAndMakeVisible(nextButton_.get());
         
         timeLabel_ = make_unique<Label>();
+        timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         timeLabel_->setJustificationType(Justification::centred);
-        timeLabel_->setFont(MelissaUISettings::getFontSizeMain());
+        timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
         section->addAndMakeVisible(timeLabel_.get());
         
         fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
@@ -382,10 +490,9 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setPitch(model_->getPitch() + sign);
+                model_->setPitch(model_->getPitch() + sign * (b ? 0.1 : 1));
             }
         };
-        pitchButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         section->addAndMakeVisible(pitchButton_.get());
     }
     
@@ -408,7 +515,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 1000 : 100));
+                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
             }
         };
         section->addAndMakeVisible(aButton_.get());
@@ -430,14 +537,14 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 1000 : 100));
+                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
             }
         };
         section->addAndMakeVisible(bButton_.get());
         
         aResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         aResetButton_->setTooltip(TRANS("tooltip_loop_start_reset"));
-        aResetButton_->setImages(iconImages_[kIcon_ArrowLeft].get(), iconImages_[kIcon_ArrowLeftHighlighted].get());
+        aResetButton_->setImages(iconImages_[kIcon_ArrowLeft].get(), iconHighlightedImages_[kIcon_ArrowLeft].get());
         aResetButton_->onClick = [&]()
         {
             model_->setLoopAPosRatio(0.f);
@@ -446,7 +553,7 @@ void MainComponent::createUI()
         
         bResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         bResetButton_->setTooltip(TRANS("tooltip_loop_end_reset"));
-        bResetButton_->setImages(iconImages_[kIcon_ArrowRight].get(), iconImages_[kIcon_ArrowRightHighlighted].get());
+        bResetButton_->setImages(iconImages_[kIcon_ArrowRight].get(), iconHighlightedImages_[kIcon_ArrowRight].get());
         bResetButton_->onClick = [&]()
         {
             model_->setLoopBPosRatio(1.f);
@@ -507,10 +614,9 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setSpeed(model_->getSpeed() + sign * (b ? 10 : 1));
+                model_->setSpeed(model_->getSpeed() + sign);
             }
         };
-        speedButton_->setColour(Label::textColourId, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.8f));
         speedModeNormalComponent_->addAndMakeVisible(speedButton_.get());
         
         speedPresetViewport_ = make_unique<Viewport>();
@@ -519,7 +625,6 @@ void MainComponent::createUI()
         
         speedPresetComponent_ = make_unique<Component>();
         speedModeNormalComponent_->addAndMakeVisible(speedPresetComponent_.get());
-        const int speedPresets[kNumOfSpeedPresets] = { 40, 50, 60, 70, 75, 80, 85, 90, 95, 100, 105 };
         constexpr int presetButtonMargin = 4;
         constexpr int controlHeight = 30;
         int speedButtonX = 0;
@@ -531,7 +636,7 @@ void MainComponent::createUI()
             const int speed = speedPresets[speedPresetIndex];
             b->setButtonText(String(speed) + "%");
             b->onClick = [&, speed]() { model_->setSpeed(speed); };
-            const auto width = MelissaUtility::getStringSize(simpleTextButtonLaf_.getFontSize(), b->getButtonText()).first;
+            const auto width = MelissaUtility::getStringSize(simpleTextButtonLaf_.getFont(), b->getButtonText()).first;
             speedButtonWidthSum += width;
             b->setBounds(speedButtonX, 0, width, 30);
             speedButtonX += (width + presetButtonMargin);
@@ -603,7 +708,7 @@ void MainComponent::createUI()
         speedModeTrainingComponent_->addAndMakeVisible(speedIncGoalButton_.get());
         
         speedProgressComponent_ = make_unique<MelissaSpeedTrainingProgressComponent>();
-        speedProgressComponent_->setFont(MelissaUISettings::getFontSizeSmall());
+        speedProgressComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Small));
         speedModeTrainingComponent_->addAndMakeVisible(speedProgressComponent_.get());
 #endif
     }
@@ -738,9 +843,10 @@ void MainComponent::createUI()
         for (size_t labelIndex = 0; labelIndex < kNumOfEqBands * numOfControls; ++labelIndex)
         {
             auto l = std::make_unique<Label>();
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->setText(labelTitles[labelIndex % numOfControls], dontSendNotification);
             l->setJustificationType(Justification::centred);
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             section->addAndMakeVisible(l.get());
             knobLabels_[labelIndex] = std::move(l);
         }
@@ -753,7 +859,7 @@ void MainComponent::createUI()
     }
     
     {
-        auto section = sectionComponents_[kSection_Output].get();
+        auto section = sectionComponents_[kSection_Mixer].get();
         
         outputModeComboBox_ = make_unique<ComboBox>();
         outputModeComboBox_->setTooltip(TRANS("output_mode"));
@@ -805,13 +911,19 @@ void MainComponent::createUI()
         section->addAndMakeVisible(metronomeVolumeSlider_.get());
     }
     
+    fileComponent_ = std::make_unique<RoundedComponent>(MelissaUISettings::getSubColour());
+    addAndMakeVisible(fileComponent_.get());
+    
+    listComponent_ = std::make_unique<RoundedComponent>(MelissaUISettings::getSubColour());
+    addAndMakeVisible(listComponent_.get());
+    
     browseToggleButton_ = make_unique<ToggleButton>();
     browseToggleButton_->setButtonText("File browser");
     browseToggleButton_->setLookAndFeel(&tabLaf_);
     browseToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     browseToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Browse); };
     browseToggleButton_->setToggleState(true, dontSendNotification);
-    addAndMakeVisible(browseToggleButton_.get());
+    fileComponent_->addAndMakeVisible(browseToggleButton_.get());
     
     playlistToggleButton_ = make_unique<ToggleButton>();
     playlistToggleButton_->setButtonText("Playlist");
@@ -819,7 +931,7 @@ void MainComponent::createUI()
     playlistToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     playlistToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_Playlist); };
     playlistToggleButton_->setToggleState(false, dontSendNotification);
-    addAndMakeVisible(playlistToggleButton_.get());
+    fileComponent_->addAndMakeVisible(playlistToggleButton_.get());
     
     historyToggleButton_ = make_unique<ToggleButton>();
     historyToggleButton_->setButtonText("History");
@@ -827,22 +939,22 @@ void MainComponent::createUI()
     historyToggleButton_->setRadioGroupId(kFileChooserTabGroup);
     historyToggleButton_->onClick = [&]() { updateFileChooserTab(kFileChooserTab_History); };
     historyToggleButton_->setToggleState(false, dontSendNotification);
-    addAndMakeVisible(historyToggleButton_.get());
+    fileComponent_->addAndMakeVisible(historyToggleButton_.get());
 
     historyTable_ = make_unique<MelissaFileListBox>();
     historyTable_->setTarget(MelissaFileListBox::kTarget_History);
     historyTable_->setLookAndFeel(&laf_);
-    addAndMakeVisible(historyTable_.get());
+    fileComponent_->addAndMakeVisible(historyTable_.get());
 
     practiceTable_ = make_unique<MelissaPracticeTableListBox>();
-    addAndMakeVisible(practiceTable_.get());
+    listComponent_->addAndMakeVisible(practiceTable_.get());
     
     markerTable_ = make_unique<MelissaMarkerListBox>();
-    addAndMakeVisible(markerTable_.get());
+    listComponent_->addAndMakeVisible(markerTable_.get());
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
-    memoTextEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+    memoTextEditor_->setFont(Font(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main)));
     memoTextEditor_->setMultiLine(true, false);
     memoTextEditor_->setLookAndFeel(&memoLaf_);
     memoTextEditor_->onFocusLost = [&]()
@@ -850,7 +962,7 @@ void MainComponent::createUI()
         dataSource_->saveMemo(memoTextEditor_->getText());
     };
     memoTextEditor_->setReturnKeyStartsNewLine(true);
-    addAndMakeVisible(memoTextEditor_.get());
+    listComponent_->addAndMakeVisible(memoTextEditor_.get());
     
     auto createAndAddTab = [&](const String& title, ListMemoTab tab)
     {
@@ -859,7 +971,7 @@ void MainComponent::createUI()
         b->setLookAndFeel(&tabLaf_);
         b->setRadioGroupId(kListMemoTabGroup);
         b->onClick = [&, tab]() { updateListMemoTab(tab); };
-        addAndMakeVisible(b.get());
+        listComponent_->addAndMakeVisible(b.get());
         return b;
     };
 
@@ -870,7 +982,7 @@ void MainComponent::createUI()
 
     addToPracticeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addToPracticeButton_->setTooltip(TRANS("add_practice_list"));
-    addToPracticeButton_->setImages(iconImages_[kIcon_Add].get(), iconImages_[kIcon_AddHighlighted].get());
+    addToPracticeButton_->setImages(iconImages_[kIcon_Add].get(), iconHighlightedImages_[kIcon_Add].get());
     addToPracticeButton_->onClick = [this]()
     {
         practiceListToggleButton_->setToggleState(true, sendNotification);
@@ -885,27 +997,26 @@ void MainComponent::createUI()
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
     };
-    addAndMakeVisible(addToPracticeButton_.get());
+    listComponent_->addAndMakeVisible(addToPracticeButton_.get());
     
     addMarkerButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addMarkerButton_->setTooltip(TRANS("add_marker"));
-    addMarkerButton_->setImages(iconImages_[kIcon_Add].get(), iconImages_[kIcon_AddHighlighted].get());
+    addMarkerButton_->setImages(iconImages_[kIcon_Add].get(), iconImages_[kIcon_Add].get());
     addMarkerButton_->onClick = [this]()
     {
         markerListToggleButton_->setToggleState(true, sendNotification);
         dataSource_->addDefaultMarker(model_->getPlayingPosRatio());
     };
-    addAndMakeVisible(addMarkerButton_.get());
+    listComponent_->addAndMakeVisible(addMarkerButton_.get());
 
     wildCardFilter_ = make_unique<WildcardFileFilter>(MelissaDataSource::getCompatibleFileExtensions(), "*", "Music Files");
-    fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::filenameBoxIsReadOnly,
+    fileBrowserComponent_ = make_unique<FileBrowserComponent>(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles |   FileBrowserComponent::filenameBoxIsReadOnly,
                                                               File::getSpecialLocation(File::userHomeDirectory),
                                                               wildCardFilter_.get(),
                                                               nullptr);
-    fileBrowserComponent_->setColour(ListBox::backgroundColourId, Colours::transparentWhite);
-    fileBrowserComponent_->setLookAndFeel(&simpleTextEditorLaf_);
+    fileBrowserComponent_->setLookAndFeel(&browserLaf_);
     fileBrowserComponent_->addListener(this);
-    addAndMakeVisible(fileBrowserComponent_.get());
+    fileComponent_->addAndMakeVisible(fileBrowserComponent_.get());
     
     
     labelInfo_[kLabel_MetronomeBpm]     = { "BPM",             bpmButton_.get() };
@@ -929,8 +1040,8 @@ void MainComponent::createUI()
         auto l = make_unique<Label>();
         l->setLookAndFeel(nullptr);
         l->setText(labelInfo_[label_i].first, dontSendNotification);
-        l->setFont(Font(MelissaUISettings::getFontSizeSub()));
-        l->setColour(Label::textColourId, Colours::white.withAlpha(0.6f));
+        l->setFont(Font(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub)));
+        l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         l->setInterceptsMouseClicks(false, true);
         l->setJustificationType(Justification::centred);
         labelInfo_[label_i].second->getParentComponent()->addAndMakeVisible(l.get());
@@ -939,7 +1050,7 @@ void MainComponent::createUI()
     
     // Set List
     playlistComponent_ = make_unique<MelissaPlaylistComponent>();
-    addChildComponent(playlistComponent_.get());
+    fileComponent_->addChildComponent(playlistComponent_.get());
     
     tooltipWindow_ = std::make_unique<TooltipWindow>(bottomComponent_.get(), 0);
     tooltipWindow_->setLookAndFeel(&laf_);
@@ -948,7 +1059,7 @@ void MainComponent::createUI()
     updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
     
-    waveformComponent_->setMarkerTableListBox(markerTable_.get());
+    waveformComponent_->setMarkerListener(this);
 }
 
 void MainComponent::showFileChooser()
@@ -979,7 +1090,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
     bufferToFill.clearActiveBufferRegion();
     
     float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
-    if (model_->getPlaybackStatus() == kPlaybackStatus_Playing)
+    if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
     {
         audioEngine_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
     }
@@ -996,104 +1107,25 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics& g)
 {
-    const int w = getWidth();
-    const int h = getHeight();
-    const int xCenter = w / 2;
-    const int yCenter = h / 2;
-    const auto gradationColour = MelissaUISettings::getBackGroundGradationColour();
-    //const int playButtonCenterY = controlComponent_->getY() + controlComponent_->getHeight() / 2;
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), 0, getHeight(), true));
-    g.fillRect(0, 0, w / 2, h);
-    g.setGradientFill(ColourGradient(Colour(gradationColour.first), xCenter, yCenter, Colour(gradationColour.second), w, getHeight(), true));
-    g.fillRect(w / 2, 0, w / 2, h);
-    
-    constexpr int interval = 6;
-    bool offset = true;
-    g.setColour(Colours::white.withAlpha(0.08f));
-    for (int y_i = 0; y_i < getHeight(); y_i += interval)
-    {
-        if (y_i < controlComponent_->getY() || (controlComponent_->getBottom() <= y_i && y_i < bottomComponent_->getY()))
-        {
-            for (int x_i = offset ? interval / 2 : 0; x_i < getWidth(); x_i += interval)
-            {
-                g.fillRect(x_i, y_i, 1, 1);
-            }
-        }
-        offset = !offset;
-    }
-    
-    Colour colours[] = { Colour(0x00000000), Colour(0x50000000) };
-    
-    int y = controlComponent_->getY() - kGradationHeight;
-    g.setGradientFill(ColourGradient(colours[0], xCenter, y, colours[1], xCenter, y + kGradationHeight, false));
-    g.fillRect(0, y, w, kGradationHeight);
-    
-    y = controlComponent_->getBottom();
-    g.setGradientFill(ColourGradient(colours[1], xCenter, y, colours[0], xCenter, y + kGradationHeight, false));
-    g.fillRect(0, y, w, kGradationHeight);
-    
-    y = bottomComponent_->getY() - kGradationHeight;
-    g.setGradientFill(ColourGradient(colours[0], xCenter, y, colours[1], xCenter, y + kGradationHeight, false));
-    g.fillRect(0, y, w, kGradationHeight);
+    g.fillAll(MelissaUISettings::getMainColour());
 }
 
 void MainComponent::resized()
 {
     menuButton_->setBounds(20, 20, 26, 14);
     
+    shortcutPopup_->setBounds(0, 5, getWidth(), 30);
+    
     waveformComponent_->setBounds(60, 40, getWidth() - 60 * 2, 160);
     markerMemoComponent_->setBounds(80, 4, getWidth() - 80 * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
-    
-    // left-bottom part (Browser / Playlist / History)
-    {
-        constexpr int kTabMargin = 2;
-        constexpr int kFileBrowseTabX = 20;
-        int32_t browserWidth = 480;
-        int32_t w = (browserWidth - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
-        int32_t y = controlComponent_->getBottom() + kGradationHeight - 10;
-        
-        int x = kFileBrowseTabX;
-        browseToggleButton_ ->setBounds(x, y, w, 30);
-        x += (w + kTabMargin);
-        playlistToggleButton_->setBounds(x, y, w, 30);
-        x += (w + kTabMargin);
-        historyToggleButton_ ->setBounds(x, y, w, 30);
-        x += (w + 20);
-        
-        w = 200;
-        practiceListToggleButton_->setBounds(x, y, w, 30);
-        addToPracticeButton_->setBounds(x + w - 30, y + 6, 18, 18);
-        x += (w + 2);
-        markerListToggleButton_->setBounds(x, y, w, 30);
-        addMarkerButton_->setBounds(x + w - 30, y + 6, 18, 18);
-        x += (w + 2);
-        memoToggleButton_->setBounds(x, y, w, 30);
-        
-        y += 40;
-        {
-            const int32_t h = getHeight() - 40 - y;
-            fileBrowserComponent_->setBounds(kFileBrowseTabX, y, browserWidth, h);
-            playlistComponent_->setBounds(kFileBrowseTabX, y, browserWidth, h);
-            historyTable_->setBounds(kFileBrowseTabX, y, browserWidth, h);
-        }
-        
-        {
-            const int x = practiceListToggleButton_->getX();
-            const int32_t h = getHeight() - 40 - y;
-            practiceTable_->setBounds(x, y, getWidth() - x - 20, h);
-            markerTable_->setBounds(x, y, getWidth() - x - 20, h);
-            memoTextEditor_->setBounds(x, y, getWidth() - x - 20, h);
-        }
-    }
     
     // Bottom
     bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
     
     int y = controlComponent_->getY() + 10;
     
-    // TODO : adjust
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
     const int totalSectionWidth = getWidth() - sectionMarginX * 4;
@@ -1102,7 +1134,7 @@ void MainComponent::resized()
     const int speedWidth = totalSectionWidth * 0.4;
     const int metronomeWidth = songWidth;
     const int eqWidth        = loopWidth;
-    const int outputWidth    = speedWidth;
+    const int mixerWidth     = speedWidth;
     constexpr int controlHeight = 30;
     constexpr int controlAWidthMin = 120; // incDecButton etc..
     constexpr int controlBWidthMin = controlAWidthMin + 20;
@@ -1118,22 +1150,33 @@ void MainComponent::resized()
         int x = 10;
         const int centerY = 30 + (section->getHeight() - 30) / 2;
         
-        toHeadButton_->setSize(16, 16);
-        x += (toHeadButton_->getWidth() / 2);
-        toHeadButton_->setCentrePosition(x, centerY);
+        playbackModeButton_->setSize(32, 28);
+        x += (playbackModeButton_->getWidth() / 2);
+        playbackModeButton_->setCentrePosition(x, centerY);
+        x = playbackModeButton_->getRight() + 20;
         
-        x += 20;
+        prevButton_->setSize(16, 17);
+        x += (prevButton_->getWidth() / 2);
+        prevButton_->setCentrePosition(x, centerY);
+        x = prevButton_->getRight() + 10;
+        
         playPauseButton_->setSize(52, 52);
         x += (playPauseButton_->getWidth() / 2);
         playPauseButton_->setCentrePosition(x, centerY);
+        x = playPauseButton_->getRight() + 10;
+        
+        nextButton_->setSize(16, 17);
+        x += (nextButton_->getWidth() / 2);
+        nextButton_->setCentrePosition(x, centerY);
+        x = nextButton_->getRight() + 10;
         
         x = section->getWidth() - 10;
         pitchButton_->setSize(pitchSpeedOutputWidth, controlHeight);
         x -= pitchButton_->getWidth() / 2;
         pitchButton_->setCentrePosition(x, centerY + 14);
         
-        x = playPauseButton_->getRight() + 10;
-        const int labelWidth = (pitchButton_->getX() - 10) - (playPauseButton_->getRight() + 20);
+        x = nextButton_->getRight() + 10;
+        const int labelWidth = (pitchButton_->getX() - 10) - x;
         fileNameLabel_->setBounds(x, centerY - 20, labelWidth, 20);
         timeLabel_->setBounds(x, centerY, labelWidth, 20);
     }
@@ -1152,7 +1195,7 @@ void MainComponent::resized()
         aResetButton_->setBounds(aButton_->getX() + 10, aButton_->getY() - 24 + 2, 20, 14);
         bResetButton_->setBounds(bButton_->getRight() - 20 - 10, bButton_->getY() - 24 + 2, 20, 14);
         
-        const int resetButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), resetButton_->getButtonText()).first;
+        const int resetButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), resetButton_->getButtonText()).first;
         resetButton_->setSize(resetButtonWidth, 30);
         resetButton_->setTopRightPosition(section->getWidth() - 10, 0);
     }
@@ -1250,8 +1293,8 @@ void MainComponent::resized()
     
     // Output
     {
-        auto section = sectionComponents_[kSection_Output].get();
-        section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, outputWidth, 100);
+        auto section = sectionComponents_[kSection_Mixer].get();
+        section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, mixerWidth, 100);
         
         const int controlWidth = (section->getWidth() - pitchSpeedOutputWidth - 10 * 5) / 3;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
@@ -1260,6 +1303,48 @@ void MainComponent::resized()
         musicVolumeSlider_->setBounds(outputModeComboBox_->getRight() + 10, y, controlWidth, controlHeight);
         volumeBalanceSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, controlWidth, controlHeight);
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
+    }
+    
+    // File component (Browser / Playlist / History)
+    {
+        int y = controlComponent_->getBottom() + kGradationHeight - 10;
+        int h = (bottomComponent_->getY() - 10) - y;
+        fileComponent_->setBounds(10, y, songWidth, h);
+        int x = fileComponent_->getRight() + 10;
+        listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
+        const int kTabMargin = 2;
+        int tabWidth = (fileComponent_->getWidth() - 20 - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
+        
+        x = 10;
+        browseToggleButton_ ->setBounds(x, 10, tabWidth, 30);
+        x += (tabWidth + kTabMargin);
+        playlistToggleButton_->setBounds(x, 10, tabWidth, 30);
+        x += (tabWidth + kTabMargin);
+        historyToggleButton_ ->setBounds(x, 10, tabWidth, 30);
+        
+        tabWidth = 200;
+        int w = fileComponent_->getWidth() - 20;
+        h = fileComponent_->getHeight() - 60;
+        fileBrowserComponent_->setBounds(10, 50, w, h);
+        playlistComponent_->setBounds(10, 50, w, h);
+        historyTable_->setBounds(10, 50, w, h);
+        
+        x = 10;
+        y = 10;
+        practiceListToggleButton_->setBounds(x, y, tabWidth, 30);
+        addToPracticeButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
+        x += (tabWidth + 2);
+        markerListToggleButton_->setBounds(x, y, tabWidth, 30);
+        addMarkerButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
+        x += (tabWidth + 2);
+        memoToggleButton_->setBounds(x, y, tabWidth, 30);
+        
+        x = 10;
+        y = 50;
+        h = fileComponent_->getHeight() - 60;
+        practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
     }
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
@@ -1302,10 +1387,18 @@ bool MainComponent::keyPressed(const KeyPress &key, Component* originatingCompon
     return MelissaShortcutManager::getInstance()->processKeyboardMessage(key.getTextDescription());
 }
 
-void MainComponent::showPreferencesDialog()
+void MainComponent::showAudioMidiSettingsDialog()
 {
-    auto component = std::make_shared<MelissaPreferencesComponent>(&deviceManager);
-    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("preferences"));
+    auto component = std::make_shared<AudioDeviceSelectorComponent>(deviceManager, 0, 0, 0, 2, true, false, true, false);
+    component->setSize(getWidth() * 0.6f, getHeight() * 0.8f);
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("audio_midi_settings"));
+}
+
+void MainComponent::showShortcutDialog()
+{
+    auto component = std::make_shared<MelissaShortcutComponent>();
+    component->setSize(getWidth() * 0.8f, getHeight() * 0.8f);
+    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("shortcut_settings"));
 }
 
 void MainComponent::showAboutDialog()
@@ -1442,6 +1535,15 @@ void MainComponent::run()
     {
         if (dataSource_->isFileLoaded())
         {
+            if (model_->shouldLoadNextSong(true))
+            {
+                prepareingNextSong_ = true;
+                MessageManager::callAsync([&]() {
+                    loadNextSong();
+                    prepareingNextSong_ = false;
+                });
+            }
+            
             if (audioEngine_->isBufferSet() && audioEngine_->needToProcess())
             {
                 audioEngine_->process();
@@ -1478,6 +1580,7 @@ void MainComponent::exitSignalSent()
     dataSource_->global_.height_  = getHeight();
     const auto stateXml = deviceManager.createStateXml();
     if (stateXml != nullptr) dataSource_->global_.device_  = stateXml->toString();
+    dataSource_->global_.playMode_ = static_cast<int>(model_->getPlaybackMode());
     
     const int selectedFileBrowserTab = (fileBrowserComponent_->isVisible()) ? 0 : (playlistComponent_->isVisible() ? 1 : 2);
     const int selectedPlaylist = playlistComponent_->getSelected();
@@ -1494,10 +1597,47 @@ void MainComponent::timerCallback()
     timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
     
+    const auto remainingTimeSec = (model_->getLengthMSec() - model_->getPlayingPosMSec()) / 1000.f;
+    if (model_->getPlaybackMode() == kPlaybackMode_LoopPlaylistSongs && model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && remainingTimeSec < 10)
+    {
+        if (!nextFileNameShown_)
+        {
+            const auto nextSongFilePath = getNextSongFilePath();
+            if (nextSongFilePath.isNotEmpty())
+            {
+                const auto songName = File(nextSongFilePath).getFileNameWithoutExtension();
+                fileNameLabel_->setText("Next ... \"" + songName + "\"");
+            }
+            nextFileNameShown_ = true;
+        }
+    }
+    else if (nextFileNameShown_)
+    {
+        const auto songName = File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension();
+        fileNameLabel_->setText(songName);
+        nextFileNameShown_ = false;
+    }
+    
     if (shouldUpdateBpm_)
     {
         model_->setBpm((analyzedBpm_ == 0) ? kBpmMeasureFailed : analyzedBpm_);
         shouldUpdateBpm_ = false;
+    }
+}
+
+void MainComponent::updatePlayBackModeButton()
+{
+    if (model_->getPlaybackMode() == kPlaybackMode_LoopOneSong)
+    {
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSong].get(), iconHighlightedImages_[kIcon_LoopOneSong].get());
+        playbackModeButton_->setTooltip(TRANS("tooltip_playback_mode_one"));
+        nextButton_->setEnabled(false);
+    }
+    else
+    {
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopPlaylist].get(), iconHighlightedImages_[kIcon_LoopPlaylist].get());
+        playbackModeButton_->setTooltip(TRANS("tooltip_playback_mode_playlist"));
+        nextButton_->setEnabled(true);
     }
 }
 
@@ -1531,10 +1671,37 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
 }
 
-void MainComponent::toHead()
+void MainComponent::prev()
 {
     if (model_ == nullptr) return;
-    model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+    
+    const auto mode = model_->getPlaybackMode();
+    if (mode == kPlaybackMode_LoopOneSong)
+    {
+        model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+    }
+    else if (mode == kPlaybackMode_LoopPlaylistSongs)
+    {
+        if (model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && model_->getPlayingPosMSec() < 1000)
+        {
+            loadPrevSong();
+        }
+        else
+        {
+            model_->setPlayingPosRatio(model_->getLoopAPosRatio());
+        }
+    }
+}
+
+void MainComponent::next()
+{
+    if (model_ == nullptr) return;
+    
+    const auto mode = model_->getPlaybackMode();
+    if (mode == kPlaybackMode_LoopPlaylistSongs)
+    {
+        loadNextSong();
+    }
 }
 
 void MainComponent::resetLoop()
@@ -1542,44 +1709,104 @@ void MainComponent::resetLoop()
     model_->setLoopPosRatio(0.f, 1.f);
 }
 
-void MainComponent::arrangeEvenly(const juce::Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio)
+void MainComponent::loadPrevSong()
 {
-    // measure
-    const int marginNarrow = 10 * widthRatio;
-    int numOfGroups = 0;
-    int totalWidthOfAllComponents = 0;
-    int numOfComponents = 0;
-    for (auto&& group : components_)
+    const auto nextSongFilePath = getPrevSongFilePath();
+    if (nextSongFilePath.isNotEmpty())
     {
-        numOfGroups += group.size() - 1;
-        for (auto&& component : group)
-        {
-            totalWidthOfAllComponents += component->getWidth() * widthRatio;
-            ++numOfComponents;
-        }
-    }
-    const float marginWide = (bounds.getWidth() - totalWidthOfAllComponents - marginNarrow * numOfGroups) / static_cast<float>(components_.size() - 1);
-    
-    // arrange
-    if (marginWide < marginNarrow && 0.5f <= widthRatio)
-    {
-        arrangeEvenly(bounds, components_, widthRatio - 0.05);
+        dataSource_->loadFileAsync(nextSongFilePath);
     }
     else
     {
-        float x = bounds.getX(), y = bounds.getY();
-        for (auto&& group : components_)
+        model_->setPlaybackStatus(kPlaybackStatus_Pause);
+        model_->setPlayingPosRatio(0.f);
+    }
+}
+
+void MainComponent::loadNextSong()
+{
+    const auto nextSongFilePath = getNextSongFilePath();
+    if (nextSongFilePath.isNotEmpty())
+    {
+        dataSource_->loadFileAsync(nextSongFilePath);
+    }
+    else
+    {
+        model_->setPlaybackStatus(kPlaybackStatus_Pause);
+        model_->setPlayingPosRatio(0.f);
+    }
+}
+
+String MainComponent::getPrevSongFilePath()
+{
+    const auto currentFilePath = dataSource_->getCurrentSongFilePath();
+    String nextFilePathToLoad = "";
+    
+    MelissaDataSource::FilePathList filePathList;
+    
+    dataSource_->getPlaylist(playlistComponent_->getSelected(), filePathList);
+    
+    bool found = false;
+    int fileIndex = 0;
+    for (; fileIndex < filePathList.size(); ++fileIndex)
+    {
+        if (filePathList[fileIndex] == currentFilePath)
         {
-            for (auto&& component : group)
-            {
-                component->setTopLeftPosition(x, y);
-                component->setSize(component->getWidth() * widthRatio, component->getHeight());
-                x += component->getWidth();
-                x += marginNarrow;
-            }
-            x += (marginWide - marginNarrow);
+            found = true;
+            break;
         }
     }
+    
+    if (found)
+    {
+        --fileIndex;
+        if (0 <= fileIndex)
+        {
+            nextFilePathToLoad = filePathList[fileIndex];
+        }
+        else
+        {
+            nextFilePathToLoad = filePathList[filePathList.size() - 1];
+        }
+    }
+    
+    return File(nextFilePathToLoad).existsAsFile() ? nextFilePathToLoad : "";
+}
+
+String MainComponent::getNextSongFilePath()
+{
+    const auto currentFilePath = dataSource_->getCurrentSongFilePath();
+    String nextFilePathToLoad = "";
+    
+    MelissaDataSource::FilePathList filePathList;
+    
+    dataSource_->getPlaylist(playlistComponent_->getSelected(), filePathList);
+    
+    bool found = false;
+    int fileIndex = 0;
+    for (; fileIndex < filePathList.size(); ++fileIndex)
+    {
+        if (filePathList[fileIndex] == currentFilePath)
+        {
+            found = true;
+            break;
+        }
+    }
+    
+    if (found)
+    {
+        ++fileIndex;
+        if (fileIndex < filePathList.size())
+        {
+            nextFilePathToLoad = filePathList[fileIndex];
+        }
+        else
+        {
+            nextFilePathToLoad = filePathList[0];
+        }
+    }
+    
+    return File(nextFilePathToLoad).existsAsFile() ? nextFilePathToLoad : "";
 }
 
 void MainComponent::musicVolumeChanged(float volume)
@@ -1590,7 +1817,7 @@ void MainComponent::musicVolumeChanged(float volume)
     musicVolumeSlider_->setTooltip(TRANS("volume") + " : " + dbStr);
 }
 
-void MainComponent::pitchChanged(int semitone)
+void MainComponent::pitchChanged(float semitone)
 {
     pitchButton_->setText(MelissaUtility::getFormattedPitch(semitone));
 }
@@ -1704,4 +1931,29 @@ void MainComponent::eqQChanged(size_t band, float q)
 {
     eqQKnobs_[band]->setValue(q, dontSendNotification);
     knobLabels_[2]->setText(String::formatted("Q:%1.2f", q), dontSendNotification);
+}
+
+void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)
+{
+    std::vector<MelissaDataSource::Song::Marker> markers;
+    dataSource_->getMarkers(markers);
+    
+    if (isShiftKeyDown)
+    {
+        const auto timeSec = model_->getLengthMSec() / 1000.f;
+        const auto markerPosSec  = markers[markerIndex].position_ * timeSec;
+        const auto startPosRatio = std::clamp<float>((markerPosSec - 3) / timeSec, 0, 1.f);
+        const auto endPosSec     = std::clamp<float>((markerPosSec + 3) / timeSec, 0, 1.f);
+        model_->setLoopPosRatio(startPosRatio, endPosSec);
+    }
+    else
+    {
+        const auto markerPosRatio = markers[markerIndex].position_;
+        if (markerPosRatio < model_->getLoopAPosRatio() || model_->getLoopBPosRatio() < markerPosRatio)
+        {
+            model_->setLoopPosRatio(0.f, 1.f);
+        }
+        model_->setPlayingPosRatio(markers[markerIndex].position_);
+        markerTable_->selectRow(static_cast<int>(markerIndex));
+    }
 }

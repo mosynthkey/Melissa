@@ -22,6 +22,7 @@ public:
     
     static UpdateStatus status_;
     static String getLatestVersionNumberString();
+    static String getUpdateContents();
     static UpdateStatus getUpdateStatus();
     
     // UI

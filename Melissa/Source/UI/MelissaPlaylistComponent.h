@@ -18,6 +18,10 @@ class MelissaPlaylistComponent : public Component,
 {
 public:
     MelissaPlaylistComponent();
+    ~MelissaPlaylistComponent()
+    {
+        playlistComboBox_->setLookAndFeel(nullptr);
+    }
     
     void createUI();
     void updateComboBox();
@@ -41,25 +45,25 @@ private:
     std::unique_ptr<DrawableButton> renameButton_;
     std::unique_ptr<DrawableButton> removeButton_;
     
+    std::unique_ptr<DrawableButton> upButton_;
+    std::unique_ptr<DrawableButton> downButton_;
     std::unique_ptr<DrawableButton> addFileButton_;
     std::unique_ptr<DrawableButton> addPlayingButton_;
     
     std::unique_ptr<MelissaFileListBox> listBox_;
-    MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_FileBrowser laf_;
     
     enum
     {
+        kIcon_Up,
+        kIcon_Down,
         kIcon_PlaylistAdd,
-        kIcon_PlaylistAddHighlighted,
         kIcon_PlaylistAddFile,
-        kIcon_PlaylistAddFileHighlighted,
         kIcon_PlaylistAddPlaying,
-        kIcon_PlaylistAddPlayingHighlighted,
         kIcon_PlaylistEdit,
-        kIcon_PlaylistEditHighlighted,
         kIcon_PlaylistRemove,
-        kIcon_PlaylistRemoveHighlighted,
         kNumOfIcons
     };
     std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
+    std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
 };

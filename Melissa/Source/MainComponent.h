@@ -21,21 +21,21 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaShortcutManager.h"
+#include "MelissaShortcutPopupComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
 #endif
 
+#include "MelissaMarkerListener.h"
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaMetronome.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
 #include "MelissaPracticeTableListBox.h"
-#include "MelissaPreferencesComponent.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
-#include "MelissaToHeadButton.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
@@ -69,6 +69,7 @@ class MainComponent   : public AudioAppComponent,
                         public KeyListener,
                         public MelissaDataSourceListener,
                         public MelissaHost,
+                        public MelissaMarkerListener,
                         public MelissaModelListener,
                         public MenuBarModel,
                         public MidiInputCallback,
@@ -127,17 +128,20 @@ public:
     // Timer
     void timerCallback() override;
     
+    void updatePlayBackModeButton();
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
     void updateListMemoTab(ListMemoTab tab);
     
-    void toHead();
+    void prev();
+    void next();
     void resetLoop();
     void addToPracticeList(String name);
     void saveMemo();
     
     var getSongSetting(String fileName);
-    void showPreferencesDialog();
+    void showAudioMidiSettingsDialog();
+    void showShortcutDialog();
     void showAboutDialog();
     void showBPMSettingDialog();
     
@@ -160,6 +164,8 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
+    std::unique_ptr<MelissaShortcutPopupComponent> shortcutPopup_;
+    
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;
     
@@ -167,9 +173,14 @@ private:
     std::unique_ptr<MelissaMarkerMemoComponent> markerMemoComponent_;
     std::unique_ptr<Label> controlComponent_;
     std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
+    class RoundedComponent;
+    std::unique_ptr<RoundedComponent> fileComponent_;
+    std::unique_ptr<RoundedComponent> listComponent_;
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
-    std::unique_ptr<MelissaToHeadButton> toHeadButton_;
+    std::unique_ptr<DrawableButton> prevButton_;
+    std::unique_ptr<DrawableButton> nextButton_;
+    std::unique_ptr<DrawableButton> playbackModeButton_;
     
     std::unique_ptr<Label> timeLabel_;
     std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
@@ -191,16 +202,18 @@ private:
     
     enum
     {
+        kIcon_Prev,
+        kIcon_Next,
+        kIcon_LoopOneSong,
+        kIcon_LoopPlaylist,
         kIcon_ArrowLeft,
-        kIcon_ArrowLeftHighlighted,
         kIcon_ArrowRight,
-        kIcon_ArrowRightHighlighted,
         kIcon_Add,
-        kIcon_AddHighlighted,
         kNumOfIcons
     };
     
     std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
+    std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
     
 #if defined(ENABLE_SPEED_TRAINING)
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
@@ -212,7 +225,6 @@ private:
     std::unique_ptr<Component> speedModeTrainingComponent_;
 #endif
     
-    enum { kNumOfSpeedPresets = 11 };
     std::unique_ptr<MelissaIncDecButton> speedButton_;
     std::unique_ptr<Viewport> speedPresetViewport_;
     std::unique_ptr<Component> speedPresetComponent_;
@@ -261,7 +273,6 @@ private:
     
     std::unique_ptr<ComboBox> outputModeComboBox_;
     
-    std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     std::unique_ptr<MelissaPlaylistComponent> playlistComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
     
@@ -274,7 +285,7 @@ private:
         kSection_Speed,
         kSection_Metronome,
         kSection_Eq,
-        kSection_Output,
+        kSection_Mixer,
         kNumOfSections
     };
     std::array<std::unique_ptr<MelissaSectionComponent>, kNumOfSections> sectionComponents_;
@@ -309,6 +320,7 @@ private:
     std::unique_ptr<Label> labels_[kNumOfLabels];
     
     MelissaLookAndFeel laf_;
+    MelissaLookAndFeel_FileBrowser browserLaf_;
     MelissaLookAndFeel_Tab tabLaf_;
     MelissaLookAndFeel_Memo memoLaf_;
     MelissaLookAndFeel_SlideToggleButton slideToggleLaf_;
@@ -320,20 +332,24 @@ private:
     std::vector<Component*> lafList_;
     
     String fileName_, fileFullPath_;
-    
     File settingsDir_, settingsFile_;
-    
+    bool nextFileNameShown_;    
     bool shouldExit_;
+    bool isLangJapanese_;
     
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     
     std::vector<float> timeIndicesMSec_;
     
-    void arrangeEvenly(const Rectangle<int> bounds, const std::vector<std::vector<Component*>>& components_, float widthRatio = 1.f);
+    bool prepareingNextSong_;
+    void loadPrevSong();
+    void loadNextSong();
+    String getPrevSongFilePath();
+    String getNextSongFilePath();
     
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
-    void pitchChanged(int semitone) override;
+    void pitchChanged(float semitone) override;
     void speedChanged(int speed) override;
     
 #if defined(ENABLE_SPEED_TRAINING)
@@ -356,6 +372,9 @@ private:
     void eqFreqChanged(size_t band, float freq) override;
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
+    
+    // MelissaMarkerListener
+    void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

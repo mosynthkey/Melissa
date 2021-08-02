@@ -40,12 +40,22 @@ shouldCorrect_(false)
 
 void MelissaTapTempoButton::paint(Graphics& g)
 {
-    g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(0.8f));
+    g.setColour(MelissaUISettings::getAccentColour(isMouseOver() ? 1.f : 0.6f));
     g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
     
     g.setFont(font_);
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     g.drawText("Tap", getLocalBounds(), Justification::centred);
+}
+
+void MelissaTapTempoButton::mouseMove(const MouseEvent &event)
+{
+    repaint();
+}
+
+void MelissaTapTempoButton::mouseExit(const MouseEvent &event)
+{
+    repaint();
 }
     
 void MelissaTapTempoButton::mouseDown(const MouseEvent& event)

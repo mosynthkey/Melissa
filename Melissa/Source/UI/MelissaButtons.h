@@ -21,7 +21,7 @@ public:
         constexpr int lineHeight = 2;
         
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(highlighted ? 1.f : 0.6f));
+        g.setColour(MelissaUISettings::getWaveformColour().withAlpha(highlighted ? 1.f : 0.6f));
         
         const int w = getWidth();
         const int h = getHeight();
@@ -40,7 +40,7 @@ public:
         constexpr int lineThickness = 2;
         
         const bool highlighed = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(highlighed ? 1.f : 0.6f));
+        g.setColour(MelissaUISettings::getMainColour().withAlpha(highlighed ? 1.f : 0.6f));
         
         const int w = getWidth();
         const int h = getHeight();
@@ -81,9 +81,10 @@ private:
         const int triH = h * 3.f / 7.f;
         
         const bool on = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, on ? 0.8f : 0.4f));
-        g.drawEllipse(t / 2, t / 2, w - t - 1, h - t - 1, t);
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillEllipse(t / 2, t / 2, w - t - 1, h - t - 1);
         
+        g.setColour(MelissaUISettings::getAccentColour(on ? 1.f : 0.6f));
         if (drawPlayIcon_)
         {
             const int x0 = (w - triW) * 4.f / 7.f;
@@ -117,12 +118,12 @@ public:
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
         const int size = getWidth();
-        g.setColour(Colours::black.withAlpha(0.6f));
+        g.setColour(Colours::black.withAlpha(0.4f));
         g.fillRoundedRectangle(0, 0, size, size, size / 5);
         
         if (highlighted)
         {
-            g.setColour(Colour(MelissaUISettings::getMainColour()).withAlpha(0.2f));
+            g.setColour(MelissaUISettings::getMainColour().withAlpha(0.2f));
             g.fillRoundedRectangle(0, 0, size, size, size / 6);
         }
         
@@ -151,10 +152,10 @@ public:
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
-        g.setColour(Colour(MelissaUISettings::getAccentColour()).withAlpha(highlighted ? 1.f : 0.75f));
+        g.setColour(MelissaUISettings::getAccentColour(highlighted ? 1.f : 0.6f));
         g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
         
-        g.setColour(Colours::white);
+        g.setColour(MelissaUISettings::getTextColour());
         g.setFont(font_);
         g.drawText(title_, 0, 0, getWidth(), getHeight(), Justification::centred);
     }

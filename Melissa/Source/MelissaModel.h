@@ -27,8 +27,8 @@ public:
     void setMusicVolume(float volume);
     float getMusicVolume() const { return musicVolume_; }
     
-    void setPitch(int semitone);
-    int getPitch() const  { return semitone_; }
+    void setPitch(float semitone);
+    float getPitch() const  { return semitone_; }
     
     void setSpeed(int speed);
     int getSpeed() const  { return speed_; }
@@ -68,6 +68,12 @@ public:
     void setPlayingPosMSec(float playingPosMSec);
     float getPlayingPosMSec() const;
     void updatePlayingPosMSecFromDsp(float playingPosMSec);
+    
+    void setPlaybackMode(PlaybackMode mode);
+    PlaybackMode getPlaybackMode() const { return playbackMode_; }
+    
+    void setShouldLoadNextSongFromDsp();
+    bool shouldLoadNextSong(bool resetFlag = false);
     
     // Metronome
     void  setMetronomeSwitch(bool on);
@@ -116,13 +122,15 @@ private:
     MelissaAudioEngine* audioEngine_;
     
     PlaybackStatus playbackStatus_;
+    PlaybackMode playbackMode_;
+    bool shouldLoadNextSong_;
     bool metronomeSwitch_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
     float musicVolume_;
     float metronomeVolume_;
     float musicMetronomeBalance_;
-    int semitone_;
+    float semitone_;
     SpeedMode speedMode_;
     int speed_;
     int currentSpeed_;

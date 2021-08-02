@@ -43,7 +43,7 @@ void MelissaModel::setMusicVolume(float volume)
     for (auto&& l : listeners_) l->musicVolumeChanged(volume);
 }
 
-void MelissaModel::setPitch(int semitone)
+void MelissaModel::setPitch(float semitone)
 {
     if (semitone < kPitchMin || kPitchMax < semitone) return;
     
@@ -129,7 +129,7 @@ void MelissaModel::setLoopAPosMSec(float aPosMSec)
 
 void MelissaModel::setLoopBPosRatio(float bPosRatio)
 {
-    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio_)
+    if (0 < lengthMSec_ && aPosRatio_ < bPosRatio && bPosRatio <= 1.f)
     {
         bPosRatio_ = bPosRatio;
         for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
@@ -138,7 +138,7 @@ void MelissaModel::setLoopBPosRatio(float bPosRatio)
 
 void MelissaModel::setLoopBPosMSec(float bPosMSec)
 {
-    if (0 < lengthMSec_ && aPosRatio_  * lengthMSec_ < bPosMSec)
+    if (0 < lengthMSec_ && aPosRatio_ * lengthMSec_ < bPosMSec && bPosMSec <= lengthMSec_)
     {
         bPosRatio_ = bPosMSec / lengthMSec_;
         for (auto&& l : listeners_) l->loopPosChanged(lengthMSec_ * aPosRatio_, aPosRatio_, lengthMSec_ * bPosRatio_, bPosRatio_);
@@ -176,6 +176,25 @@ void MelissaModel::updatePlayingPosMSecFromDsp(float playingPosMSec)
     if (playingPosMSec < 0 || lengthMSec_ < playingPosMSec || lengthMSec_ < 0.f) return;
     
     playingPosRatio_ = playingPosMSec / lengthMSec_;
+}
+
+void MelissaModel::setPlaybackMode(PlaybackMode playbackMode)
+{
+    playbackMode_ = playbackMode;
+    
+    for (auto&& l : listeners_) l->playbackModeChanged(playbackMode);
+}
+
+void MelissaModel::setShouldLoadNextSongFromDsp()
+{
+    shouldLoadNextSong_ = true;
+}
+
+bool MelissaModel::shouldLoadNextSong(bool resetFlag)
+{
+    const bool shouldLoad = shouldLoadNextSong_;
+    if (resetFlag) shouldLoadNextSong_ = false;
+    return shouldLoad;
 }
 
 void  MelissaModel::setMetronomeSwitch(bool on)
@@ -282,7 +301,7 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-playbackStatus_(kPlaybackStatus_Stop), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
+playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
 speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
 bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f)
 {
