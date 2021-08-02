@@ -36,4 +36,4 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [SoundTouch](https://www.surina.net/soundtouch/)
 
 ## License
-[LGPL-2.1 (c) 2020 Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2021 Masaki Ono](LICENSE)
