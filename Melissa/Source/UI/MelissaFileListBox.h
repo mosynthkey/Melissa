@@ -102,7 +102,7 @@ public:
         }
         
         g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
     }
     

@@ -75,7 +75,7 @@ public:
         label_ = std::make_unique<Label>();
         label_->setInterceptsMouseClicks(false, true);
         label_->setJustificationType(Justification::centred);
-        label_->setFont(Font(MelissaUISettings::getFontSizeSub()));
+        label_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)));
         label_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         addAndMakeVisible(label_.get());
         
@@ -97,7 +97,7 @@ public:
         
         funcButton_ = std::make_unique<MelissaRoundButton>(funcButtonTitle);
         funcButton_->setTooltip(funcTooltipStr);
-        funcButton_->setFont(MelissaUISettings::getFontSizeSub());
+        funcButton_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
         funcButton_->onClick =  [this]() { if (onClick_ != nullptr) onClick_(kEvent_Func, false); };
         addAndMakeVisible(funcButton_.get());
     }

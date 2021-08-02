@@ -28,13 +28,13 @@ public:
         setSize(width, height);
         
         label_ = std::make_unique<Label>();
-        label_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+        label_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
         textEditor_ = std::make_unique<TextEditor>();
-        textEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+        textEditor_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
         textEditor_->applyColourToAllText(MelissaUISettings::getTextColour());

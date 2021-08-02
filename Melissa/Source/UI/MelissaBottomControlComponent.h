@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDataSource.h"
 #include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
@@ -23,7 +24,7 @@ public:
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         g.setColour(MelissaUISettings::getTextColour(highlighted ? 0.8f : 0.4f));
-        g.setFont(MelissaUISettings::getFontSizeSmall());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::right);
     }
 };

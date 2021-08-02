@@ -25,7 +25,7 @@ void MelissaSectionComponent::paint(Graphics& g)
     
     // title
     g.setColour(MelissaUISettings::getTextColour());
-    g.setFont(MelissaUISettings::getFontSizeMain());
+    g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     g.drawText(title_, 0, 0, getWidth(), 30, Justification::centred);
     
     // line

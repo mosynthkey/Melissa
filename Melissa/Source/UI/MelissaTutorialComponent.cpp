@@ -6,6 +6,7 @@
 //
 
 #include <tuple>
+#include "MelissaDataSource.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
@@ -70,7 +71,7 @@ void MelissaTutorialComponent::update()
     
     const auto targetRect = targetComponent->getBounds().expanded(4, 4);
     explanationLabel_->setText(explanation, dontSendNotification);
-    explanationLabel_->setFont(MelissaUISettings::getFontSizeMain());
+    explanationLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     const auto labelSize = MelissaUtility::getStringSize(explanationLabel_->getFont(), explanation);
     explanationLabel_->setSize(labelSize.first + 10, labelSize.second);
     

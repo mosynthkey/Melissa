@@ -9,6 +9,7 @@
 
 #include <math.h>
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDataSource.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
@@ -58,7 +59,7 @@ public:
     {
         const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
         g.setColour(MelissaUISettings::getTextColour(highlighted ? 1.f : 0.8f));
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
     
@@ -68,7 +69,7 @@ public:
         const auto& c = tb.getLocalBounds();
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
         g.drawText(tb.getToggleState() ? "On" : "Off", 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
     }
     
@@ -197,7 +198,7 @@ public:
             }
             
             g.setColour(MelissaUISettings::getTextColour(isActive ? 0.8f : 0.2f));
-            g.setFont(MelissaUISettings::getFontSizeSub());
+            g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
             g.drawText(text, area.reduced(25, 0), Justification::left);
             
             if (hasSubMenu)
@@ -238,7 +239,7 @@ public:
     
     virtual Font getTextButtonFont(TextButton& tb, int buttonHeight) override
     {
-        return Font(MelissaUISettings::getFontSizeMain());
+        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     }
     
     virtual void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
@@ -268,7 +269,7 @@ public:
     
     virtual Font getComboBoxFont(ComboBox &) override
     {
-        return Font(MelissaUISettings::getFontSizeSub());
+        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
     }
     
     virtual void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
@@ -298,19 +299,19 @@ public:
     virtual void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
         g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
     }
     
     virtual Font getPopupMenuFont() override
     {
-        return Font(MelissaUISettings::getFontSizeMain());
+        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     }
     
     
     virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
     {
-        return Font(MelissaUISettings::getFontSizeMain());
+        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     }
     
     virtual Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
@@ -318,7 +319,7 @@ public:
         if (bottomComponent_ == nullptr)
         {
             int w, h;
-            std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaUISettings::getFontSizeSub()), tipText);
+            std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)), tipText);
             w += 10;
             h += 4;
             
@@ -347,7 +348,7 @@ public:
         g.setColour(MelissaUISettings::getSubColour());
         g.fillAll();
         g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(Font(MelissaUISettings::getFontSizeSub()));
+        g.setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)));
         g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
     }
     
@@ -386,7 +387,7 @@ public:
         }
         
         g.setColour(MelissaUISettings::getTextColour(textAlpha));
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
 };
@@ -452,7 +453,7 @@ public:
             g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
                                                  : findColour (DirectoryContentsDisplayComponent::textColourId));
 
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawFittedText (filename,
                           x, 0, width - x, height,
                           Justification::centredLeft, 1);
@@ -641,7 +642,7 @@ public:
             alpha = 0.6f;
         }
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
-        g.setFont(MelissaUISettings::getFontSizeMain());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
         
         if (tb.getToggleState())
@@ -693,9 +694,7 @@ public:
 class MelissaLookAndFeel_SimpleTextButton : public LookAndFeel_V4
 {
 public:
-    MelissaLookAndFeel_SimpleTextButton(int fontSize, const Justification& justification = Justification::centred) :
-    fontSize_(fontSize),
-    justification_(justification)
+    MelissaLookAndFeel_SimpleTextButton()
     {
         
     }
@@ -707,15 +706,15 @@ public:
     void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(MelissaUISettings::getTextColour(shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
-        g.setFont(fontSize_);
-        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), justification_);
+        g.setFont(font_);
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
 
-    int getFontSize() const { return fontSize_; }
+    void setFont(Font font) { font_ = font; }
+    Font getFont() const { return font_; }
     
 private:
-    int fontSize_;
-    Justification justification_;
+    Font font_;
 };
 
 class MelissaLookAndFeel_SimpleTextEditor : public MelissaLookAndFeel

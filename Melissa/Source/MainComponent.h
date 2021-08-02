@@ -27,13 +27,13 @@
 #include "MelissaSpeedTrainingProgressComponent.h"
 #endif
 
+#include "MelissaMarkerListener.h"
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaMetronome.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
 #include "MelissaPracticeTableListBox.h"
-#include "MelissaPreferencesComponent.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
 #include "MelissaTutorialComponent.h"
@@ -69,6 +69,7 @@ class MainComponent   : public AudioAppComponent,
                         public KeyListener,
                         public MelissaDataSourceListener,
                         public MelissaHost,
+                        public MelissaMarkerListener,
                         public MelissaModelListener,
                         public MenuBarModel,
                         public MidiInputCallback,
@@ -272,7 +273,6 @@ private:
     
     std::unique_ptr<ComboBox> outputModeComboBox_;
     
-    std::unique_ptr<MelissaPreferencesComponent> preferencesComponent_;
     std::unique_ptr<MelissaPlaylistComponent> playlistComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
     
@@ -335,6 +335,7 @@ private:
     File settingsDir_, settingsFile_;
     bool nextFileNameShown_;    
     bool shouldExit_;
+    bool isLangJapanese_;
     
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     
@@ -371,6 +372,9 @@ private:
     void eqFreqChanged(size_t band, float freq) override;
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
+    
+    // MelissaMarkerListener
+    void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

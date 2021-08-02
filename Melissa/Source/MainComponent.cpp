@@ -41,6 +41,7 @@ enum
     kMenuID_Shortcut,
     kMenuID_UITheme_Dark,
     kMenuID_UITheme_Light,
+    kMenuID_RevealSettingsFile,
     kMenuID_Tutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
@@ -105,16 +106,17 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButtonLaf_(MelissaUISettings::getFontSizeSub(), Justification::centredRight), nextFileNameShown_(false), shouldExit_(false), prepareingNextSong_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
-    
     metronome_ = std::make_unique<MelissaMetronome>();
     
     model_ = MelissaModel::getInstance();
     model_->setMelissaAudioEngine(audioEngine_.get());
     model_->addListener(dynamic_cast<MelissaModelListener*>(audioEngine_.get()));    
     model_->addListener(this);
+    
+    isLangJapanese_ = (SystemStats::getDisplayLanguage() == "ja-JP");
     
     dataSource_ = MelissaDataSource::getInstance();
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
@@ -139,14 +141,14 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), simpleTextButto
     shouldUpdateBpm_ = false;
     
     MelissaUISettings::isDarkMode = (dataSource_->getUITheme() == "System_Dark");
+    simpleTextButtonLaf_.setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
     laf_.updateColour();
     browserLaf_.updateColour();
     
-    MelissaUISettings::isJa = (SystemStats::getDisplayLanguage() == "ja-JP" && MelissaUISettings::isJapaneseFontAvailable());
-    getLookAndFeel().setDefaultSansSerifTypefaceName(MelissaUISettings::getFontName());
+    getLookAndFeel().setDefaultSansSerifTypefaceName(dataSource_->getFontName());
     
     String localizedStrings = "";
-    if (MelissaUISettings::isJa)
+    if (isLangJapanese_)
     {
 #ifdef DEBUG
         File file = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("Resource/Language/ja-JP.txt");
@@ -314,9 +316,16 @@ void MainComponent::createUI()
         
         menu.addSeparator();
         menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
+        
 #if defined(ENABLE_TUTORIAL)
         menu.addItem(kMenuID_Tutorial, TRANS("tutorial"));
 #endif
+        
+        menu.addSeparator();
+        PopupMenu advancedMenu;
+        advancedMenu.addItem(kMenuID_RevealSettingsFile, TRANS("reveal_settings_file"));
+        menu.addSubMenu(TRANS("advanced_settings"), advancedMenu);
+        
         const auto result = menu.show();
         model_->setPlaybackStatus(kPlaybackStatus_Stop);
         if (result == kMenuID_About)
@@ -355,7 +364,7 @@ void MainComponent::createUI()
         }
         else if (result == kMenuID_TwitterShare)
         {
-            if (MelissaUISettings::isJa)
+            if (isLangJapanese_)
             {
                 URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
             }
@@ -363,6 +372,10 @@ void MainComponent::createUI()
             {
                 URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
             }
+        }
+        else if (result == kMenuID_RevealSettingsFile)
+        {
+            settingsFile_.revealToUser();
         }
     };
     addAndMakeVisible(menuButton_.get());
@@ -391,7 +404,8 @@ void MainComponent::createUI()
     addAndMakeVisible(waveformComponent_.get());
     
     markerMemoComponent_ = make_unique<MelissaMarkerMemoComponent>();
-    markerMemoComponent_->setFont(MelissaUISettings::getFontSizeMain());
+    markerMemoComponent_->setMarkerListener(this);
+    markerMemoComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
     addAndMakeVisible(markerMemoComponent_.get());
     
     shortcutPopup_ = std::make_unique<MelissaShortcutPopupComponent>();
@@ -459,7 +473,7 @@ void MainComponent::createUI()
         timeLabel_ = make_unique<Label>();
         timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         timeLabel_->setJustificationType(Justification::centred);
-        timeLabel_->setFont(MelissaUISettings::getFontSizeMain());
+        timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
         section->addAndMakeVisible(timeLabel_.get());
         
         fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
@@ -622,7 +636,7 @@ void MainComponent::createUI()
             const int speed = speedPresets[speedPresetIndex];
             b->setButtonText(String(speed) + "%");
             b->onClick = [&, speed]() { model_->setSpeed(speed); };
-            const auto width = MelissaUtility::getStringSize(simpleTextButtonLaf_.getFontSize(), b->getButtonText()).first;
+            const auto width = MelissaUtility::getStringSize(simpleTextButtonLaf_.getFont(), b->getButtonText()).first;
             speedButtonWidthSum += width;
             b->setBounds(speedButtonX, 0, width, 30);
             speedButtonX += (width + presetButtonMargin);
@@ -694,7 +708,7 @@ void MainComponent::createUI()
         speedModeTrainingComponent_->addAndMakeVisible(speedIncGoalButton_.get());
         
         speedProgressComponent_ = make_unique<MelissaSpeedTrainingProgressComponent>();
-        speedProgressComponent_->setFont(MelissaUISettings::getFontSizeSmall());
+        speedProgressComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Small));
         speedModeTrainingComponent_->addAndMakeVisible(speedProgressComponent_.get());
 #endif
     }
@@ -829,7 +843,7 @@ void MainComponent::createUI()
         for (size_t labelIndex = 0; labelIndex < kNumOfEqBands * numOfControls; ++labelIndex)
         {
             auto l = std::make_unique<Label>();
-            l->setFont(MelissaUISettings::getFontSizeSub());
+            l->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->setText(labelTitles[labelIndex % numOfControls], dontSendNotification);
             l->setJustificationType(Justification::centred);
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
@@ -940,7 +954,7 @@ void MainComponent::createUI()
 
     memoTextEditor_ = make_unique<TextEditor>();
     memoTextEditor_->setLookAndFeel(nullptr);
-    memoTextEditor_->setFont(Font(MelissaUISettings::getFontSizeMain()));
+    memoTextEditor_->setFont(Font(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main)));
     memoTextEditor_->setMultiLine(true, false);
     memoTextEditor_->setLookAndFeel(&memoLaf_);
     memoTextEditor_->onFocusLost = [&]()
@@ -1026,7 +1040,7 @@ void MainComponent::createUI()
         auto l = make_unique<Label>();
         l->setLookAndFeel(nullptr);
         l->setText(labelInfo_[label_i].first, dontSendNotification);
-        l->setFont(Font(MelissaUISettings::getFontSizeSub()));
+        l->setFont(Font(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub)));
         l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         l->setInterceptsMouseClicks(false, true);
         l->setJustificationType(Justification::centred);
@@ -1045,7 +1059,7 @@ void MainComponent::createUI()
     updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
     
-    waveformComponent_->setMarkerTableListBox(markerTable_.get());
+    waveformComponent_->setMarkerListener(this);
 }
 
 void MainComponent::showFileChooser()
@@ -1181,7 +1195,7 @@ void MainComponent::resized()
         aResetButton_->setBounds(aButton_->getX() + 10, aButton_->getY() - 24 + 2, 20, 14);
         bResetButton_->setBounds(bButton_->getRight() - 20 - 10, bButton_->getY() - 24 + 2, 20, 14);
         
-        const int resetButtonWidth = MelissaUtility::getStringSize(MelissaUISettings::getFontSizeSub(), resetButton_->getButtonText()).first;
+        const int resetButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), resetButton_->getButtonText()).first;
         resetButton_->setSize(resetButtonWidth, 30);
         resetButton_->setTopRightPosition(section->getWidth() - 10, 0);
     }
@@ -1917,4 +1931,29 @@ void MainComponent::eqQChanged(size_t band, float q)
 {
     eqQKnobs_[band]->setValue(q, dontSendNotification);
     knobLabels_[2]->setText(String::formatted("Q:%1.2f", q), dontSendNotification);
+}
+
+void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)
+{
+    std::vector<MelissaDataSource::Song::Marker> markers;
+    dataSource_->getMarkers(markers);
+    
+    if (isShiftKeyDown)
+    {
+        const auto timeSec = model_->getLengthMSec() / 1000.f;
+        const auto markerPosSec  = markers[markerIndex].position_ * timeSec;
+        const auto startPosRatio = std::clamp<float>((markerPosSec - 3) / timeSec, 0, 1.f);
+        const auto endPosSec     = std::clamp<float>((markerPosSec + 3) / timeSec, 0, 1.f);
+        model_->setLoopPosRatio(startPosRatio, endPosSec);
+    }
+    else
+    {
+        const auto markerPosRatio = markers[markerIndex].position_;
+        if (markerPosRatio < model_->getLoopAPosRatio() || model_->getLoopBPosRatio() < markerPosRatio)
+        {
+            model_->setLoopPosRatio(0.f, 1.f);
+        }
+        model_->setPlayingPosRatio(markers[markerIndex].position_);
+        markerTable_->selectRow(static_cast<int>(markerIndex));
+    }
 }

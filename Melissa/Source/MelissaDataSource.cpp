@@ -7,6 +7,7 @@
 
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
+#include "MelissaUISettings.h"
 
 enum
 {
@@ -87,6 +88,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (!shortcutRegistered) setDefaultShortcuts();
         
         if (g->hasProperty("ui_theme")) global_.uiTheme_ = g->getProperty("ui_theme");
+        initFontSettings(g->hasProperty("font_name") ? g->getProperty("font_name") : "");
     }
     
     if (settings.hasProperty("previous"))
@@ -138,7 +140,8 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         {
             for (auto history : *array)
             {
-                history_.add(history.toString());
+                File file(history);
+                if (file.existsAsFile()) history_.add(history.toString());
             }
         }
     }
@@ -251,6 +254,8 @@ void MelissaDataSource::validateSettings()
         playlists_.emplace_back(playlist);
     }
     for (auto&& l : listeners_) l->playlistUpdated(0);
+    
+    initFontSettings();
 }
 
 void MelissaDataSource::saveSettingsFile()
@@ -273,6 +278,7 @@ void MelissaDataSource::saveSettingsFile()
     }
     global->setProperty("shortcut", shortcut);
     global->setProperty("ui_theme", global_.uiTheme_);
+    global->setProperty("font_name", global_.fontName_);
     settings->setProperty("global", global);
     
     auto previous = new DynamicObject();
@@ -404,7 +410,57 @@ void MelissaDataSource::saveSettingsFile()
     settingsFile_.replaceWithText(JSON::toString(settings));
 }
 
+void MelissaDataSource::initFontSettings(const String& fontName)
+{
+    StringArray fontCandidates;
+    if (!fontName.isEmpty()) fontCandidates.add(fontName);
+    
+#if defined(JUCE_MAC)
+    fontCandidates.addArray(StringArray { "YuGothic", "San Francisco" });
+#elif defined(JUCE_WINDOWS)
+    fontCandidates.addArray(StringArray { "Meiryo UI", "Tahoma" });
+#else
+    fontCandidates.addArray(StringArray { "IPAGothic", "Verdana", "Bitstream Vera Sans", "Luxi Sans", "Liberation Sans", "DejaVu Sans", "Sans" });
+#endif
+    
+    for (auto&& font : fontCandidates)
+    {
+        if (isFontAvailable(font))
+        {
+            global_.fontName_ = font;
+            break;
+        }
+    }
+}
 
+bool MelissaDataSource::isFontAvailable(const String& fontName) const
+{
+    Array<Font> availableFonts;
+    Font::findFonts(availableFonts);
+
+    for (auto&& font : availableFonts)
+    {
+        if (font.getTypefaceName() == fontName) return true;
+    }
+
+    return false;
+}
+
+Font MelissaDataSource::getFont(Global::FontSize size) const
+{
+    if (size == Global::kFontSize_Main)
+    {
+        return Font(global_.fontName_, 17, Font::plain);
+    }
+    else if (size == Global::kFontSize_Sub)
+    {
+        return Font(global_.fontName_, 15, Font::plain);
+    }
+    else
+    {
+        return Font(global_.fontName_, 13, Font::plain);
+    }
+}
 
 String MelissaDataSource::getCompatibleFileExtensions()
 {
