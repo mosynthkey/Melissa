@@ -223,7 +223,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameSho
     {
         dataSource_->setDefaultShortcuts(true);
         const std::vector<String> options = { TRANS("ok") };
-        auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("first_launch"), options, [&](size_t yesno) { showFileChooser(); });
+        auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("first_launch"), options, [&](size_t yesno) { /* showFileChooser(); */ });
         MelissaModalDialog::show(dialog, "Melissa", false);
     }
     
@@ -1065,7 +1065,7 @@ void MainComponent::createUI()
 void MainComponent::showFileChooser()
 {
     fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
-    fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&] (const FileChooser& chooser) {
+    fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&, this] (const FileChooser& chooser) {
         auto fileUrl = chooser.getURLResult();
         if (fileUrl.isLocalFile())
         {
