@@ -52,7 +52,7 @@ countries: us
 "cancel" = "Cancel"
 "check" = "Check"
 "open_manual" = "Manual"
-"first_launch" = "Thank you for downloading Melissa!\nFirst of all, let's open a song."
+"first_launch" = "Thank you for downloading Melissa!\nFirst of all, let's open a song from the file browser in the lower left corner, or drop a file into this screen."
 "load_failed" = "Failed to load this file."
 "Go up to parent directory" = "Go up to parent directory"
 "metronome_switch" = "Metronome ON/OFF"
