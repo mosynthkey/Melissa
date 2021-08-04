@@ -52,7 +52,7 @@ countries: ja
 "cancel" = "キャンセル"
 "check" = "開く"
 "open_manual" = "マニュアルを開く"
-"first_launch" = "Melissaをダウンロードしていただきありがとうございます。\nまずはじめに、曲を開いてみましょう！"
+"first_launch" = "Melissaをダウンロードしていただきありがとうございます。\nまずはじめに、画面左下のファイルブラウザやファイルをドラッグ&ドロップして曲を開いてみましょう！"
 "load_failed" = "ファイルの読み込みに失敗しました。"
 "Go up to parent directory" = "上のディレクトリへ"
 "metronome_switch" = "メトロノーム ON/OFF"
