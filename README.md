@@ -6,11 +6,11 @@
 
 ## Downloads
 ### macOS
-- [Version 2.5.0](https://github.com/mosynthkey/Melissa/releases/download/v2.5.0/Melissa_2_5_0.dmg)
+- [Version 2.5.1](https://github.com/mosynthkey/Melissa/releases/download/v2.5.1/Melissa_2_5_1.dmg)
 
 ### Windows
-- [Version 2.5.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.0/Melissa_2.5.0_64.zip)
-- [Version 2.5.0 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.0/Melissa_2.5.0_32.zip)
+- [Version 2.5.1 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.1/Melissa_2.5.1_64.zip)
+- [Version 2.5.1 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.1/Melissa_2.5.1_32.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
