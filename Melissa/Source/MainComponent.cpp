@@ -874,6 +874,7 @@ void MainComponent::createUI()
             model_->setOutputMode(mode);
         };
         outputModeComboBox_->setSelectedId(kOutputMode_LR + 1);
+        outputModeComboBox_->setWantsKeyboardFocus(false);
         section->addAndMakeVisible(outputModeComboBox_.get());
     
         musicVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
@@ -1291,7 +1292,7 @@ void MainComponent::resized()
         qIconComponents_[1]->setBounds(eqQKnobs_[0]->getRight() + qIconXMargin, eqQKnobs_[0]->getBottom() - qIconHeight, qIconWidth, qIconHeight);
     }
     
-    // Output
+    // Mixer
     {
         auto section = sectionComponents_[kSection_Mixer].get();
         section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, mixerWidth, 100);
