@@ -437,12 +437,8 @@ void MelissaDataSource::initFontSettings(const String& fontName)
 
 bool MelissaDataSource::isFontAvailable(const String& fontName) const
 {
-#ifdef JUCE_LINUX
-    return true; // won't check the font existance on Linux to avoid this issue (https://github.com/mosynthkey/Melissa/issues/23)
-#else
     const StringArray availableFontNames = Font::findAllTypefaceNames();
     return availableFontNames.contains(fontName);
-#endif
 }
 
 Font MelissaDataSource::getFont(Global::FontSize size) const
