@@ -156,6 +156,7 @@ countries: us
 "Marker" = "Marker"
 "NoAssign" = "No assign"
 "ui_theme" = "Appearance"
+"ui_theme_auto" = "Follows the system setting"
 "ui_theme_dark" = "Dark"
 "ui_theme_light" = "Light"
 "restart_to_apply" = "Restart Melissa to apply the change."

@@ -242,7 +242,7 @@ public:
     void deregisterShortcut(const String& eventName);
     
     // UI Theme
-    String getUITheme() const { return global_.uiTheme_; }
+    String getUITheme() const;
     void setUITheme(const String& uiTheme_);
     
     // Previous

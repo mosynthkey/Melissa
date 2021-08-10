@@ -172,7 +172,6 @@ private:
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaMarkerMemoComponent> markerMemoComponent_;
     std::unique_ptr<Label> controlComponent_;
-    std::unique_ptr<MelissaBottomControlComponent> bottomComponent_;
     class RoundedComponent;
     std::unique_ptr<RoundedComponent> fileComponent_;
     std::unique_ptr<RoundedComponent> listComponent_;

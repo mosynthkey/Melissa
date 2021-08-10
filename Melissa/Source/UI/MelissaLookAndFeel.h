@@ -44,11 +44,6 @@ public:
         setColour(ToggleButton::tickColourId, MelissaUISettings::getTextColour());
     }
     
-    virtual void setBottomComponent(Component* bottomComponent)
-    {
-        bottomComponent_ = bottomComponent;
-    }
-    
     virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(Colour(MelissaUISettings::getSubColour()));
@@ -316,44 +311,33 @@ public:
     
     virtual Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
     {
-        if (bottomComponent_ == nullptr)
-        {
-            int w, h;
-            std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)), tipText);
-            w += 10;
-            h += 4;
-            
-            return Rectangle<int> (screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 12) : screenPos.x + 24,
-                                   screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 6)  : screenPos.y + 6,
-                                   w, h).constrainedWithin(parentArea);
-        }
-        else
-        {
-            return bottomComponent_->getLocalBounds().reduced(20, 0).withWidth(bottomComponent_->getWidth() / 2);
-        }
+        int w, h;
+        std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)), tipText);
+        w += 10;
+        h = 30;
+        
+        return Rectangle<int> (screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 12) : screenPos.x + 24,
+                               screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 6)  : screenPos.y + 6,
+                               w, h).constrainedWithin(parentArea);
     }
     
     virtual void drawTooltip(Graphics& g, const String& text, int width, int height) override
     {
-        Rectangle<int> bounds (width, height);
+        Rectangle<int> bounds(width, height);
         
-        if (bottomComponent_ == nullptr)
-        {
-            g.setColour(MelissaUISettings::getTextColour());
-            g.fillRoundedRectangle(0, 0, width, height, height / 2);
-            
-            g.setColour(Colours::black/* Colour(MelissaUISettings::getDialogBackgoundColour())*/);
-            g.fillRoundedRectangle(1, 1, width - 2, height - 2, (height - 2) / 2);
-        }
         g.setColour(MelissaUISettings::getSubColour());
         g.fillAll();
+        
+        g.setColour(MelissaUISettings::getMainColour());
+        g.fillRect(bounds.reduced(2, 2));
+        
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        
         g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)));
-        g.drawText(text, 0, 0, width, height, (bottomComponent_ == nullptr) ? Justification::centred : Justification::left);
+        g.drawText(text, 0, 0, width, height, Justification::centred);
     }
     
 private:
-    Component* bottomComponent_;
     std::unique_ptr<Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
 };
 
