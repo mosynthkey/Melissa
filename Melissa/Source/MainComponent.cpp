@@ -141,11 +141,13 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameSho
     shouldInitializeBpmDetector_ = false;
     shouldUpdateBpm_ = false;
     
+#ifdef JUCE_MAC
     if (dataSource_->getUITheme() == "System_Auto")
     {
         MelissaUISettings::isDarkMode = Desktop::isOSXDarkModeActive();
     }
     else
+#endif
     {
         MelissaUISettings::isDarkMode = dataSource_->getUITheme() == "System_Dark";
     }
