@@ -33,8 +33,6 @@ wasPlaying_(false)
     defaultShortcut_["cursor down"] = "SetSpeed_Minus1";
     defaultShortcut_["cursor left"] = "PlaybackPosition_Minus1Sec";
     defaultShortcut_["cursor right"] = "PlaybackPosition_Plus1Sec";
-    
-    validateSettings();
 }
 
 MelissaDataSource::~MelissaDataSource()
@@ -57,7 +55,11 @@ void MelissaDataSource::loadSettingsFile(const File& file)
 {
     settingsFile_ = file;
     
-    if (!file.existsAsFile()) return;
+    if (!file.existsAsFile())
+    {
+        validateSettings();
+        return;
+    }
     
     var settings = JSON::parse(file.loadFileAsString());
     settings = JSON::parse(settingsFile_.loadFileAsString());
@@ -420,7 +422,7 @@ void MelissaDataSource::initFontSettings(const String& fontName)
 #elif defined(JUCE_WINDOWS)
     fontCandidates.addArray(StringArray { "Meiryo UI", "Tahoma" });
 #else
-    fontCandidates.addArray(StringArray { "IPAGothic", "Verdana", "Bitstream Vera Sans", "Luxi Sans", "Liberation Sans", "DejaVu Sans", "Sans" });
+    fontCandidates.addArray(StringArray { "DejaVu Sans", "IPAGothic", "Verdana", "Bitstream Vera Sans", "Luxi Sans", "Liberation Sans", "Sans" });
 #endif
     
     for (auto&& font : fontCandidates)
