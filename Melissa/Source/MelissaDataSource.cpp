@@ -256,8 +256,6 @@ void MelissaDataSource::validateSettings()
         playlists_.emplace_back(playlist);
     }
     for (auto&& l : listeners_) l->playlistUpdated(0);
-    
-    initFontSettings();
 }
 
 void MelissaDataSource::saveSettingsFile()
@@ -418,11 +416,11 @@ void MelissaDataSource::initFontSettings(const String& fontName)
     if (!fontName.isEmpty()) fontCandidates.add(fontName);
     
 #if defined(JUCE_MAC)
-    fontCandidates.addArray(StringArray { "YuGothic", "San Francisco" });
+    fontCandidates.mergeArray(StringArray { "YuGothic", "San Francisco" });
 #elif defined(JUCE_WINDOWS)
-    fontCandidates.addArray(StringArray { "Meiryo UI", "Tahoma" });
+    fontCandidates.mergeArray(StringArray { "Meiryo UI", "Tahoma" });
 #else
-    fontCandidates.addArray(StringArray { "DejaVu Sans", "IPAGothic", "Verdana", "Bitstream Vera Sans", "Luxi Sans", "Liberation Sans", "Sans" });
+    fontCandidates.mergeArray(StringArray { "DejaVu Sans", "IPAGothic", "Verdana", "Bitstream Vera Sans", "Luxi Sans", "Liberation Sans", "Sans" });
 #endif
     
     for (auto&& font : fontCandidates)
