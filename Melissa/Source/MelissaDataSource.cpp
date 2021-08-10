@@ -435,15 +435,8 @@ void MelissaDataSource::initFontSettings(const String& fontName)
 
 bool MelissaDataSource::isFontAvailable(const String& fontName) const
 {
-    Array<Font> availableFonts;
-    Font::findFonts(availableFonts);
-
-    for (auto&& font : availableFonts)
-    {
-        if (font.getTypefaceName() == fontName) return true;
-    }
-
-    return false;
+    const StringArray availableFontNames = Font::findAllTypefaceNames();
+    return availableFontNames.contains(fontName);
 }
 
 Font MelissaDataSource::getFont(Global::FontSize size) const
