@@ -39,6 +39,7 @@ enum
     kMenuID_VersionCheck,
     kMenuID_Preferences,
     kMenuID_Shortcut,
+    kMenuID_UITheme_Auto,
     kMenuID_UITheme_Dark,
     kMenuID_UITheme_Light,
     kMenuID_RevealSettingsFile,
@@ -140,7 +141,14 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameSho
     shouldInitializeBpmDetector_ = false;
     shouldUpdateBpm_ = false;
     
-    MelissaUISettings::isDarkMode = (dataSource_->getUITheme() == "System_Dark");
+    if (dataSource_->getUITheme() == "System_Auto")
+    {
+        MelissaUISettings::isDarkMode = Desktop::isOSXDarkModeActive();
+    }
+    else
+    {
+        MelissaUISettings::isDarkMode = dataSource_->getUITheme() == "System_Dark";
+    }
     simpleTextButtonLaf_.setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
     laf_.updateColour();
     browserLaf_.updateColour();
@@ -310,8 +318,13 @@ void MainComponent::createUI()
         menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
         
         PopupMenu uiThemeMenu;
-        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, MelissaUISettings::isDarkMode);
-        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, !MelissaUISettings::isDarkMode);
+        const auto uiTheme = dataSource_->getUITheme();
+#ifdef JUCE_MAC
+        uiThemeMenu.addItem(kMenuID_UITheme_Auto, TRANS("ui_theme_auto"), true,  uiTheme == "System_Auto");
+        uiThemeMenu.addSeparator();
+#endif
+        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, uiTheme == "System_Dark");
+        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, uiTheme == "System_Light");
         menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
         
         menu.addSeparator();
@@ -348,11 +361,24 @@ void MainComponent::createUI()
         {
             showShortcutDialog();
         }
-        else if (result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
+        else if (result == kMenuID_UITheme_Auto || result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
         {
             const std::vector<String> options = { TRANS("ok") };
-            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index){
-                dataSource_->setUITheme(result == kMenuID_UITheme_Dark ? "System_Dark" : "System_Light");
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index) {
+                String uiTheme;
+                if (result == kMenuID_UITheme_Auto)
+                {
+                    uiTheme = "System_Auto";
+                }
+                else if (result == kMenuID_UITheme_Dark)
+                {
+                    uiTheme = "System_Dark";
+                }
+                else
+                {
+                    uiTheme = "System_Light";
+                }
+                dataSource_->setUITheme(uiTheme);
                 File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
                 JUCEApplicationBase::quit();
             });
@@ -415,10 +441,6 @@ void MainComponent::createUI()
     controlComponent_->setOpaque(false);
     controlComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
     addAndMakeVisible(controlComponent_.get());
-    
-    bottomComponent_ = make_unique<MelissaBottomControlComponent>();
-    laf_.setBottomComponent(bottomComponent_.get());
-    addAndMakeVisible(bottomComponent_.get());
     
     String sectionTitles[kNumOfSections] =
     {
@@ -1053,8 +1075,9 @@ void MainComponent::createUI()
     playlistComponent_ = make_unique<MelissaPlaylistComponent>();
     fileComponent_->addChildComponent(playlistComponent_.get());
     
-    tooltipWindow_ = std::make_unique<TooltipWindow>(bottomComponent_.get(), 0);
+    tooltipWindow_ = std::make_unique<TooltipWindow>(this, 0);
     tooltipWindow_->setLookAndFeel(&laf_);
+    tooltipWindow_->setMillisecondsBeforeTipAppears(1000);
     
     updateSpeedModeTab(kSpeedModeTab_Basic);
     updateListMemoTab(kListMemoTab_Practice);
@@ -1121,9 +1144,6 @@ void MainComponent::resized()
     markerMemoComponent_->setBounds(80, 4, getWidth() - 80 * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
-    
-    // Bottom
-    bottomComponent_->setBounds(0, getHeight() - 30, getWidth(), 30);
     
     int y = controlComponent_->getY() + 10;
     
@@ -1309,7 +1329,7 @@ void MainComponent::resized()
     // File component (Browser / Playlist / History)
     {
         int y = controlComponent_->getBottom() + kGradationHeight - 10;
-        int h = (bottomComponent_->getY() - 10) - y;
+        int h = (getHeight() - 10) - y;
         fileComponent_->setBounds(10, y, songWidth, h);
         int x = fileComponent_->getRight() + 10;
         listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
