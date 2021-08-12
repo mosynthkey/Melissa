@@ -58,6 +58,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
     if (!file.existsAsFile())
     {
         validateSettings();
+        initFontSettings();
         return;
     }
     
