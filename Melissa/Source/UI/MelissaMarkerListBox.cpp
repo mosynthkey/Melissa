@@ -197,12 +197,13 @@ void MelissaMarkerListBox::cellClicked(int rowNumber, int columnId, const MouseE
         };
         popupMenu_->clear();
         popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
-        auto result = popupMenu_->show();
-
-        if (result == kMenuId_Remove)
-        {
-            dataSource_->removeMarker(rowNumber);
-        }
+        
+        popupMenu_->showMenuAsync(PopupMenu::Options(), [&, rowNumber](int result) {
+            if (result == kMenuId_Remove)
+            {
+                dataSource_->removeMarker(rowNumber);
+            }
+        });
     }
 }
 

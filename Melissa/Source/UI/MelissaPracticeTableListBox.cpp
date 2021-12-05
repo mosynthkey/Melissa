@@ -185,16 +185,19 @@ void MelissaPracticeTableListBox::cellClicked(int rowNumber, int columnId, const
         popupMenu_->clear();
         popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
         popupMenu_->addItem(kMenuId_Overwrite, TRANS("overwrite"), true);
-        auto result = popupMenu_->show();
+        
+        popupMenu_->showMenuAsync(PopupMenu::Options(), [&, rowNumber](int result) {
+            if (result == kMenuId_Remove)
+            {
+                dataSource_->removePracticeList(rowNumber);
+            }
+            else if (result == kMenuId_Overwrite)
+            {
+                dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_);
+            }
+        });
 
-        if (result == kMenuId_Remove)
-        {
-            dataSource_->removePracticeList(rowNumber);
-        }
-        else if (result == kMenuId_Overwrite)
-        {
-            dataSource_->overwritePracticeList(rowNumber, practiceList_[rowNumber].name_);
-        }
+
     }
 }
 
