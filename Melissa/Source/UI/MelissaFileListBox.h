@@ -64,24 +64,26 @@ public:
             popupMenu_->clear();
             popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
             popupMenu_->addItem(kMenuId_Reveal, TRANS("reveal"), true);
-            const auto result = popupMenu_->show();
-            if (result == kMenuId_Remove)
-            {
-                if (target_ == kTarget_History)
+            
+            popupMenu_->showMenuAsync(PopupMenu::Options(), [&, row](int result) {
+                if (result == kMenuId_Remove)
                 {
-                    dataSource_->removeFromHistory(row);
+                    if (target_ == kTarget_History)
+                    {
+                        dataSource_->removeFromHistory(row);
+                    }
+                    else
+                    {
+                        const size_t index = static_cast<size_t>(target_);
+                        dataSource_->removeFromPlaylist(index, row);
+                    }
                 }
-                else
+                else if (result == kMenuId_Reveal)
                 {
-                    const size_t index = static_cast<size_t>(target_);
-                    dataSource_->removeFromPlaylist(index, row);
+                    File file = list_[row];
+                    if (file.existsAsFile()) file.revealToUser();
                 }
-            }
-            else if (result == kMenuId_Reveal)
-            {
-                File file = list_[row];
-                if (file.existsAsFile()) file.revealToUser();
-            }
+            });
         }
     }
     

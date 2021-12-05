@@ -341,70 +341,71 @@ void MainComponent::createUI()
         advancedMenu.addItem(kMenuID_RevealSettingsFile, TRANS("reveal_settings_file"));
         menu.addSubMenu(TRANS("advanced_settings"), advancedMenu);
         
-        const auto result = menu.show();
-        model_->setPlaybackStatus(kPlaybackStatus_Stop);
-        if (result == kMenuID_About)
-        {
-            showAboutDialog();
-        }
-        else if (result == kMenuID_Manual)
-        {
-            URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
-        }
-        else if (result == kMenuID_VersionCheck)
-        {
-            showUpdateDialog(true);
-        }
-        else if (result == kMenuID_Preferences)
-        {
-            showAudioMidiSettingsDialog();
-        }
-        else if (result == kMenuID_Shortcut)
-        {
-            showShortcutDialog();
-        }
-        else if (result == kMenuID_UITheme_Auto || result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
-        {
-            const std::vector<String> options = { TRANS("ok") };
-            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index) {
-                String uiTheme;
-                if (result == kMenuID_UITheme_Auto)
+        menu.showMenuAsync(PopupMenu::Options(), [&](int result) {
+            model_->setPlaybackStatus(kPlaybackStatus_Stop);
+            if (result == kMenuID_About)
+            {
+                showAboutDialog();
+            }
+            else if (result == kMenuID_Manual)
+            {
+                URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
+            }
+            else if (result == kMenuID_VersionCheck)
+            {
+                showUpdateDialog(true);
+            }
+            else if (result == kMenuID_Preferences)
+            {
+                showAudioMidiSettingsDialog();
+            }
+            else if (result == kMenuID_Shortcut)
+            {
+                showShortcutDialog();
+            }
+            else if (result == kMenuID_UITheme_Auto || result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
+            {
+                const std::vector<String> options = { TRANS("ok") };
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index) {
+                    String uiTheme;
+                    if (result == kMenuID_UITheme_Auto)
+                    {
+                        uiTheme = "System_Auto";
+                    }
+                    else if (result == kMenuID_UITheme_Dark)
+                    {
+                        uiTheme = "System_Dark";
+                    }
+                    else
+                    {
+                        uiTheme = "System_Light";
+                    }
+                    dataSource_->setUITheme(uiTheme);
+                    File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
+                    JUCEApplicationBase::quit();
+                });
+                MelissaModalDialog::show(dialog, TRANS("ui_theme"));
+            }
+            else if (result == kMenuID_Tutorial)
+            {
+                showTutorial();
+            }
+            else if (result == kMenuID_TwitterShare)
+            {
+                if (isLangJapanese_)
                 {
-                    uiTheme = "System_Auto";
-                }
-                else if (result == kMenuID_UITheme_Dark)
-                {
-                    uiTheme = "System_Dark";
+                    URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
                 }
                 else
                 {
-                    uiTheme = "System_Light";
+                    URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
                 }
-                dataSource_->setUITheme(uiTheme);
-                File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
-                JUCEApplicationBase::quit();
-            });
-            MelissaModalDialog::show(dialog, TRANS("ui_theme"));
-        }
-        else if (result == kMenuID_Tutorial)
-        {
-            showTutorial();
-        }
-        else if (result == kMenuID_TwitterShare)
-        {
-            if (isLangJapanese_)
-            {
-                URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
             }
-            else
+            else if (result == kMenuID_RevealSettingsFile)
             {
-                URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+                settingsFile_.revealToUser();
             }
-        }
-        else if (result == kMenuID_RevealSettingsFile)
-        {
-            settingsFile_.revealToUser();
-        }
+        });
     };
     addAndMakeVisible(menuButton_.get());
     
