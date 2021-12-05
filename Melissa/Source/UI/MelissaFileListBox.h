@@ -138,6 +138,7 @@ public:
     
     void historyUpdated() override
     {
+        if (target_ != kTarget_History) return;
         updateList();
         selectRow(0);
     }
