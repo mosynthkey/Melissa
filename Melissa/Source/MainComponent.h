@@ -264,11 +264,19 @@ private:
     std::unique_ptr<ToggleButton> practiceListToggleButton_;
     std::unique_ptr<ToggleButton> markerListToggleButton_;
     std::unique_ptr<ToggleButton> memoToggleButton_;
-    std::unique_ptr<TextEditor> memoTextEditor_;
+    
     std::unique_ptr<DrawableButton> addToPracticeButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     std::unique_ptr<DrawableButton> addMarkerButton_;
     std::unique_ptr<MelissaMarkerListBox> markerTable_;
+    
+    std::unique_ptr<TextEditor> memoTextEditor_;
+    std::unique_ptr<Label> urlLabel_;
+    std::unique_ptr<HyperlinkButton> urlHyperLinkButton_;
+    std::unique_ptr<TextEditor> urlTextEditor_;
+    std::unique_ptr<DrawableButton> urlEditButton_;
+    std::unique_ptr<Drawable> editIcon_;
+    std::unique_ptr<Drawable> editIconHighlighted_;
     
     std::unique_ptr<ComboBox> outputModeComboBox_;
     

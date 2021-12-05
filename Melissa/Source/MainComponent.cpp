@@ -989,6 +989,33 @@ void MainComponent::createUI()
     memoTextEditor_->setReturnKeyStartsNewLine(true);
     listComponent_->addAndMakeVisible(memoTextEditor_.get());
     
+    urlLabel_ = make_unique<Label>();
+    urlLabel_->setText("URL", dontSendNotification);
+    listComponent_->addAndMakeVisible(urlLabel_.get());
+    
+    urlHyperLinkButton_ = make_unique<HyperlinkButton>("https://github.com/mosynthkey/Melissa", URL("https://github.com/mosynthkey/Melissa"));
+    urlHyperLinkButton_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main), false, Justification::right);
+    listComponent_->addAndMakeVisible(urlHyperLinkButton_.get());
+    
+    urlTextEditor_ = make_unique<TextEditor>();
+    urlTextEditor_->setFont(Font(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main)));
+    urlTextEditor_->setLookAndFeel(&memoLaf_);
+    listComponent_->addAndMakeVisible(urlTextEditor_.get());
+    
+    urlEditButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    urlEditButton_->setTooltip(TRANS("rename_playlist"));
+    {
+        editIcon_ = Drawable::createFromImageData(BinaryData::playlist_edit_svg, BinaryData::playlist_edit_svgSize);
+        editIcon_->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+        editIcon_->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
+        
+        editIconHighlighted_ = Drawable::createFromImageData(BinaryData::playlist_edit_svg, BinaryData::playlist_edit_svgSize);
+        editIconHighlighted_->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+        editIconHighlighted_->replaceColour(Colours::black, MelissaUISettings::getTextColour());
+    }
+    urlEditButton_->setImages(editIcon_.get(), editIconHighlighted_.get());
+    listComponent_->addAndMakeVisible(urlEditButton_.get());
+    
     auto createAndAddTab = [&](const String& title, ListMemoTab tab)
     {
         auto b  = make_unique<ToggleButton>();
@@ -1365,9 +1392,12 @@ void MainComponent::resized()
         x = 10;
         y = 50;
         h = fileComponent_->getHeight() - 60;
-        practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
-        markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
-        memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        w = listComponent_->getWidth() - x - 20;
+        practiceTable_->setBounds(x, y, w, h);
+        markerTable_->setBounds(x, y, w, h);
+        memoTextEditor_->setBounds(x, y, w, h - 40);
+        urlLabel_->setBounds(x, y + h - 30, 100, 30);
+        urlHyperLinkButton_->setBounds(x + 100 + 10, y + h - 30, w - 100 * 2 - 10 * 2, 30);
     }
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
