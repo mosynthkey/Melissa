@@ -48,7 +48,8 @@ private:
 
 MelissaPracticeTableListBox::MelissaPracticeTableListBox(const String& componentName) :
 TableListBox(componentName, this),
-dataSource_(MelissaDataSource::getInstance())
+dataSource_(MelissaDataSource::getInstance()),
+selectedRow_(-1)
 {
     dataSource_->addListener(this);
     
@@ -218,6 +219,11 @@ void MelissaPracticeTableListBox::cellDoubleClicked(int rowNumber, int columnId,
 #endif
 }
 
+void MelissaPracticeTableListBox::selectedRowsChanged(int row)
+{
+    selectedRow_ = row;
+}
+
 void MelissaPracticeTableListBox::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     totalLengthMSec_ = static_cast<float>(bufferLength) / sampleRate * 1000.f;
@@ -244,4 +250,20 @@ void MelissaPracticeTableListBox::labelTextChanged(Label* label)
         if (kSpeedMin <= speed && speed <= kSpeedMax) practiceList_[rowIndex].speed_ = speed;
     }
     dataSource_->overwritePracticeList(rowIndex, practiceList_[rowIndex]);
+}
+
+void MelissaPracticeTableListBox::moveSelected(int direction)
+{
+    if (selectedRow_ == -1) return;
+    
+    auto dataSource = MelissaDataSource::getInstance();
+    direction = (direction > 0) ? 1 : -1;
+    
+    const auto size = dataSource->getNumPracticeList();
+    
+    const auto dist = selectedRow_ + direction;
+    if (dist < 0 || size <= dist) return;
+    
+    dataSource->swapPracticeList(selectedRow_, dist);
+    selectRow(dist);
 }

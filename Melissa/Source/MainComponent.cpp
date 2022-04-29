@@ -310,11 +310,13 @@ void MainComponent::createUI()
     menuButton_ = std::make_unique<MelissaMenuButton>();
     menuButton_->onClick = [&]()
     {
+        const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
+        
         PopupMenu menu;
         menu.setLookAndFeel(&laf_);
         menu.addItem(kMenuID_About, TRANS("about_melissa"));
         menu.addItem(kMenuID_Manual, TRANS("open_manual"));
-        menu.addItem(kMenuID_VersionCheck, TRANS("check_update"));
+        menu.addItem(kMenuID_VersionCheck, updateExists ? TRANS("update_exists") : TRANS("check_update"));
         menu.addSeparator();
         menu.addItem(kMenuID_Preferences, TRANS("audio_midi_settings"));
         menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
@@ -407,6 +409,7 @@ void MainComponent::createUI()
             }
         });
     };
+    menuButton_->setBudgeVisibility(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
     addAndMakeVisible(menuButton_.get());
     
     {
@@ -427,6 +430,18 @@ void MainComponent::createUI()
         iconHighlightedImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
         iconHighlightedImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
         for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
+    }
+    
+    {
+        iconImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+        iconImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+        for (auto&& image : iconImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+        for (auto&& image : iconImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
+        
+        iconHighlightedImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+        iconHighlightedImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour());
     }
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
@@ -1025,6 +1040,24 @@ void MainComponent::createUI()
     };
     listComponent_->addAndMakeVisible(addToPracticeButton_.get());
     
+    practiceListUpButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    practiceListUpButton_->setTooltip(TRANS("practice_list_up"));
+    practiceListUpButton_->setImages(iconImages2_[kIcon2_Up].get(), iconHighlightedImages2_[kIcon2_Up].get());
+    practiceListUpButton_->onClick = [&]()
+    {
+        practiceTable_->moveSelected(-1);
+    };
+    listComponent_->addAndMakeVisible(practiceListUpButton_.get());
+    
+    practiceListDownButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+    practiceListDownButton_->setTooltip(TRANS("practice_list_down"));
+    practiceListDownButton_->setImages(iconImages2_[kIcon2_Down].get(), iconHighlightedImages2_[kIcon2_Down].get());
+    practiceListDownButton_->onClick = [&]()
+    {
+        practiceTable_->moveSelected(+1);
+    };
+    listComponent_->addAndMakeVisible(practiceListDownButton_.get());
+    
     addMarkerButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addMarkerButton_->setTooltip(TRANS("add_marker"));
     addMarkerButton_->setImages(iconImages_[kIcon_Add].get(), iconImages_[kIcon_Add].get());
@@ -1139,7 +1172,7 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
-    menuButton_->setBounds(20, 20, 26, 14);
+    menuButton_->setBounds(20, 16, 30, 18);
     
     shortcutPopup_->setBounds(0, 5, getWidth(), 30);
     
@@ -1366,9 +1399,12 @@ void MainComponent::resized()
         x = 10;
         y = 50;
         h = fileComponent_->getHeight() - 60;
-        practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h - 40);
         markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
         memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        
+        practiceListUpButton_->setBounds(x, practiceTable_->getBottom() + 10, 30, 30);
+        practiceListDownButton_->setBounds(x + 40, practiceTable_->getBottom() + 10, 30, 30);
     }
     
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i )
@@ -1691,6 +1727,8 @@ void MainComponent::updateFileChooserTab(FileChooserTab tab)
 void MainComponent::updateListMemoTab(ListMemoTab tab)
 {
     practiceTable_->setVisible(tab == kListMemoTab_Practice);
+    practiceListUpButton_->setVisible(tab == kListMemoTab_Practice);
+    practiceListDownButton_->setVisible(tab == kListMemoTab_Practice);
     markerTable_->setVisible(tab == kListMemoTab_Marker);
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
 }
