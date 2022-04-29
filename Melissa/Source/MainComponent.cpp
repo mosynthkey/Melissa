@@ -1149,12 +1149,30 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
     }
     bufferToFill.clearActiveBufferRegion();
     
-    float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
-    if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
+    const size_t numOfChannels = bufferToFill.buffer->getNumChannels();
+    
+    if (numOfChannels == 1)
     {
-        audioEngine_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
+        float* buffer[] = { bufferToFill.buffer->getWritePointer(0) };
+        if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
+        {
+            audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        }
+        metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
     }
-    metronome_->render(buffer, timeIndicesMSec_, bufferToFill.numSamples);
+    else if (numOfChannels == 2)
+    {
+        float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
+        if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
+        {
+            audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        }
+        metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+    }
+    else
+    {
+        jassertfalse;
+    }
 }
 
 void MainComponent::releaseResources()

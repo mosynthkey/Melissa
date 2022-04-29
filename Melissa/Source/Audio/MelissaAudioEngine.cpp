@@ -228,9 +228,10 @@ float MelissaAudioEngine::getPlayingPosRatio() const
     return static_cast<float>(getPlayingPosMSec()) / 1000.f / (static_cast<float>(originalBufferLength_) / originalSampleRate_);
 }
 
-void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& timeIndicesMSec, size_t bufferLength)
+void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
     if (status_ != kStatus_Playing) return;
+    jassert(1 <= numOfChannels && numOfChannels <= 2);
     
     mutex_.lock();
     if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
@@ -267,8 +268,18 @@ void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& tim
                 buffer[0] = buffer[1] = lrDiff;
             }
             
-            bufferToRender[0][iSample] = buffer[0] * volumeBalance_;
-            bufferToRender[1][iSample] = buffer[1] * volumeBalance_;
+            if (numOfChannels == 1)
+            {
+                // mono
+                bufferToRender[0][iSample] = (buffer[0] + buffer[1]) * volumeBalance_;
+            }
+            else
+            {
+                // stereo
+                bufferToRender[0][iSample] = buffer[0] * volumeBalance_;
+                bufferToRender[1][iSample] = buffer[1] * volumeBalance_;
+            }
+
             processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
             
             timeIndicesMSec[iSample] = playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
