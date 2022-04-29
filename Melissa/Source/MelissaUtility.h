@@ -43,7 +43,7 @@ public:
     
     static std::string getFormattedPitch(float pitch)
     {
-        const int pitchInt = static_cast<int>(pitch * 10);
+        const int pitchInt = static_cast<int>(std::round(pitch * 10));
         const int sign = (pitchInt > 0) ? 1 : (pitchInt == 0 ? 0 : -1);
         
         const int pitchFixed = std::abs(pitchInt) / 10;
