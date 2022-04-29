@@ -185,18 +185,6 @@ void MelissaModel::setPlaybackMode(PlaybackMode playbackMode)
     for (auto&& l : listeners_) l->playbackModeChanged(playbackMode);
 }
 
-void MelissaModel::setShouldLoadNextSongFromDsp()
-{
-    shouldLoadNextSong_ = true;
-}
-
-bool MelissaModel::shouldLoadNextSong(bool resetFlag)
-{
-    const bool shouldLoad = shouldLoadNextSong_;
-    if (resetFlag) shouldLoadNextSong_ = false;
-    return shouldLoad;
-}
-
 void  MelissaModel::setMetronomeSwitch(bool on)
 {
     metronomeSwitch_ = on;

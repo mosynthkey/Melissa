@@ -180,7 +180,7 @@ private:
 };
 
 MelissaAudioEngine::MelissaAudioEngine() :
-model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), originalSampleRate_(48000), playbackMode_(kPlaybackMode_LoopOneSong), originalBufferLength_(0), outputSampleRate_(48000),
+model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
@@ -230,11 +230,13 @@ float MelissaAudioEngine::getPlayingPosRatio() const
 
 void MelissaAudioEngine::render(float* bufferToRender[], std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
+    if (status_ != kStatus_Playing) return;
+    
     mutex_.lock();
     if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
     {
+        if (!shouldProcess_) status_ = kStatus_RequestingForNextSong;
         mutex_.unlock();
-        if (!shouldProcess_) model_->setShouldLoadNextSongFromDsp();
         return;
     }
     sampleIndexStretcher_->getStretchedSampleIndices(bufferLength, timeQue_);
@@ -377,12 +379,23 @@ void MelissaAudioEngine::resetProcessedBuffer()
         const bool loopRangeWholeSong = (aIndex_ == 0 && bIndex_ == originalBufferLength_);
         loop_ = !loopRangeWholeSong;
     }
+    status_ = kStatus_Playing;
     
 #if defined(ENABLE_SPEED_TRAINING)
     count_ = 0;
 #endif
 
     mutex_.unlock();
+}
+
+MelissaAudioEngine::Status MelissaAudioEngine::getStatus() const
+{
+    return status_;
+}
+
+void MelissaAudioEngine::setStatus(Status status)
+{
+    status_ = status;
 }
 
 std::string MelissaAudioEngine::getStatusString() const
@@ -505,9 +518,11 @@ void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTi
     
     aIndex_ = static_cast<int32_t>(aRatio * originalBufferLength_);
     bIndex_ = static_cast<int32_t>(bRatio * originalBufferLength_);
-    if (aIndex_ <= readIndex_ && readIndex_ < bIndex_) return;
-    readIndex_ = aIndex_;
-    needToReset_ = true;
+    if (readIndex_ < aIndex_ || bIndex_ < readIndex_)
+    {
+        readIndex_ = aIndex_;
+    }
+    updateLoopParameters();
 }
 
 void MelissaAudioEngine::playingPosChanged(float time, float ratio)
@@ -553,4 +568,17 @@ void MelissaAudioEngine::eqGainChanged(size_t band, float gain)
 void MelissaAudioEngine::eqQChanged(size_t band, float q)
 {
     eq_->setQ(q);
+}
+
+void MelissaAudioEngine::updateLoopParameters()
+{
+    if (playbackMode_ == kPlaybackMode_LoopOneSong)
+    {
+        loop_ = true;
+    }
+    else if (playbackMode_ == kPlaybackMode_LoopPlaylistSongs)
+    {
+        const bool loopRangeWholeSong = (aIndex_ == 0 && bIndex_ == originalBufferLength_);
+        loop_ = !loopRangeWholeSong;
+    }
 }

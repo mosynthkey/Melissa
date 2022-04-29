@@ -72,9 +72,6 @@ public:
     void setPlaybackMode(PlaybackMode mode);
     PlaybackMode getPlaybackMode() const { return playbackMode_; }
     
-    void setShouldLoadNextSongFromDsp();
-    bool shouldLoadNextSong(bool resetFlag = false);
-    
     // Metronome
     void  setMetronomeSwitch(bool on);
     bool  getMetronomeSwitch() const { return metronomeSwitch_; }
@@ -123,7 +120,6 @@ private:
     
     PlaybackStatus playbackStatus_;
     PlaybackMode playbackMode_;
-    bool shouldLoadNextSong_;
     bool metronomeSwitch_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
