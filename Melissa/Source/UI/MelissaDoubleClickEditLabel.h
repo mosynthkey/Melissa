@@ -17,6 +17,7 @@ public:
     {
         setLookAndFeel(&laf_);
         setEditable(false, true);
+        setWantsKeyboardFocus(false);
     }
     
     ~MelissaDoubleClickEditLabel()

@@ -51,6 +51,8 @@ TableListBox(componentName, this),
 dataSource_(MelissaDataSource::getInstance()),
 selectedRow_(-1)
 {
+    setWantsKeyboardFocus(false);
+    
     dataSource_->addListener(this);
     
     String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed" };

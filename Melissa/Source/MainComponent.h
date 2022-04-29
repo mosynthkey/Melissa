@@ -345,6 +345,7 @@ private:
     bool nextFileNameShown_;    
     bool shouldExit_;
     bool isLangJapanese_;
+    bool requestedKeyboardFocusOnFirstLaunch_;
     
     std::unique_ptr<TooltipWindow> tooltipWindow_;
     
