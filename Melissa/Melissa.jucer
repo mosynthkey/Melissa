@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
               headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
-              version="2.5.1" companyName="MasakiOno" companyCopyright="Copyright(c) 2021 Masaki Ono"
+              version="2.5.2" companyName="MasakiOno" companyCopyright="Copyright(c) 2022 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
               jucerFormatVersion="1">
