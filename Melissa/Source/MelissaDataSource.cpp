@@ -778,6 +778,19 @@ void MelissaDataSource::getPracticeList(std::vector<MelissaDataSource::Song::Pra
     }
 }
 
+size_t MelissaDataSource::getNumPracticeList() const
+{
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            return song.practiceList_.size();
+        }
+    }
+    
+    return 0;
+}
+
 void MelissaDataSource::addPracticeList(const String& name)
 {
     if (currentSongFilePath_.isEmpty()) return;
@@ -886,6 +899,24 @@ void MelissaDataSource::overwritePracticeList(size_t index, const Song::Practice
                 song.practiceList_[index] = list;
                 for (auto&& l : listeners_) l->practiceListUpdated();
             }
+            return;
+        }
+    }
+}
+
+void MelissaDataSource::swapPracticeList(size_t indexA, size_t indexB)
+{
+    const auto size = getNumPracticeList();
+    if (size <= indexA || size <= indexB) return;
+    
+    for (auto&& song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            auto swap = song.practiceList_[indexA];
+            song.practiceList_[indexA] = song.practiceList_[indexB];
+            song.practiceList_[indexB] = swap;
+            for (auto&& l : listeners_) l->practiceListUpdated();
             return;
         }
     }

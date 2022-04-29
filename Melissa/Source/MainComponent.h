@@ -211,8 +211,17 @@ private:
         kNumOfIcons
     };
     
+    enum {
+        kIcon2_Up,
+        kIcon2_Down,
+        kNumOfIcons2
+    };
+    
     std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
     std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
+    
+    std::unique_ptr<Drawable> iconImages2_[kNumOfIcons2];
+    std::unique_ptr<Drawable> iconHighlightedImages2_[kNumOfIcons2];
     
 #if defined(ENABLE_SPEED_TRAINING)
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
@@ -267,6 +276,8 @@ private:
     std::unique_ptr<TextEditor> memoTextEditor_;
     std::unique_ptr<DrawableButton> addToPracticeButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
+    std::unique_ptr<DrawableButton> practiceListUpButton_;
+    std::unique_ptr<DrawableButton> practiceListDownButton_;
     std::unique_ptr<DrawableButton> addMarkerButton_;
     std::unique_ptr<MelissaMarkerListBox> markerTable_;
     

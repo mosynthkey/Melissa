@@ -271,10 +271,12 @@ public:
     
     // Practice list
     void getPracticeList(std::vector<Song::PracticeList>& list);
+    size_t getNumPracticeList() const;
     void addPracticeList(const String& name);
     void removePracticeList(size_t index);
     void overwritePracticeList(size_t index, const String& name);
     void overwritePracticeList(size_t index, const Song::PracticeList& list);
+    void swapPracticeList(size_t indexA, size_t indexB);
     
     // Marker
     void getMarkers(std::vector<Song::Marker>& markers) const;

@@ -15,7 +15,7 @@
 class MelissaMenuButton : public Button
 {
 public:
-    MelissaMenuButton() : Button("") { }
+    MelissaMenuButton() : Button(""), showBudge_(true) { }
     void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         constexpr int lineHeight = 2;
@@ -23,12 +23,24 @@ public:
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         g.setColour(MelissaUISettings::getWaveformColour().withAlpha(highlighted ? 1.f : 0.6f));
         
-        const int w = getWidth();
-        const int h = getHeight();
-        g.fillRoundedRectangle(0, 0, w, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, (h - lineHeight) / 2, w, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, h - lineHeight, w, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 4, 26, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 10, 26, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 16, 26, lineHeight, lineHeight / 2);
+        
+        if (showBudge_)
+        {
+            g.setColour(Colours::red);
+            g.fillEllipse(22, 0, 8, 8);
+        }
     }
+    
+    void setBudgeVisibility(bool show) {
+        showBudge_ = show;
+        repaint();
+    }
+    
+private:
+    bool showBudge_;
 };
 
 class MelissaAddButton : public Button

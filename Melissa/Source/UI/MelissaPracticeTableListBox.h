@@ -40,6 +40,8 @@ public:
     int  getColumnAutoSizeWidth(int columnId) override;
     void cellClicked(int rowNumber, int columnId, const MouseEvent& e) override;
     void cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& e) override;
+    void selectedRowsChanged(int row) override;
+
     
     // MelissaDataSourceListener
     void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
@@ -48,10 +50,13 @@ public:
     // Label
     void labelTextChanged(Label* label) override;
     
+    void moveSelected(int direction);
+    
 private:
     MelissaLookAndFeel_SimpleTextEditor laf_;
     MelissaDataSource* dataSource_;
     std::vector<MelissaDataSource::Song::PracticeList> practiceList_;
     float totalLengthMSec_;
     std::shared_ptr<PopupMenu> popupMenu_;
+    int selectedRow_;
 };
