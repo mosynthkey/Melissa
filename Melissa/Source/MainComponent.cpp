@@ -654,7 +654,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setSpeed(model_->getSpeed() + sign);
+                model_->setSpeed(model_->getSpeed() + (b ? sign * 10 : sign));
             }
         };
         speedModeNormalComponent_->addAndMakeVisible(speedButton_.get());
