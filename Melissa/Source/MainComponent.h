@@ -136,7 +136,6 @@ public:
     void prev();
     void next();
     void resetLoop();
-    void addToPracticeList(String name);
     void saveMemo();
     
     var getSongSetting(String fileName);

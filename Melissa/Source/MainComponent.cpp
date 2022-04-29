@@ -1595,8 +1595,9 @@ void MainComponent::run()
     {
         if (dataSource_->isFileLoaded())
         {
-            if (model_->shouldLoadNextSong(true))
+            if (audioEngine_->getStatus() == MelissaAudioEngine::kStatus_RequestingForNextSong)
             {
+                audioEngine_->setStatus(MelissaAudioEngine::kStatus_WaitingNextSongToLoad);
                 prepareingNextSong_ = true;
                 MessageManager::callAsync([&]() {
                     loadNextSong();

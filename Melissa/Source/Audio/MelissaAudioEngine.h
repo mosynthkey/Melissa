@@ -40,6 +40,15 @@ public:
     void reset();
     void resetProcessedBuffer();
     
+    enum Status {
+        kStatus_Playing,
+        kStatus_RequestingForNextSong,
+        kStatus_WaitingNextSongToLoad,
+    };
+    
+    Status getStatus() const;
+    void setStatus(Status status);
+    
     // for debug
     std::string getStatusString() const;
     
@@ -95,6 +104,8 @@ private:
     bool eqSwitch_;
     std::unique_ptr<Equalizer> eq_;
     
+    Status status_;
+    
     // MelissaModelListener
     void playbackModeChanged(PlaybackMode mode) override;
     void musicVolumeChanged(float volume) override;
@@ -115,4 +126,6 @@ private:
     void eqFreqChanged(size_t band, float freq) override;
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
+    
+    void updateLoopParameters();
 };
