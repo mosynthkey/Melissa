@@ -15,7 +15,7 @@ class MelissaMetronome : public MelissaModelListener
 {
 public:
     MelissaMetronome();
-    void render(float* bufferToRender[], const std::vector<float>& timeIndicesMSec, size_t bufferLength);
+    void render(float* bufferToRender[], size_t numOfChannels, const std::vector<float>& timeIndicesMSec, size_t bufferLength);
     void setOutputSampleRate(int32_t sampleRate) { sampleRate_ = sampleRate; };
     
     // MelissaModelListener

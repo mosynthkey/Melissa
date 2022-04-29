@@ -31,7 +31,7 @@ public:
     
     int32_t getPlayingSpeed() const { return currentSpeed_; }
     
-    void render(float* bufferToRender[], std::vector<float>&  timeIndicesMSec, size_t bufferLength);
+    void render(float* bufferToRender[], size_t numOfChannels, std::vector<float>&  timeIndicesMSec, size_t bufferLength);
     
     void process();
     bool needToProcess() const;

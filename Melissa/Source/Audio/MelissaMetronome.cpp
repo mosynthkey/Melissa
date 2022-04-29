@@ -20,7 +20,7 @@ timeMSecDecimal_(0.f)
     MelissaModel::getInstance()->addListener(this);
 }
 
-void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>& timeIndicesMSec, size_t bufferLength)
+void MelissaMetronome::render(float* bufferToRender[], size_t numOfChannels, const std::vector<float>& timeIndicesMSec, size_t bufferLength)
 {
     if (metronome_.bpm_ < kBpmMin) return;
     const auto playingSpeed = MelissaModel::getInstance()->getPlayingSpeed();
@@ -47,8 +47,15 @@ void MelissaMetronome::render(float* bufferToRender[], const std::vector<float>&
         
         const auto metronomeOsc = metronome_.osc_ * metronome_.amp_ * metronome_.volume_ * (metronome_.on_ ? 1.f : 0.f) * volumeBalance_;
 
-        bufferToRender[0][iSample] += metronomeOsc;
-        bufferToRender[1][iSample] += metronomeOsc;
+        if (numOfChannels == 1)
+        {
+            bufferToRender[0][iSample] += metronomeOsc;
+        }
+        else if (numOfChannels == 2)
+        {
+            bufferToRender[0][iSample] += metronomeOsc;
+            bufferToRender[1][iSample] += metronomeOsc;
+        }
 
         const int beatSection = (timeMSec_ - metronome_.beatPositionMSec_) / ((60.f / metronome_.bpm_) * 1000.f);
         if (metronome_.accent_ != 0 && (beatSection / metronome_.accent_ != metronome_.prevBeatSection_ / metronome_.accent_))
