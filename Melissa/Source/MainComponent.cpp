@@ -107,7 +107,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), prepareingNextSong_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -1654,6 +1654,13 @@ void MainComponent::exitSignalSent()
 void MainComponent::timerCallback()
 {
     if (model_ == nullptr) return;
+    
+    if (!requestedKeyboardFocusOnFirstLaunch_)
+    {
+        // Adhoc
+        grabKeyboardFocus();
+        requestedKeyboardFocusOnFirstLaunch_ = true;
+    }
     
     timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
