@@ -125,6 +125,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         {
             auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(prac.name_, dontSendNotification);
+            l->setRowNumber(rowNumber);
             return existingComponentToUpdate;
         }
     }
@@ -149,7 +150,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         {
             auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
             l->setName("speed");
-            l->setComponentID(String(rowNumber));
+            l->setRowNumber(rowNumber);
             l->setText(String(prac.speed_) + " %",  dontSendNotification);
             l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
@@ -160,6 +161,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
         {
             auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(String(prac.speed_) + "%", dontSendNotification);
+            l->setRowNumber(rowNumber);
             return existingComponentToUpdate;
         }
     }
@@ -239,7 +241,8 @@ void MelissaPracticeTableListBox::practiceListUpdated()
 
 void MelissaPracticeTableListBox::labelTextChanged(Label* label)
 {
-    const int rowIndex = label->getComponentID().getIntValue();
+    auto* l = dynamic_cast<MelissaDoubleClickEditLabel*>(label);
+    const int rowIndex = l->getRowNumber();
     if (practiceList_.size() <= rowIndex) return;
     
     if (label->getName() == "name")

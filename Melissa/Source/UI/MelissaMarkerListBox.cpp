@@ -152,10 +152,10 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         if (existingComponentToUpdate == nullptr)
         {
             auto l = new MelissaDoubleClickEditLabel(this, rowNumber, columnId);
-            l->setComponentID(String(rowNumber));
             l->setText(marker.memo_, dontSendNotification);
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+            l->setRowNumber(rowNumber);
             l->addListener(this);
             return dynamic_cast<Component*>(l);
         }
@@ -163,6 +163,7 @@ Component* MelissaMarkerListBox::refreshComponentForCell(int rowNumber, int colu
         {
             auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(existingComponentToUpdate);
             l->setText(marker.memo_, dontSendNotification);
+            l->setRowNumber(rowNumber);
             return existingComponentToUpdate;
         }
     }
@@ -213,7 +214,8 @@ void MelissaMarkerListBox::cellDoubleClicked(int rowNumber, int columnId, const 
 
 void MelissaMarkerListBox::labelTextChanged(Label* label)
 {
-    const int rowIndex = label->getComponentID().getIntValue();
+    auto l = dynamic_cast<MelissaDoubleClickEditLabel*>(label);
+    const int rowIndex = l->getRowNumber();
     if (markers_.size() <= rowIndex) return;
     markers_[rowIndex].memo_ = label->getText();
     dataSource_->overwriteMarker(rowIndex, markers_[rowIndex]);
