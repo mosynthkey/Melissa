@@ -463,11 +463,10 @@ Font MelissaDataSource::getFont(Global::FontSize size) const
 
 String MelissaDataSource::getCompatibleFileExtensions()
 {
-#ifdef JUCE_MAC
-    return "*.mp3;*.wav;*.m4a;*.flac;*.ogg";
-#else
-    return "*.mp3;*.wav;*.flac;*.ogg";
-#endif
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+
+    return formatManager.getWildcardForAllFormats();
 }
 
 void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad)
