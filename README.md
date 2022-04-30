@@ -6,11 +6,11 @@
 
 ## Downloads
 ### macOS
-- [Version 2.5.1](https://github.com/mosynthkey/Melissa/releases/download/v2.5.1/Melissa_2_5_1.dmg)
+- [Version 2.5.2](https://github.com/mosynthkey/Melissa/releases/download/v2.5.2/Melissa_2_5_2.dmg)
 
 ### Windows
-- [Version 2.5.1 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.1/Melissa_2.5.1_64.zip)
-- [Version 2.5.1 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.1/Melissa_2.5.1_32.zip)
+- [Version 2.5.2 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.2/Melissa_2.5.2_64.zip)
+- [Version 2.5.2 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.2/Melissa_2.5.2_32.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
@@ -36,4 +36,4 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [SoundTouch](https://www.surina.net/soundtouch/)
 
 ## License
-[LGPL-2.1 (c) 2021 Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2022 Masaki Ono](LICENSE)
