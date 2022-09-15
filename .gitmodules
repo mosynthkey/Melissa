@@ -1,3 +1,6 @@
 [submodule "Submodule/soundtouch"]
 	path = Submodule/soundtouch
 	url = https://codeberg.org/soundtouch/soundtouch.git
+[submodule "Submodule/spleet"]
+	path = Submodule/spleet
+	url = git@github.com:gvne/spleet.git

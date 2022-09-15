@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
-              headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
+              headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Submodule\spleet\thirdparty\install\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
               version="2.5.2" companyName="MasakiOno" companyCopyright="Copyright(c) 2022 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
@@ -225,10 +225,27 @@
               resource="0" file="Source/UI/MelissaWaveformMouseEventComponent.h"/>
       </GROUP>
     </GROUP>
+    <GROUP id="{12842F4F-8C90-92A9-9402-AEAFBA4BA6ED}" name="spleeterpp">
+      <FILE id="LOSRyF" name="constant.h" compile="0" resource="0" file="../Submodule/spleet/Source/constant.h"/>
+      <FILE id="MDGGDE" name="input_file.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/input_file.cpp"/>
+      <FILE id="GngKvx" name="input_file.h" compile="0" resource="0" file="../Submodule/spleet/Source/input_file.h"/>
+      <FILE id="C8IB0x" name="io.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/io.cpp"/>
+      <FILE id="rkMLwv" name="io.h" compile="0" resource="0" file="../Submodule/spleet/Source/io.h"/>
+      <FILE id="CiLxJM" name="output_folder.cpp" compile="1" resource="0"
+            file="../Submodule/spleet/Source/output_folder.cpp"/>
+      <FILE id="A3NAxb" name="output_folder.h" compile="0" resource="0" file="../Submodule/spleet/Source/output_folder.h"/>
+      <FILE id="kqcDCo" name="split.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/split.cpp"/>
+      <FILE id="khRlOy" name="split.h" compile="0" resource="0" file="../Submodule/spleet/Source/split.h"/>
+      <FILE id="yAK5kC" name="utils.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/utils.cpp"/>
+      <FILE id="yXKR58" name="utils.h" compile="0" resource="0" file="../Submodule/spleet/Source/utils.h"/>
+    </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" useHeaderMap="1" smallIcon="Y3ewMD"
-               bigIcon="Y3ewMD">
+               bigIcon="Y3ewMD" extraLinkerFlags="-L../../../Submodule/spleet/thirdparty/install/lib"
+               extraCompilerFlags="-I../../../Submodule/spleet/thirdparty/install/include"
+               externalLibraries="spleeter&#10;spleeter_common&#10;tensorflow&#10;tensorflow_framework"
+               postbuildCommand="cp ../../../Submodule/spleet/thirdparty/install/lib/libtensorflow.1.dylib $CONFIGURATION_BUILD_DIR&#10;cp ../../../Submodule/spleet/thirdparty/install/lib/libtensorflow_framework.1.dylib $CONFIGURATION_BUILD_DIR&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>

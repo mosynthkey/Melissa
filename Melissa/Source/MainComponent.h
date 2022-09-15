@@ -163,6 +163,8 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
+    std::unique_ptr<TextButton> spleeterButton_;
+    
     std::unique_ptr<MelissaShortcutPopupComponent> shortcutPopup_;
     
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
@@ -385,6 +387,9 @@ private:
     
     // MelissaMarkerListener
     void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;
+    
+    // Spleeter
+    void spleeter();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
