@@ -36,6 +36,7 @@
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
+#include "MelissaSpleeterBridge.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
@@ -158,6 +159,7 @@ private:
     bool shouldInitializeBpmDetector_;
     bool shouldUpdateBpm_;
     MelissaDataSource::Previous::UIState uiState_;
+    MelissaSpleeterBridge spleeterBridge_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
@@ -387,9 +389,6 @@ private:
     
     // MelissaMarkerListener
     void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;
-    
-    // Spleeter
-    void spleeter();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

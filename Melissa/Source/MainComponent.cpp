@@ -17,13 +17,6 @@
 #include "MelissaUtility.h"
 #include <float.h>
 
-// For spleeterpp
-#include "spleeter/spleeter.h"
-#include "input_file.h"
-#include "output_folder.h"
-#include "utils.h"
-#include "split.h"
-
 using std::make_unique;
 
 enum
@@ -421,7 +414,7 @@ void MainComponent::createUI()
         // Spleeter Button
         spleeterButton_ = make_unique<TextButton>();
         spleeterButton_->setButtonText("Spleet");
-        spleeterButton_->onClick = [this]() { spleeter(); };
+        spleeterButton_->onClick = [this]() { spleeterBridge_.requestStems(); };
         spleeterButton_->setLookAndFeel(&simpleTextButtonLaf_);
         addAndMakeVisible(spleeterButton_.get());
     }
@@ -2059,55 +2052,4 @@ void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)
         model_->setPlayingPosRatio(markers[markerIndex].position_);
         markerTable_->selectRow(static_cast<int>(markerIndex));
     }
-}
-
-void MainComponent::spleeter()
-{
-    auto working_directory = File::getCurrentWorkingDirectory().getFullPathName().toStdString();
-    
-    // validate the parameters (output count)
-    std::error_code err;
-    spleeter::SeparationType separation_type = spleeter::FiveStems;
-    
-    // validate output directory
-    File output_file(File(dataSource_->getCurrentSongFilePath()).getParentDirectory());
-    if (!(output_file.exists() && output_file.isDirectory())) {
-      std::cerr << "Output folder " << output_file.getFullPathName().toRawUTF8() << " does not seem to exist" << std::endl;
-      return;
-    }
-
-    // Initialize spleeter
-    auto model_path = settingsDir_.getChildFile("models").getFullPathName().toStdString();
-    spleeter::Initialize(model_path, {separation_type}, err);
-    if (err) {
-      std::cerr << "Couldn't initialize spleeter" << std::endl;
-      return;
-    }
-
-    InputFile input(dataSource_->getCurrentSongFilePath().toStdString());
-    input.Open(err);
-    if (err) {
-      std::cerr << "Couldn't read source file" << std::endl;
-      return;
-    }
-    
-    OutputFolder output_folder(File(dataSource_->getCurrentSongFilePath()).getParentDirectory().getFullPathName().toStdString());
-    
-    while (true) {
-      auto data = input.Read();
-      if (data.cols() == 0) {
-        return;
-      }
-      auto result = Split(data, separation_type, err);
-      if (err) {
-        std::cerr << "Failed to split" << std::endl;
-        return;
-      }
-      output_folder.Write(result, err);
-      if (err) {
-        std::cerr << "Failed to export" << std::endl;
-        return;
-      }
-    }
-    return;
 }
