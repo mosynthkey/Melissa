@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
-              headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Submodule\spleet\thirdparty\install\include&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
+              headerPath="..\..\..\Submodule\soundtouch\include&#10;..\..\..\Submodule\soundtouch\source\SoundTouch&#10;..\..\..\Submodule\spleet\thirdparty\install\include&#10;..\..\..\Submodule\spleet\Source&#10;..\..\..\Melissa\Source&#10;..\..\..\Melissa\Source\Audio&#10;..\..\..\Melissa\Source\Audio\soundtouch&#10;..\..\..\Melissa\Source\UI"
               version="2.5.2" companyName="MasakiOno" companyCopyright="Copyright(c) 2022 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
@@ -270,11 +270,14 @@
         <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2019 targetFolder="Builds/VisualStudio2019" smallIcon="Y3ewMD" bigIcon="Y3ewMD">
+    <VS2019 targetFolder="Builds/VisualStudio2019" smallIcon="Y3ewMD" bigIcon="Y3ewMD"
+            extraCompilerFlags="-I../../../Submodule/spleet/thirdparty/install/include"
+            extraLinkerFlags="/LIBPATH:../../../Submodule/spleet/thirdparty/install/lib"
+            externalLibraries="tensorflow.lib&#10;spleeter_common.lib&#10;spleeter.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" useRuntimeLibDLL="0" headerPath="..\..\..\ThirdParty\asio\common"/>
-        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" headerPath="..\..\..\ThirdParty\asio\common"/>
-        <CONFIGURATION isDebug="0" name="Release (32bit)" useRuntimeLibDLL="0" winArchitecture="Win32"
+        <CONFIGURATION isDebug="1" name="Debug" useRuntimeLibDLL="1" headerPath="..\..\..\ThirdParty\asio\common"/>
+        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="1" headerPath="..\..\..\ThirdParty\asio\common"/>
+        <CONFIGURATION isDebug="0" name="Release (32bit)" useRuntimeLibDLL="1" winArchitecture="Win32"
                        headerPath="..\..\..\ThirdParty\asio\common"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
