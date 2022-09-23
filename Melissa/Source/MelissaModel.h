@@ -100,7 +100,6 @@ public:
     void  setEqQ(size_t band, float eqQ);
     float getEqQ(size_t band) { return eqQ_; }
     
-    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);

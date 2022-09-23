@@ -22,6 +22,7 @@
 #include "MelissaScrollLabel.h"
 #include "MelissaShortcutManager.h"
 #include "MelissaShortcutPopupComponent.h"
+#include "MelissaStemControlComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
@@ -36,7 +37,6 @@
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
-#include "MelissaSpleeterBridge.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
@@ -159,13 +159,12 @@ private:
     bool shouldInitializeBpmDetector_;
     bool shouldUpdateBpm_;
     MelissaDataSource::Previous::UIState uiState_;
-    MelissaSpleeterBridge spleeterBridge_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
-    std::unique_ptr<TextButton> spleeterButton_;
+    std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     
     std::unique_ptr<MelissaShortcutPopupComponent> shortcutPopup_;
     

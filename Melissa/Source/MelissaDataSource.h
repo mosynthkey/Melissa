@@ -224,13 +224,13 @@ public:
     String getFontName() const { return global_.fontName_; }
     Font getFont(Global::FontSize size) const;
     
-    bool isFileLoaded() const { return audioSampleBuf_ != nullptr; }
+    bool isFileLoaded() const { return originalAudioSampleBuf_ != nullptr; }
     static String getCompatibleFileExtensions();
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
     float readBuffer(size_t ch, size_t index);
     double getSampleRate() const { return sampleRate_; }
-    size_t getBufferLength() const { return (audioSampleBuf_ == nullptr ? 0 : audioSampleBuf_->getNumSamples()); }
+    size_t getBufferLength() const { return (originalAudioSampleBuf_ == nullptr ? 0 : originalAudioSampleBuf_->getNumSamples()); }
     void disposeBuffer();
     
     // Shortcut
@@ -310,9 +310,11 @@ private:
     File settingsFile_;
     String currentSongFilePath_;
     File fileToload_;
+    std::map<std::string, File> stemFiles_;
     std::function<void()> functionToCallAfterFileLoad_;
     std::vector<MelissaDataSourceListener*> listeners_;
-    std::unique_ptr<AudioSampleBuffer> audioSampleBuf_;
+    std::unique_ptr<AudioSampleBuffer> originalAudioSampleBuf_;
+    std::unique_ptr<AudioSampleBuffer> stemAudioSampleBuf_[kNumStemTypes];
     bool wasPlaying_;
     std::map<String, String> defaultShortcut_;
 };

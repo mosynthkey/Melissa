@@ -7,11 +7,12 @@
 
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
+#include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
 
 enum
 {
-    kMaxSizeOfHistoryList = 20,
+    kMaxSizeOfHistoryList = 40,
 };
 
 MelissaDataSource MelissaDataSource::instance_;
@@ -472,9 +473,10 @@ String MelissaDataSource::getCompatibleFileExtensions()
 void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad)
 {
     functionToCallAfterFileLoad_ = functionToCallAfterFileLoad;
+    
     if (file.existsAsFile())
     {
-        fileToload_ = file;
+        MelissaStemProvider::getInstance()->getStemFiles(file, fileToload_, stemFiles_);
         wasPlaying_ = (model_->getPlaybackStatus() == kPlaybackStatus_Playing);
         model_->setPlaybackStatus(kPlaybackStatus_Stop);
         for (auto&& l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Loading, file.getFullPathName());
@@ -489,22 +491,22 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
 
 float MelissaDataSource::readBuffer(size_t ch, size_t index)
 {
-    if (audioSampleBuf_ == nullptr) return 0.f;
+    if (originalAudioSampleBuf_ == nullptr) return 0.f;
     
-    const int numOfChs   = audioSampleBuf_->getNumChannels();
-    const int bufferSize = audioSampleBuf_->getNumSamples();
+    const int numOfChs   = originalAudioSampleBuf_->getNumChannels();
+    const int bufferSize = originalAudioSampleBuf_->getNumSamples();
     
     if (2 <= ch || numOfChs <= ch) ch = 0;
     if (bufferSize <= index) return 0.f;
     
-    return audioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
+    return originalAudioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
 }
 
 void MelissaDataSource::disposeBuffer()
 {
-    if (audioSampleBuf_ == nullptr) return;
-    audioSampleBuf_->clear();
-    audioSampleBuf_ = nullptr;
+    if (originalAudioSampleBuf_ == nullptr) return;
+    originalAudioSampleBuf_->clear();
+    originalAudioSampleBuf_ = nullptr;
 }
 
 void MelissaDataSource::setDefaultShortcut(const String& eventName)
@@ -1020,6 +1022,16 @@ void MelissaDataSource::handleAsyncUpdate()
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     
+    auto stemProvider = MelissaStemProvider::getInstance();
+    File originalFile;
+    std::map<std::string, File> stemFiles;
+    
+    DBG(String::formatted("originalFile = " + fileToload_.getFullPathName()));
+    for (auto stemFile : stemFiles_)
+    {
+        DBG(String::formatted("stemFile = " + stemFile.second.getFullPathName()));
+    }
+    
     auto* reader = formatManager.createReaderFor(fileToload_);
     if (reader == nullptr)
     {
@@ -1028,10 +1040,30 @@ void MelissaDataSource::handleAsyncUpdate()
     }
     
     // read audio data from reader
+    
+    // original file
     const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
-    audioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-    reader->read(audioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
+    originalAudioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
+    reader->read(originalAudioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
     sampleRate_ = reader->sampleRate;
+    
+    // stem files
+    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
+    {
+        const auto stemName = MelissaStemProvider::partNames_[stemTypeIndex];
+        auto* reader = formatManager.createReaderFor(stemFiles_[stemName]);
+        if (reader == nullptr)
+        {
+            stemFiles_.clear();
+            break;
+        }
+        
+        const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
+        stemAudioSampleBuf_[stemTypeIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
+        reader->read(stemAudioSampleBuf_[stemTypeIndex].get(), 0, lengthInSamples, 0, true, true);
+        const auto sampleRate = reader->sampleRate;
+        DBG(String(stemName) + String(".lengthInSamples : ") + String(lengthInSamples) + String(" / sampleRate : ") + String(sampleRate));
+    }
     
     currentSongFilePath_ = fileToload_.getFullPathName();
     audioEngine_->updateBuffer();

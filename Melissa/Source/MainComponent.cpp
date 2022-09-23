@@ -412,11 +412,8 @@ void MainComponent::createUI()
     
     {
         // Spleeter Button
-        spleeterButton_ = make_unique<TextButton>();
-        spleeterButton_->setButtonText("Spleet");
-        spleeterButton_->onClick = [this]() { spleeterBridge_.requestStems(); };
-        spleeterButton_->setLookAndFeel(&simpleTextButtonLaf_);
-        addAndMakeVisible(spleeterButton_.get());
+        stemControlComponent_ = make_unique<MelissaStemControlComponent>();
+        addAndMakeVisible(stemControlComponent_.get());
     }
     
     {
@@ -1198,7 +1195,9 @@ void MainComponent::paint(Graphics& g)
 void MainComponent::resized()
 {
     menuButton_->setBounds(20, 16, 30, 18);
-    spleeterButton_->setBounds(getWidth() - 20 - 50, 16, 50, 18);
+    
+    constexpr int kStemControlWidth = 890;
+    stemControlComponent_->setBounds(getWidth() - 20 - kStemControlWidth, 16, kStemControlWidth, 30);
     
     shortcutPopup_->setBounds(0, 5, getWidth(), 30);
     

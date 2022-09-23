@@ -1,6 +1,10 @@
 [submodule "Submodule/soundtouch"]
 	path = Submodule/soundtouch
 	url = https://codeberg.org/soundtouch/soundtouch.git
+
 [submodule "Submodule/spleet"]
 	path = Submodule/spleet
-	url = git@github.com:gvne/spleet.git
+	url = git@github.com:mosynthkey/spleet.git
+[submodule "Submodule/json"]
+	path = Submodule/json
+	url = git@github.com:nlohmann/json.git
