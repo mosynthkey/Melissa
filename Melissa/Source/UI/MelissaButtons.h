@@ -199,8 +199,7 @@ public:
         auto area = getLocalBounds();
         
         g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
-        g.drawText("Audio device", area.removeFromTop(20), Justification::centred);
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         
         if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
         {
@@ -211,11 +210,11 @@ public:
             normal_->drawAt(g, 10, 20, 1.f);
         }
         
-        g.setColour(Colours::black);
-        g.drawText(name_, getWidth() - 120, 18, 120, 36, Justification::centredRight);
+        constexpr int kMargin = 10;
+        g.drawText(name_, getWidth() - 150 - kMargin, 0, 150, getHeight(), Justification::centredRight);
     }
     
-    void setAudioIfName(const String& name)
+    void setAudioDeviceName(const String& name)
     {
         name_ = name;
         repaint();

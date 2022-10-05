@@ -65,6 +65,7 @@ enum ListMemoTab
 };
 
 class MainComponent   : public AudioAppComponent,
+                        public ChangeListener,
                         public FileDragAndDropTarget,
                         public FileBrowserListener,
                         public KeyListener,
@@ -91,6 +92,9 @@ public:
     void releaseResources() override;
     void paint(Graphics& g) override;
     void resized() override;
+    
+    // ChangeListener
+    void changeListenerCallback(ChangeBroadcaster* source) override;
     
     // FileDragAndDropTarget
     bool isInterestedInFileDrag(const StringArray &files) override;

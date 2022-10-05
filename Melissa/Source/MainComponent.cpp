@@ -121,6 +121,10 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameSho
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
+    deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
+    deviceManager.addMidiInputDeviceCallback("", this);
+    deviceManager.addChangeListener (this);
+    
     // load setting file
     settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
     if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
@@ -216,16 +220,12 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameSho
     auto height = dataSource_->global_.height_;
     setSize(width, height);
     
-    deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
-    
     model_->setPlaybackMode(static_cast<PlaybackMode>(dataSource_->global_.playMode_));
     
     dataSource_->restorePreviousState();
     uiState_ = dataSource_->getPreviousUIState();
     updateFileChooserTab(static_cast<FileChooserTab>(uiState_.selectedFileBrowserTab_));
     playlistComponent_->select(uiState_.selectedPlaylist_);
-    
-    deviceManager.addMidiInputCallback("", this);
     
     if (isFirstLaunch)
     {
@@ -488,6 +488,7 @@ void MainComponent::createUI()
         headerComponent_->addAndMakeVisible(fileNameLabel_.get());
         
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
+        //audioDeviceButton_->setAudioDeviceName(deviceManager.getCurrentAudioDevice()->getName());
         headerComponent_->addAndMakeVisible(audioDeviceButton_.get());
     }
     
@@ -1272,13 +1273,10 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Song].get();
         section->setBounds(10, y, songWidth, 100);
         
-        int x = 10;
-        const int centerY = 30 + (section->getHeight() - 30) / 2;
-        
-        x = section->getWidth() - 10;
-        pitchButton_->setSize(pitchSpeedOutputWidth, controlHeight);
-        x -= pitchButton_->getWidth() / 2;
-        pitchButton_->setCentrePosition(x, centerY + 14);
+        const int totalControlWidth = (section->getWidth() - 10 - 10 - 10 - 10);
+        const int bpmAccentPosButtonWidth = totalControlWidth / (7 + 5 + 7) * 7;
+        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        pitchButton_->setBounds(10, y, bpmAccentPosButtonWidth, controlHeight);
     }
     
     // Loop
@@ -1459,6 +1457,14 @@ void MainComponent::resized()
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
     
     MelissaModalDialog::resize();
+}
+
+void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
+{
+    if (source == &deviceManager)
+    {
+        audioDeviceButton_->setAudioDeviceName(deviceManager.getCurrentAudioDevice()->getName());
+    }
 }
 
 bool MainComponent::isInterestedInFileDrag(const StringArray& files)
