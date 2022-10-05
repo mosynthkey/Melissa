@@ -9,6 +9,7 @@
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <GROUP id="{C5AC6B22-7389-6732-F819-CB34CCC7D946}" name="Icon">
+        <FILE id="UIEkzL" name="speaker.svg" compile="0" resource="1" file="Resource/Icon/speaker.svg"/>
         <FILE id="z4vMz6" name="add.svg" compile="0" resource="1" file="Resource/Icon/add.svg"/>
         <FILE id="QqaTr6" name="arrow_left.svg" compile="0" resource="1" file="Resource/Icon/arrow_left.svg"/>
         <FILE id="Hw3ypo" name="arrow_right.svg" compile="0" resource="1" file="Resource/Icon/arrow_right.svg"/>

@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "MelissaDataSource.h"
 #include "MelissaModel.h"
 #include "MelissaModelListener.h"
 #include "MelissaUISettings.h"
@@ -24,8 +25,8 @@ public:
         g.setColour(MelissaUISettings::getWaveformColour().withAlpha(highlighted ? 1.f : 0.6f));
         
         g.fillRoundedRectangle(0, 4, 26, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, 10, 26, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, 16, 26, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 10, 22, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 16, 18, lineHeight, lineHeight / 2);
         
         if (showBudge_)
         {
@@ -177,4 +178,51 @@ public:
 private:
     String title_;
     Font font_;
+};
+
+class MelissaAudioDeviceButton : public Button
+{
+public:
+    MelissaAudioDeviceButton() : Button(""), name_()
+    {
+        normal_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
+        normal_->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
+        
+        highlighted_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
+        highlighted_->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
+    }
+    
+    ~MelissaAudioDeviceButton() { }
+    
+    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        auto area = getLocalBounds();
+        
+        g.setColour(MelissaUISettings::getTextColour());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        g.drawText("Audio device", area.removeFromTop(20), Justification::centred);
+        
+        if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            highlighted_->drawAt(g, 10, 20, 1.f);
+        }
+        else
+        {
+            normal_->drawAt(g, 10, 20, 1.f);
+        }
+        
+        g.setColour(Colours::black);
+        g.drawText(name_, getWidth() - 120, 18, 120, 36, Justification::centredRight);
+    }
+    
+    void setAudioIfName(const String& name)
+    {
+        name_ = name;
+        repaint();
+    }
+    
+private:
+    String name_;
+    std::unique_ptr<Drawable> normal_;
+    std::unique_ptr<Drawable> highlighted_;
 };

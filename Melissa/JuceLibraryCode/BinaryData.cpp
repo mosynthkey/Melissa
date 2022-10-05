@@ -7,8 +7,18 @@
 namespace BinaryData
 {
 
-//================== add.svg ==================
+//================== speaker.svg ==================
 static const unsigned char temp_binary_data_0[] =
+"<svg width=\"15\" height=\"24\" viewBox=\"0 0 15 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M1 0C0.447715 0 0 0.447716 0 1V23C0 23.5523 0.447715 24 1 24H14C14.5523 24 15 23.5523 15 23V1C15 0.447715 14.5523 0 14 0H1ZM7.5 9C9.15685 9 10.5 7.65685 10.5 6C10.5 4.34315 9.15685 3 7.5 3C5.84315"
+" 3 4.5 4.34315 4.5 6C4.5 7.65685 5.84315 9 7.5 9ZM12 16.5C12 18.9853 9.98528 21 7.5 21C5.01472 21 3 18.9853 3 16.5C3 14.0147 5.01472 12 7.5 12C9.98528 12 12 14.0147 12 16.5ZM7.5 18C8.32843 18 9 17.3284 9 16.5C9 15.6716 8.32843 15 7.5 15C6.67157 15 6 "
+"15.6716 6 16.5C6 17.3284 6.67157 18 7.5 18Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* speaker_svg = (const char*) temp_binary_data_0;
+
+//================== add.svg ==================
+static const unsigned char temp_binary_data_1[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>add</title>\n"
@@ -22,40 +32,40 @@ static const unsigned char temp_binary_data_0[] =
 "    </g>\n"
 "</svg>";
 
-const char* add_svg = (const char*) temp_binary_data_0;
+const char* add_svg = (const char*) temp_binary_data_1;
 
 //================== arrow_left.svg ==================
-static const unsigned char temp_binary_data_1[] =
+static const unsigned char temp_binary_data_2[] =
 "<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"2\" height=\"14\" rx=\"1\" fill=\"white\"/>\n"
 "<rect x=\"4\" y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n"
 "<path d=\"M2.59322 7.411C2.30622 7.21216 2.30622 6.78784 2.59322 6.589L8.71525 2.34754C9.04685 2.1178 9.5 2.35512 9.5 2.75853V11.2415C9.5 11.6449 9.04685 11.8822 8.71525 11.6525L2.59322 7.411Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* arrow_left_svg = (const char*) temp_binary_data_1;
+const char* arrow_left_svg = (const char*) temp_binary_data_2;
 
 //================== arrow_right.svg ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_3[] =
 "<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect x=\"20\" y=\"14\" width=\"2\" height=\"14\" rx=\"1\" transform=\"rotate(180 20 14)\" fill=\"white\"/>\n"
 "<rect x=\"16\" y=\"8\" width=\"16\" height=\"2\" rx=\"1\" transform=\"rotate(180 16 8)\" fill=\"white\"/>\n"
 "<path d=\"M17.4068 6.589C17.6938 6.78784 17.6938 7.21216 17.4068 7.411L11.2847 11.6525C10.9531 11.8822 10.5 11.6449 10.5 11.2415V2.75853C10.5 2.35512 10.9531 2.1178 11.2847 2.34754L17.4068 6.589Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* arrow_right_svg = (const char*) temp_binary_data_2;
+const char* arrow_right_svg = (const char*) temp_binary_data_3;
 
 //================== down.svg ==================
-static const unsigned char temp_binary_data_3[] =
+static const unsigned char temp_binary_data_4[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM14.1362 20.5192C14.5221 21.1807 15.4779 21.1807 15.8638 20.5192L21.1227 11.5"
 "038C21.5116 10.8372 21.0308 10 20.259 10H9.74103C8.96924 10 8.48837 10.8372 8.87726 11.5038L14.1362 20.5192Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* down_svg = (const char*) temp_binary_data_3;
+const char* down_svg = (const char*) temp_binary_data_4;
 
 //================== loop_onesong.svg ==================
-static const unsigned char temp_binary_data_4[] =
+static const unsigned char temp_binary_data_5[] =
 "<svg width=\"28\" height=\"22\" viewBox=\"0 0 28 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2.55279 4.89443C2.73705 4.5259 3.26295 4.5259 3.44721 4.89443L5.6382 9.27639C5.80442 9.60884 5.56267 10 5.19098 10H0.809017C0.437326 10 0.195578 9.60884 0.361803 9.27639L2.55279 4.89443Z\" fill=\""
 "white\"/>\n"
@@ -65,10 +75,10 @@ static const unsigned char temp_binary_data_4[] =
 "<rect x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* loop_onesong_svg = (const char*) temp_binary_data_4;
+const char* loop_onesong_svg = (const char*) temp_binary_data_5;
 
 //================== loop_playlist.svg ==================
-static const unsigned char temp_binary_data_5[] =
+static const unsigned char temp_binary_data_6[] =
 "<svg width=\"28\" height=\"22\" viewBox=\"0 0 28 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2.55279 4.89443C2.73705 4.5259 3.26295 4.5259 3.44721 4.89443L5.6382 9.27639C5.80442 9.60884 5.56267 10 5.19098 10H0.809017C0.437326 10 0.195578 9.60884 0.361803 9.27639L2.55279 4.89443Z\" fill=\""
 "white\"/>\n"
@@ -82,29 +92,29 @@ static const unsigned char temp_binary_data_5[] =
 "/>\n"
 "</svg>\n";
 
-const char* loop_playlist_svg = (const char*) temp_binary_data_5;
+const char* loop_playlist_svg = (const char*) temp_binary_data_6;
 
 //================== next_button.svg ==================
-static const unsigned char temp_binary_data_6[] =
+static const unsigned char temp_binary_data_7[] =
 "<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<path id=\"next_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M14 0.5H16V16.5H14V9.32464C13.9727 9.34317 13.9442 9.36066 13.9143 9.37701L1.48047 16.1889C0.814054 16.554 0 16.0718 0 15.3119V1.68809C0 0.928215 0.814052 0.44598 1.48047 0.8110"
 "78L13.9143 7.62299C13.9442 7.63934 13.9727 7.65683 14 7.67536V0.5Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* next_button_svg = (const char*) temp_binary_data_6;
+const char* next_button_svg = (const char*) temp_binary_data_7;
 
 //================== playlist_add.svg ==================
-static const unsigned char temp_binary_data_7[] =
+static const unsigned char temp_binary_data_8[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM14 8C14 7.44769 14.4477 7 15 7C15.5523 7 16 7.44769 16 8V14H22C22.5523 14 23"
 " 14.4477 23 15C23 15.5523 22.5523 16 22 16H16V22C16 22.5523 15.5523 23 15 23C14.4477 23 14 22.5523 14 22V16H8C7.44772 16 7 15.5523 7 15C7 14.4477 7.44772 14 8 14H14V8Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* playlist_add_svg = (const char*) temp_binary_data_7;
+const char* playlist_add_svg = (const char*) temp_binary_data_8;
 
 //================== playlist_add_file.svg ==================
-static const unsigned char temp_binary_data_8[] =
+static const unsigned char temp_binary_data_9[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 6C0 2.68629 2.68629 0 6 0H24C27.3137 0 30 2.68629 30 6V24C30 27.3137 27.3137 30 24 30H6C2.68629 30 0 27.3137 0 24V6ZM13 3L6 10H12C12.5523 10 13 9.55228 13 9V3ZM15.7143 8.66667V5H22V17.0224C19.1"
@@ -114,10 +124,10 @@ static const unsigned char temp_binary_data_8[] =
 " 22.7761 26 22.5C26 22.2239 25.7761 22 25.5 22H23V19.5C23 19.2239 22.7761 19 22.5 19Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* playlist_add_file_svg = (const char*) temp_binary_data_8;
+const char* playlist_add_file_svg = (const char*) temp_binary_data_9;
 
 //================== playlist_add_playing.svg ==================
-static const unsigned char temp_binary_data_9[] =
+static const unsigned char temp_binary_data_10[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM15 24C15.7378 24 16.455 23.9112 17.1412 23.7437C17.0488 23.3441 17 22.9277 1"
@@ -128,10 +138,10 @@ static const unsigned char temp_binary_data_9[] =
 "9.2612 22.8222 19 22.5 19Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* playlist_add_playing_svg = (const char*) temp_binary_data_9;
+const char* playlist_add_playing_svg = (const char*) temp_binary_data_10;
 
 //================== playlist_edit.svg ==================
-static const unsigned char temp_binary_data_10[] =
+static const unsigned char temp_binary_data_11[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM18.7784 5.52512C18.5393 5.38705 18.2335 5.46899 18.0954 5.70813L16.8787 7.81"
@@ -139,10 +149,10 @@ static const unsigned char temp_binary_data_10[] =
 "3858L18.7784 5.52512Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* playlist_edit_svg = (const char*) temp_binary_data_10;
+const char* playlist_edit_svg = (const char*) temp_binary_data_11;
 
 //================== playlist_remove.svg ==================
-static const unsigned char temp_binary_data_11[] =
+static const unsigned char temp_binary_data_12[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM9.34191 10.7524C8.95139 10.3618 8.95139 9.72867 9.34191 9.33815C9.73244 8.94"
@@ -150,29 +160,29 @@ static const unsigned char temp_binary_data_11[] =
 "21.0424 19.6319 21.0424 19.2414 20.6519L14.9988 16.4092L10.7561 20.6519C10.3656 21.0424 9.73244 21.0424 9.34191 20.6519C8.95139 20.2613 8.95139 19.6282 9.34191 19.2376L13.5846 14.995L9.34191 10.7524Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* playlist_remove_svg = (const char*) temp_binary_data_11;
+const char* playlist_remove_svg = (const char*) temp_binary_data_12;
 
 //================== prev_button.svg ==================
-static const unsigned char temp_binary_data_12[] =
+static const unsigned char temp_binary_data_13[] =
 "<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<path id=\"prev_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2 0.5H0V16.5H2V9.32464C2.02727 9.34317 2.05582 9.36066 2.08566 9.37701L14.5195 16.1889C15.1859 16.554 16 16.0718 16 15.3119V1.68809C16 0.928215 15.1859 0.44598 14.5195 0.811078"
 "L2.08567 7.62299C2.05582 7.63934 2.02727 7.65683 2 7.67536V0.5Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* prev_button_svg = (const char*) temp_binary_data_12;
+const char* prev_button_svg = (const char*) temp_binary_data_13;
 
 //================== up.svg ==================
-static const unsigned char temp_binary_data_13[] =
+static const unsigned char temp_binary_data_14[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM15.8638 9.48077C15.4779 8.81927 14.5221 8.81927 14.1362 9.48077L8.87726 18.4"
 "962C8.48837 19.1628 8.96924 20 9.74103 20H20.259C21.0308 20 21.5116 19.1628 21.1227 18.4962L15.8638 9.48077Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* up_svg = (const char*) temp_binary_data_13;
+const char* up_svg = (const char*) temp_binary_data_14;
 
 //================== en-US.txt ==================
-static const unsigned char temp_binary_data_14[] =
+static const unsigned char temp_binary_data_15[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -341,10 +351,10 @@ static const unsigned char temp_binary_data_14[] =
 "\"restart_to_apply\" = \"Restart Melissa to apply the change.\"\n"
 "\"ui_theme_change\" = \"Change UI theme\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_14;
+const char* enUS_txt = (const char*) temp_binary_data_15;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_15[] =
+static const unsigned char temp_binary_data_16[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,97,117,100,105,111,95,109,105,100,105,95,115,101,116,116,105,110,103,115,34,32,61,32,34,65,117,100,105,111,32,47,32,77,73,68,73,32,232,168,
 173,229,174,154,34,10,34,115,104,111,114,116,99,117,116,95,115,101,116,116,105,110,103,115,34,32,61,32,34,227,130,183,227,131,167,227,131,188,227,131,136,227,130,171,227,131,131,227,131,136,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,
@@ -480,10 +490,10 @@ static const unsigned char temp_binary_data_15[] =
 155,180,227,130,146,233,129,169,229,191,156,227,129,153,227,130,139,227,129,159,227,130,129,227,129,171,77,101,108,105,115,115,97,227,130,146,229,134,141,232,181,183,229,139,149,227,129,151,227,129,190,227,129,153,34,10,34,117,105,95,116,104,101,109,
 101,95,99,104,97,110,103,101,34,32,61,32,34,85,73,233,133,141,232,137,178,227,129,174,229,164,137,230,155,180,34,10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_15;
+const char* jaJP_txt = (const char*) temp_binary_data_16;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_16[] =
+static const unsigned char temp_binary_data_17[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,9,112,72,89,115,0,0,22,37,0,0,22,37,1,73,82,36,240,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,1,173,186,73,68,65,
 84,120,1,236,189,77,200,117,219,150,30,52,198,58,95,85,170,82,41,13,152,152,148,73,35,154,164,20,209,16,43,1,109,216,144,160,32,68,18,20,20,43,8,118,76,176,173,4,27,5,98,203,134,54,4,109,216,73,207,78,80,20,27,74,16,109,105,39,130,160,16,176,97,25,144,
 34,104,253,166,126,238,189,231,222,123,206,247,238,225,187,214,28,207,207,152,107,189,231,222,106,105,227,238,115,222,111,239,189,126,230,28,127,207,51,198,156,107,174,181,243,159,250,231,126,254,21,235,149,239,127,245,254,150,215,27,63,71,189,255,155,
@@ -2053,7 +2063,7 @@ static const unsigned char temp_binary_data_16[] =
 122,216,161,214,180,19,63,95,157,104,99,77,67,84,76,76,15,63,131,253,127,206,69,173,100,6,151,247,107,188,232,106,33,151,41,190,158,188,59,250,24,90,228,87,215,117,121,110,134,164,231,253,103,112,169,72,219,174,234,186,236,179,44,134,30,57,254,76,231,
 52,160,164,20,127,133,63,85,147,179,124,247,127,134,45,65,156,248,57,41,205,255,7,64,83,3,240,199,222,243,39,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_16;
+const char* logo_png = (const char*) temp_binary_data_17;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -2067,6 +2077,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
+        case 0x6d373624:  numBytes = 658; return speaker_svg;
         case 0xbb8f2dc6:  numBytes = 917; return add_svg;
         case 0xc1a269a2:  numBytes = 423; return arrow_left_svg;
         case 0xad54f90b:  numBytes = 500; return arrow_right_svg;
@@ -2093,6 +2104,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
 const char* namedResourceList[] =
 {
+    "speaker_svg",
     "add_svg",
     "arrow_left_svg",
     "arrow_right_svg",
@@ -2114,6 +2126,7 @@ const char* namedResourceList[] =
 
 const char* originalFilenames[] =
 {
+    "speaker.svg",
     "add.svg",
     "arrow_left.svg",
     "arrow_right.svg",

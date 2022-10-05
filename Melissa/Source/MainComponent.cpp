@@ -294,6 +294,38 @@ void MainComponent::createUI()
     
     MelissaModalDialog::setParentComponent(this);
     
+    {
+        iconImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
+        iconImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
+        iconImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
+        iconImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
+        iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
+        iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
+        iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
+        for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
+        
+        iconHighlightedImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
+        iconHighlightedImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
+        iconHighlightedImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
+        iconHighlightedImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
+        iconHighlightedImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
+        iconHighlightedImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
+        iconHighlightedImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
+        for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
+    }
+    
+    {
+        iconImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+        iconImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+        for (auto&& image : iconImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+        for (auto&& image : iconImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
+        
+        iconHighlightedImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+        iconHighlightedImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour());
+    }
+    
     menuBar_ = make_unique<MenuBarComponent>(this);
     addAndMakeVisible(menuBar_.get());
     
@@ -304,6 +336,10 @@ void MainComponent::createUI()
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #endif
+    
+    headerComponent_ = std::make_unique<Label>();
+    headerComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
+    addAndMakeVisible(headerComponent_.get());
     
     menuButton_ = std::make_unique<MelissaMenuButton>();
     menuButton_->onClick = [&]()
@@ -408,45 +444,60 @@ void MainComponent::createUI()
         });
     };
     menuButton_->setBudgeVisibility(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
-    addAndMakeVisible(menuButton_.get());
+    headerComponent_->addAndMakeVisible(menuButton_.get());
     
+    {
+        playbackModeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSong].get(), iconHighlightedImages_[kIcon_LoopOneSong].get());
+        playbackModeButton_->onClick = [&]()
+        {
+            if (model_->getPlaybackMode() == kPlaybackMode_LoopOneSong)
+            {
+                model_->setLoopPosRatio(0.f, 1.f);
+                model_->setPlaybackMode(kPlaybackMode_LoopPlaylistSongs);
+            }
+            else
+            {
+                model_->setPlaybackMode(kPlaybackMode_LoopOneSong);
+            }
+            updatePlayBackModeButton();
+        };
+        headerComponent_->addAndMakeVisible(playbackModeButton_.get());
+        
+        playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
+        playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
+        headerComponent_->addAndMakeVisible(playPauseButton_.get());
+        
+        prevButton_ = make_unique<DrawableButton>("PrevButton", DrawableButton::ImageRaw);
+        prevButton_->setImages(iconImages_[kIcon_Prev].get(), iconHighlightedImages_[kIcon_Prev].get());
+        prevButton_->onClick = [this]() { prev(); };
+        headerComponent_->addAndMakeVisible(prevButton_.get());
+        
+        nextButton_ = make_unique<DrawableButton>("NextButton", DrawableButton::ImageRaw);
+        nextButton_->setImages(iconImages_[kIcon_Next].get(), iconHighlightedImages_[kIcon_Next].get());
+        nextButton_->onClick = [this]() { next(); };
+        headerComponent_->addAndMakeVisible(nextButton_.get());
+        
+        timeLabel_ = make_unique<Label>();
+        timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
+        timeLabel_->setJustificationType(Justification::centred);
+        timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
+        headerComponent_->addAndMakeVisible(timeLabel_.get());
+        
+        fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
+        headerComponent_->addAndMakeVisible(fileNameLabel_.get());
+        
+        audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
+        headerComponent_->addAndMakeVisible(audioDeviceButton_.get());
+    }
+    
+    /*
     {
         // Spleeter Button
         stemControlComponent_ = make_unique<MelissaStemControlComponent>();
         addAndMakeVisible(stemControlComponent_.get());
     }
-    
-    {
-        iconImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
-        iconImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
-        iconImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
-        iconImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
-        iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
-        iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
-        iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
-        for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
-        
-        iconHighlightedImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
-        iconHighlightedImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
-        iconHighlightedImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
-        iconHighlightedImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
-        iconHighlightedImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
-        iconHighlightedImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
-        iconHighlightedImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
-        for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
-    }
-    
-    {
-        iconImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
-        iconImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
-        for (auto&& image : iconImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
-        for (auto&& image : iconImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
-        
-        iconHighlightedImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
-        iconHighlightedImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
-        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
-        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour());
-    }
+     */
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     addAndMakeVisible(waveformComponent_.get());
@@ -482,46 +533,6 @@ void MainComponent::createUI()
     
     {
         auto section = sectionComponents_[kSection_Song].get();
-    
-        playbackModeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSong].get(), iconHighlightedImages_[kIcon_LoopOneSong].get());
-        playbackModeButton_->onClick = [&]()
-        {
-            if (model_->getPlaybackMode() == kPlaybackMode_LoopOneSong)
-            {
-                model_->setLoopPosRatio(0.f, 1.f);
-                model_->setPlaybackMode(kPlaybackMode_LoopPlaylistSongs);
-            }
-            else
-            {
-                model_->setPlaybackMode(kPlaybackMode_LoopOneSong);
-            }
-            updatePlayBackModeButton();
-        };
-        section->addAndMakeVisible(playbackModeButton_.get());
-        
-        playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
-        playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
-        section->addAndMakeVisible(playPauseButton_.get());
-        
-        prevButton_ = make_unique<DrawableButton>("PrevButton", DrawableButton::ImageRaw);
-        prevButton_->setImages(iconImages_[kIcon_Prev].get(), iconHighlightedImages_[kIcon_Prev].get());
-        prevButton_->onClick = [this]() { prev(); };
-        section->addAndMakeVisible(prevButton_.get());
-        
-        nextButton_ = make_unique<DrawableButton>("NextButton", DrawableButton::ImageRaw);
-        nextButton_->setImages(iconImages_[kIcon_Next].get(), iconHighlightedImages_[kIcon_Next].get());
-        nextButton_->onClick = [this]() { next(); };
-        section->addAndMakeVisible(nextButton_.get());
-        
-        timeLabel_ = make_unique<Label>();
-        timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
-        timeLabel_->setJustificationType(Justification::centred);
-        timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
-        section->addAndMakeVisible(timeLabel_.get());
-        
-        fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
-        section->addAndMakeVisible(fileNameLabel_.get());
         
         pitchButton_ = make_unique<MelissaIncDecButton>(16, TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
         pitchButton_->setText("Original");
@@ -1194,15 +1205,47 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
-    menuButton_->setBounds(20, 16, 30, 18);
+    constexpr int kHeaderHeight = 50;
+    headerComponent_->setBounds(0, 0, getWidth(), kHeaderHeight);
     
-    constexpr int kStemControlWidth = 890;
-    stemControlComponent_->setBounds(getWidth() - 20 - kStemControlWidth, 16, kStemControlWidth, 30);
+    {
+        menuButton_->setBounds(20, (kHeaderHeight - 18) / 2, 30, 18);
+        
+        int x = 200;
+        int centerY = kHeaderHeight / 2;
+        playbackModeButton_->setSize(28, 22);
+        x += (playbackModeButton_->getWidth() / 2);
+        playbackModeButton_->setCentrePosition(x, centerY);
+        x = playbackModeButton_->getRight() + 20;
+        
+        prevButton_->setSize(16, 17);
+        x += (prevButton_->getWidth() / 2);
+        prevButton_->setCentrePosition(x, centerY);
+        x = prevButton_->getRight() + 10;
+        
+        playPauseButton_->setSize(52, 52);
+        x += (playPauseButton_->getWidth() / 2);
+        playPauseButton_->setCentrePosition(x, centerY);
+        x = playPauseButton_->getRight() + 10;
+        
+        nextButton_->setSize(16, 17);
+        x += (nextButton_->getWidth() / 2);
+        nextButton_->setCentrePosition(x, centerY);
+        x = nextButton_->getRight() + 10;
+        
+        x = nextButton_->getRight() + 10;
+        const int labelWidth = getWidth() - x * 2;
+        fileNameLabel_->setBounds(x, 5, labelWidth, 20);
+        timeLabel_->setBounds(x, fileNameLabel_->getBottom(), labelWidth, 20);
+        
+        constexpr int kAudioDeviceButtonWidth = 160;
+        audioDeviceButton_->setBounds(getWidth() - kAudioDeviceButtonWidth, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+    }
     
     shortcutPopup_->setBounds(0, 5, getWidth(), 30);
     
-    waveformComponent_->setBounds(60, 40, getWidth() - 60 * 2, 160);
-    markerMemoComponent_->setBounds(80, 4, getWidth() - 80 * 2, 30);
+    waveformComponent_->setBounds(60, headerComponent_->getBottom() + 40, getWidth() - 60 * 2, 160);
+    markerMemoComponent_->setBounds(80, headerComponent_->getBottom() + 4, getWidth() - 80 * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
@@ -1232,35 +1275,10 @@ void MainComponent::resized()
         int x = 10;
         const int centerY = 30 + (section->getHeight() - 30) / 2;
         
-        playbackModeButton_->setSize(32, 28);
-        x += (playbackModeButton_->getWidth() / 2);
-        playbackModeButton_->setCentrePosition(x, centerY);
-        x = playbackModeButton_->getRight() + 20;
-        
-        prevButton_->setSize(16, 17);
-        x += (prevButton_->getWidth() / 2);
-        prevButton_->setCentrePosition(x, centerY);
-        x = prevButton_->getRight() + 10;
-        
-        playPauseButton_->setSize(52, 52);
-        x += (playPauseButton_->getWidth() / 2);
-        playPauseButton_->setCentrePosition(x, centerY);
-        x = playPauseButton_->getRight() + 10;
-        
-        nextButton_->setSize(16, 17);
-        x += (nextButton_->getWidth() / 2);
-        nextButton_->setCentrePosition(x, centerY);
-        x = nextButton_->getRight() + 10;
-        
         x = section->getWidth() - 10;
         pitchButton_->setSize(pitchSpeedOutputWidth, controlHeight);
         x -= pitchButton_->getWidth() / 2;
         pitchButton_->setCentrePosition(x, centerY + 14);
-        
-        x = nextButton_->getRight() + 10;
-        const int labelWidth = (pitchButton_->getX() - 10) - x;
-        fileNameLabel_->setBounds(x, centerY - 20, labelWidth, 20);
-        timeLabel_->setBounds(x, centerY, labelWidth, 20);
     }
     
     // Loop

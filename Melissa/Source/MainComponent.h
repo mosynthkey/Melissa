@@ -162,7 +162,18 @@ private:
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
     
+    std::unique_ptr<Label> headerComponent_;
+    
+    std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
+    std::unique_ptr<DrawableButton> prevButton_;
+    std::unique_ptr<DrawableButton> nextButton_;
+    std::unique_ptr<DrawableButton> playbackModeButton_;
+    std::unique_ptr<Label> timeLabel_;
+    std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
+    
     std::unique_ptr<MelissaMenuButton> menuButton_;
+    
+    std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     
@@ -178,13 +189,7 @@ private:
     std::unique_ptr<RoundedComponent> fileComponent_;
     std::unique_ptr<RoundedComponent> listComponent_;
     
-    std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
-    std::unique_ptr<DrawableButton> prevButton_;
-    std::unique_ptr<DrawableButton> nextButton_;
-    std::unique_ptr<DrawableButton> playbackModeButton_;
-    
-    std::unique_ptr<Label> timeLabel_;
-    std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
+
 
     std::unique_ptr<ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
