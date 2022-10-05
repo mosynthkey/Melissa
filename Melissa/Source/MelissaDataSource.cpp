@@ -499,7 +499,47 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index)
     if (2 <= ch || numOfChs <= ch) ch = 0;
     if (bufferSize <= index) return 0.f;
     
-    return originalAudioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
+    
+    float mixedSignal = originalAudioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
+    
+    {
+        auto hoge = kStemType_Vocals;
+        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
+        {
+            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
+            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
+        }
+    }
+    
+    {
+        auto hoge = kStemType_Drums;
+        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
+        {
+            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
+            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
+        }
+    }
+    
+    {
+        auto hoge = kStemType_Bass;
+        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
+        {
+            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
+            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
+        }
+    }
+    
+    {
+        auto hoge = kStemType_Piano;
+        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
+        {
+            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
+            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
+        }
+    }
+    
+    
+    return mixedSignal;
 }
 
 void MelissaDataSource::disposeBuffer()
@@ -1026,10 +1066,10 @@ void MelissaDataSource::handleAsyncUpdate()
     File originalFile;
     std::map<std::string, File> stemFiles;
     
-    DBG(String::formatted("originalFile = " + fileToload_.getFullPathName()));
+    //DBG(String::formatted("originalFile = " + fileToload_.getFullPathName()));
     for (auto stemFile : stemFiles_)
     {
-        DBG(String::formatted("stemFile = " + stemFile.second.getFullPathName()));
+        //DBG(String::formatted("stemFile = " + stemFile.second.getFullPathName()));
     }
     
     auto* reader = formatManager.createReaderFor(fileToload_);

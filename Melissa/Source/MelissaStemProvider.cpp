@@ -155,7 +155,7 @@ StemProviderResult MelissaStemProvider::createStems()
     
     // validate the parameters (output count)
     std::error_code err;
-    spleeter::SeparationType separation_type = spleeter::FiveStems;
+    spleeter::SeparationType separation_type = spleeter::TwoStems;
     
     // create output directory
     File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
@@ -173,7 +173,8 @@ StemProviderResult MelissaStemProvider::createStems()
     
     {
         auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
-        OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate);
+        auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
+        OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, bufferLength);
         while (true)
         {
             if (threadShouldExit()) return kStemProviderResult_Interrupted;
