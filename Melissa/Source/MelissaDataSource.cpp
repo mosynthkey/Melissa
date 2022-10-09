@@ -448,7 +448,11 @@ Font MelissaDataSource::getFont(Global::FontSize size) const
     fontSizeOffset = 2;
 #endif
 
-    if (size == Global::kFontSize_Main)
+    if (size == Global::kFontSize_Large)
+    {
+        return Font(global_.fontName_, 20 + fontSizeOffset, Font::plain);
+    }
+    else if (size == Global::kFontSize_Main)
     {
         return Font(global_.fontName_, 17 + fontSizeOffset, Font::plain);
     }

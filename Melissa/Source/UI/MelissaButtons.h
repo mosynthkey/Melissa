@@ -97,7 +97,7 @@ private:
         g.setColour(MelissaUISettings::getSubColour());
         g.fillEllipse(t / 2, t / 2, w - t - 1, h - t - 1);
         
-        g.setColour(MelissaUISettings::getAccentColour(on ? 1.f : 0.6f));
+        g.setColour(MelissaUISettings::getTextColour(on ? 1.f : 0.6f));
         if (drawPlayIcon_)
         {
             const int x0 = (w - triW) * 4.f / 7.f;
@@ -212,30 +212,28 @@ public:
     MelissaAudioDeviceButton() : Button(""), name_()
     {
         normal_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
-        normal_->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
+        normal_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
         
         highlighted_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
-        highlighted_->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
+        highlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour());
     }
     
     ~MelissaAudioDeviceButton() { }
     
     void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        
         if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
         {
-            highlighted_->drawAt(g, 10, 20, 1.f);
+            highlighted_->drawAt(g, 10, 10, 1.f);
         }
         else
         {
-            normal_->drawAt(g, 10, 20, 1.f);
+            normal_->drawAt(g, 10, 10, 1.f);
         }
         
-        constexpr int kMargin = 10;
-        g.drawText(name_, getWidth() - 150 - kMargin, 0, 150, getHeight(), Justification::centredRight);
+        g.setColour(MelissaUISettings::getTextColour((shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f));
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
+        g.drawText(name_, 30, 0, getWidth() - 30, getHeight(), Justification::centred);
     }
     
     void setAudioDeviceName(const String& name)

@@ -9,10 +9,11 @@ namespace BinaryData
 
 //================== speaker.svg ==================
 static const unsigned char temp_binary_data_0[] =
-"<svg width=\"15\" height=\"24\" viewBox=\"0 0 15 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M1 0C0.447715 0 0 0.447716 0 1V23C0 23.5523 0.447715 24 1 24H14C14.5523 24 15 23.5523 15 23V1C15 0.447715 14.5523 0 14 0H1ZM7.5 9C9.15685 9 10.5 7.65685 10.5 6C10.5 4.34315 9.15685 3 7.5 3C5.84315"
-" 3 4.5 4.34315 4.5 6C4.5 7.65685 5.84315 9 7.5 9ZM12 16.5C12 18.9853 9.98528 21 7.5 21C5.01472 21 3 18.9853 3 16.5C3 14.0147 5.01472 12 7.5 12C9.98528 12 12 14.0147 12 16.5ZM7.5 18C8.32843 18 9 17.3284 9 16.5C9 15.6716 8.32843 15 7.5 15C6.67157 15 6 "
-"15.6716 6 16.5C6 17.3284 6.67157 18 7.5 18Z\" fill=\"white\"/>\n"
+"<svg width=\"20\" height=\"30\" viewBox=\"0 0 20 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect x=\"1\" y=\"1\" width=\"18\" height=\"28\" rx=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"<circle cx=\"10\" cy=\"9\" r=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"<circle cx=\"10\" cy=\"20\" r=\"2\" fill=\"white\"/>\n"
+"<circle cx=\"10\" cy=\"20\" r=\"4\" stroke=\"white\" stroke-width=\"2\"/>\n"
 "</svg>\n";
 
 const char* speaker_svg = (const char*) temp_binary_data_0;
@@ -2077,7 +2078,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
-        case 0x6d373624:  numBytes = 658; return speaker_svg;
+        case 0x6d373624:  numBytes = 357; return speaker_svg;
         case 0xbb8f2dc6:  numBytes = 917; return add_svg;
         case 0xc1a269a2:  numBytes = 423; return arrow_left_svg;
         case 0xad54f90b:  numBytes = 500; return arrow_right_svg;

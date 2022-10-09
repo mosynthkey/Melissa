@@ -46,6 +46,31 @@ enum
     kMenuID_FileOpen = 2000,
 };
 
+class MainComponent::HeaderComponent : public Component
+{
+public:
+    void paint(Graphics& g)
+    {
+        g.fillAll(MelissaUISettings::getSubColour());
+        
+        g.setColour(MelissaUISettings::getMainColour());
+        
+        // lines
+        constexpr int lineWidth = 3;
+        g.fillRect(150, 9, lineWidth, 32);
+        g.fillRect(340, 9, lineWidth, 32);
+        g.fillRect(getWidth() - 370, 9, lineWidth, 32);
+        g.fillRect((getWidth() - lineWidth) / 2, 9, lineWidth, 32);
+        
+        // main volume background
+        g.fillRoundedRectangle(getWidth() - 151, 15, 141, 19, 19/2);
+        
+        g.setColour(MelissaUISettings::getTextColour());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Large));
+        g.drawText("Melissa", 60, 10, 150, 30, Justification::centredLeft);
+    }
+};
+
 #if defined(ENABLE_SPEED_TRAINING)
 class MainComponent::SlashComponent : public Component
 {
@@ -105,7 +130,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), mainVolume_(1.f), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -296,35 +321,64 @@ void MainComponent::createUI()
     
     {
         iconImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
-        iconImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
-        iconImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
-        iconImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
-        iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
-        iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
-        iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
-        for (auto&& image : iconImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
-        
         iconHighlightedImages_[kIcon_Prev] = Drawable::createFromImageData(BinaryData::prev_button_svg, BinaryData::prev_button_svgSize);
+        iconColorInfo_[kIcon_Prev] = kColorInfo_None;
+        
+        iconImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
         iconHighlightedImages_[kIcon_Next] = Drawable::createFromImageData(BinaryData::next_button_svg, BinaryData::next_button_svgSize);
+        iconColorInfo_[kIcon_Next] = kColorInfo_None;
+        
+        iconImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
         iconHighlightedImages_[kIcon_LoopOneSong] = Drawable::createFromImageData(BinaryData::loop_onesong_svg, BinaryData::loop_onesong_svgSize);
+        iconColorInfo_[kIcon_LoopOneSong] = kColorInfo_None;
+        
+        iconImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
         iconHighlightedImages_[kIcon_LoopPlaylist] = Drawable::createFromImageData(BinaryData::loop_playlist_svg, BinaryData::loop_playlist_svgSize);
+        iconColorInfo_[kIcon_LoopPlaylist] = kColorInfo_None;
+        
+        iconImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
         iconHighlightedImages_[kIcon_ArrowLeft] = Drawable::createFromImageData(BinaryData::arrow_left_svg, BinaryData::arrow_left_svgSize);
+        iconColorInfo_[kIcon_ArrowLeft] = kColorInfo_WhiteToAccent;
+        
+        iconImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
         iconHighlightedImages_[kIcon_ArrowRight] = Drawable::createFromImageData(BinaryData::arrow_right_svg, BinaryData::arrow_right_svgSize);
+        iconColorInfo_[kIcon_ArrowRight] = kColorInfo_WhiteToAccent;
+        
+        iconImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
         iconHighlightedImages_[kIcon_Add] = Drawable::createFromImageData(BinaryData::add_svg, BinaryData::add_svgSize);
-        for (auto&& image : iconHighlightedImages_) image->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
+        iconColorInfo_[kIcon_Add] = kColorInfo_WhiteToAccent;
+        
+        iconImages_[kIcon_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+        iconHighlightedImages_[kIcon_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
+        iconColorInfo_[kIcon_Up] = kColorInfo_WhiteToMain;
+        
+        iconImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+        iconHighlightedImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
+        iconColorInfo_[kIcon_Down] = kColorInfo_WhiteToMain;
+        
+        
+        for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
+        {
+            if (iconColorInfo_[iconIndex] == kColorInfo_None)
+            {
+                iconImages_[iconIndex]->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
+                iconHighlightedImages_[iconIndex]->replaceColour(Colours::white, MelissaUISettings::getTextColour());
+            }
+            else if (iconColorInfo_[iconIndex] == kColorInfo_WhiteToAccent)
+            {
+                iconImages_[iconIndex]->replaceColour(Colours::white, MelissaUISettings::getAccentColour(0.8f));
+                iconHighlightedImages_[iconIndex]->replaceColour(Colours::white, MelissaUISettings::getAccentColour());
+            }
+            else if (iconColorInfo_[iconIndex] == kColorInfo_WhiteToMain)
+            {
+                iconImages_[iconIndex]->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+                iconImages_[iconIndex]->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
+                iconHighlightedImages_[iconIndex]->replaceColour(Colours::white, MelissaUISettings::getMainColour());
+                iconHighlightedImages_[iconIndex]->replaceColour(Colours::black, MelissaUISettings::getTextColour());
+            }
+        }
     }
     
-    {
-        iconImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
-        iconImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
-        for (auto&& image : iconImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
-        for (auto&& image : iconImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour(0.6f));
-        
-        iconHighlightedImages2_[kIcon2_Up] = Drawable::createFromImageData(BinaryData::up_svg, BinaryData::up_svgSize);
-        iconHighlightedImages2_[kIcon2_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
-        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::white, MelissaUISettings::getMainColour());
-        for (auto&& image : iconHighlightedImages2_) image->replaceColour(Colours::black, MelissaUISettings::getTextColour());
-    }
     
     menuBar_ = make_unique<MenuBarComponent>(this);
     addAndMakeVisible(menuBar_.get());
@@ -337,8 +391,7 @@ void MainComponent::createUI()
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #endif
     
-    headerComponent_ = std::make_unique<Label>();
-    headerComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
+    headerComponent_ = std::make_unique<HeaderComponent>();
     addAndMakeVisible(headerComponent_.get());
     
     menuButton_ = std::make_unique<MelissaMenuButton>();
@@ -480,16 +533,33 @@ void MainComponent::createUI()
         
         timeLabel_ = make_unique<Label>();
         timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
-        timeLabel_->setJustificationType(Justification::centred);
+        timeLabel_->setJustificationType(Justification::centredLeft);
         timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
         headerComponent_->addAndMakeVisible(timeLabel_.get());
         
-        fileNameLabel_ = make_unique<MelissaScrollLabel>(timeLabel_->getFont());
+        fileNameLabel_ = make_unique<Label>();
+        fileNameLabel_->setJustificationType(Justification::centredRight);
+        fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
         headerComponent_->addAndMakeVisible(fileNameLabel_.get());
         
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
-        //audioDeviceButton_->setAudioDeviceName(deviceManager.getCurrentAudioDevice()->getName());
+        audioDeviceButton_->setAudioDeviceName(deviceManager.getCurrentAudioDevice()->getName());
+        audioDeviceButton_->onClick = [&]()
+        {
+            showAudioMidiSettingsDialog();
+        };
         headerComponent_->addAndMakeVisible(audioDeviceButton_.get());
+        
+        mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        mainVolumeSlider_->setTooltip(TRANS("main_music"));
+        mainVolumeSlider_->setRange(0.01f, 1.0f);
+        mainVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
+        mainVolumeSlider_->setValue(1.f);
+        mainVolumeSlider_->onValueChange = [this]()
+        {
+            model_->setMainVolume(mainVolumeSlider_->getValue());
+        };
+        headerComponent_->addAndMakeVisible(mainVolumeSlider_.get());
     }
     
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
@@ -1054,7 +1124,7 @@ void MainComponent::createUI()
     
     practiceListUpButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     practiceListUpButton_->setTooltip(TRANS("practice_list_up"));
-    practiceListUpButton_->setImages(iconImages2_[kIcon2_Up].get(), iconHighlightedImages2_[kIcon2_Up].get());
+    practiceListUpButton_->setImages(iconImages_[kIcon_Up].get(), iconHighlightedImages_[kIcon_Up].get());
     practiceListUpButton_->onClick = [&]()
     {
         practiceTable_->moveSelected(-1);
@@ -1063,7 +1133,7 @@ void MainComponent::createUI()
     
     practiceListDownButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     practiceListDownButton_->setTooltip(TRANS("practice_list_down"));
-    practiceListDownButton_->setImages(iconImages2_[kIcon2_Down].get(), iconHighlightedImages2_[kIcon2_Down].get());
+    practiceListDownButton_->setImages(iconImages_[kIcon_Down].get(), iconHighlightedImages_[kIcon_Down].get());
     practiceListDownButton_->onClick = [&]()
     {
         practiceTable_->moveSelected(+1);
@@ -1172,6 +1242,11 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
             audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
         }
         metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        
+        for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
+        {
+            buffer[0][sampleIndex] *= mainVolume_;
+        }
     }
     else if (numOfChannels == 2)
     {
@@ -1181,11 +1256,19 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
             audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
         }
         metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
+        {
+            buffer[0][sampleIndex] *= mainVolume_;
+            buffer[1][sampleIndex] *= mainVolume_;
+        }
     }
     else
     {
         jassertfalse;
     }
+    
+
+        
 }
 
 void MainComponent::releaseResources()
@@ -1207,9 +1290,9 @@ void MainComponent::resized()
     headerComponent_->setBounds(0, 0, getWidth(), kHeaderHeight);
     
     {
-        menuButton_->setBounds(20, (kHeaderHeight - 18) / 2, 30, 18);
+        menuButton_->setBounds(20, (kHeaderHeight - 18) / 2 - 2, 30, 18);
         
-        int x = 200;
+        int x = 170;
         int centerY = kHeaderHeight / 2;
         playbackModeButton_->setSize(28, 22);
         x += (playbackModeButton_->getWidth() / 2);
@@ -1231,13 +1314,15 @@ void MainComponent::resized()
         nextButton_->setCentrePosition(x, centerY);
         x = nextButton_->getRight() + 10;
         
-        x = nextButton_->getRight() + 10;
-        const int labelWidth = getWidth() - x * 2;
-        fileNameLabel_->setBounds(x, 5, labelWidth, 20);
-        timeLabel_->setBounds(x, fileNameLabel_->getBottom(), labelWidth, 20);
+        constexpr int kLabelWidth = 300;
+        fileNameLabel_->setBounds(getWidth() / 2 - kLabelWidth - 10, 0, kLabelWidth, kHeaderHeight);
+        timeLabel_->setBounds(getWidth() / 2 + 10, 0, kLabelWidth, kHeaderHeight);
         
-        constexpr int kAudioDeviceButtonWidth = 160;
-        audioDeviceButton_->setBounds(getWidth() - kAudioDeviceButtonWidth, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        constexpr int kMainVolumeWidth = 140;
+        mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
+        
+        constexpr int kAudioDeviceButtonWidth = 200;
+        audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
     }
     
     shortcutPopup_->setBounds(0, 5, getWidth(), 30);
@@ -1587,17 +1672,17 @@ void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String& f
 {
     if (status == kFileLoadStatus_Success)
     {
-        fileNameLabel_->setText(File(filePath).getFileNameWithoutExtension());
+        fileNameLabel_->setText(File(filePath).getFileNameWithoutExtension(), dontSendNotification);
     }
     else if (status == kFileLoadStatus_Failed)
     {
-        fileNameLabel_->setText(File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension());
+        fileNameLabel_->setText(File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension(), dontSendNotification);
         const std::vector<String> options = { TRANS("ok") };
         MelissaModalDialog::show(std::make_shared<MelissaOptionDialog>(TRANS("load_failed") + "\n" + filePath, options, [&](size_t) {}), "Melissa", false);
     }
     else if (status == kFileLoadStatus_Loading)
     {
-        fileNameLabel_->setText("Loading...");
+        fileNameLabel_->setText("Loading...", dontSendNotification);
     }
 }
 
@@ -1723,7 +1808,7 @@ void MainComponent::timerCallback()
             if (nextSongFilePath.isNotEmpty())
             {
                 const auto songName = File(nextSongFilePath).getFileNameWithoutExtension();
-                fileNameLabel_->setText("Next ... \"" + songName + "\"");
+                fileNameLabel_->setText("Next ... \"" + songName + "\"", dontSendNotification);
             }
             nextFileNameShown_ = true;
         }
@@ -1731,7 +1816,7 @@ void MainComponent::timerCallback()
     else if (nextFileNameShown_)
     {
         const auto songName = File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension();
-        fileNameLabel_->setText(songName);
+        fileNameLabel_->setText(songName, dontSendNotification);
         nextFileNameShown_ = false;
     }
     
@@ -2050,6 +2135,12 @@ void MainComponent::eqQChanged(size_t band, float q)
 {
     eqQKnobs_[band]->setValue(q, dontSendNotification);
     knobLabels_[2]->setText(String::formatted("Q:%1.2f", q), dontSendNotification);
+}
+
+void MainComponent::mainVolumeChanged(float mainVolume)
+{
+    mainVolume_ = mainVolume;
+    mainVolumeSlider_->setValue(mainVolume, dontSendNotification);
 }
 
 void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)

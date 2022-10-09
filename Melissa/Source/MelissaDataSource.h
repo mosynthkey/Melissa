@@ -55,6 +55,7 @@ public:
         String fontName_;
         enum FontSize
         {
+            kFontSize_Large,
             kFontSize_Main,
             kFontSize_Sub,
             kFontSize_Small,

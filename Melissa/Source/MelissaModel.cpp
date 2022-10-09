@@ -267,6 +267,12 @@ void MelissaModel::setPlayPart(StemType playPart)
     for (auto&& l : listeners_) l->playPartChanged(playPart_);
 }
 
+void MelissaModel::setMainVolume(float mainVolume)
+{
+    mainVolume_ = std::clamp<float>(mainVolume, 0.01f, 1.f);
+    for (auto&& l : listeners_) l->mainVolumeChanged(mainVolume_);
+}
+
 void MelissaModel::addListener(MelissaModelListener* listener)
 {
     for (auto&& l : listeners_)

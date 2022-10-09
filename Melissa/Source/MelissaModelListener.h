@@ -72,5 +72,6 @@ public:
     virtual void eqGainChanged(size_t band, float gain) {}
     virtual void eqQChanged(size_t band, float q) {}
     virtual void playPartChanged(StemType playPart) {}
+    virtual void mainVolumeChanged(float mainVolume) {}
 };
 

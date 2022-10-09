@@ -129,8 +129,6 @@ void MelissaStemProvider::failedToReadPreparedStems()
 
 void MelissaStemProvider::prepareForLoadStems(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles)
 {
-    stopThread(1000);
-    
     stemFiles.clear();
     getStemFiles(fileToOpen, originalFile, stemFiles);
     if (stemFiles.size() == kNumStemTypes)
@@ -192,6 +190,15 @@ void MelissaStemProvider::run()
     MessageManager::callAsync([&]() {
         for (auto& l : listeners_) l->stemProviderStatusChanged(status_);
     });
+
+    if (result_ == kStemProviderResult_Success)
+    {
+        MessageManager::callAsync([&]() {
+            // reload file to load stems
+            auto dataSource = MelissaDataSource::getInstance();
+            dataSource->loadFileAsync(dataSource->getCurrentSongFilePath());
+        });
+    }
 }
 
 StemProviderResult MelissaStemProvider::createStems()

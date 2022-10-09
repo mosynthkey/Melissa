@@ -19,6 +19,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProvid
 {
     MelissaStemProvider::getInstance()->addListener(this);
     auto model = MelissaModel::getInstance();
+    model->addListener(this);
     
     auto createAndAddTextButton = [&](const String& text)
     {
@@ -113,15 +114,15 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     
     if (status_ == kStemProviderStatus_Ready)
     {
-        createStemsButton_->setButtonText(TRANS("Click to separate music by instrument"));
+        createStemsButton_->setButtonText("Click to separate music by instrument");
     }
     else if (status_ == kStemProviderStatus_NotAvailable)
     {
-        createStemsButton_->setButtonText(TRANS("Couldn't separate this music"));
+        createStemsButton_->setButtonText("Couldn't separate this music");
     }
     else if (status_ == kStemProviderStatus_Processing)
     {
-        createStemsButton_->setButtonText(TRANS("Separating this music into parts..."));
+        createStemsButton_->setButtonText("Separating this music into parts...");
     }
 }
 

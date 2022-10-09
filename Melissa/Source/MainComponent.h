@@ -165,19 +165,22 @@ private:
     MelissaDataSource::Previous::UIState uiState_;
     
     std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
+    float mainVolume_;
     
-    std::unique_ptr<Label> headerComponent_;
+    class HeaderComponent;
+    std::unique_ptr<HeaderComponent> headerComponent_;
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
     std::unique_ptr<DrawableButton> prevButton_;
     std::unique_ptr<DrawableButton> nextButton_;
     std::unique_ptr<DrawableButton> playbackModeButton_;
     std::unique_ptr<Label> timeLabel_;
-    std::unique_ptr<MelissaScrollLabel> fileNameLabel_;
+    std::unique_ptr<Label> fileNameLabel_;
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
+    std::unique_ptr<Slider> mainVolumeSlider_;
     
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     
@@ -219,20 +222,21 @@ private:
         kIcon_ArrowLeft,
         kIcon_ArrowRight,
         kIcon_Add,
+        kIcon_Up,
+        kIcon_Down,
         kNumOfIcons
     };
     
-    enum {
-        kIcon2_Up,
-        kIcon2_Down,
-        kNumOfIcons2
+    enum ColorInfo
+    {
+        kColorInfo_None,
+        kColorInfo_WhiteToAccent,
+        kColorInfo_WhiteToMain,
     };
     
     std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
     std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
-    
-    std::unique_ptr<Drawable> iconImages2_[kNumOfIcons2];
-    std::unique_ptr<Drawable> iconHighlightedImages2_[kNumOfIcons2];
+    ColorInfo iconColorInfo_[kNumOfIcons];
     
 #if defined(ENABLE_SPEED_TRAINING)
     std::unique_ptr<ToggleButton> speedModeBasicToggleButton_;
@@ -395,6 +399,7 @@ private:
     void eqFreqChanged(size_t band, float freq) override;
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
+    void mainVolumeChanged(float mainVolume) override;
     
     // MelissaMarkerListener
     void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;

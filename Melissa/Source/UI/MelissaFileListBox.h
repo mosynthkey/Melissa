@@ -99,8 +99,7 @@ public:
         
         if (rowIsSelected)
         {
-            g.setColour(MelissaUISettings::getSubColour());
-            g.fillAll();
+            g.fillAll(MelissaUISettings::getAccentColour(0.4f));
         }
         
         g.setColour(MelissaUISettings::getTextColour());

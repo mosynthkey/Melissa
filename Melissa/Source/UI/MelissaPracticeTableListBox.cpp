@@ -95,7 +95,7 @@ void MelissaPracticeTableListBox::paintRowBackground(Graphics& g, int rowNumber,
 {
     if (rowIsSelected)
     {
-        g.fillAll(MelissaUISettings::getSubColour());
+        g.fillAll(MelissaUISettings::getAccentColour(0.4f));
     }
 }
 

@@ -104,6 +104,11 @@ public:
     void setPlayPart(StemType playPart);
     StemType getPlayPart() const { return playPart_; }
     
+    // Main volume
+    void setMainVolume(float mainVolume);
+    float getMainVolume() const { return mainVolume_; }
+    
+    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);
@@ -148,6 +153,7 @@ private:
     float eqGain_;
     float eqQ_;
     StemType playPart_;
+    float mainVolume_;
     
     // Singleton
     static MelissaModel instance_;
