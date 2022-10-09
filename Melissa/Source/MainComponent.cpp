@@ -492,14 +492,6 @@ void MainComponent::createUI()
         headerComponent_->addAndMakeVisible(audioDeviceButton_.get());
     }
     
-    /*
-    {
-        // Spleeter Button
-        stemControlComponent_ = make_unique<MelissaStemControlComponent>();
-        addAndMakeVisible(stemControlComponent_.get());
-    }
-     */
-    
     waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
     addAndMakeVisible(waveformComponent_.get());
     
@@ -550,6 +542,10 @@ void MainComponent::createUI()
             }
         };
         section->addAndMakeVisible(pitchButton_.get());
+        
+        // Stem Button
+        stemControlComponent_ = make_unique<MelissaStemControlComponent>();
+        section->addAndMakeVisible(stemControlComponent_.get());
     }
     
     {
@@ -1101,6 +1097,7 @@ void MainComponent::createUI()
     labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",       metronomeVolumeSlider_.get() };
     labelInfo_[kLabel_Pitch]            = { "Pitch",           pitchButton_.get() };
     labelInfo_[kLabel_OutputMode]       = { "Output",          outputModeComboBox_.get() };
+    labelInfo_[kLabel_Part]             = { "Part",            stemControlComponent_.get() };
     labelInfo_[kLabel_ATime]            = { "Start",           aButton_.get() };
     labelInfo_[kLabel_BTime]            = { "End",             bButton_.get() };
     labelInfo_[kLabel_Speed]            = { "Speed",           speedButton_.get() };
@@ -1276,7 +1273,10 @@ void MainComponent::resized()
         const int totalControlWidth = (section->getWidth() - 10 - 10 - 10 - 10);
         const int bpmAccentPosButtonWidth = totalControlWidth / (7 + 5 + 7) * 7;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        pitchButton_->setBounds(10, y, bpmAccentPosButtonWidth, controlHeight);
+        pitchButton_->setBounds(10, y, 120, controlHeight);
+        
+        const int stemControlWidth = songWidth - 10 * 3 - pitchButton_->getWidth();
+        stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y, stemControlWidth, controlHeight);
     }
     
     // Loop

@@ -228,7 +228,7 @@ public:
     static String getCompatibleFileExtensions();
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
-    float readBuffer(size_t ch, size_t index);
+    float readBuffer(size_t ch, size_t index, StemType playPart);
     double getSampleRate() const { return sampleRate_; }
     size_t getBufferLength() const { return (originalAudioSampleBuf_ == nullptr ? 0 : originalAudioSampleBuf_->getNumSamples()); }
     void disposeBuffer();

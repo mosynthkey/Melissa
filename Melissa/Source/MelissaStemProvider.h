@@ -12,6 +12,8 @@
 enum StemProviderStatus
 {
     kStemProviderStatus_Ready,
+    kStemProviderStatus_Available,
+    kStemProviderStatus_NotAvailable,
     kStemProviderStatus_Processing,
 };
 
@@ -41,11 +43,16 @@ public:
     bool requestStems(const File& file);
     void getStemFiles(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles);
     
+    void failedToReadPreparedStems();
+    
+    void prepareForLoadStems(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles);
+    
+    StemProviderStatus getStemProviderStatus() const { return status_; }
+    StemProviderResult getStemProviderResult() const { return result_; }
+    
     // Listener
     void addListener(MelissaStemProviderListener* listener);
     void removeListener(MelissaStemProviderListener* listener);
-    
-    StemProviderStatus getStatus() { return status_; }
     
     // Singleton
     static MelissaStemProvider* getInstance() { return &instance_; }
@@ -54,7 +61,7 @@ public:
     MelissaStemProvider(MelissaStemProvider&&) = delete;
     MelissaStemProvider& operator=(MelissaStemProvider&&) = delete;
     
-    static inline const std::string partNames_[] = { "vocals", "piano", "bass", "drums", "other" };
+    static inline const std::string partNames_[] = { "accompaniment", "vocals", "piano", "bass", "drums", "other" };
     
 private:
     // Singleton
@@ -67,6 +74,7 @@ private:
     StemProviderResult createStems();
     
     StemProviderStatus status_;
-    File songFile_;
     StemProviderResult result_;
+    
+    File songFile_;
 };

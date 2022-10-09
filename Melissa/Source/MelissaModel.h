@@ -100,6 +100,10 @@ public:
     void  setEqQ(size_t band, float eqQ);
     float getEqQ(size_t band) { return eqQ_; }
     
+    // Part
+    void setPlayPart(StemType playPart);
+    StemType getPlayPart() const { return playPart_; }
+    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);
@@ -143,6 +147,7 @@ private:
     float eqFreq_;
     float eqGain_;
     float eqQ_;
+    StemType playPart_;
     
     // Singleton
     static MelissaModel instance_;

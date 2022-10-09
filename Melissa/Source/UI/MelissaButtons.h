@@ -159,13 +159,26 @@ public:
 class MelissaRoundButton : public Button
 {
 public:
-    MelissaRoundButton(const String& title) : Button(""), title_(title) { }
+    MelissaRoundButton(const String& title) : Button(""), title_(title)
+    {
+        // default
+        normalColour_ = MelissaUISettings::getAccentColour(0.6f);
+        highlightedColour_ = downColour_ = MelissaUISettings::getAccentColour(1.f);
+    }
     
     void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        Colour colour = normalColour_;
+        if (shouldDrawButtonAsDown)
+        {
+            colour = downColour_;
+        }
+        else if (shouldDrawButtonAsHighlighted)
+        {
+            colour = highlightedColour_;
+        }
         
-        g.setColour(MelissaUISettings::getAccentColour(highlighted ? 1.f : 0.6f));
+        g.setColour(colour);
         g.fillRoundedRectangle(getLocalBounds().toFloat(), getHeight() / 2);
         
         g.setColour(MelissaUISettings::getTextColour());
@@ -173,11 +186,24 @@ public:
         g.drawText(title_, 0, 0, getWidth(), getHeight(), Justification::centred);
     }
 
-    void setFont(Font font) { font_ = font; }
+    void setFont(Font font)
+    {
+        font_ = font;
+        repaint();
+    }
+    
+    void setColour(Colour normalColour, Colour highlightedColour, Colour downColour)
+    {
+        normalColour_ = normalColour;
+        highlightedColour_ = highlightedColour;
+        downColour_ = downColour;
+        repaint();
+    }
     
 private:
     String title_;
     Font font_;
+    Colour normalColour_, highlightedColour_, downColour_;
 };
 
 class MelissaAudioDeviceButton : public Button
@@ -196,8 +222,6 @@ public:
     
     void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        auto area = getLocalBounds();
-        
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         

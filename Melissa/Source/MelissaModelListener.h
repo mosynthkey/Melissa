@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "MelissaDefinitions.h"
+
 enum PlaybackStatus
 {
     kPlaybackStatus_Playing,
@@ -69,5 +71,6 @@ public:
     virtual void eqFreqChanged(size_t band, float freq) {}
     virtual void eqGainChanged(size_t band, float gain) {}
     virtual void eqQChanged(size_t band, float q) {}
+    virtual void playPartChanged(StemType playPart) {}
 };
 

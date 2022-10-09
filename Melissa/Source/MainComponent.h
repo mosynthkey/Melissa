@@ -322,6 +322,7 @@ private:
         kLabel_MetronomeVolume,
         kLabel_Pitch,
         kLabel_OutputMode,
+        kLabel_Part,
         
         kLabel_ATime,
         kLabel_BTime,

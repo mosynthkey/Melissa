@@ -18,7 +18,9 @@ MelissaStemProvider MelissaStemProvider::instance_;
 
 static const String stemFileName = "stem_info.json";
 
-MelissaStemProvider::MelissaStemProvider() : Thread("MelissaSpleeterProcessThread"), status_(kStemProviderStatus_Ready), result_(kStemProviderResult_UnknownError)
+MelissaStemProvider::MelissaStemProvider() : Thread("MelissaSpleeterProcessThread"),
+status_(kStemProviderStatus_Ready),
+result_(kStemProviderResult_UnknownError)
 {
     
 }
@@ -64,7 +66,12 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
         try
         {
             auto j = json::parse(stemInfoJson);
-            if (!(j["original"].get<std::string>() == fileToOpen.getFileName().toStdString())) return;
+            if (!(j["original"].get<std::string>() == fileToOpen.getFileName().toStdString()))
+            {
+                // invalid json file
+                // Result 2
+                return;
+            }
             
             for (auto& partName : partNames_)
             {
@@ -79,7 +86,9 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
                 }
                 stemFiles[partName] = stemFile;
             }
-                
+            
+            status_ = kStemProviderStatus_Available;
+            return;
         }
         catch (std::exception& e)
         {
@@ -101,10 +110,41 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
         }
         catch (std::exception& e)
         {
-            // Result 1
+            // Result 2
             return;
         }
     }
+}
+
+void MelissaStemProvider::failedToReadPreparedStems()
+{
+    stopThread(1000);
+    
+    status_ = kStemProviderStatus_Ready;
+    
+    MessageManager::callAsync([&]() {
+        for (auto& l : listeners_) l->stemProviderStatusChanged(status_);
+    });
+}
+
+void MelissaStemProvider::prepareForLoadStems(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles)
+{
+    stopThread(1000);
+    
+    stemFiles.clear();
+    getStemFiles(fileToOpen, originalFile, stemFiles);
+    if (stemFiles.size() == kNumStemTypes)
+    {
+        status_ = kStemProviderStatus_Available;
+    }
+    else
+    {
+        status_ = kStemProviderStatus_Ready;
+    }
+    
+    MessageManager::callAsync([&]() {
+        for (auto& l : listeners_) l->stemProviderStatusChanged(status_);
+    });
 }
 
 void MelissaStemProvider::addListener(MelissaStemProviderListener* listener)
@@ -132,7 +172,6 @@ void MelissaStemProvider::removeListener(MelissaStemProviderListener* listener)
 void MelissaStemProvider::run()
 {
     status_ = kStemProviderStatus_Processing;
-    
     MessageManager::callAsync([&]() {
         for (auto& l : listeners_) l->stemProviderStatusChanged(status_);
     });
@@ -142,7 +181,14 @@ void MelissaStemProvider::run()
         for (auto& l : listeners_) l->stemProviderResultReported(result_);
     });
     
-    status_ = kStemProviderStatus_Ready;
+    if (result_ == kStemProviderResult_Success)
+    {
+        status_ = kStemProviderStatus_Available;
+    }
+    else
+    {
+        status_ = kStemProviderStatus_NotAvailable;
+    }
     MessageManager::callAsync([&]() {
         for (auto& l : listeners_) l->stemProviderStatusChanged(status_);
     });
@@ -155,7 +201,7 @@ StemProviderResult MelissaStemProvider::createStems()
     
     // validate the parameters (output count)
     std::error_code err;
-    spleeter::SeparationType separation_type = spleeter::TwoStems;
+    spleeter::SeparationType separation_types[] = { spleeter::TwoStems, spleeter::FiveStems };
     
     // create output directory
     File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
@@ -164,31 +210,35 @@ StemProviderResult MelissaStemProvider::createStems()
     // Initialize spleeter
     auto settingsDir = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
     auto model_path = settingsDir.getChildFile("models").getFullPathName().toStdString();
-    spleeter::Initialize(model_path, {separation_type}, err);
-    if (err) return kStemProviderResult_FailedToInitialize;
     
-    InputFile input(songFile_.getFullPathName().toStdString());
-    input.Open(err);
-    if (err) return kStemProviderResult_CouldntReadSourceFile;
-    
+    for (const auto& separation_type : separation_types)
     {
-        auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
-        auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
-        OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, bufferLength);
-        while (true)
+        spleeter::Initialize(model_path, {separation_type}, err);
+        if (err) return kStemProviderResult_FailedToInitialize;
+        
+        InputFile input(songFile_.getFullPathName().toStdString());
+        input.Open(err);
+        if (err) return kStemProviderResult_CouldntReadSourceFile;
+        
         {
-            if (threadShouldExit()) return kStemProviderResult_Interrupted;
-            
-            auto data = input.Read();
-            if (data.cols() == 0) break;
-            
-            auto result = Split(data, separation_type, err);
-            if (err) return kStemProviderResult_FailedToSplit;
-            
-            output_folder.Write(result, err);
-            if (err) return kStemProviderResult_FailedToExport;
+            auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
+            auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
+            OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, bufferLength);
+            while (true)
+            {
+                if (threadShouldExit()) return kStemProviderResult_Interrupted;
+                
+                auto data = input.Read();
+                if (data.cols() == 0) break;
+                
+                auto result = Split(data, separation_type, err);
+                if (err) return kStemProviderResult_FailedToSplit;
+                
+                output_folder.Write(result, err);
+                if (err) return kStemProviderResult_FailedToExport;
+            }
+            output_folder.Flush();
         }
-        output_folder.Flush();
     }
     
     // create melissa_stems.json
@@ -210,6 +260,10 @@ StemProviderResult MelissaStemProvider::createStems()
         }
         
         File stemSettingsFile(outputDirName.getChildFile("stem_info.json"));
+        if (stemSettingsFile.existsAsFile())
+        {
+            stemSettingsFile.deleteFile();
+        }
         if (!stemSettingsFile.replaceWithText(stemSettings.dump(4)))
         {
             return kStemProviderResult_FailedToExport;
@@ -220,5 +274,6 @@ StemProviderResult MelissaStemProvider::createStems()
         return kStemProviderResult_FailedToExport;
     }
     
+    status_ = kStemProviderStatus_Available;
     return kStemProviderResult_Success;
 }

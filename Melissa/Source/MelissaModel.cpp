@@ -261,6 +261,12 @@ void MelissaModel::setEqQ(size_t band, float eqQ)
     for (auto&& l : listeners_) l->eqQChanged(band, eqQ);
 }
 
+void MelissaModel::setPlayPart(StemType playPart)
+{
+    playPart_ = std::clamp<StemType>(playPart, kStemType_All, kStemType_Others);
+    for (auto&& l : listeners_) l->playPartChanged(playPart_);
+}
+
 void MelissaModel::addListener(MelissaModelListener* listener)
 {
     for (auto&& l : listeners_)

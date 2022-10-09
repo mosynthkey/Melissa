@@ -652,6 +652,39 @@ public:
     }
 };
 
+class MelissaLookAndFeel_StemToggleButton : public LookAndFeel_V4
+{
+public:
+    virtual ~MelissaLookAndFeel_StemToggleButton() {};
+    
+    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const int height = tb.getHeight();
+        const auto localBounds = tb.getLocalBounds().toFloat();
+        const bool highlightedOrDown = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
+        
+        if (tb.getToggleState())
+        {
+            g.setColour(MelissaUISettings::getAccentColour(highlightedOrDown ? 1.f : 0.6f));
+            g.fillRoundedRectangle(localBounds, height / 2);
+        }
+        else if (highlightedOrDown)
+        {
+            g.setColour(Colours::white.withAlpha(0.2f));
+            g.fillRoundedRectangle(localBounds, height / 2);
+        }
+        else
+        {
+            g.setColour(Colours::white.withAlpha(0.1f));
+            g.fillRoundedRectangle(localBounds, height / 2);
+        }
+        
+        g.setColour(MelissaUISettings::getTextColour());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+    }
+};
+
 class MelissaLookAndFeel_CrossFader : public LookAndFeel_V4
 {
 public:

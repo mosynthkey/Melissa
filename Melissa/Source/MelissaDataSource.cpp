@@ -476,7 +476,8 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
     
     if (file.existsAsFile())
     {
-        MelissaStemProvider::getInstance()->getStemFiles(file, fileToload_, stemFiles_);
+        MelissaStemProvider::getInstance()->prepareForLoadStems(file, fileToload_, stemFiles_);
+        
         wasPlaying_ = (model_->getPlaybackStatus() == kPlaybackStatus_Playing);
         model_->setPlaybackStatus(kPlaybackStatus_Stop);
         for (auto&& l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Loading, file.getFullPathName());
@@ -489,7 +490,7 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
     }
 }
 
-float MelissaDataSource::readBuffer(size_t ch, size_t index)
+float MelissaDataSource::readBuffer(size_t ch, size_t index, StemType playPart)
 {
     if (originalAudioSampleBuf_ == nullptr) return 0.f;
     
@@ -499,47 +500,19 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index)
     if (2 <= ch || numOfChs <= ch) ch = 0;
     if (bufferSize <= index) return 0.f;
     
-    
-    float mixedSignal = originalAudioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
-    
+    if (playPart == kStemType_All)
     {
-        auto hoge = kStemType_Vocals;
-        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
+        return originalAudioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
+    }
+    else if (playPart < kNumStemTypes)
+    {
+        if (stemAudioSampleBuf_[playPart] != nullptr && index < stemAudioSampleBuf_[playPart]->getNumSamples())
         {
-            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
-            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
+            return stemAudioSampleBuf_[playPart]->getSample(static_cast<int>(ch), static_cast<int>(index));
         }
     }
     
-    {
-        auto hoge = kStemType_Drums;
-        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
-        {
-            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
-            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
-        }
-    }
-    
-    {
-        auto hoge = kStemType_Bass;
-        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
-        {
-            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
-            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
-        }
-    }
-    
-    {
-        auto hoge = kStemType_Piano;
-        if (stemAudioSampleBuf_[hoge] != nullptr && index < stemAudioSampleBuf_[hoge]->getNumSamples())
-        {
-            //mixedSignal -= stemAudioSampleBuf_[kStemType_Vocals]->getSample(static_cast<int>(ch), static_cast<int>(index));
-            mixedSignal -= stemAudioSampleBuf_[hoge]->getSample(static_cast<int>(ch), static_cast<int>(index));
-        }
-    }
-    
-    
-    return mixedSignal;
+    return 0.f;
 }
 
 void MelissaDataSource::disposeBuffer()
@@ -1062,15 +1035,8 @@ void MelissaDataSource::handleAsyncUpdate()
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
     
-    auto stemProvider = MelissaStemProvider::getInstance();
     File originalFile;
     std::map<std::string, File> stemFiles;
-    
-    //DBG(String::formatted("originalFile = " + fileToload_.getFullPathName()));
-    for (auto stemFile : stemFiles_)
-    {
-        //DBG(String::formatted("stemFile = " + stemFile.second.getFullPathName()));
-    }
     
     auto* reader = formatManager.createReaderFor(fileToload_);
     if (reader == nullptr)
@@ -1088,21 +1054,25 @@ void MelissaDataSource::handleAsyncUpdate()
     sampleRate_ = reader->sampleRate;
     
     // stem files
-    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
+    if (stemFiles_.size() == kNumStemTypes)
     {
-        const auto stemName = MelissaStemProvider::partNames_[stemTypeIndex];
-        auto* reader = formatManager.createReaderFor(stemFiles_[stemName]);
-        if (reader == nullptr)
+        for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
         {
-            stemFiles_.clear();
-            break;
+            const auto stemName = MelissaStemProvider::partNames_[stemTypeIndex];
+            auto* reader = formatManager.createReaderFor(stemFiles_[stemName]);
+            if (reader == nullptr)
+            {
+                stemFiles_.clear();
+                MelissaStemProvider::getInstance()->failedToReadPreparedStems();
+                break;
+            }
+            
+            const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
+            stemAudioSampleBuf_[stemTypeIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
+            reader->read(stemAudioSampleBuf_[stemTypeIndex].get(), 0, lengthInSamples, 0, true, true);
+            const auto sampleRate = reader->sampleRate;
+            DBG(String(stemName) + String(".lengthInSamples : ") + String(lengthInSamples) + String(" / sampleRate : ") + String(sampleRate));
         }
-        
-        const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
-        stemAudioSampleBuf_[stemTypeIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-        reader->read(stemAudioSampleBuf_[stemTypeIndex].get(), 0, lengthInSamples, 0, true, true);
-        const auto sampleRate = reader->sampleRate;
-        DBG(String(stemName) + String(".lengthInSamples : ") + String(lengthInSamples) + String(" / sampleRate : ") + String(sampleRate));
     }
     
     currentSongFilePath_ = fileToload_.getFullPathName();
@@ -1175,6 +1145,7 @@ void MelissaDataSource::handleAsyncUpdate()
     model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
     model_->setLoopPosRatio(0.f, 1.f);
     model_->setPlayingPosRatio(0.f);
+    model_->setPlayPart(kStemType_All);
     
     addToHistory(currentSongFilePath_);
     saveSongState();

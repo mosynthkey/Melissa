@@ -326,8 +326,8 @@ void MelissaAudioEngine::process()
             mutex_.lock();
             sampleIndexStretcher_->putSampleIndex(readIndex_);
             mutex_.unlock();
-            bufferForSoundTouch_[iSample * 2 + 0] = shouldProcess_ ? dataSource_->readBuffer(0, readIndex_) : 0.f;
-            bufferForSoundTouch_[iSample * 2 + 1] = shouldProcess_ ? dataSource_->readBuffer(1, readIndex_) : 0.f;
+            bufferForSoundTouch_[iSample * 2 + 0] = shouldProcess_ ? dataSource_->readBuffer(0, readIndex_, playPart_) : 0.f;
+            bufferForSoundTouch_[iSample * 2 + 1] = shouldProcess_ ? dataSource_->readBuffer(1, readIndex_, playPart_) : 0.f;
             ++readIndex_;
         }
         
@@ -592,4 +592,9 @@ void MelissaAudioEngine::updateLoopParameters()
         const bool loopRangeWholeSong = (aIndex_ == 0 && bIndex_ == originalBufferLength_);
         loop_ = !loopRangeWholeSong;
     }
+}
+
+void MelissaAudioEngine::playPartChanged(StemType playPart)
+{
+    playPart_ = playPart;
 }

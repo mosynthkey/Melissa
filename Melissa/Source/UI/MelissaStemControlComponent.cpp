@@ -8,67 +8,139 @@
 #include "MelissaDataSource.h"
 #include "MelissaStemControlComponent.h"
 
-MelissaStemControlComponent::MelissaStemControlComponent()
+enum
+{
+    kMelissaStemButtonGroup = 4000,
+};
+
+static const String stemNames[] = { "Inst.", "Vo.", "Pf.", "Bass", "Drums", "Others" };
+
+MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProviderStatus_Ready)
 {
     MelissaStemProvider::getInstance()->addListener(this);
+    auto model = MelissaModel::getInstance();
     
     auto createAndAddTextButton = [&](const String& text)
     {
-        auto b = std::make_unique<TextButton>();
+        auto b = std::make_unique<ToggleButton>(text);
+        b->setTooltip(TRANS("stems_") + text.toLowerCase());
         b->setButtonText(text);
+        b->setRadioGroupId(kMelissaStemButtonGroup);
+        b->setClickingTogglesState(true);
+        b->setLookAndFeel(&stemToggleButtonLaf_);
         addAndMakeVisible(b.get());
         return b;
     };
     
-    createStemsButton_ = createAndAddTextButton("Create");
+    createStemsButton_ = std::make_unique<TextButton>();
+    createStemsButton_->setLookAndFeel(&simpleTextButtonLaf_);
     createStemsButton_->onClick = [&]()
     {
         MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()));
     };
+    addAndMakeVisible(createStemsButton_.get());
     
-    const String stemNames[] = { "Vocals", "Piano", "Bass", "Drums", "Others" };
+    allButton_ = createAndAddTextButton("All");
+    allButton_->setToggleState(true, dontSendNotification);
+    allButton_->onClick = [&, model]() { model->setPlayPart(kStemType_All); };
     for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
     {
         stemSwitchButtons_[stemTypeIndex] = createAndAddTextButton(stemNames[stemTypeIndex]);
+        stemSwitchButtons_[stemTypeIndex]->setVisible(false);
+        stemSwitchButtons_[stemTypeIndex]->onClick = [&, stemTypeIndex, model]() { model->setPlayPart(static_cast<StemType>(stemTypeIndex)); };
     }
     
-    statusLabel_ = std::make_unique<Label>();
-    statusLabel_->setText("Waiting", dontSendNotification);
-    addAndMakeVisible(statusLabel_.get());
+    updateAndArrangeControls();
+}
+
+MelissaStemControlComponent::~MelissaStemControlComponent()
+{
+    createStemsButton_->setLookAndFeel(nullptr);
+    allButton_->setLookAndFeel(nullptr);
+    for (auto& b : stemSwitchButtons_) b->setLookAndFeel(nullptr);
 }
 
 void MelissaStemControlComponent::resized()
 {
-    constexpr int kButtonWidth = 100;
-    constexpr int kButtonHeight = 30;
-    constexpr int kMargin = 10;
-    
-    int x = kMargin;
-    createStemsButton_->setBounds(x, 0, kButtonWidth, kButtonHeight);
-    x += (kButtonWidth + kMargin);
-    
-    statusLabel_->setBounds(x, 0, kButtonWidth, kButtonHeight);
-    x += (kButtonWidth + kMargin);
-    
-    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
-    {
-        stemSwitchButtons_[stemTypeIndex]->setBounds(x, 0, kButtonWidth, kButtonHeight);
-        x += (kButtonWidth + kMargin);
-    }
+    updateAndArrangeControls();
+}
+
+void MelissaStemControlComponent::paint(Graphics& g)
+{
+    const auto b = getLocalBounds();
+    g.setColour(MelissaUISettings::getSubColour());
+    g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
+}
+
+void MelissaStemControlComponent::playPartChanged(StemType playPart)
+{
+    toggleStems(playPart);
 }
 
 void MelissaStemControlComponent::stemProviderStatusChanged(StemProviderStatus status)
 {
-    if (status == kStemProviderStatus_Processing)
+    status_ = status;
+    updateAndArrangeControls();
+}
+
+void MelissaStemControlComponent::updateAndArrangeControls()
+{
+    constexpr int kMargin = 4;
+    constexpr int yMargin = 4;
+    constexpr int kButtonHeight = 30 - yMargin * 2;
+    
+    int x = kMargin;
+    allButton_->setBounds(x, yMargin, 40, kButtonHeight);
+    const int createButtonOrStatusWidth = getWidth() - kMargin * 3;
+    
+    x += (allButton_->getWidth() + kMargin);
+    createStemsButton_->setBounds(x, yMargin, createButtonOrStatusWidth, kButtonHeight);
+    
+    int totalNameLength = 0;
+    x = allButton_->getRight() + kMargin;
+    for (auto& name : stemNames) totalNameLength += name.length();
+    const float widthUnit = static_cast<float>((getWidth() - x) - kMargin - kMargin * (kNumStemTypes - 1)) / totalNameLength;
+    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
     {
-        statusLabel_->setText("Processing...", dontSendNotification);
+        int buttonWidth = static_cast<int>(widthUnit * stemNames[stemTypeIndex].length());
+        stemSwitchButtons_[stemTypeIndex]->setBounds(x, yMargin, buttonWidth, kButtonHeight);
+        x += (buttonWidth + kMargin);
     }
-    else
+    
+    for (auto& b : stemSwitchButtons_) b->setVisible(status_ == kStemProviderStatus_Available);
+    createStemsButton_->setVisible(status_ != kStemProviderStatus_Available);
+    if (status_ != kStemProviderStatus_Available) allButton_->setToggleState(true, dontSendNotification);
+    
+    if (status_ == kStemProviderStatus_Ready)
     {
-        statusLabel_->setText("Ready", dontSendNotification);
+        createStemsButton_->setButtonText(TRANS("Click to separate music by instrument"));
+    }
+    else if (status_ == kStemProviderStatus_NotAvailable)
+    {
+        createStemsButton_->setButtonText(TRANS("Couldn't separate this music"));
+    }
+    else if (status_ == kStemProviderStatus_Processing)
+    {
+        createStemsButton_->setButtonText(TRANS("Separating this music into parts..."));
     }
 }
 
-void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult result)
+void MelissaStemControlComponent::toggleStems(int stemIndex)
 {
+    if (status_ == kStemProviderStatus_Available)
+    {
+        allButton_->setToggleState(stemIndex == kStemType_All, dontSendNotification);
+        for (int buttonIndex = 0; buttonIndex < kNumStemTypes; ++buttonIndex)
+        {
+            stemSwitchButtons_[buttonIndex]->setToggleState(buttonIndex == stemIndex, dontSendNotification);
+        }
+    }
+    else
+    {
+        allButton_->setToggleState(true, dontSendNotification);
+        for (int buttonIndex = 0; buttonIndex < kNumStemTypes; ++buttonIndex)
+        {
+            stemSwitchButtons_[buttonIndex]->setToggleState(buttonIndex == stemIndex, dontSendNotification);
+        }
+    }
 }
