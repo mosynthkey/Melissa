@@ -114,15 +114,18 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     
     if (status_ == kStemProviderStatus_Ready)
     {
-        createStemsButton_->setButtonText("Click to separate music by instrument");
+        createStemsButton_->setButtonText(TRANS("click_to_separate"));
+        createStemsButton_->setEnabled(true);
     }
     else if (status_ == kStemProviderStatus_NotAvailable)
     {
-        createStemsButton_->setButtonText("Couldn't separate this music");
+        createStemsButton_->setButtonText(TRANS("couldnt_separate"));
+        createStemsButton_->setEnabled(false);
     }
     else if (status_ == kStemProviderStatus_Processing)
     {
-        createStemsButton_->setButtonText("Separating this music into parts...");
+        createStemsButton_->setButtonText(TRANS("separating"));
+        createStemsButton_->setEnabled(false);
     }
 }
 
