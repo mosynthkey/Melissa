@@ -2,9 +2,9 @@
 	path = Submodule/soundtouch
 	url = https://codeberg.org/soundtouch/soundtouch.git
 
-[submodule "Submodule/spleet"]
-	path = Submodule/spleet
-	url = git@github.com:mosynthkey/spleet.git
 [submodule "Submodule/json"]
 	path = Submodule/json
 	url = git@github.com:nlohmann/json.git
+[submodule "Submodule/eigen"]
+	path = Submodule/eigen
+	url = git@gitlab.com:libeigen/eigen.git

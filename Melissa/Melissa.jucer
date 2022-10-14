@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
-              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/spleet/thirdparty/install/include&#10;../../../Submodule/json/single_include&#10;../../../Melissa/Source&#10;../../../Melissa/Source/Audio&#10;../../../Melissa/Source/Audio/soundtouch&#10;../../../Melissa/Source/UI"
+              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Melissa/Source&#10;../../../Melissa/Source/Audio&#10;../../../Melissa/Source/Audio/soundtouch&#10;../../../Melissa/Source/UI"
               version="2.5.2" companyName="MasakiOno" companyCopyright="Copyright(c) 2022 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.MasakiOno.Melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
@@ -101,6 +101,20 @@
               file="Source/Audio/MelissaMetronome.cpp"/>
         <FILE id="ID8pHb" name="MelissaMetronome.h" compile="0" resource="0"
               file="Source/Audio/MelissaMetronome.h"/>
+      </GROUP>
+      <GROUP id="{C784FD4F-59B4-F8AB-54AD-72EDA76F2A73}" name="spleet">
+        <FILE id="H6vRwo" name="constant.h" compile="0" resource="0" file="../ThirdParty/spleet/constant.h"/>
+        <FILE id="SkDIhb" name="input_file.cpp" compile="1" resource="0" file="../ThirdParty/spleet/input_file.cpp"/>
+        <FILE id="cDwiwk" name="input_file.h" compile="0" resource="0" file="../ThirdParty/spleet/input_file.h"/>
+        <FILE id="EZ9PVU" name="io.cpp" compile="1" resource="0" file="../ThirdParty/spleet/io.cpp"/>
+        <FILE id="acAHIA" name="io.h" compile="0" resource="0" file="../ThirdParty/spleet/io.h"/>
+        <FILE id="iGWDPQ" name="output_folder.cpp" compile="1" resource="0"
+              file="../ThirdParty/spleet/output_folder.cpp"/>
+        <FILE id="NEYchS" name="output_folder.h" compile="0" resource="0" file="../ThirdParty/spleet/output_folder.h"/>
+        <FILE id="XvQnIO" name="split.cpp" compile="1" resource="0" file="../ThirdParty/spleet/split.cpp"/>
+        <FILE id="B3WNH0" name="split.h" compile="0" resource="0" file="../ThirdParty/spleet/split.h"/>
+        <FILE id="LhKSRt" name="utils.cpp" compile="1" resource="0" file="../ThirdParty/spleet/utils.cpp"/>
+        <FILE id="IBbbmD" name="utils.h" compile="0" resource="0" file="../ThirdParty/spleet/utils.h"/>
       </GROUP>
       <GROUP id="{F9FED507-2C82-58A1-F717-3A3962290515}" name="UI">
         <FILE id="QJVtXb" name="MelissaAboutComponent.h" compile="0" resource="0"
@@ -234,25 +248,11 @@
       <FILE id="Jf7QQv" name="soundtouch_config.h" compile="0" resource="0"
             file="Source/soundtouch_config.h"/>
     </GROUP>
-    <GROUP id="{12842F4F-8C90-92A9-9402-AEAFBA4BA6ED}" name="spleeterpp">
-      <FILE id="LOSRyF" name="constant.h" compile="0" resource="0" file="../Submodule/spleet/Source/constant.h"/>
-      <FILE id="MDGGDE" name="input_file.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/input_file.cpp"/>
-      <FILE id="GngKvx" name="input_file.h" compile="0" resource="0" file="../Submodule/spleet/Source/input_file.h"/>
-      <FILE id="C8IB0x" name="io.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/io.cpp"/>
-      <FILE id="rkMLwv" name="io.h" compile="0" resource="0" file="../Submodule/spleet/Source/io.h"/>
-      <FILE id="CiLxJM" name="output_folder.cpp" compile="1" resource="0"
-            file="../Submodule/spleet/Source/output_folder.cpp"/>
-      <FILE id="A3NAxb" name="output_folder.h" compile="0" resource="0" file="../Submodule/spleet/Source/output_folder.h"/>
-      <FILE id="kqcDCo" name="split.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/split.cpp"/>
-      <FILE id="khRlOy" name="split.h" compile="0" resource="0" file="../Submodule/spleet/Source/split.h"/>
-      <FILE id="yAK5kC" name="utils.cpp" compile="1" resource="0" file="../Submodule/spleet/Source/utils.cpp"/>
-      <FILE id="yXKR58" name="utils.h" compile="0" resource="0" file="../Submodule/spleet/Source/utils.h"/>
-    </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" useHeaderMap="1" smallIcon="Y3ewMD"
-               bigIcon="Y3ewMD" extraLinkerFlags="-L../../../ThirdParty/spleetercc/lib&#10;-L../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib"
-               extraCompilerFlags="-I../../../ThirdParty/spleetercc/include&#10;-I../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include"
+               bigIcon="Y3ewMD" extraLinkerFlags="-L../../../ThirdParty/spleeterpp/lib&#10;-L../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib"
+               extraCompilerFlags="-I../../../ThirdParty/spleeterpp/include&#10;-I../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include"
                externalLibraries="spleeter&#10;spleeter_common&#10;tensorflow&#10;tensorflow_framework"
                embeddedFrameworks="../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib&#10;../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib"
                xcodeValidArchs="arm64,arm64e,i386,x86_64">
