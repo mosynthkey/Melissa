@@ -1314,9 +1314,9 @@ void MainComponent::resized()
         nextButton_->setCentrePosition(x, centerY);
         x = nextButton_->getRight() + 10;
         
-        constexpr int kLabelWidth = 300;
-        fileNameLabel_->setBounds(getWidth() / 2 - kLabelWidth - 10, 0, kLabelWidth, kHeaderHeight);
-        timeLabel_->setBounds(getWidth() / 2 + 10, 0, kLabelWidth, kHeaderHeight);
+        const int labelWidth = getWidth() / 2 - (nextButton_->getRight() + 40);
+        fileNameLabel_->setBounds(getWidth() / 2 - labelWidth - 10, 0, labelWidth, kHeaderHeight);
+        timeLabel_->setBounds(getWidth() / 2 + 10, 0, labelWidth, kHeaderHeight);
         
         constexpr int kMainVolumeWidth = 140;
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
@@ -1325,10 +1325,10 @@ void MainComponent::resized()
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
     }
     
-    shortcutPopup_->setBounds(0, 5, getWidth(), 30);
+    shortcutPopup_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
     
-    waveformComponent_->setBounds(60, headerComponent_->getBottom() + 40, getWidth() - 60 * 2, 160);
-    markerMemoComponent_->setBounds(80, headerComponent_->getBottom() + 4, getWidth() - 80 * 2, 30);
+    waveformComponent_->setBounds(30, headerComponent_->getBottom() + 40, getWidth() - 30 * 2, 160);
+    markerMemoComponent_->setBounds(50, headerComponent_->getBottom() + 4, getWidth() - 50 * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
