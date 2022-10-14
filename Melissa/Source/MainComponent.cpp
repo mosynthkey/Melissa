@@ -1116,7 +1116,9 @@ void MainComponent::createUI()
             if (name.isEmpty()) name = defaultName;
             
             dataSource_->addPracticeList(name);
-        });
+        }, std::vector<String>{
+            "Guitar", "Bass", "Drums", "Piano", "Strings", "Synth", "Organ", "Brass",
+            "Intro", "1st Verse", "2nd Verse", "Bridge", "Outro", "Solo", "Backing", });
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
     };
