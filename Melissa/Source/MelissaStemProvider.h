@@ -20,7 +20,7 @@ enum StemProviderStatus
 enum StemProviderResult
 {
     kStemProviderResult_Success,
-    kStemProviderResult_CouldntReadSourceFile,
+    kStemProviderResult_FailedToReadSourceFile,
     kStemProviderResult_FailedToInitialize,
     kStemProviderResult_FailedToSplit,
     kStemProviderResult_FailedToExport,
@@ -46,6 +46,7 @@ public:
     void failedToReadPreparedStems();
     
     void prepareForLoadStems(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles);
+    void deleteStems();
     
     StemProviderStatus getStemProviderStatus() const { return status_; }
     StemProviderResult getStemProviderResult() const { return result_; }

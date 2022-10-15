@@ -32,7 +32,6 @@ MelissaStemProvider::~MelissaStemProvider()
 
 bool MelissaStemProvider::requestStems(const File& file)
 {
-    if (file.getFullPathName() == songFile_.getFullPathName()) return false;
     if (status_ == kStemProviderStatus_Processing || isThreadRunning()) return false;
     
     songFile_ = file;
@@ -145,6 +144,21 @@ void MelissaStemProvider::prepareForLoadStems(const File& fileToOpen, File& orig
     });
 }
 
+void MelissaStemProvider::deleteStems()
+{
+    if (!songFile_.existsAsFile()) return;
+    
+    const auto currentSongDirectory = songFile_.getParentDirectory();
+    const auto songName = File::createLegalFileName(songFile_.getFileName());
+    
+    File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
+    
+    if (outputDirName.isDirectory())
+    {
+        outputDirName.deleteRecursively();
+    }
+}
+
 void MelissaStemProvider::addListener(MelissaStemProviderListener* listener)
 {
     for (auto&& l : listeners_)
@@ -183,6 +197,11 @@ void MelissaStemProvider::run()
     {
         status_ = kStemProviderStatus_Available;
     }
+    else if (result_ == kStemProviderResult_Interrupted)
+    {
+        deleteStems();
+        status_ = kStemProviderStatus_Ready;
+    }
     else
     {
         status_ = kStemProviderStatus_NotAvailable;
@@ -212,7 +231,7 @@ StemProviderResult MelissaStemProvider::createStems()
     
     // create output directory
     File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
-    if (outputDirName.createDirectory().failed()) return kStemProviderResult_CouldntReadSourceFile;
+    if (outputDirName.createDirectory().failed()) return kStemProviderResult_FailedToReadSourceFile;
     
     // Initialize spleeter
     auto settingsDir = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
@@ -220,12 +239,14 @@ StemProviderResult MelissaStemProvider::createStems()
     
     for (const auto& separation_type : separation_types)
     {
+        if (threadShouldExit()) return kStemProviderResult_Interrupted;
+        
         spleeter::Initialize(model_path, {separation_type}, err);
         if (err) return kStemProviderResult_FailedToInitialize;
         
         InputFile input(songFile_.getFullPathName().toStdString());
         input.Open(err);
-        if (err) return kStemProviderResult_CouldntReadSourceFile;
+        if (err) return kStemProviderResult_FailedToReadSourceFile;
         
         {
             auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
@@ -237,12 +258,15 @@ StemProviderResult MelissaStemProvider::createStems()
                 
                 auto data = input.Read();
                 if (data.cols() == 0) break;
+                if (threadShouldExit()) return kStemProviderResult_Interrupted;
                 
                 auto result = Split(data, separation_type, err);
                 if (err) return kStemProviderResult_FailedToSplit;
+                if (threadShouldExit()) return kStemProviderResult_Interrupted;
                 
                 output_folder.Write(result, err);
                 if (err) return kStemProviderResult_FailedToExport;
+                if (threadShouldExit()) return kStemProviderResult_Interrupted;
             }
             output_folder.Flush();
         }

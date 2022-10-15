@@ -6,6 +6,9 @@
 //
 
 #include "MelissaDataSource.h"
+#include "MelissaOptionDialog.h"
+#include "MelissaModalDialog.h"
+#include "MelissaPopupMessageComponent.h"
 #include "MelissaStemControlComponent.h"
 
 enum
@@ -24,7 +27,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProvid
     auto createAndAddTextButton = [&](const String& text)
     {
         auto b = std::make_unique<ToggleButton>(text);
-        b->setTooltip(TRANS("stems_") + text.toLowerCase());
+        b->setTooltip(TRANS("stems_" + text.toLowerCase()));
         b->setButtonText(text);
         b->setRadioGroupId(kMelissaStemButtonGroup);
         b->setClickingTogglesState(true);
@@ -37,7 +40,28 @@ MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProvid
     createStemsButton_->setLookAndFeel(&simpleTextButtonLaf_);
     createStemsButton_->onClick = [&]()
     {
-        MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()));
+        if (MelissaStemProvider::getInstance()->isThreadRunning())
+        {
+            const std::vector<String> options = { TRANS("ok"), TRANS("cancel") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("cancel_creating_stems"), options, [&](size_t yesno) {
+                if (yesno == 1 /* no */ ) return;
+                
+                MelissaStemProvider::getInstance()->signalThreadShouldExit();
+                createStemsButton_->setButtonText(TRANS("cancel_separating"));
+                createStemsButton_->setEnabled(false);
+            });
+            MelissaModalDialog::show(dialog, TRANS("separation_of_music"));
+        }
+        else
+        {
+            const std::vector<String> options = { TRANS("ok"), TRANS("cancel") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("before_creating_stems"), options, [&](size_t yesno) {
+                if (yesno == 1 /* no */ ) return;
+                
+                MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()));
+            });
+            MelissaModalDialog::show(dialog, TRANS("separation_of_music"));
+        }
     };
     addAndMakeVisible(createStemsButton_.get());
     
@@ -84,6 +108,16 @@ void MelissaStemControlComponent::stemProviderStatusChanged(StemProviderStatus s
     updateAndArrangeControls();
 }
 
+void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult result)
+{
+    if (result == kStemProviderResult_Interrupted)
+    {
+        status_ = MelissaStemProvider::getInstance()->getStemProviderStatus();
+    }
+    
+    updateAndArrangeControls();
+}
+
 void MelissaStemControlComponent::updateAndArrangeControls()
 {
     constexpr int kMargin = 4;
@@ -124,8 +158,8 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     }
     else if (status_ == kStemProviderStatus_Processing)
     {
-        createStemsButton_->setButtonText(TRANS("separating"));
-        createStemsButton_->setEnabled(false);
+        createStemsButton_->setButtonText(TRANS("separating_click_to_cancel"));
+        createStemsButton_->setEnabled(true);
     }
 }
 

@@ -524,6 +524,15 @@ void MelissaDataSource::disposeBuffer()
     if (originalAudioSampleBuf_ == nullptr) return;
     originalAudioSampleBuf_->clear();
     originalAudioSampleBuf_ = nullptr;
+    
+    for (auto&& stemBuf : stemAudioSampleBuf_)
+    {
+        if (stemBuf != nullptr)
+        {
+            stemBuf->clear();
+            stemBuf = nullptr;
+        }
+    }
 }
 
 void MelissaDataSource::setDefaultShortcut(const String& eventName)
@@ -1042,7 +1051,7 @@ void MelissaDataSource::handleAsyncUpdate()
     File originalFile;
     std::map<std::string, File> stemFiles;
     
-    auto* reader = formatManager.createReaderFor(fileToload_);
+    auto reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(fileToload_));
     if (reader == nullptr)
     {
         for (auto&& l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, fileToload_.getFullPathName());
@@ -1063,19 +1072,17 @@ void MelissaDataSource::handleAsyncUpdate()
         for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
         {
             const auto stemName = MelissaStemProvider::partNames_[stemTypeIndex];
-            auto* reader = formatManager.createReaderFor(stemFiles_[stemName]);
-            if (reader == nullptr)
+            auto readerForStem = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(stemFiles_[stemName]));
+            if (readerForStem == nullptr)
             {
                 stemFiles_.clear();
                 MelissaStemProvider::getInstance()->failedToReadPreparedStems();
                 break;
             }
             
-            const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
+            const int lengthInSamples = static_cast<int>(readerForStem->lengthInSamples);
             stemAudioSampleBuf_[stemTypeIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-            reader->read(stemAudioSampleBuf_[stemTypeIndex].get(), 0, lengthInSamples, 0, true, true);
-            const auto sampleRate = reader->sampleRate;
-            DBG(String(stemName) + String(".lengthInSamples : ") + String(lengthInSamples) + String(" / sampleRate : ") + String(sampleRate));
+            readerForStem->read(stemAudioSampleBuf_[stemTypeIndex].get(), 0, lengthInSamples, 0, true, true);
         }
     }
     
@@ -1159,8 +1166,6 @@ void MelissaDataSource::handleAsyncUpdate()
     if (wasPlaying_) model_->setPlaybackStatus(kPlaybackStatus_Playing);
     
     saveSongState();
-    
-    delete reader;
 }
 
 void MelissaDataSource::addToHistory(const String& filePath)

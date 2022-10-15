@@ -21,7 +21,8 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaShortcutManager.h"
-#include "MelissaShortcutPopupComponent.h"
+#include "MelissaStemProvider.h"
+#include "MelissaPopupMessageComponent.h"
 #include "MelissaStemControlComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
@@ -73,6 +74,8 @@ class MainComponent   : public AudioAppComponent,
                         public MelissaHost,
                         public MelissaMarkerListener,
                         public MelissaModelListener,
+                        public MelissaShortcutListener,
+                        public MelissaStemProviderListener,
                         public MenuBarModel,
                         public MidiInputCallback,
                         public Timer,
@@ -184,7 +187,7 @@ private:
     
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     
-    std::unique_ptr<MelissaShortcutPopupComponent> shortcutPopup_;
+    std::unique_ptr<MelissaPopupMessageComponent> popupMessage_;
     
     std::unique_ptr<PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<MenuBarComponent> menuBar_;
@@ -378,6 +381,12 @@ private:
     void musicVolumeChanged(float volume) override;
     void pitchChanged(float semitone) override;
     void speedChanged(int speed) override;
+    
+    // MelissaShortcutListener
+    void controlMessageReceived(const String& controlMessage) override;
+    
+    // MelissaStemProviderListener
+    void stemProviderResultReported(StemProviderResult result) override;
     
 #if defined(ENABLE_SPEED_TRAINING)
     void speedModeChanged(SpeedMode mode) override;

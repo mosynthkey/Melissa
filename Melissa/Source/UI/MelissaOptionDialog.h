@@ -9,6 +9,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaDataSource.h"
+#include "MelissaModalDialog.h"
 #include "MelissaUtility.h"
 
 class MelissaOptionDialog : public Component

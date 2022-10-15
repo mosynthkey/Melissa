@@ -74,7 +74,7 @@ void OutputFolder::Flush() {
         // If file already exists, delete it
         if (output_file.existsAsFile()) output_file.deleteFile();
         
-        auto writer = format.createWriterFor(new FileOutputStream(output_file), outputSampleRate_, numChannels, 16, StringPairArray(), 0);
+        auto writer = std::unique_ptr<AudioFormatWriter>(format.createWriterFor(new FileOutputStream(output_file), outputSampleRate_, numChannels, 16, StringPairArray(), 0));
         writer->writeFromAudioSource(resamplingAudioSource, bufferLength_ * 2);
         writer->flush();
     }

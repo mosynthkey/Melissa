@@ -130,7 +130,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), mainVolume_(1.f), prepareingNextSong_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -269,6 +269,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), nextFileNameSho
         MelissaModalDialog::show(component, TRANS("tutorial"));
     }
 #endif
+    
+    MelissaShortcutManager::getInstance()->addListener(this);
     
     updatePlayBackModeButton();
 }
@@ -570,8 +572,8 @@ void MainComponent::createUI()
     markerMemoComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
     addAndMakeVisible(markerMemoComponent_.get());
     
-    shortcutPopup_ = std::make_unique<MelissaShortcutPopupComponent>();
-    addChildComponent(shortcutPopup_.get());
+    popupMessage_ = std::make_unique<MelissaPopupMessageComponent>();
+    addChildComponent(popupMessage_.get());
     
     controlComponent_ = make_unique<Label>();
     controlComponent_->setOpaque(false);
@@ -1327,7 +1329,7 @@ void MainComponent::resized()
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
     }
     
-    shortcutPopup_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
+    popupMessage_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
     
     waveformComponent_->setBounds(30, headerComponent_->getBottom() + 40, getWidth() - 30 * 2, 160);
     markerMemoComponent_->setBounds(50, headerComponent_->getBottom() + 4, getWidth() - 50 * 2, 30);
@@ -2031,6 +2033,36 @@ void MainComponent::pitchChanged(float semitone)
 void MainComponent::speedChanged(int speed)
 {
     speedButton_->setText(String(speed) + "%");
+}
+
+void MainComponent::controlMessageReceived(const String& controlMessage)
+{
+    popupMessage_->show(controlMessage);
+}
+
+void MainComponent::stemProviderResultReported(StemProviderResult result)
+{
+    if (result == kStemProviderResult_FailedToReadSourceFile)
+    {
+        popupMessage_->show(TRANS("stem_err_failed_to_read_source_file"));
+    }
+    else if (result == kStemProviderResult_FailedToInitialize)
+    {
+        popupMessage_->show(TRANS("stem_err_failed_to_initialize"));
+    }
+    else if (result == kStemProviderResult_FailedToSplit)
+    {
+        popupMessage_->show(TRANS("stem_err_failed_to_split"));
+    }
+    else if (result == kStemProviderResult_FailedToExport)
+    {
+        popupMessage_->show(TRANS("stem_err_failed_to_export"));
+    }
+    else if (result == kStemProviderResult_UnknownError)
+    {
+        popupMessage_->show(TRANS("stem_err_unknown"));
+    }
+    
 }
 
 #if defined(ENABLE_SPEED_TRAINING)
