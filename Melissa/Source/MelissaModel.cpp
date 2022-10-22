@@ -7,6 +7,7 @@
 
 #include "MelissaDefinitions.h"
 #include "MelissaModel.h"
+#include "MelissaStemProvider.h"
 
 MelissaModel MelissaModel::instance_;
 
@@ -263,6 +264,8 @@ void MelissaModel::setEqQ(size_t band, float eqQ)
 
 void MelissaModel::setPlayPart(StemType playPart)
 {
+    const bool isAvailable = MelissaStemProvider::getInstance()->getStemProviderStatus() == kStemProviderStatus_Available;
+    if (!isAvailable) playPart = kStemType_All;
     playPart_ = std::clamp<StemType>(playPart, kStemType_All, kStemType_Others);
     for (auto&& l : listeners_) l->playPartChanged(playPart_);
 }

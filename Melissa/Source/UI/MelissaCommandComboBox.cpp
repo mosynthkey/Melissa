@@ -21,6 +21,7 @@ enum CommandCategory
     kCommandCategory_Mixer,
     kCommandCategory_PracticeList,
     kCommandCategory_Marker,
+    kCommandCategory_Part,
     kNumOfCommandCategories
 };
 
@@ -152,6 +153,18 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
             { "SelectMarker_9", kCommandType_Switch },
         }
     },
+    {
+        "Part",
+        {
+            { "Part_All",   kCommandType_Switch },
+            { "Part_Inst",  kCommandType_Switch },
+            { "Part_Vocal", kCommandType_Switch },
+            { "Part_Piano", kCommandType_Switch },
+            { "Part_Bass",  kCommandType_Switch },
+            { "Part_Drums", kCommandType_Switch },
+            { "Part_Others", kCommandType_Switch },
+        }
+    }
 };
 
 MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nullptr), noAssignMenuId_(1), selectedCommand_("")

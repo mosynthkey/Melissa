@@ -309,6 +309,34 @@ MelissaCommand::MelissaCommand()
     {
         if (value == 1.f) selectMarker(9);
     };
+    commands_["Part_All"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_All);
+    };
+    commands_["Part_Inst"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_Instruments);
+    };
+    commands_["Part_Vocal"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_Vocals);
+    };
+    commands_["Part_Piano"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_Piano);
+    };
+    commands_["Part_Bass"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_Bass);
+    };
+    commands_["Part_Drums"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_Drums);
+    };
+    commands_["Part_Others"] = [&](float value)
+    {
+        model_->setPlayPart(kStemType_Others);
+    };
 }
 
 void MelissaCommand::excuteCommand(const String& commandAsString, float value)

@@ -480,7 +480,9 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
     
     if (file.existsAsFile())
     {
-        MelissaStemProvider::getInstance()->prepareForLoadStems(file, fileToload_, stemFiles_);
+        auto stemProvider = MelissaStemProvider::getInstance();
+        stemProvider->signalThreadShouldExit();
+        stemProvider->prepareForLoadStems(file, fileToload_, stemFiles_);
         
         wasPlaying_ = (model_->getPlaybackStatus() == kPlaybackStatus_Playing);
         model_->setPlaybackStatus(kPlaybackStatus_Stop);

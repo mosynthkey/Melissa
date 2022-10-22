@@ -271,6 +271,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
 #endif
     
     MelissaShortcutManager::getInstance()->addListener(this);
+    MelissaStemProvider::getInstance()->addListener(this);
     
     updatePlayBackModeButton();
 }
@@ -2042,7 +2043,11 @@ void MainComponent::controlMessageReceived(const String& controlMessage)
 
 void MainComponent::stemProviderResultReported(StemProviderResult result)
 {
-    if (result == kStemProviderResult_FailedToReadSourceFile)
+    if (result == kStemProviderResult_Success)
+    {
+        popupMessage_->show(TRANS("stem_success"));
+    }
+    else if (result == kStemProviderResult_FailedToReadSourceFile)
     {
         popupMessage_->show(TRANS("stem_err_failed_to_read_source_file"));
     }
@@ -2057,6 +2062,10 @@ void MainComponent::stemProviderResultReported(StemProviderResult result)
     else if (result == kStemProviderResult_FailedToExport)
     {
         popupMessage_->show(TRANS("stem_err_failed_to_export"));
+    }
+    else if (result == kStemProviderResult_Interrupted)
+    {
+        popupMessage_->show(TRANS("stem_err_interrupted"));
     }
     else if (result == kStemProviderResult_UnknownError)
     {
