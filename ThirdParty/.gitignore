@@ -1,2 +1,5 @@
 libtensorflow-cpu-darwin-universal-binary-2.8.0/*
+libtensorflow-cpu-windows-x86_64-2.8.0/*
+libtensorflow-gpu-windows-x86_64-2.8.0/*
 !*.a
+!*.lib
