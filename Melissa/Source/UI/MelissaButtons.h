@@ -87,17 +87,16 @@ private:
     {
         const auto& b = getLocalBounds();
         
-        constexpr int t = 2; // thickness
         const int w = b.getWidth();
         const int h = b.getHeight();
         const int triW = w * 9.f / 23.f;
         const int triH = h * 3.f / 7.f;
         
         const bool on = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(MelissaUISettings::getSubColour());
-        g.fillEllipse(t / 2, t / 2, w - t - 1, h - t - 1);
+        //g.setColour(MelissaUISettings::getSubColour());
+        //g.fillEllipse(t / 2, t / 2, w - t - 1, h - t - 1);
         
-        g.setColour(MelissaUISettings::getTextColour(on ? 1.f : 0.6f));
+        g.setColour(MelissaUISettings::getTextColour(on ? 1.f : 0.8f));
         if (drawPlayIcon_)
         {
             const int x0 = (w - triW) * 4.f / 7.f;

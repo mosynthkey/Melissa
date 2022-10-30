@@ -13,7 +13,7 @@
 #include "constant.h"
 
 InputFile::InputFile(const std::string &path)
-    : path_(path), end_of_file_(false), last_end_of_frame_(0) {}
+: path_(path), last_end_of_frame_(0), end_of_file_(false) {}
 
 void InputFile::Open(std::error_code &err) {
   String file(path_);

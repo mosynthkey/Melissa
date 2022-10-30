@@ -110,10 +110,12 @@ void MelissaStemControlComponent::stemProviderStatusChanged(StemProviderStatus s
 
 void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult result)
 {
+    /*
     if (result == kStemProviderResult_Interrupted)
     {
         status_ = MelissaStemProvider::getInstance()->getStemProviderStatus();
     }
+     */
     
     updateAndArrangeControls();
 }
@@ -126,7 +128,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     
     int x = kMargin;
     allButton_->setBounds(x, yMargin, 40, kButtonHeight);
-    const int createButtonOrStatusWidth = getWidth() - kMargin * 3;
+    const int createButtonOrStatusWidth = getWidth() - kMargin * 3 - allButton_->getWidth();
     
     x += (allButton_->getWidth() + kMargin);
     createStemsButton_->setBounds(x, yMargin, createButtonOrStatusWidth, kButtonHeight);

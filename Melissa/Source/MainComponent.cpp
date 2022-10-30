@@ -51,9 +51,14 @@ class MainComponent::HeaderComponent : public Component
 public:
     void paint(Graphics& g)
     {
-        g.fillAll(MelissaUISettings::getSubColour());
+        const bool isDark = MelissaUISettings::isDarkMode;
         
-        g.setColour(MelissaUISettings::getMainColour());
+        const auto backgroundColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
+        const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
+        
+        g.fillAll(backgroundColour);
+        
+        g.setColour(borderColour);
         
         // lines
         constexpr int lineWidth = 3;
@@ -61,6 +66,8 @@ public:
         g.fillRect(340, 9, lineWidth, 32);
         g.fillRect(getWidth() - 370, 9, lineWidth, 32);
         g.fillRect((getWidth() - lineWidth) / 2, 9, lineWidth, 32);
+        
+        if (!isDark) g.fillRect(0, getHeight() - lineWidth, getWidth(), lineWidth);
         
         // main volume background
         g.fillRoundedRectangle(getWidth() - 151, 15, 141, 19, 19/2);

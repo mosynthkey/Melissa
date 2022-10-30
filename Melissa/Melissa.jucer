@@ -166,6 +166,10 @@
               file="Source/UI/MelissaPlaylistComponent.cpp"/>
         <FILE id="nWUw5R" name="MelissaPlaylistComponent.h" compile="0" resource="0"
               file="Source/UI/MelissaPlaylistComponent.h"/>
+        <FILE id="iTqSQu" name="MelissaPopupMessageComponent.cpp" compile="1"
+              resource="0" file="Source/UI/MelissaPopupMessageComponent.cpp"/>
+        <FILE id="jmYNbv" name="MelissaPopupMessageComponent.h" compile="0"
+              resource="0" file="Source/UI/MelissaPopupMessageComponent.h"/>
         <FILE id="hrreSe" name="MelissaPracticeTableListBox.cpp" compile="1"
               resource="0" file="Source/UI/MelissaPracticeTableListBox.cpp"/>
         <FILE id="xpEycd" name="MelissaPracticeTableListBox.h" compile="0"
@@ -180,10 +184,6 @@
               file="Source/UI/MelissaShortcutComponent.cpp"/>
         <FILE id="lg92rj" name="MelissaShortcutComponent.h" compile="0" resource="0"
               file="Source/UI/MelissaShortcutComponent.h"/>
-        <FILE id="P2N1U2" name="MelissaShortcutPopupComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaShortcutPopupComponent.cpp"/>
-        <FILE id="d90Sfs" name="MelissaShortcutPopupComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaShortcutPopupComponent.h"/>
         <FILE id="g3JdDU" name="MelissaSimpleTextButton.h" compile="0" resource="0"
               file="Source/UI/MelissaSimpleTextButton.h"/>
         <FILE id="AnOQkI" name="MelissaStemControlComponent.cpp" compile="1"

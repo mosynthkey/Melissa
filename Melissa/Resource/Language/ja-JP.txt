@@ -178,6 +178,7 @@ countries: ja
 "separating_click_to_cancel" = "分離しています...(クリックしてキャンセル)"
 "cancel_creating_stems" = "音楽の分離を中断しますか?"
 "cancel_separating" = "音楽の分離を中断しています..."
+"stems_all" = "オリジナル (全パート)"
 "stems_inst." = "楽器のみ (オフボーカル)"
 "stems_vo." = "ボーカル"
 "stems_pf." = "ピアノ"

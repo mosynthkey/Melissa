@@ -178,6 +178,7 @@ countries: us
 "separating_click_to_cancel" = "Separating...(Click to cancel)"
 "cancel_creating_stems" = "Do you want to stop music separation?"
 "cancel_separating" = "Cancel separating..."
+"stems_all" = "Original (All parts)"
 "stems_inst." = "Instrumental (Off-vocal)"
 "stems_vo." = "Vocal"
 "stems_pf." = "Piano"

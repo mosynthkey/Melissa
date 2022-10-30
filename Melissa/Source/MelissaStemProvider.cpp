@@ -234,7 +234,7 @@ StemProviderResult MelissaStemProvider::createStems()
     if (outputDirName.createDirectory().failed()) return kStemProviderResult_FailedToReadSourceFile;
     
     // Initialize spleeter
-    auto settingsDir = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
+    auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
     auto model_path = settingsDir.getChildFile("models").getFullPathName().toStdString();
     
     for (const auto& separation_type : separation_types)
@@ -258,15 +258,12 @@ StemProviderResult MelissaStemProvider::createStems()
                 
                 auto data = input.Read();
                 if (data.cols() == 0) break;
-                if (threadShouldExit()) return kStemProviderResult_Interrupted;
                 
                 auto result = Split(data, separation_type, err);
                 if (err) return kStemProviderResult_FailedToSplit;
-                if (threadShouldExit()) return kStemProviderResult_Interrupted;
                 
                 output_folder.Write(result, err);
                 if (err) return kStemProviderResult_FailedToExport;
-                if (threadShouldExit()) return kStemProviderResult_Interrupted;
             }
             output_folder.Flush();
         }
