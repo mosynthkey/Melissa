@@ -35,6 +35,7 @@ public:
     
     virtual void stemProviderStatusChanged(StemProviderStatus status) {}
     virtual void stemProviderResultReported(StemProviderResult result) {}
+    virtual void stemProviderProgressReported(float progress) {}
 };
 
 class MelissaStemProvider : public Thread

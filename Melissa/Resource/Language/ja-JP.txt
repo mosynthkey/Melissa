@@ -181,7 +181,7 @@ countries: ja
 "stems_all" = "オリジナル (全パート)"
 "stems_inst." = "楽器のみ (オフボーカル)"
 "stems_vo." = "ボーカル"
-"stems_pf." = "ピアノ"
+"stems_piano." = "ピアノ"
 "stems_bass" = "ベース"
 "stems_drums" = "ドラム"
 "stems_others" = "その他"

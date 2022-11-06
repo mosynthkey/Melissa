@@ -16,7 +16,66 @@ enum
     kMelissaStemButtonGroup = 4000,
 };
 
-static const String stemNames[] = { "Inst.", "Vo.", "Pf.", "Bass", "Drums", "Others" };
+static const String stemNames[] = { "Inst.", "Vo.", "Piano", "Bass", "Drums", "Others" };
+
+class MelissaStemControlComponent::ProgressBar : public Component, public Timer
+{
+public:
+    ProgressBar() : progress_(0), count_(0)
+    {
+        startTimerHz(kFps);
+    }
+    
+    void paint(Graphics& g) override
+    {
+        const auto isDark = MelissaUISettings::isDarkMode;
+        
+        g.setColour(isDark ? Colours::white.withAlpha(0.1f) : Colours::black.withAlpha(0.1f));
+        g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), getHeight() / 2.f);
+        
+        const float alpha = (sin(2 * M_PI * count_ / static_cast<float>(kFps * kSpeed)) + 1.f) / 2.f;
+        g.setColour(MelissaUISettings::getAccentColour(alpha * 0.5f + 0.5f));
+        g.fillRoundedRectangle(0, 0, getWidth() * progress_, getHeight(), getHeight() / 2.f);
+    }
+    
+    void visibilityChanged() override
+    {
+        if (isVisible() && !isTimerRunning())
+        {
+            startTimerHz(kFps);
+        }
+        else if (!isVisible())
+        {
+            stopTimer();
+        }
+    }
+    
+    void timerCallback() override
+    {
+        ++count_;
+        if (count_ >= (kFps * kSpeed)) count_ = 0;
+        
+        repaint();
+    }
+    
+    void setProgress(float progress)
+    {
+        progress_ = progress;
+        repaint();
+    }
+    
+    void reset()
+    {
+        progress_ = 0.f;
+        repaint();
+    }
+    
+private:
+    float progress_;
+    int count_;
+    static const inline int kFps = 20;
+    static const inline int kSpeed = 2;
+};
 
 MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProviderStatus_Ready)
 {
@@ -65,6 +124,9 @@ MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProvid
     };
     addAndMakeVisible(createStemsButton_.get());
     
+    progressBar_ = std::make_unique<ProgressBar>();
+    addAndMakeVisible(progressBar_.get());
+    
     allButton_ = createAndAddTextButton("All");
     allButton_->setToggleState(true, dontSendNotification);
     allButton_->onClick = [&, model]() { model->setPlayPart(kStemType_All); };
@@ -110,14 +172,13 @@ void MelissaStemControlComponent::stemProviderStatusChanged(StemProviderStatus s
 
 void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult result)
 {
-    /*
-    if (result == kStemProviderResult_Interrupted)
-    {
-        status_ = MelissaStemProvider::getInstance()->getStemProviderStatus();
-    }
-     */
-    
     updateAndArrangeControls();
+    progressBar_->reset();
+}
+
+void MelissaStemControlComponent::stemProviderProgressReported(float progress)
+{
+    progressBar_->setProgress(progress);
 }
 
 void MelissaStemControlComponent::updateAndArrangeControls()
@@ -132,14 +193,17 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     
     x += (allButton_->getWidth() + kMargin);
     createStemsButton_->setBounds(x, yMargin, createButtonOrStatusWidth, kButtonHeight);
+    constexpr int kProgressBarMargin = 10;
+    progressBar_->setBounds(x + kProgressBarMargin, createStemsButton_->getBottom() - 2, createButtonOrStatusWidth - kProgressBarMargin * 2, 2);
     
+    Font font = MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub);
     int totalNameLength = 0;
     x = allButton_->getRight() + kMargin;
-    for (auto& name : stemNames) totalNameLength += name.length();
+    for (auto& name : stemNames) totalNameLength += font.getStringWidth(name);
     const float widthUnit = static_cast<float>((getWidth() - x) - kMargin - kMargin * (kNumStemTypes - 1)) / totalNameLength;
     for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
     {
-        int buttonWidth = static_cast<int>(widthUnit * stemNames[stemTypeIndex].length());
+        int buttonWidth = static_cast<int>(widthUnit * font.getStringWidth(stemNames[stemTypeIndex]));
         stemSwitchButtons_[stemTypeIndex]->setBounds(x, yMargin, buttonWidth, kButtonHeight);
         x += (buttonWidth + kMargin);
     }
@@ -147,6 +211,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     for (auto& b : stemSwitchButtons_) b->setVisible(status_ == kStemProviderStatus_Available);
     createStemsButton_->setVisible(status_ != kStemProviderStatus_Available);
     if (status_ != kStemProviderStatus_Available) allButton_->setToggleState(true, dontSendNotification);
+    progressBar_->setVisible(status_ == kStemProviderStatus_Processing);
     
     if (status_ == kStemProviderStatus_Ready)
     {

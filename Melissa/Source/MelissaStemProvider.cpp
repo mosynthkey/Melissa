@@ -259,6 +259,20 @@ StemProviderResult MelissaStemProvider::createStems()
                 auto data = input.Read();
                 if (data.cols() == 0) break;
                 
+                float progress = 0.f;
+                if (separation_type ==  spleeter::TwoStems)
+                {
+                    progress = 0.3f * input.getProgress();
+                }
+                else
+                {
+                    progress = 0.3f + 0.7f * input.getProgress();
+                }
+                
+                MessageManager::callAsync([&]() {
+                    for (auto& l : listeners_) l->stemProviderProgressReported(progress);
+                });
+                
                 auto result = Split(data, separation_type, err);
                 if (err) return kStemProviderResult_FailedToSplit;
                 

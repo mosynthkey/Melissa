@@ -181,7 +181,7 @@ countries: us
 "stems_all" = "Original (All parts)"
 "stems_inst." = "Instrumental (Off-vocal)"
 "stems_vo." = "Vocal"
-"stems_pf." = "Piano"
+"stems_piano." = "Piano"
 "stems_bass" = "Bass"
 "stems_drums" = "Drums"
 "stems_others" = "Others"

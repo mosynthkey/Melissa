@@ -32,6 +32,7 @@ private:
     // MelissaStemProviderListener
     void stemProviderStatusChanged(StemProviderStatus status) override;
     void stemProviderResultReported(StemProviderResult result) override;
+    void stemProviderProgressReported(float progress) override;
     
     void updateAndArrangeControls();
     void toggleStems(int stemIndex);
@@ -40,8 +41,11 @@ private:
     std::unique_ptr<ToggleButton> stemSwitchButtons_[kNumStemTypes];
     std::unique_ptr<TextButton> createStemsButton_;
     
+    class ProgressBar;
+    std::unique_ptr<ProgressBar> progressBar_;
+    
     StemProviderStatus status_;
     
     MelissaLookAndFeel_SimpleTextButton simpleTextButtonLaf_;
-    MelissaLookAndFeel_StemToggleButton  stemToggleButtonLaf_;
+    MelissaLookAndFeel_StemToggleButton stemToggleButtonLaf_;
 };

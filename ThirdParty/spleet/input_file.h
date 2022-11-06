@@ -24,6 +24,8 @@ class InputFile {
   /// Read at most 1minute of audio and convert it to stereo 44100Hz
   /// Each read returns the last 1 second of the previous read
   spleeter::Waveform Read();
+    
+  float getProgress() const { return last_end_of_frame_ / static_cast<float>(source_frame_count_); }
   
  private:
   std::string path_;
