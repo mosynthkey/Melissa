@@ -227,7 +227,9 @@ StemProviderResult MelissaStemProvider::createStems()
     
     // validate the parameters (output count)
     std::error_code err;
-    spleeter::SeparationType separation_types[] = { spleeter::TwoStems, spleeter::FiveStems };
+    constexpr int kNumSeparationType = 2;
+    spleeter::SeparationType separation_types[kNumSeparationType] = { spleeter::TwoStems, spleeter::FiveStems };
+    clock_t startTimes[kNumSeparationType] = { 0, 0 };
     
     // create output directory
     File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
@@ -237,8 +239,11 @@ StemProviderResult MelissaStemProvider::createStems()
     auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
     auto model_path = settingsDir.getChildFile("models").getFullPathName().toStdString();
     
-    for (const auto& separation_type : separation_types)
+    for (int separationTypeIndex = 0; separationTypeIndex < kNumSeparationType; ++separationTypeIndex)
     {
+        const auto separation_type = separation_types[separationTypeIndex];
+        startTimes[separationTypeIndex] = clock();
+        
         if (threadShouldExit()) return kStemProviderResult_Interrupted;
         
         spleeter::Initialize(model_path, {separation_type}, err);
@@ -247,11 +252,11 @@ StemProviderResult MelissaStemProvider::createStems()
         InputFile input(songFile_.getFullPathName().toStdString());
         input.Open(err);
         if (err) return kStemProviderResult_FailedToReadSourceFile;
-        
         {
             auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
             auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
             OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, bufferLength);
+            
             while (true)
             {
                 if (threadShouldExit()) return kStemProviderResult_Interrupted;
@@ -259,26 +264,28 @@ StemProviderResult MelissaStemProvider::createStems()
                 auto data = input.Read();
                 if (data.cols() == 0) break;
                 
-                float progress = 0.f;
-                if (separation_type ==  spleeter::TwoStems)
-                {
-                    progress = 0.3f * input.getProgress();
-                }
-                else
-                {
-                    progress = 0.3f + 0.7f * input.getProgress();
-                }
-                
-                MessageManager::callAsync([&]() {
-                    for (auto& l : listeners_) l->stemProviderProgressReported(progress);
-                });
-                
                 auto result = Split(data, separation_type, err);
                 if (err) return kStemProviderResult_FailedToSplit;
                 
                 output_folder.Write(result, err);
                 if (err) return kStemProviderResult_FailedToExport;
+                
+                float estimatedTime = 0.f;
+                if (separation_type ==  spleeter::TwoStems)
+                {
+                    estimatedTime = (clock() - startTimes[0]) / input.getProgress() * 1.15 * 3.5;
+                }
+                else
+                {
+                    estimatedTime = (startTimes[1] - startTimes[0]) + (clock() - startTimes[1]) / input.getProgress() * 1.15;
+                }
+                
+                MessageManager::callAsync([&]() {
+                    for (auto& l : listeners_) l->stemProviderEstimatedTimeReported(estimatedTime);
+                });
             }
+            
+            const auto start = clock();
             output_folder.Flush();
         }
     }

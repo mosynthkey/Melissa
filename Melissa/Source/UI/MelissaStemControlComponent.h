@@ -32,7 +32,7 @@ private:
     // MelissaStemProviderListener
     void stemProviderStatusChanged(StemProviderStatus status) override;
     void stemProviderResultReported(StemProviderResult result) override;
-    void stemProviderProgressReported(float progress) override;
+    void stemProviderEstimatedTimeReported(float estimatedTime) override;
     
     void updateAndArrangeControls();
     void toggleStems(int stemIndex);

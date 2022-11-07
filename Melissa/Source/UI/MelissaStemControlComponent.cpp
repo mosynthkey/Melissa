@@ -21,7 +21,7 @@ static const String stemNames[] = { "Inst.", "Vo.", "Piano", "Bass", "Drums", "O
 class MelissaStemControlComponent::ProgressBar : public Component, public Timer
 {
 public:
-    ProgressBar() : progress_(0), count_(0)
+    ProgressBar() : progress_(0), estimatedTime_(0), startTime_(0), count_(0)
     {
         startTimerHz(kFps);
     }
@@ -30,12 +30,22 @@ public:
     {
         const auto isDark = MelissaUISettings::isDarkMode;
         
+        float progress = 0.f;
+        if (estimatedTime_ != 0)
+        {
+            progress = (clock() - startTime_) / estimatedTime_;
+            if (progress > 1.f) progress = 1.f;
+            if (progress < progress_) progress = progress_;
+        }
+        
         g.setColour(isDark ? Colours::white.withAlpha(0.1f) : Colours::black.withAlpha(0.1f));
         g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), getHeight() / 2.f);
         
         const float alpha = (sin(2 * M_PI * count_ / static_cast<float>(kFps * kSpeed)) + 1.f) / 2.f;
         g.setColour(MelissaUISettings::getAccentColour(alpha * 0.5f + 0.5f));
-        g.fillRoundedRectangle(0, 0, getWidth() * progress_, getHeight(), getHeight() / 2.f);
+        g.fillRoundedRectangle(0, 0, getWidth() * progress, getHeight(), getHeight() / 2.f);
+        
+        progress_ = progress;
     }
     
     void visibilityChanged() override
@@ -58,10 +68,15 @@ public:
         repaint();
     }
     
-    void setProgress(float progress)
+    void setEstimatedTime(float estimatedTime)
     {
-        progress_ = progress;
-        repaint();
+        estimatedTime_ = estimatedTime;
+    }
+    
+    void startProgress()
+    {
+        startTime_ = clock();
+        estimatedTime_ = 0;
     }
     
     void reset()
@@ -71,7 +86,8 @@ public:
     }
     
 private:
-    float progress_;
+    float progress_, estimatedTime_;
+    clock_t startTime_;
     int count_;
     static const inline int kFps = 20;
     static const inline int kSpeed = 2;
@@ -168,6 +184,8 @@ void MelissaStemControlComponent::stemProviderStatusChanged(StemProviderStatus s
 {
     status_ = status;
     updateAndArrangeControls();
+    
+    if (status == kStemProviderStatus_Processing) progressBar_->startProgress();
 }
 
 void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult result)
@@ -176,9 +194,9 @@ void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult 
     progressBar_->reset();
 }
 
-void MelissaStemControlComponent::stemProviderProgressReported(float progress)
+void MelissaStemControlComponent::stemProviderEstimatedTimeReported(float estimatedTime)
 {
-    progressBar_->setProgress(progress);
+    progressBar_->setEstimatedTime(estimatedTime);
 }
 
 void MelissaStemControlComponent::updateAndArrangeControls()
