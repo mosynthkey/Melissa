@@ -1,2 +1,4 @@
 root/*
 *.pkg
+Makefile
+old/*
