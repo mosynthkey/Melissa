@@ -366,7 +366,6 @@ void MainComponent::createUI()
         iconHighlightedImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
         iconColorInfo_[kIcon_Down] = kColorInfo_WhiteToMain;
         
-        
         for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
         {
             if (iconColorInfo_[iconIndex] == kColorInfo_None)
@@ -1128,7 +1127,7 @@ void MainComponent::createUI()
             dataSource_->addPracticeList(name);
         }, std::vector<String>{
             "Guitar", "Bass", "Drums", "Piano", "Strings", "Synth", "Organ", "Brass",
-            "Intro", "1st Verse", "2nd Verse", "Bridge", "Outro", "Solo", "Backing", });
+            "Intro", "1st Verse", "2nd Verse", "Chorus", "Bridge", "Outro", "Solo", "Backing", });
         MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(dialog), TRANS("add_practice_list"));
         
     };

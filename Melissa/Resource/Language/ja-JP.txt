@@ -196,6 +196,7 @@ countries: ja
 "Intro" = "イントロ"
 "1st Verse" = "Aメロ"
 "2nd Verse" = "Bメロ"
+"Chorus" = "サビ""
 "Bridge" = "間奏"
 "Outro" = "アウトロ"
 "Solo" = "ソロ"

@@ -218,7 +218,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     int totalNameLength = 0;
     x = allButton_->getRight() + kMargin;
     for (auto& name : stemNames) totalNameLength += font.getStringWidth(name);
-    const float widthUnit = static_cast<float>((getWidth() - x) - kMargin - kMargin * (kNumStemTypes - 1)) / totalNameLength;
+    const float widthUnit = ((getWidth() - x) - kMargin - kMargin * (kNumStemTypes - 1)) / static_cast<float>(totalNameLength);
     for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
     {
         int buttonWidth = static_cast<int>(widthUnit * font.getStringWidth(stemNames[stemTypeIndex]));

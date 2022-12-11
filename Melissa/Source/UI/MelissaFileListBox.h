@@ -26,10 +26,12 @@ public:
     };
     
     MelissaFileListBox(const String& componentName = "") :
-    ListBox(componentName, this),
     target_(kTarget_History),
     dataSource_(MelissaDataSource::getInstance())
     {
+        juce::ListBox(componentName, this);
+        setModel(this);
+        
         dataSource_->addListener(this);
         popupMenu_ = std::make_unique<PopupMenu>();
         popupMenu_->setLookAndFeel(&laf_);

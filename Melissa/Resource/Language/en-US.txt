@@ -196,6 +196,7 @@ countries: us
 "Intro" = "Intro"
 "1st Verse" = "1st Verse"
 "2nd Verse" = "2nd Verse"
+"Chorus" = "Chorus""
 "Bridge" = "Bridge"
 "Outro" = "Outro"
 "Solo" = "Solo"

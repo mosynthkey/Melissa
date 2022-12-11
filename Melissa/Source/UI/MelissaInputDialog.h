@@ -11,6 +11,8 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaHost.h"
 #include "MelissaModalDialog.h"
+#include "MelissaTextEditorWithClearButton.h"
+
 
 class MelissaInputDialog : public Component, public TextEditor::Listener
 {
@@ -33,7 +35,7 @@ public:
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
-        textEditor_ = std::make_unique<TextEditor>();
+        textEditor_ = std::make_unique<MelissaTextEditorWithClearButton>();
         textEditor_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
@@ -83,7 +85,7 @@ public:
         label_->setBounds(margin, margin, textEditorWidth, controlHeight);
         addAndMakeVisible(label_.get());
         
-        textEditor_ = std::make_unique<TextEditor>();
+        textEditor_ = std::make_unique<MelissaTextEditorWithClearButton>();
         textEditor_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         textEditor_->setBounds(margin, margin * 2 + controlHeight, textEditorWidth, controlHeight);
         textEditor_->setText(defaultTextEditorString);
@@ -119,7 +121,7 @@ public:
         okButton_->setButtonText("OK");
         okButton_->onClick = [&]() {
             const String text = textEditor_->getText();
-            onClick_(text);
+            if (!text.isEmpty()) onClick_(text);
             MelissaModalDialog::close();
         };
         addAndMakeVisible(okButton_.get());
@@ -149,7 +151,7 @@ private:
     MelissaHost* host_;
     MelissaLookAndFeel laf_;
     std::unique_ptr<Label> label_;
-    std::unique_ptr<TextEditor> textEditor_;
+    std::unique_ptr<MelissaTextEditorWithClearButton> textEditor_;
     std::unique_ptr<TextButton> okButton_;
     std::unique_ptr<TextButton> cancelButton_;
     std::vector<std::unique_ptr<TextButton>> inputButtons_;

@@ -30,7 +30,10 @@ closeOnClickingOutside_(closeOnClickingOutside)
     
     closeButton_ = std::make_unique<CloseButton>();
     closeButton_->setSize(kCloseButtonSize, kCloseButtonSize);
-    closeButton_->onClick = [&]() { MelissaModalDialog::close(); };
+    closeButton_->onClick = [&]()
+    {
+        MelissaModalDialog::close();
+    };
     addAndMakeVisible(closeButton_.get());
     
     addAndMakeVisible(contentComponent.get());
