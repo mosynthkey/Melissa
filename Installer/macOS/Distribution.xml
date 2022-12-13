@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="1">
-    <pkg-ref id="com.melissaaudio.melissa"/>
-    <title>Melissa v3.0.0 beta</title>
+    <pkg-ref id="com.melissa_audio.melissa"/>
+    <title>Melissa v3.0.0</title>
     <options customize="never" require-scripts="false" hostArchitectures="x86_64,arm64"/>
     <choices-outline>
         <line choice="default">
-            <line choice="com.melissaaudio.melissa"/>
+            <line choice="com.melissa_audio.melissa"/>
         </line>
     </choices-outline>
     <choice id="default"/>
-    <choice id="com.melissaaudio.melissa" visible="false">
-        <pkg-ref id="com.melissaaudio.melissa"/>
+    <choice id="com.melissa_audio.melissa" visible="false">
+        <pkg-ref id="com.melissa_audio.melissa"/>
     </choice>
-    <pkg-ref id="com.melissaaudio.melissa" version="3.0.0" onConclusion="none">MelissaInstaller.pkg</pkg-ref>
+    <pkg-ref id="com.melissa_audio.melissa" version="3.0.0" onConclusion="none">Melissa_Installer_v3.0.0.pkg</pkg-ref>
 </installer-gui-script>
