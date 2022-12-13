@@ -8,7 +8,6 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MelissaShortcutManager.h"
 
 class MelissaPopupMessageComponent : public Component, public Timer
 {

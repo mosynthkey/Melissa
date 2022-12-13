@@ -560,7 +560,7 @@ void MainComponent::createUI()
         headerComponent_->addAndMakeVisible(audioDeviceButton_.get());
         
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
-        mainVolumeSlider_->setTooltip(TRANS("main_music"));
+        mainVolumeSlider_->setTooltip(TRANS("volume_main"));
         mainVolumeSlider_->setRange(0.01f, 1.0f);
         mainVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
         mainVolumeSlider_->setValue(1.f);
@@ -2044,7 +2044,10 @@ void MainComponent::speedChanged(int speed)
 
 void MainComponent::controlMessageReceived(const String& controlMessage)
 {
-    popupMessage_->show(controlMessage);
+    const auto assignedShortcut = MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage);
+    if (assignedShortcut.isEmpty()) return;
+    
+    popupMessage_->show(controlMessage + String(" : ") + MelissaCommand::getInstance()->getCommandDescription(assignedShortcut));
 }
 
 void MainComponent::stemProviderResultReported(StemProviderResult result)

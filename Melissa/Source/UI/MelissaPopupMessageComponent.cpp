@@ -21,10 +21,8 @@ MelissaPopupMessageComponent::~MelissaPopupMessageComponent()
 
 void MelissaPopupMessageComponent::show(const String& text)
 {
-    const auto assignedShortcut = MelissaDataSource::getInstance()->getAssignedShortcut(text);
-    if (assignedShortcut.isEmpty()) return;
-    
-    text_ = text + String(" : ") + MelissaCommand::getInstance()->getCommandDescription(assignedShortcut);
+    if (text.isEmpty()) return;
+    text_ = text;
     
     repaint();
     

@@ -37,6 +37,8 @@ public:
             getHeader().addColumn(headerTitles[i], i + 1, 300);
         }
         setOutlineThickness(1);
+        
+        setWantsKeyboardFocus(false);
     }
     
     ~ShortcutListBox()
@@ -111,6 +113,7 @@ MelissaShortcutComponent::MelissaShortcutComponent() : registerEditY_(0)
     assignCombobox_->onSelectedCommandChanged_ = [&](const String& command)
     {
         MelissaDataSource::getInstance()->registerShortcut(commandLabel_->getText(), assignCombobox_->getSelectedCommand());
+        grabKeyboardFocus();
     };
     addAndMakeVisible(assignCombobox_.get());
     
