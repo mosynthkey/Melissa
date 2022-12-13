@@ -57,13 +57,13 @@ namespace BinaryData
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 9939;
+    const int            enUS_txtSize = 9968;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 11092;
+    const int            jaJP_txtSize = 11250;
 
     extern const char*   logo_png;
-    const int            logo_pngSize = 110787;
+    const int            logo_pngSize = 110193;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 19;
