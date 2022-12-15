@@ -391,7 +391,7 @@ public:
         MelissaLookAndFeel::updateColour();
         
         setColour(Label::textColourId, MelissaUISettings::getTextColour());
-        setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getSubColour());
+        setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getAccentColour(0.4f));
         setColour(DirectoryContentsDisplayComponent::textColourId, MelissaUISettings::getTextColour());
         setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, MelissaUISettings::getTextColour());
         setColour(ComboBox::textColourId, MelissaUISettings::getTextColour());

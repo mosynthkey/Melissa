@@ -282,7 +282,7 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2019 targetFolder="Builds/VisualStudio2019" smallIcon="Y3ewMD" bigIcon="Y3ewMD"
-            extraCompilerFlags="-I../../../Submodule/spleet/thirdparty/install/include"
+            extraCompilerFlags="-I../../../ThirdParty/spleet&#10;-I../../../ThirdParty/spleeterpp/include"
             extraLinkerFlags="/LIBPATH:../../../Submodule/spleet/thirdparty/install/lib"
             externalLibraries="tensorflow.lib&#10;spleeter_common.lib&#10;spleeter.lib">
       <CONFIGURATIONS>
