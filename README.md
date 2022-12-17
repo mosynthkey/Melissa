@@ -6,11 +6,11 @@
 
 ## Downloads
 ### macOS
-- [Version 2.5.2](https://github.com/mosynthkey/Melissa/releases/download/v2.5.2/Melissa_2_5_2.dmg)
+- [Version 3.0.0](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_2_5_2.dmg)
 
 ### Windows
-- [Version 2.5.2 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.2/Melissa_2.5.2_64.zip)
-- [Version 2.5.2 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v2.5.2/Melissa_2.5.2_32.zip)
+- [Version 3.0.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_3.0.0_64.zip)
+- [Version 3.0.0 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_3.0.0_32.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
@@ -18,12 +18,15 @@
 
 ## How to build
 1. Get [Projucer](https://juce.com/discover/projucer).
-2. Install submodules
+2. Download and extract libtensorflow 2.8.0 to [ThirdParty]
+[macOS](https://drive.google.com/file/d/1RoUstBT632f8aIB4R3E0IlsGUU6H3IvA/view?usp=share_link)
+[Windows](https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow%2Dcpu%2Dwindows%2Dx86_64%2D2.8.0.zip)
+3. Install submodules
 ```
 git submodule update --init
 ```
-3. Open [Melissa/Melissa.jucer](Melissa/Melissa.jucer) with Projucer
-4. Create and open a Xcode project file or Visual Studio solution on Projucer
+4. Open [Melissa/Melissa.jucer](Melissa/Melissa.jucer) with Projucer
+5. Create and open a Xcode project file or Visual Studio solution on Projucer
 
 To build on Windows, please get ASIO driver or disable ASIO from Projucer.
 See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
@@ -34,6 +37,11 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 ## Libraries
 - [JUCE](https://juce.com) 
 - [SoundTouch](https://www.surina.net/soundtouch/)
+- [spleeterpp](https://github.com/gvne/spleeterpp)
+- [speet](https://github.com/gvne/spleet)
+- [nlohmann/json](https://github.com/nlohmann/json)
+- [TensorFlow for C](https://www.tensorflow.org/install/)　
+- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 
 ## License
 [LGPL-2.1 (c) 2022 Masaki Ono](LICENSE)

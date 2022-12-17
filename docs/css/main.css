@@ -2691,7 +2691,7 @@ html.no-csstransitions .home-content__main {
  * ------------------------------------------------------------------- */
 @media only screen and (max-width:1400px) {
   .s-about {
-    padding-bottom: calc((62.4rem/2) + 9.6rem);
+    padding-bottom: 8.4rem;
   }
 
 }
