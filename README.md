@@ -18,9 +18,9 @@
 
 ## How to build
 1. Get [Projucer](https://juce.com/discover/projucer).
-2. Download and extract libtensorflow 2.8.0 to [ThirdParty]
-[macOS](https://drive.google.com/file/d/1RoUstBT632f8aIB4R3E0IlsGUU6H3IvA/view?usp=share_link)
-[Windows](https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow%2Dcpu%2Dwindows%2Dx86_64%2D2.8.0.zip)
+2. Download and extract libtensorflow 2.8.0 to [ThirdParty](ThirdParty)
+- [macOS](https://drive.google.com/file/d/1RoUstBT632f8aIB4R3E0IlsGUU6H3IvA/view?usp=share_link)
+- [Windows](https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow%2Dcpu%2Dwindows%2Dx86_64%2D2.8.0.zip)
 3. Install submodules
 ```
 git submodule update --init
