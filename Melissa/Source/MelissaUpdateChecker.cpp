@@ -15,7 +15,7 @@ MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::status_ = kUpdateStatus
 String MelissaUpdateChecker::getLatestVersionNumberString()
 {
     URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa/releases/latest");
-    std::unique_ptr<InputStream> inStream(latestVersionURL.createInputStream (false));
+    std::unique_ptr<InputStream> inStream(latestVersionURL.createInputStream (URL::InputStreamOptions(URL::ParameterHandling::inAddress).withConnectionTimeoutMs(1000)));
     
     if (inStream == nullptr) return "";
 
@@ -34,7 +34,7 @@ String MelissaUpdateChecker::getLatestVersionNumberString()
 String MelissaUpdateChecker::getUpdateContents()
 {
     URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa/releases/latest");
-    std::unique_ptr<InputStream> inStream(latestVersionURL.createInputStream (false));
+    std::unique_ptr<InputStream> inStream(latestVersionURL.createInputStream (URL::InputStreamOptions(URL::ParameterHandling::inAddress).withConnectionTimeoutMs(1000)));
     
     if (inStream == nullptr) return "";
 

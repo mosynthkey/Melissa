@@ -598,11 +598,7 @@ String MelissaDataSource::getUITheme() const
 
     if (global_.uiTheme_ == "System_Auto")
     {
-#ifdef JUCE_MAC
-        return global_.uiTheme_;
-#else
         return "System_Dark";
-#endif
     }
 
     return global_.uiTheme_;
@@ -610,13 +606,6 @@ String MelissaDataSource::getUITheme() const
 
 void MelissaDataSource::setUITheme(const String& uiTheme)
 {
-#ifdef JUCE_MAC
-    if (uiTheme == "System_Auto")
-    {
-        global_.uiTheme_ = uiTheme;
-    }
-    else
-#endif
     if (uiTheme == "System_Dark" || uiTheme == "System_Light")
     {
         global_.uiTheme_ = uiTheme;

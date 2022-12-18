@@ -175,16 +175,8 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
     shouldInitializeBpmDetector_ = false;
     shouldUpdateBpm_ = false;
     
-#ifdef JUCE_MAC
-    if (dataSource_->getUITheme() == "System_Auto")
-    {
-        MelissaUISettings::isDarkMode = Desktop::isOSXDarkModeActive();
-    }
-    else
-#endif
-    {
-        MelissaUISettings::isDarkMode = dataSource_->getUITheme() == "System_Dark";
-    }
+    MelissaUISettings::isDarkMode = dataSource_->getUITheme() == "System_Dark";
+    
     simpleTextButtonLaf_.setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
     laf_.updateColour();
     browserLaf_.updateColour();
@@ -419,10 +411,6 @@ void MainComponent::createUI()
         
         PopupMenu uiThemeMenu;
         const auto uiTheme = dataSource_->getUITheme();
-#ifdef JUCE_MAC
-        uiThemeMenu.addItem(kMenuID_UITheme_Auto, TRANS("ui_theme_auto"), true,  uiTheme == "System_Auto");
-        uiThemeMenu.addSeparator();
-#endif
         uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, uiTheme == "System_Dark");
         uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, uiTheme == "System_Light");
         menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
@@ -1357,7 +1345,6 @@ void MainComponent::resized()
     constexpr int controlHeight = 30;
     constexpr int controlAWidthMin = 120; // incDecButton etc..
     constexpr int controlBWidthMin = controlAWidthMin + 20;
-    constexpr int controlAWidthMax = controlAWidthMin + 100;
     constexpr int controlBWidthMax = controlBWidthMin + 100;
     constexpr int pitchSpeedOutputWidth = 140;
     
@@ -1366,8 +1353,6 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Song].get();
         section->setBounds(10, y, songWidth, 100);
         
-        const int totalControlWidth = (section->getWidth() - 10 - 10 - 10 - 10);
-        const int bpmAccentPosButtonWidth = totalControlWidth / (7 + 5 + 7) * 7;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         pitchButton_->setBounds(10, y, 120, controlHeight);
         

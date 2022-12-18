@@ -52,8 +52,8 @@ void Write(const Eigen::MatrixXf &data, double sampling_rate,
   File output_file(destination);
   WavAudioFormat format;
 
-  int channel_count = data.rows();
-  int frame_count = data.cols();
+  int channel_count = static_cast<int>(data.rows());
+  int frame_count = static_cast<int>(data.cols());
 
   auto writer = std::unique_ptr<AudioFormatWriter>(format.createWriterFor(new FileOutputStream(output_file), sampling_rate,
                                                                             channel_count, 16, StringPairArray(), 0));

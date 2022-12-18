@@ -255,7 +255,7 @@ StemProviderResult MelissaStemProvider::createStems()
         {
             auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
             auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
-            OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, bufferLength);
+            OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, static_cast<int>(bufferLength));
             
             while (true)
             {
@@ -285,7 +285,6 @@ StemProviderResult MelissaStemProvider::createStems()
                 });
             }
             
-            const auto start = clock();
             output_folder.Flush();
         }
     }

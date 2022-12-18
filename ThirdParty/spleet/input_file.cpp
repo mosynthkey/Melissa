@@ -55,7 +55,7 @@ spleeter::Waveform InputFile::Read() {
     vec_data.emplace_back(std::move(channel_data));
   }
 
-  sample_reader->read(array_data.data(), array_data.size(), frame_index, frame_count);
+  sample_reader->read(array_data.data(), static_cast<int>(array_data.size()), static_cast<int>(frame_index), static_cast<int>(frame_count));
 
   Eigen::MatrixXf data(source_channel_count_, frame_count);
   for (auto channel_idx = 0; channel_idx < data.rows(); channel_idx++) {

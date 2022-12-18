@@ -32,7 +32,7 @@ Eigen::MatrixXf Resample(const Eigen::MatrixXf &source, double original,
     input_channel.array() = source.row(channel_idx).array();
     auto interpolator_ratio = 1.0 / speed_ratio;
     interpolator.process(interpolator_ratio, input_channel.data(),
-                         output_channel.data(), output_channel.size());
+                         output_channel.data(), static_cast<int>(output_channel.size()));
     output.row(channel_idx).array() = output_channel.array();
     interpolator.reset();
   }
