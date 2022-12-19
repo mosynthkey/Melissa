@@ -7,4 +7,4 @@
 	url = git@github.com:nlohmann/json.git
 [submodule "Submodule/eigen"]
 	path = Submodule/eigen
-	url = git@gitlab.com:libeigen/eigen.git
+	url = https://gitlab.com/libeigen/eigen.git
