@@ -1,3 +1,9 @@
+
+v3.0.0 will be released soon...<br>
+v3.0.0は近日リリース予定です。<br>
+
+<hr>
+
 <h1 align="center">A music player for musical instrument practice<br>for macOS and Windows</h1>
 
 ![uiimage](docs/images/screenshot.png)
