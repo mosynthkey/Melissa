@@ -208,5 +208,5 @@ countries: us
 "stem_err_failed_to_initialize" = "Music separation : Failed to initialize the separation engine"
 "stem_err_failed_to_split" = "Music separation : Failed to separate"
 "stem_err_failed_to_export" = "Music separation : Failed to save the results"
-"stem_interrupted" = "Music separation : The process is interrupted"
+"stem_err_interrupted" = "Music separation : The process is interrupted"
 "stem_err_unknown" = "Music separation : Unknown error occured"

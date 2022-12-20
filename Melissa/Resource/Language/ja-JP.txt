@@ -208,5 +208,5 @@ countries: ja
 "stem_err_failed_to_initialize" = "音声分離 : エンジンの初期化に失敗しました"
 "stem_err_failed_to_split" = "音声分離 : 分離できませんでした"
 "stem_err_failed_to_export" = "音声分離 : 分離した音声を保存できませんでした"
-"stem_interrupted" = "音声分離 : 処理が中断されました"
+"stem_err_interrupted" = "音声分離 : 処理が中断されました"
 "stem_err_unknown" = "音声分離 : 不明なエラーが発生しました"
