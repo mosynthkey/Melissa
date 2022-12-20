@@ -94,7 +94,8 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
             { "SetSpeedPreset_90", kCommandType_Switch },
             { "SetSpeedPreset_95", kCommandType_Switch },
             { "SetSpeedPreset_105", kCommandType_Switch },
-            
+            { "SetSpeedPreset_150", kCommandType_Switch },
+            { "SetSpeedPreset_200", kCommandType_Switch },
         }
     },
     {
