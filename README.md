@@ -10,7 +10,6 @@
 
 ### Windows
 - [Version 3.0.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_3.0.0_64.zip)
-- [Version 3.0.0 (32bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_3.0.0_32.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
