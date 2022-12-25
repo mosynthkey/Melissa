@@ -4,8 +4,7 @@
 
 
 <div align="center"> Official site
-<a href="https://mosynthkey.github.io/Melissa/index_en.html">English</a>/
-<a href="https://mosynthkey.github.io/Melissa/index.html">日本語</a></div>
+<a href="https://mosynthkey.github.io/Melissa/index_en.html">English</a> / <a href="https://mosynthkey.github.io/Melissa/index.html">日本語</a></div>
 
 ## Downloads
 ### macOS
