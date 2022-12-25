@@ -1757,6 +1757,7 @@ input::-moz-focus-inner {
 .header-nav-wrap .header-main-nav li {
   display: inline-block;
   padding-left: 0;
+  margin-left: 1.6rem;
   margin-right: 1.6rem;
 }
 

@@ -2,7 +2,10 @@
 
 ![uiimage](docs/images/screenshot.png)
 
-<div align="center"> <a href="https://mosynthkey.github.io/Melissa/">Official site (Japanese)</a></div>
+
+<div align="center"> Official site
+<a href="https://mosynthkey.github.io/Melissa/index_en.html">English</a>/
+<a href="https://mosynthkey.github.io/Melissa/index.html">日本語</a></div>
 
 ## Downloads
 ### macOS
