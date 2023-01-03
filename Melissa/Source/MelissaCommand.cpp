@@ -311,31 +311,31 @@ MelissaCommand::MelissaCommand()
     };
     commands_["Part_All"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_All);
+        model_->setPlayPart(kPlayPart_All);
     };
     commands_["Part_Inst"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_Instruments);
+        model_->setPlayPart(kPlayPart_Instruments);
     };
     commands_["Part_Vocal"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_Vocals);
+        model_->setPlayPart(kPlayPart_Vocal_Solo);
     };
     commands_["Part_Piano"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_Piano);
+        model_->setPlayPart(kPlayPart_Piano_Solo);
     };
     commands_["Part_Bass"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_Bass);
+        model_->setPlayPart(kPlayPart_Bass_Solo);
     };
     commands_["Part_Drums"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_Drums);
+        model_->setPlayPart(kPlayPart_Drums_Solo);
     };
     commands_["Part_Others"] = [&](float value)
     {
-        model_->setPlayPart(kStemType_Others);
+        model_->setPlayPart(kPlayPart_Others_Solo);
     };
 }
 

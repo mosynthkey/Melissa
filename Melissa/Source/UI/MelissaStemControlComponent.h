@@ -27,7 +27,7 @@ private:
     void paint(Graphics& g) override;
     
     // MelissaModelListener
-    void playPartChanged(StemType playPart) override;
+    void playPartChanged(PlayPart playPart) override;
     
     // MelissaStemProviderListener
     void stemProviderStatusChanged(StemProviderStatus status) override;
@@ -35,10 +35,10 @@ private:
     void stemProviderEstimatedTimeReported(float estimatedTime) override;
     
     void updateAndArrangeControls();
-    void toggleStems(int stemIndex);
+    void toggleStems(PlayPart playPart);
     
     std::unique_ptr<ToggleButton> allButton_;
-    std::unique_ptr<ToggleButton> stemSwitchButtons_[kNumStemTypes];
+    std::unique_ptr<ToggleButton> stemSwitchButtons_[kNumStemSoloButtons];
     std::unique_ptr<TextButton> createStemsButton_;
     
     class ProgressBar;

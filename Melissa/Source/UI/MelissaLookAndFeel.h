@@ -70,45 +70,49 @@ public:
     
     virtual void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
     {
-        if (style != Slider::LinearHorizontal) return;
-        
-        const auto& c = s.getLocalBounds();
-        const float xOffset = lineThickness / 2;
-        const float yOffset = lineThickness / 2;
-        const float w = c.getWidth() - lineThickness - 1;
-        const float h = c.getHeight() - lineThickness - 1;
-        const float cornerSize = (c.getHeight() - 12 - lineThickness) / 2;
-        
-        g.setColour(MelissaUISettings::getSubColour());
-        g.fillRoundedRectangle(xOffset, yOffset + 6, w, h - 12, cornerSize);
-        
+        if (style == Slider::LinearHorizontal)
         {
-            Rectangle<int> rect(xOffset + lineThickness, yOffset + 6 + 1, (sliderPos - 1) - (xOffset + lineThickness) - 4, h - 12 - 2);
-            const int r = rect.getHeight();
-            const int x0 = rect.getX();
-            const int x1 = x0 + r / 2;
-            const int x2 = x0 + rect.getWidth() + 2;
-            const int y0 = rect.getY() + 1;
-            const int y1 = rect.getY() + 1 + rect.getHeight();
+            const auto& c = s.getLocalBounds();
+            const float xOffset = lineThickness / 2;
+            const float yOffset = lineThickness / 2;
+            const float w = c.getWidth() - lineThickness - 1;
+            const float h = c.getHeight() - lineThickness - 1;
+            const float cornerSize = (c.getHeight() - 12 - lineThickness) / 2;
             
-            //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
-            g.setColour(MelissaUISettings::getAccentColour(s.isMouseOver() ? 1.f : 0.6f));
+            g.setColour(MelissaUISettings::getSubColour());
+            g.fillRoundedRectangle(xOffset, yOffset + 6, w, h - 12, cornerSize);
             
-            Path path;
-            path.addArc(x0, y0, r, r, M_PI, 2 * M_PI);
-            path.lineTo(x1, y0);
-            path.lineTo(x2, y0);
-            path.addArc(x2, y0, r, r, 0, M_PI);
-            path.lineTo(x2, y1);
-            path.lineTo(x1, y1);
-            path.closeSubPath();
-            g.fillPath(path);
-            
-            g.setColour(MelissaUISettings::getAccentColour());
-            g.fillEllipse(x2, y0, rect.getHeight(), rect.getHeight());
+            {
+                Rectangle<int> rect(xOffset + lineThickness, yOffset + 6 + 1, (sliderPos - 1) - (xOffset + lineThickness) - 4, h - 12 - 2);
+                const int r = rect.getHeight();
+                const int x0 = rect.getX();
+                const int x1 = x0 + r / 2;
+                const int x2 = x0 + rect.getWidth() + 2;
+                const int y0 = rect.getY() + 1;
+                const int y1 = rect.getY() + 1 + rect.getHeight();
+                
+                //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
+                g.setColour(MelissaUISettings::getAccentColour(s.isMouseOver() ? 1.f : 0.6f));
+                
+                Path path;
+                path.addArc(x0, y0, r, r, M_PI, 2 * M_PI);
+                path.lineTo(x1, y0);
+                path.lineTo(x2, y0);
+                path.addArc(x2, y0, r, r, 0, M_PI);
+                path.lineTo(x2, y1);
+                path.lineTo(x1, y1);
+                path.closeSubPath();
+                g.fillPath(path);
+                
+                g.setColour(MelissaUISettings::getAccentColour());
+                g.fillEllipse(x2, y0, rect.getHeight(), rect.getHeight());
+            }
         }
-        
-        
+        else if (style == Slider::LinearVertical)
+        {
+            g.setColour(MelissaUISettings::getAccentColour());
+            g.drawRoundedRectangle(x, y, width, height, 6, lineThickness);
+        }
     }
     
     virtual void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override

@@ -13,6 +13,7 @@
 #include "MelissaInputDialog.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaShortcutComponent.h"
+#include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 #include <float.h>
@@ -137,7 +138,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f), isStemDetailShown_(false), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -357,6 +358,14 @@ void MainComponent::createUI()
         iconImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
         iconHighlightedImages_[kIcon_Down] = Drawable::createFromImageData(BinaryData::down_svg, BinaryData::down_svgSize);
         iconColorInfo_[kIcon_Down] = kColorInfo_WhiteToMain;
+        
+        iconImages_[kIcon_Detail] = Drawable::createFromImageData(BinaryData::detail_svg, BinaryData::detail_svgSize);
+        iconHighlightedImages_[kIcon_Detail] = Drawable::createFromImageData(BinaryData::detail_svg, BinaryData::detail_svgSize);
+        iconColorInfo_[kIcon_Detail] = kColorInfo_WhiteToAccent;
+        
+        iconImages_[kIcon_Select] = Drawable::createFromImageData(BinaryData::select_svg, BinaryData::select_svgSize);
+        iconHighlightedImages_[kIcon_Select] = Drawable::createFromImageData(BinaryData::select_svg, BinaryData::select_svgSize);
+        iconColorInfo_[kIcon_Select] = kColorInfo_WhiteToAccent;
         
         for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
         {
@@ -613,6 +622,28 @@ void MainComponent::createUI()
         // Stem Button
         stemControlComponent_ = make_unique<MelissaStemControlComponent>();
         section->addAndMakeVisible(stemControlComponent_.get());
+        
+        stemDetailComponent_ = make_unique<MelissaStemDetailComponent>();
+        section->addChildComponent(stemDetailComponent_.get());
+        
+        stemControlToggleButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        stemControlToggleButton_->setImages(iconImages_[kIcon_Detail].get(), iconHighlightedImages_[kIcon_Detail].get());
+        stemControlToggleButton_->onClick = [&]()
+        {
+            isStemDetailShown_ = !isStemDetailShown_;
+            stemDetailComponent_->setVisible(isStemDetailShown_);
+            updateStemToggleButton();
+            
+            if (isStemDetailShown_)
+            {
+                model_->setPlayPart(kPlayPart_Custom);
+            }
+            else
+            {
+                model_->setPlayPart(kPlayPart_All);
+            }
+        };
+        section->addAndMakeVisible(stemControlToggleButton_.get());
     }
     
     {
@@ -966,6 +997,7 @@ void MainComponent::createUI()
             l->setText(labelTitles[labelIndex % numOfControls], dontSendNotification);
             l->setJustificationType(Justification::centred);
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
+            l->toBack();
             section->addAndMakeVisible(l.get());
             knobLabels_[labelIndex] = std::move(l);
         }
@@ -1346,7 +1378,8 @@ void MainComponent::resized()
     constexpr int controlAWidthMin = 120; // incDecButton etc..
     constexpr int controlBWidthMin = controlAWidthMin + 20;
     constexpr int controlBWidthMax = controlBWidthMin + 100;
-    constexpr int pitchSpeedOutputWidth = 140;
+    constexpr int pitchWidth = 110;
+    constexpr int speedOutputWidth = 110;
     
     // Song
     {
@@ -1354,10 +1387,12 @@ void MainComponent::resized()
         section->setBounds(10, y, songWidth, 100);
         
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        pitchButton_->setBounds(10, y, 120, controlHeight);
+        pitchButton_->setBounds(10, y, pitchWidth, controlHeight);
         
         const int stemControlWidth = songWidth - 10 * 3 - pitchButton_->getWidth();
         stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y, stemControlWidth, controlHeight);
+        stemDetailComponent_->setBounds(pitchButton_->getRight() + 10, y - controlHeight, stemControlWidth, controlHeight * 2);
+        stemControlToggleButton_->setBounds(stemDetailComponent_->getRight() - 10 - 20, pitchButton_->getY() - 24 + 2, 20, 14);
     }
     
     // Loop
@@ -1397,7 +1432,7 @@ void MainComponent::resized()
         x = speedModeBasicToggleButton_->getRight() + 10;
 #endif
         y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        speedButton_->setBounds(x, y, pitchSpeedOutputWidth, controlHeight);
+        speedButton_->setBounds(x, y, speedOutputWidth, controlHeight);
         
         const int viewportWidth = std::clamp((section->getWidth() - 10) - (speedButton_->getRight() + 10), controlAWidthMin, speedPresetComponent_->getWidth());
         x = (speedButton_->getRight() + 10) + ((section->getWidth() - 10) - (speedButton_->getRight() + 10)) / 2 - viewportWidth / 2;
@@ -1475,10 +1510,10 @@ void MainComponent::resized()
         auto section = sectionComponents_[kSection_Mixer].get();
         section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, mixerWidth, 100);
         
-        const int controlWidth = (section->getWidth() - pitchSpeedOutputWidth - 10 * 5) / 3;
+        const int controlWidth = (section->getWidth() - speedOutputWidth - 10 * 5) / 3;
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
         
-        outputModeComboBox_->setBounds(10, y, pitchSpeedOutputWidth, controlHeight);
+        outputModeComboBox_->setBounds(10, y, speedOutputWidth, controlHeight);
         musicVolumeSlider_->setBounds(outputModeComboBox_->getRight() + 10, y, controlWidth, controlHeight);
         volumeBalanceSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, controlWidth, controlHeight);
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
@@ -1533,6 +1568,7 @@ void MainComponent::resized()
     {
         auto b = labelInfo_[label_i].second->getBoundsInParent();
         labels_[label_i]->setBounds(b.getX(), b.getY() - 30, b.getWidth(), 30);
+        labels_[label_i]->toBack();
     }
     
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
@@ -1839,6 +1875,29 @@ void MainComponent::updatePlayBackModeButton()
     }
 }
 
+void MainComponent::updateStemToggleButton()
+{
+    auto status = MelissaStemProvider::getInstance()->getStemProviderStatus();
+    if (status == kStemProviderStatus_Available)
+    {
+        stemControlToggleButton_->setEnabled(true);
+        
+        if (isStemDetailShown_)
+        {
+            stemControlToggleButton_->setImages(iconImages_[kIcon_Select].get(), iconHighlightedImages_[kIcon_Select].get());
+        }
+        else
+        {
+            stemControlToggleButton_->setImages(iconImages_[kIcon_Detail].get(), iconHighlightedImages_[kIcon_Detail].get());
+        }
+    }
+    else
+    {
+        stemControlToggleButton_->setEnabled(false);
+    }
+    
+}
+
 void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
 {
 #if defined(ENABLE_SPEED_TRAINING)
@@ -2027,12 +2086,31 @@ void MainComponent::speedChanged(int speed)
     speedButton_->setText(String(speed) + "%");
 }
 
+void MainComponent::playPartChanged(PlayPart playPart)
+{
+    if (playPart == kPlayPart_Custom)
+    {
+        isStemDetailShown_ = true;
+    }
+    else
+    {
+        isStemDetailShown_ = false;
+    }
+    stemDetailComponent_->setVisible(isStemDetailShown_);
+    updateStemToggleButton();
+}
+
 void MainComponent::controlMessageReceived(const String& controlMessage)
 {
     const auto assignedShortcut = MelissaDataSource::getInstance()->getAssignedShortcut(controlMessage);
     if (assignedShortcut.isEmpty()) return;
     
     popupMessage_->show(controlMessage + String(" : ") + MelissaCommand::getInstance()->getCommandDescription(assignedShortcut));
+}
+
+void MainComponent::stemProviderStatusChanged(StemProviderStatus status)
+{
+    updateStemToggleButton();
 }
 
 void MainComponent::stemProviderResultReported(StemProviderResult result)

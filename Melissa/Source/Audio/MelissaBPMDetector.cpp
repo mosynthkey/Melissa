@@ -40,8 +40,8 @@ void MelissaBPMDetector::process(bool* processFinished, float* bpm)
             *processFinished = true;
             break;
         }
-        buffer[bufferIndex + 0] = dataSource_->readBuffer(0, processStartIndex_ + bufferIndex, kStemType_All);
-        buffer[bufferIndex + 1] = dataSource_->readBuffer(1, processStartIndex_ + bufferIndex + 1, kStemType_All);
+        buffer[bufferIndex + 0] = dataSource_->readBuffer(0, processStartIndex_ + bufferIndex, kPlayPart_All);
+        buffer[bufferIndex + 1] = dataSource_->readBuffer(1, processStartIndex_ + bufferIndex + 1, kPlayPart_All);
     }
     processStartIndex_ += processBufferLength;
     bpmDetect_->inputSamples(buffer, processLength);

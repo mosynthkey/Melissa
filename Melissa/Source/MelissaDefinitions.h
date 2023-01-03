@@ -34,14 +34,15 @@ static constexpr float kMusicVolumeMax = 2.f;
 enum { kNumOfSpeedPresets = 13 };
 extern const int speedPresets[kNumOfSpeedPresets];
 
-enum StemType : int
+enum StemFile : int
 {
-    kStemType_All = -1,
-    kStemType_Instruments = 0,
-    kStemType_Vocals,
-    kStemType_Piano,
-    kStemType_Bass,
-    kStemType_Drums,
-    kStemType_Others,
-    kNumStemTypes
+    kStemFile_Instruments = 0,
+    kStemFile_Vocals,
+    kStemFile_Piano,
+    kStemFile_Bass,
+    kStemFile_Drums,
+    kStemFile_Others,
+    kNumStemFiles
 };
+
+enum { kNumStemSoloButtons = kStemFile_Others - kStemFile_Instruments + 1 };

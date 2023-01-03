@@ -262,12 +262,20 @@ void MelissaModel::setEqQ(size_t band, float eqQ)
     for (auto&& l : listeners_) l->eqQChanged(band, eqQ);
 }
 
-void MelissaModel::setPlayPart(StemType playPart)
+void MelissaModel::setPlayPart(PlayPart playPart)
 {
     const bool isAvailable = MelissaStemProvider::getInstance()->getStemProviderStatus() == kStemProviderStatus_Available;
-    if (!isAvailable) playPart = kStemType_All;
-    playPart_ = std::clamp<StemType>(playPart, kStemType_All, kStemType_Others);
+    if (!isAvailable) playPart = kPlayPart_All;
+    playPart_ = std::clamp<PlayPart>(playPart, kPlayPart_All, kPlayPart_Custom);
     for (auto&& l : listeners_) l->playPartChanged(playPart_);
+}
+
+void MelissaModel::setCustomPartVolume(CustomPartVolume part, float volume)
+{
+    part = std::clamp<CustomPartVolume>(part, kCustomPartVolume_Vocal, kCustomPartVolume_Others);
+    volume = std::clamp<float>(volume, -1.f, 1.f);
+    customPartVolume_[part] = volume;
+    for (auto&& l : listeners_) l->customPartVolumeChanged(part, volume);
 }
 
 void MelissaModel::setMainVolume(float mainVolume)

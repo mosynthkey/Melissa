@@ -16,7 +16,7 @@ enum
     kMelissaStemButtonGroup = 4000,
 };
 
-static const String stemNames[] = { "Inst.", "Vo.", "Piano", "Bass", "Drums", "Others" };
+static const String stemNames[] = { "Inst.", "Vocal", "Piano", "Bass", "Drums", "Others" };
 
 class MelissaStemControlComponent::ProgressBar : public Component, public Timer
 {
@@ -145,12 +145,12 @@ MelissaStemControlComponent::MelissaStemControlComponent() : status_(kStemProvid
     
     allButton_ = createAndAddTextButton("All");
     allButton_->setToggleState(true, dontSendNotification);
-    allButton_->onClick = [&, model]() { model->setPlayPart(kStemType_All); };
-    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
+    allButton_->onClick = [&, model]() { model->setPlayPart(kPlayPart_All); };
+    for (int buttonIndex = 0; buttonIndex < kNumStemSoloButtons; ++buttonIndex)
     {
-        stemSwitchButtons_[stemTypeIndex] = createAndAddTextButton(stemNames[stemTypeIndex]);
-        stemSwitchButtons_[stemTypeIndex]->setVisible(false);
-        stemSwitchButtons_[stemTypeIndex]->onClick = [&, stemTypeIndex, model]() { model->setPlayPart(static_cast<StemType>(stemTypeIndex)); };
+        stemSwitchButtons_[buttonIndex] = createAndAddTextButton(stemNames[buttonIndex]);
+        stemSwitchButtons_[buttonIndex]->setVisible(false);
+        stemSwitchButtons_[buttonIndex]->onClick = [&, buttonIndex, model]() { model->setPlayPart(static_cast<PlayPart>(buttonIndex + kPlayPart_Instruments)); };
     }
     
     updateAndArrangeControls();
@@ -175,7 +175,7 @@ void MelissaStemControlComponent::paint(Graphics& g)
     g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
 }
 
-void MelissaStemControlComponent::playPartChanged(StemType playPart)
+void MelissaStemControlComponent::playPartChanged(PlayPart playPart)
 {
     toggleStems(playPart);
 }
@@ -218,8 +218,8 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     int totalNameLength = 0;
     x = allButton_->getRight() + kMargin;
     for (auto& name : stemNames) totalNameLength += font.getStringWidth(name);
-    const float widthUnit = ((getWidth() - x) - kMargin - kMargin * (kNumStemTypes - 1)) / static_cast<float>(totalNameLength);
-    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
+    const float widthUnit = ((getWidth() - x) - kMargin - kMargin * (kNumStemSoloButtons - 1)) / static_cast<float>(totalNameLength);
+    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemSoloButtons; ++stemTypeIndex)
     {
         int buttonWidth = static_cast<int>(widthUnit * font.getStringWidth(stemNames[stemTypeIndex]));
         stemSwitchButtons_[stemTypeIndex]->setBounds(x, yMargin, buttonWidth, kButtonHeight);
@@ -248,22 +248,22 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     }
 }
 
-void MelissaStemControlComponent::toggleStems(int stemIndex)
+void MelissaStemControlComponent::toggleStems(PlayPart playPart)
 {
     if (status_ == kStemProviderStatus_Available)
     {
-        allButton_->setToggleState(stemIndex == kStemType_All, dontSendNotification);
-        for (int buttonIndex = 0; buttonIndex < kNumStemTypes; ++buttonIndex)
+        allButton_->setToggleState(playPart == kPlayPart_All, dontSendNotification);
+        for (int buttonIndex = 0; buttonIndex < kNumStemSoloButtons; ++buttonIndex)
         {
-            stemSwitchButtons_[buttonIndex]->setToggleState(buttonIndex == stemIndex, dontSendNotification);
+            stemSwitchButtons_[buttonIndex]->setToggleState(playPart == (kPlayPart_Instruments + buttonIndex), dontSendNotification);
         }
     }
     else
     {
         allButton_->setToggleState(true, dontSendNotification);
-        for (int buttonIndex = 0; buttonIndex < kNumStemTypes; ++buttonIndex)
+        for (int buttonIndex = 0; buttonIndex < kNumStemSoloButtons; ++buttonIndex)
         {
-            stemSwitchButtons_[buttonIndex]->setToggleState(buttonIndex == stemIndex, dontSendNotification);
+            stemSwitchButtons_[buttonIndex]->setToggleState(false, dontSendNotification);
         }
     }
 }

@@ -59,6 +59,7 @@ public:
             kFontSize_Main,
             kFontSize_Sub,
             kFontSize_Small,
+            kFontSize_Smallest,
             kNumFontSizes
         };
         
@@ -229,7 +230,7 @@ public:
     static String getCompatibleFileExtensions();
     void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
-    float readBuffer(size_t ch, size_t index, StemType playPart);
+    float readBuffer(size_t ch, size_t index, PlayPart playPart);
     double getSampleRate() const { return sampleRate_; }
     size_t getBufferLength() const { return (originalAudioSampleBuf_ == nullptr ? 0 : originalAudioSampleBuf_->getNumSamples()); }
     void disposeBuffer();
@@ -315,7 +316,7 @@ private:
     std::function<void()> functionToCallAfterFileLoad_;
     std::vector<MelissaDataSourceListener*> listeners_;
     std::unique_ptr<AudioSampleBuffer> originalAudioSampleBuf_;
-    std::unique_ptr<AudioSampleBuffer> stemAudioSampleBuf_[kNumStemTypes];
+    std::unique_ptr<AudioSampleBuffer> stemAudioSampleBuf_[kNumStemFiles];
     bool wasPlaying_;
     std::map<String, String> defaultShortcut_;
 };

@@ -24,6 +24,7 @@
 #include "MelissaStemProvider.h"
 #include "MelissaPopupMessageComponent.h"
 #include "MelissaStemControlComponent.h"
+#include "MelissaStemDetailComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
@@ -137,6 +138,7 @@ public:
     void timerCallback() override;
     
     void updatePlayBackModeButton();
+    void updateStemToggleButton();
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
     void updateListMemoTab(ListMemoTab tab);
@@ -185,7 +187,10 @@ private:
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<Slider> mainVolumeSlider_;
     
+    std::unique_ptr<DrawableButton> stemControlToggleButton_;
+    bool isStemDetailShown_;
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
+    std::unique_ptr<MelissaStemDetailComponent> stemDetailComponent_;
     
     std::unique_ptr<MelissaPopupMessageComponent> popupMessage_;
     
@@ -227,6 +232,8 @@ private:
         kIcon_Add,
         kIcon_Up,
         kIcon_Down,
+        kIcon_Detail,
+        kIcon_Select,
         kNumOfIcons
     };
     
@@ -381,11 +388,13 @@ private:
     void musicVolumeChanged(float volume) override;
     void pitchChanged(float semitone) override;
     void speedChanged(int speed) override;
+    void playPartChanged(PlayPart playPart) override;
     
     // MelissaShortcutListener
     void controlMessageReceived(const String& controlMessage) override;
     
     // MelissaStemProviderListener
+    void stemProviderStatusChanged(StemProviderStatus status) override;
     void stemProviderResultReported(StemProviderResult result) override;
     
 #if defined(ENABLE_SPEED_TRAINING)

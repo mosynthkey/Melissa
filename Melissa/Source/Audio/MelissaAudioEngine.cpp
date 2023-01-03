@@ -185,7 +185,7 @@ aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
-currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kStemType_All)
+currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<Equalizer>();
@@ -594,7 +594,7 @@ void MelissaAudioEngine::updateLoopParameters()
     }
 }
 
-void MelissaAudioEngine::playPartChanged(StemType playPart)
+void MelissaAudioEngine::playPartChanged(PlayPart playPart)
 {
     playPart_ = playPart;
 }

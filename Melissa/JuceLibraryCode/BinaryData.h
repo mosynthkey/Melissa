@@ -8,20 +8,20 @@
 
 namespace BinaryData
 {
-    extern const char*   speaker_svg;
-    const int            speaker_svgSize = 357;
-
     extern const char*   add_svg;
     const int            add_svgSize = 917;
+
+    extern const char*   arrow_left_svg;
+    const int            arrow_left_svgSize = 508;
+
+    extern const char*   arrow_right_svg;
+    const int            arrow_right_svgSize = 514;
 
     extern const char*   clear_svg;
     const int            clear_svgSize = 778;
 
-    extern const char*   arrow_left_svg;
-    const int            arrow_left_svgSize = 423;
-
-    extern const char*   arrow_right_svg;
-    const int            arrow_right_svgSize = 500;
+    extern const char*   detail_svg;
+    const int            detail_svgSize = 668;
 
     extern const char*   down_svg;
     const int            down_svgSize = 524;
@@ -53,20 +53,26 @@ namespace BinaryData
     extern const char*   prev_button_svg;
     const int            prev_button_svgSize = 426;
 
+    extern const char*   select_svg;
+    const int            select_svgSize = 602;
+
+    extern const char*   speaker_svg;
+    const int            speaker_svgSize = 357;
+
     extern const char*   up_svg;
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 10143;
+    const int            enUS_txtSize = 10399;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 11253;
+    const int            jaJP_txtSize = 11594;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110193;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 19;
+    const int namedResourceListSize = 21;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

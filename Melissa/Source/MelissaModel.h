@@ -101,8 +101,10 @@ public:
     float getEqQ(size_t band) { return eqQ_; }
     
     // Part
-    void setPlayPart(StemType playPart);
-    StemType getPlayPart() const { return playPart_; }
+    void setPlayPart(PlayPart playPart);
+    PlayPart getPlayPart() const { return playPart_; }
+    void setCustomPartVolume(CustomPartVolume part, float volume);
+    float getCustomPartVolume(CustomPartVolume part) const { return customPartVolume_[part]; }
     
     // Main volume
     void setMainVolume(float mainVolume);
@@ -152,7 +154,8 @@ private:
     float eqFreq_;
     float eqGain_;
     float eqQ_;
-    StemType playPart_;
+    PlayPart playPart_;
+    float customPartVolume_[kNumCustomPartVolumes];
     float mainVolume_;
     
     // Singleton

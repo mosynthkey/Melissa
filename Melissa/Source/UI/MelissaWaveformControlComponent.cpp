@@ -127,8 +127,8 @@ public:
             {
                 const size_t bufIndex = iStrip * (bufferLength / numOfStrip_) + iBuffer;
                 if (bufIndex >= bufferLength) break;
-                const auto l = dataSource->readBuffer(0, bufIndex, kStemType_All);
-                const auto r = dataSource->readBuffer(1, bufIndex, kStemType_All);
+                const auto l = dataSource->readBuffer(0, bufIndex, kPlayPart_All);
+                const auto r = dataSource->readBuffer(1, bufIndex, kPlayPart_All);
                 preview += (l * l + r * r);
             }
             preview /= (bufferLength / numOfStrip_);

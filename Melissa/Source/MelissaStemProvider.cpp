@@ -130,7 +130,7 @@ void MelissaStemProvider::prepareForLoadStems(const File& fileToOpen, File& orig
 {
     stemFiles.clear();
     getStemFiles(fileToOpen, originalFile, stemFiles);
-    if (stemFiles.size() == kNumStemTypes)
+    if (stemFiles.size() == kNumStemFiles)
     {
         status_ = kStemProviderStatus_Available;
     }

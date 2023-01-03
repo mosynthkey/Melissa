@@ -104,7 +104,7 @@ private:
     bool eqSwitch_;
     std::unique_ptr<Equalizer> eq_;
     
-    StemType playPart_;
+    PlayPart playPart_;
     
     Status status_;
     
@@ -128,7 +128,7 @@ private:
     void eqFreqChanged(size_t band, float freq) override;
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
-    void playPartChanged(StemType playPart) override;
+    void playPartChanged(PlayPart playPart) override;
     
     void updateLoopParameters();
 };

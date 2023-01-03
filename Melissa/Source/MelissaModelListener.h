@@ -23,6 +23,28 @@ enum PlaybackMode
     kNumOfPlaybackModes
 };
 
+enum PlayPart
+{
+    kPlayPart_All,
+    kPlayPart_Instruments,
+    kPlayPart_Vocal_Solo,
+    kPlayPart_Piano_Solo,
+    kPlayPart_Bass_Solo,
+    kPlayPart_Drums_Solo,
+    kPlayPart_Others_Solo,
+    kPlayPart_Custom,
+};
+
+enum CustomPartVolume
+{
+    kCustomPartVolume_Vocal,
+    kCustomPartVolume_Piano,
+    kCustomPartVolume_Bass,
+    kCustomPartVolume_Drums,
+    kCustomPartVolume_Others,
+    kNumCustomPartVolumes
+};
+
 enum OutputMode : int
 {
     kOutputMode_LR,
@@ -71,7 +93,8 @@ public:
     virtual void eqFreqChanged(size_t band, float freq) {}
     virtual void eqGainChanged(size_t band, float gain) {}
     virtual void eqQChanged(size_t band, float q) {}
-    virtual void playPartChanged(StemType playPart) {}
+    virtual void playPartChanged(PlayPart playPart) {}
+    virtual void customPartVolumeChanged(CustomPartVolume part, float volume) {}
     virtual void mainVolumeChanged(float mainVolume) {}
 };
 

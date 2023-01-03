@@ -9,19 +9,8 @@
 namespace BinaryData
 {
 
-//================== speaker.svg ==================
-static const unsigned char temp_binary_data_0[] =
-"<svg width=\"20\" height=\"30\" viewBox=\"0 0 20 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect x=\"1\" y=\"1\" width=\"18\" height=\"28\" rx=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
-"<circle cx=\"10\" cy=\"9\" r=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
-"<circle cx=\"10\" cy=\"20\" r=\"2\" fill=\"white\"/>\n"
-"<circle cx=\"10\" cy=\"20\" r=\"4\" stroke=\"white\" stroke-width=\"2\"/>\n"
-"</svg>\n";
-
-const char* speaker_svg = (const char*) temp_binary_data_0;
-
 //================== add.svg ==================
-static const unsigned char temp_binary_data_1[] =
+static const unsigned char temp_binary_data_0[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<svg width=\"18px\" height=\"18px\" viewBox=\"0 0 18 18\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <title>add</title>\n"
@@ -35,37 +24,47 @@ static const unsigned char temp_binary_data_1[] =
 "    </g>\n"
 "</svg>";
 
-const char* add_svg = (const char*) temp_binary_data_1;
+const char* add_svg = (const char*) temp_binary_data_0;
+
+//================== arrow_left.svg ==================
+static const unsigned char temp_binary_data_1[] =
+"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path d=\"M0 1C0 0.447708 0.447716 0 1 0C1.55228 0 2 0.447708 2 1V13C2 13.5523 1.55228 14 1 14C0.447716 14 0 13.5523 0 13V1Z\" fill=\"white\"/>\n"
+"<path d=\"M9.5 6V2.75853C9.5 2.35512 9.04685 2.1178 8.71525 2.34753L2.59322 6.589C2.30622 6.78784 2.30622 7.21216 2.59322 7.411L8.71525 11.6525C9.04685 11.8822 9.5 11.6449 9.5 11.2415V8L19 8C19.5523 8 20 7.55229 20 7C20 6.44771 19.5523 6 19 6L9.5 6Z\""
+" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* arrow_left_svg = (const char*) temp_binary_data_1;
+
+//================== arrow_right.svg ==================
+static const unsigned char temp_binary_data_2[] =
+"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path d=\"M20 13C20 13.5523 19.5523 14 19 14C18.4477 14 18 13.5523 18 13V1C18 0.447723 18.4477 0 19 0C19.5523 0 20 0.447723 20 1V13Z\" fill=\"white\"/>\n"
+"<path d=\"M10.5 8V11.2415C10.5 11.6449 10.9531 11.8822 11.2847 11.6525L17.4068 7.411C17.6938 7.21216 17.6938 6.78784 17.4068 6.589L11.2847 2.34753C10.9531 2.1178 10.5 2.35512 10.5 2.75853V6H1C0.447716 6 0 6.44771 0 7C0 7.55229 0.447716 8 1 8H10.5Z\" "
+"fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* arrow_right_svg = (const char*) temp_binary_data_2;
 
 //================== clear.svg ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_3[] =
 "<svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M9 18C13.9706 18 18 13.9706 18 9C18 4.02944 13.9706 0 9 0C4.02944 0 0 4.02944 0 9C0 13.9706 4.02944 18 9 18ZM5.46447 6.87868C5.07394 6.48816 5.07394 5.85499 5.46447 5.46447C5.85499 5.07394 6.48816"
 " 5.07394 6.87868 5.46447L9 7.58579L11.1213 5.46447C11.5118 5.07394 12.145 5.07394 12.5355 5.46447C12.9261 5.85499 12.9261 6.48815 12.5355 6.87868L10.4142 9L12.5355 11.1213C12.9261 11.5118 12.9261 12.145 12.5355 12.5355C12.145 12.9261 11.5118 12.9261 "
 "11.1213 12.5355L9 10.4142L6.87868 12.5355C6.48816 12.9261 5.85499 12.9261 5.46447 12.5355C5.07394 12.145 5.07394 11.5118 5.46447 11.1213L7.58579 9L5.46447 6.87868Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* clear_svg = (const char*) temp_binary_data_2;
+const char* clear_svg = (const char*) temp_binary_data_3;
 
-//================== arrow_left.svg ==================
-static const unsigned char temp_binary_data_3[] =
-"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"2\" height=\"14\" rx=\"1\" fill=\"white\"/>\n"
-"<rect x=\"4\" y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n"
-"<path d=\"M2.59322 7.411C2.30622 7.21216 2.30622 6.78784 2.59322 6.589L8.71525 2.34754C9.04685 2.1178 9.5 2.35512 9.5 2.75853V11.2415C9.5 11.6449 9.04685 11.8822 8.71525 11.6525L2.59322 7.411Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* arrow_left_svg = (const char*) temp_binary_data_3;
-
-//================== arrow_right.svg ==================
+//================== detail.svg ==================
 static const unsigned char temp_binary_data_4[] =
 "<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect x=\"20\" y=\"14\" width=\"2\" height=\"14\" rx=\"1\" transform=\"rotate(180 20 14)\" fill=\"white\"/>\n"
-"<rect x=\"16\" y=\"8\" width=\"16\" height=\"2\" rx=\"1\" transform=\"rotate(180 16 8)\" fill=\"white\"/>\n"
-"<path d=\"M17.4068 6.589C17.6938 6.78784 17.6938 7.21216 17.4068 7.411L11.2847 11.6525C10.9531 11.8822 10.5 11.6449 10.5 11.2415V2.75853C10.5 2.35512 10.9531 2.1178 11.2847 2.34754L17.4068 6.589Z\" fill=\"white\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7 0C3.134 0 0 3.134 0 7C0 10.866 3.134 14 7 14H13C16.866 14 20 10.866 20 7C20 3.134 16.866 0 13 0H7ZM11.37 1.63301C11.5081 1.39386 11.8139 1.31192 12.053 1.45L13.7851 2.45C14.0242 2.58807 14.1061"
+" 2.89386 13.9681 3.13301L13.2181 4.43205L10.62 2.93205L11.37 1.63301ZM10.12 3.79808L12.7181 5.29808L9.38474 11.0716C9.27655 11.259 9.1105 11.4062 8.91153 11.4912L7.5321 12.0804C7.22557 12.2114 6.87917 12.0114 6.83929 11.6804L6.65987 10.1912C6.63399 9"
+".97638 6.67848 9.75896 6.78667 9.57158L10.12 3.79808Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* arrow_right_svg = (const char*) temp_binary_data_4;
+const char* detail_svg = (const char*) temp_binary_data_4;
 
 //================== down.svg ==================
 static const unsigned char temp_binary_data_5[] =
@@ -184,18 +183,39 @@ static const unsigned char temp_binary_data_14[] =
 
 const char* prev_button_svg = (const char*) temp_binary_data_14;
 
-//================== up.svg ==================
+//================== select.svg ==================
 static const unsigned char temp_binary_data_15[] =
+"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7 0C3.134 0 0 3.13401 0 7C0 10.866 3.134 14 7 14H13C16.866 14 20 10.866 20 7C20 3.13401 16.866 0 13 0H7ZM5 6C4.44771 6 4 6.44772 4 7C4 7.55228 4.44771 8 5 8H9C9.55229 8 10 7.55228 10 7C10 6.44772"
+" 9.55229 6 9 6H5ZM16 7C16 7.55228 15.5523 8 15 8C14.4477 8 14 7.55228 14 7C14 6.44772 14.4477 6 15 6C15.5523 6 16 6.44772 16 7ZM12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z\" fill=\"whi"
+"te\"/>\n"
+"</svg>\n";
+
+const char* select_svg = (const char*) temp_binary_data_15;
+
+//================== speaker.svg ==================
+static const unsigned char temp_binary_data_16[] =
+"<svg width=\"20\" height=\"30\" viewBox=\"0 0 20 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect x=\"1\" y=\"1\" width=\"18\" height=\"28\" rx=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"<circle cx=\"10\" cy=\"9\" r=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"<circle cx=\"10\" cy=\"20\" r=\"2\" fill=\"white\"/>\n"
+"<circle cx=\"10\" cy=\"20\" r=\"4\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"</svg>\n";
+
+const char* speaker_svg = (const char*) temp_binary_data_16;
+
+//================== up.svg ==================
+static const unsigned char temp_binary_data_17[] =
 "<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM15.8638 9.48077C15.4779 8.81927 14.5221 8.81927 14.1362 9.48077L8.87726 18.4"
 "962C8.48837 19.1628 8.96924 20 9.74103 20H20.259C21.0308 20 21.5116 19.1628 21.1227 18.4962L15.8638 9.48077Z\" fill=\"white\"/>\n"
 "</svg>\n";
 
-const char* up_svg = (const char*) temp_binary_data_15;
+const char* up_svg = (const char*) temp_binary_data_17;
 
 //================== en-US.txt ==================
-static const unsigned char temp_binary_data_16[] =
+static const unsigned char temp_binary_data_18[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -407,13 +427,19 @@ static const unsigned char temp_binary_data_16[] =
 "\"stem_err_failed_to_initialize\" = \"Music separation : Failed to initialize the separation engine\"\n"
 "\"stem_err_failed_to_split\" = \"Music separation : Failed to separate\"\n"
 "\"stem_err_failed_to_export\" = \"Music separation : Failed to save the results\"\n"
-"\"stem_interrupted\" = \"Music separation : The process is interrupted\"\n"
-"\"stem_err_unknown\" = \"Music separation : Unknown error occured\"\n";
+"\"stem_err_interrupted\" = \"Music separation : The process is interrupted\"\n"
+"\"stem_err_unknown\" = \"Music separation : Unknown error occured\"\n"
+"\"reset_part_detail\" = \"Reset all volume adjustment\"\n"
+"\"vocal_custom_volume\" = \"Vocal volume\"\n"
+"\"piano_custom_volume\" = \"Piano volume\"\n"
+"\"bass_custom_volume\" = \"Bass volume\"\n"
+"\"drums_custom_volume\" = \"Drums volume\"\n"
+"\"others_custom_volume\" = \"Other parts volume\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_16;
+const char* enUS_txt = (const char*) temp_binary_data_18;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_17[] =
+static const unsigned char temp_binary_data_19[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,97,117,100,105,111,95,109,105,100,105,95,115,101,116,116,105,110,103,115,34,32,61,32,34,65,117,100,105,111,32,47,32,77,73,68,73,32,232,168,
 173,229,174,154,34,10,34,115,104,111,114,116,99,117,116,95,115,101,116,116,105,110,103,115,34,32,61,32,34,227,130,183,227,131,167,227,131,188,227,131,136,227,130,171,227,131,131,227,131,136,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,
@@ -578,15 +604,20 @@ static const unsigned char temp_binary_data_17[] =
 111,95,105,110,105,116,105,97,108,105,122,101,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,162,32,58,32,227,130,168,227,131,179,227,130,184,227,131,179,227,129,174,229,136,157,230,156,159,229,140,150,227,129,171,229,164,177,230,149,151,
 227,129,151,227,129,190,227,129,151,227,129,159,34,10,34,115,116,101,109,95,101,114,114,95,102,97,105,108,101,100,95,116,111,95,115,112,108,105,116,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,162,32,58,32,229,136,134,233,155,162,227,129,
 167,227,129,141,227,129,190,227,129,155,227,130,147,227,129,167,227,129,151,227,129,159,34,10,34,115,116,101,109,95,101,114,114,95,102,97,105,108,101,100,95,116,111,95,101,120,112,111,114,116,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,
-162,32,58,32,229,136,134,233,155,162,227,129,151,227,129,159,233,159,179,229,163,176,227,130,146,228,191,157,229,173,152,227,129,167,227,129,141,227,129,190,227,129,155,227,130,147,227,129,167,227,129,151,227,129,159,34,10,34,115,116,101,109,95,105,110,
-116,101,114,114,117,112,116,101,100,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,162,32,58,32,229,135,166,231,144,134,227,129,140,228,184,173,230,150,173,227,129,149,227,130,140,227,129,190,227,129,151,227,129,159,34,10,34,115,116,101,109,
-95,101,114,114,95,117,110,107,110,111,119,110,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,162,32,58,32,228,184,141,230,152,142,227,129,170,227,130,168,227,131,169,227,131,188,227,129,140,231,153,186,231,148,159,227,129,151,227,129,190,
-227,129,151,227,129,159,34,10,0,0 };
+162,32,58,32,229,136,134,233,155,162,227,129,151,227,129,159,233,159,179,229,163,176,227,130,146,228,191,157,229,173,152,227,129,167,227,129,141,227,129,190,227,129,155,227,130,147,227,129,167,227,129,151,227,129,159,34,10,34,115,116,101,109,95,101,114,
+114,95,105,110,116,101,114,114,117,112,116,101,100,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,162,32,58,32,229,135,166,231,144,134,227,129,140,228,184,173,230,150,173,227,129,149,227,130,140,227,129,190,227,129,151,227,129,159,34,10,34,
+115,116,101,109,95,101,114,114,95,117,110,107,110,111,119,110,34,32,61,32,34,233,159,179,229,163,176,229,136,134,233,155,162,32,58,32,228,184,141,230,152,142,227,129,170,227,130,168,227,131,169,227,131,188,227,129,140,231,153,186,231,148,159,227,129,
+151,227,129,190,227,129,151,227,129,159,34,10,34,114,101,115,101,116,95,112,97,114,116,95,100,101,116,97,105,108,34,32,61,32,34,229,133,168,227,131,145,227,131,188,227,131,136,227,129,174,233,159,179,233,135,143,232,170,191,230,149,180,227,130,146,227,
+131,170,227,130,187,227,131,131,227,131,136,34,10,34,118,111,99,97,108,95,99,117,115,116,111,109,95,118,111,108,117,109,101,34,32,61,32,34,227,131,156,227,131,188,227,130,171,227,131,171,227,129,174,233,159,179,233,135,143,232,170,191,231,175,128,34,
+10,34,112,105,97,110,111,95,99,117,115,116,111,109,95,118,111,108,117,109,101,34,32,61,32,34,227,131,148,227,130,162,227,131,142,227,129,174,233,159,179,233,135,143,232,170,191,231,175,128,34,10,34,98,97,115,115,95,99,117,115,116,111,109,95,118,111,108,
+117,109,101,34,32,61,32,34,227,131,153,227,131,188,227,130,185,227,129,174,233,159,179,233,135,143,232,170,191,231,175,128,34,10,34,100,114,117,109,115,95,99,117,115,116,111,109,95,118,111,108,117,109,101,34,32,61,32,34,227,131,137,227,131,169,227,131,
+160,227,129,174,233,159,179,233,135,143,232,170,191,231,175,128,34,10,34,111,116,104,101,114,115,95,99,117,115,116,111,109,95,118,111,108,117,109,101,34,32,61,32,34,227,129,157,227,129,174,228,187,150,227,129,174,227,131,145,227,131,188,227,131,136,227,
+129,174,233,159,179,233,135,143,232,170,191,231,175,128,34,10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_17;
+const char* jaJP_txt = (const char*) temp_binary_data_19;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_18[] =
+static const unsigned char temp_binary_data_20[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,9,112,72,89,115,0,0,22,37,0,0,22,37,1,73,82,36,240,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,1,174,6,73,68,65,84,
 120,1,236,189,233,207,117,219,150,23,52,198,122,223,123,171,234,86,221,42,17,40,21,13,4,34,118,40,34,54,96,67,217,32,81,17,10,240,147,77,226,23,163,255,135,77,140,70,19,53,26,63,216,125,81,52,106,108,162,38,246,137,216,124,83,18,131,138,128,10,134,70,
 26,161,224,214,173,123,238,57,231,125,246,240,217,107,142,95,51,230,90,207,123,206,169,42,64,18,246,57,207,187,247,94,107,174,57,71,251,27,99,142,57,215,218,249,203,127,213,223,243,136,245,202,215,191,122,125,203,243,141,159,163,94,255,205,62,240,252,
@@ -2154,7 +2185,7 @@ static const unsigned char temp_binary_data_18[] =
 170,92,166,248,122,242,174,232,215,200,162,184,186,174,203,115,51,37,61,239,63,131,75,160,108,123,86,215,112,204,114,50,244,232,241,103,42,167,1,37,80,254,21,254,0,195,89,190,199,63,211,150,32,78,227,57,148,230,255,0,10,174,4,79,62,207,213,75,0,0,0,0,
 73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_18;
+const char* logo_png = (const char*) temp_binary_data_20;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -2168,11 +2199,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
-        case 0x6d373624:  numBytes = 357; return speaker_svg;
         case 0xbb8f2dc6:  numBytes = 917; return add_svg;
+        case 0xc1a269a2:  numBytes = 508; return arrow_left_svg;
+        case 0xad54f90b:  numBytes = 514; return arrow_right_svg;
         case 0xb444b572:  numBytes = 778; return clear_svg;
-        case 0xc1a269a2:  numBytes = 423; return arrow_left_svg;
-        case 0xad54f90b:  numBytes = 500; return arrow_right_svg;
+        case 0xc2407576:  numBytes = 668; return detail_svg;
         case 0x5514f147:  numBytes = 524; return down_svg;
         case 0xa4568785:  numBytes = 891; return loop_onesong_svg;
         case 0x424dc432:  numBytes = 1337; return loop_playlist_svg;
@@ -2183,9 +2214,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x01e0e27c:  numBytes = 687; return playlist_edit_svg;
         case 0xc6a6e0b6:  numBytes = 865; return playlist_remove_svg;
         case 0xe0989163:  numBytes = 426; return prev_button_svg;
+        case 0x9d5144a1:  numBytes = 602; return select_svg;
+        case 0x6d373624:  numBytes = 357; return speaker_svg;
         case 0xcdfe36c0:  numBytes = 524; return up_svg;
-        case 0x4c8ea738:  numBytes = 10143; return enUS_txt;
-        case 0x9153efee:  numBytes = 11253; return jaJP_txt;
+        case 0x4c8ea738:  numBytes = 10399; return enUS_txt;
+        case 0x9153efee:  numBytes = 11594; return jaJP_txt;
         case 0x78ded995:  numBytes = 110193; return logo_png;
         default: break;
     }
@@ -2196,11 +2229,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
 const char* namedResourceList[] =
 {
-    "speaker_svg",
     "add_svg",
-    "clear_svg",
     "arrow_left_svg",
     "arrow_right_svg",
+    "clear_svg",
+    "detail_svg",
     "down_svg",
     "loop_onesong_svg",
     "loop_playlist_svg",
@@ -2211,6 +2244,8 @@ const char* namedResourceList[] =
     "playlist_edit_svg",
     "playlist_remove_svg",
     "prev_button_svg",
+    "select_svg",
+    "speaker_svg",
     "up_svg",
     "enUS_txt",
     "jaJP_txt",
@@ -2219,11 +2254,11 @@ const char* namedResourceList[] =
 
 const char* originalFilenames[] =
 {
-    "speaker.svg",
     "add.svg",
-    "clear.svg",
     "arrow_left.svg",
     "arrow_right.svg",
+    "clear.svg",
+    "detail.svg",
     "down.svg",
     "loop_onesong.svg",
     "loop_playlist.svg",
@@ -2234,6 +2269,8 @@ const char* originalFilenames[] =
     "playlist_edit.svg",
     "playlist_remove.svg",
     "prev_button.svg",
+    "select.svg",
+    "speaker.svg",
     "up.svg",
     "en-US.txt",
     "ja-JP.txt",

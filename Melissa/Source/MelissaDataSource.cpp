@@ -7,6 +7,7 @@
 
 #include "AppConfig.h"
 #include "MelissaDataSource.h"
+#include "MelissaDefinitions.h"
 #include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
 
@@ -460,9 +461,13 @@ Font MelissaDataSource::getFont(Global::FontSize size) const
     {
         return Font(global_.fontName_, 15 + fontSizeOffset, Font::plain);
     }
-    else
+    else if (size == Global::kFontSize_Small)
     {
         return Font(global_.fontName_, 13 + fontSizeOffset, Font::plain);
+    }
+    else
+    {
+        return Font(global_.fontName_, 12 + fontSizeOffset, Font::plain);
     }
 }
 
@@ -496,7 +501,7 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
     }
 }
 
-float MelissaDataSource::readBuffer(size_t ch, size_t index, StemType playPart)
+float MelissaDataSource::readBuffer(size_t ch, size_t index, PlayPart playPart)
 {
     if (originalAudioSampleBuf_ == nullptr) return 0.f;
     
@@ -504,18 +509,45 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index, StemType playPart)
     const int bufferSize = originalAudioSampleBuf_->getNumSamples();
     
     if (2 <= ch || numOfChs <= ch) ch = 0;
-    if (bufferSize <= index) return 0.f;
+    const int intCh = static_cast<int>(ch);
     
-    if (playPart == kStemType_All)
+    if (bufferSize <= index) return 0.f;
+    const int intIndex = static_cast<int>(index);
+    
+    if (playPart == kPlayPart_All)
     {
-        return originalAudioSampleBuf_->getSample(static_cast<int>(ch), static_cast<int>(index));
+        return originalAudioSampleBuf_->getSample(intCh, intIndex);
     }
-    else if (playPart < kNumStemTypes)
+    else if (kPlayPart_Instruments <= playPart && playPart <= kPlayPart_Others_Solo)
     {
-        if (stemAudioSampleBuf_[playPart] != nullptr && index < stemAudioSampleBuf_[playPart]->getNumSamples())
+        const int partIndex = playPart - kPlayPart_Instruments;
+        if (stemAudioSampleBuf_[partIndex] != nullptr && index < stemAudioSampleBuf_[partIndex]->getNumSamples())
         {
-            return stemAudioSampleBuf_[playPart]->getSample(static_cast<int>(ch), static_cast<int>(index));
+            return stemAudioSampleBuf_[partIndex]->getSample(intCh, intIndex);
         }
+    }
+    else if (playPart == kPlayPart_Custom)
+    {
+        for (int part = kPlayPart_Instruments; part <= kPlayPart_Others_Solo; ++part)
+        {
+            const int partIndex = part - kPlayPart_Instruments;
+            if (stemAudioSampleBuf_[partIndex] == nullptr || stemAudioSampleBuf_[partIndex]->getNumSamples() <= index) return 0.f;
+        }
+        
+        const float inst   = stemAudioSampleBuf_[kStemFile_Instruments]->getSample(intCh, intIndex);
+        const float vocal  = stemAudioSampleBuf_[kStemFile_Vocals]->getSample(intCh, intIndex);
+        const float piano  = stemAudioSampleBuf_[kStemFile_Piano]->getSample(intCh, intIndex);
+        const float bass   = stemAudioSampleBuf_[kStemFile_Bass]->getSample(intCh, intIndex);
+        const float drums  = stemAudioSampleBuf_[kStemFile_Drums]->getSample(intCh, intIndex);
+        const float others = stemAudioSampleBuf_[kStemFile_Others]->getSample(intCh, intIndex);
+        
+        const float vocalVolume = model_->getCustomPartVolume(kCustomPartVolume_Vocal);
+        const float pianoVolume = model_->getCustomPartVolume(kCustomPartVolume_Piano);
+        const float bassVolume = model_->getCustomPartVolume(kCustomPartVolume_Bass);
+        const float drumsVolume = model_->getCustomPartVolume(kCustomPartVolume_Drums);
+        const float othersVolume = model_->getCustomPartVolume(kCustomPartVolume_Others);
+        
+        return (inst + vocal) + (vocal * vocalVolume) + (piano * pianoVolume) + (bass * bassVolume) + (drums * drumsVolume) + (others * othersVolume );
     }
     
     return 0.f;
@@ -1058,11 +1090,11 @@ void MelissaDataSource::handleAsyncUpdate()
     sampleRate_ = reader->sampleRate;
     
     // stem files
-    if (stemFiles_.size() == kNumStemTypes)
+    if (stemFiles_.size() == kNumStemFiles)
     {
-        for (int stemTypeIndex = 0; stemTypeIndex < kNumStemTypes; ++stemTypeIndex)
+        for (int stemFileIndex = 0; stemFileIndex < kNumStemFiles; ++stemFileIndex)
         {
-            const auto stemName = MelissaStemProvider::partNames_[stemTypeIndex];
+            const auto stemName = MelissaStemProvider::partNames_[stemFileIndex];
             auto readerForStem = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(stemFiles_[stemName]));
             if (readerForStem == nullptr)
             {
@@ -1072,8 +1104,8 @@ void MelissaDataSource::handleAsyncUpdate()
             }
             
             const int lengthInSamples = static_cast<int>(readerForStem->lengthInSamples);
-            stemAudioSampleBuf_[stemTypeIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-            readerForStem->read(stemAudioSampleBuf_[stemTypeIndex].get(), 0, lengthInSamples, 0, true, true);
+            stemAudioSampleBuf_[stemFileIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
+            readerForStem->read(stemAudioSampleBuf_[stemFileIndex].get(), 0, lengthInSamples, 0, true, true);
         }
     }
     
@@ -1147,7 +1179,7 @@ void MelissaDataSource::handleAsyncUpdate()
     model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
     model_->setLoopPosRatio(0.f, 1.f);
     model_->setPlayingPosRatio(0.f);
-    model_->setPlayPart(kStemType_All);
+    model_->setPlayPart(kPlayPart_All);
     
     addToHistory(currentSongFilePath_);
     saveSongState();
