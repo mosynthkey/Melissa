@@ -22,6 +22,7 @@ enum CommandCategory
     kCommandCategory_PracticeList,
     kCommandCategory_Marker,
     kCommandCategory_Part,
+    kCommandCategory_PartDetail,
     kNumOfCommandCategories
 };
 
@@ -53,9 +54,14 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
     {
         "Pitch",
         {
-            { "PitchValue", kCommandType_Value },
-            { "Pitch_Plus", kCommandType_Switch },
-            { "Pitch_Minus", kCommandType_Switch },
+            { "Pitch_Reset",    kCommandType_Switch },
+            { "PitchValue",     kCommandType_Value },
+            { "Pitch_Plus",     kCommandType_Switch },
+            { "Pitch_Minus",    kCommandType_Switch },
+            { "Pitch_1OctUp",   kCommandType_Switch },
+            { "Pitch_1OctDown", kCommandType_Switch },
+            { "Pitch_2OctUp",   kCommandType_Switch },
+            { "Pitch_2OctDown", kCommandType_Switch },
         }
     },
     {
@@ -164,6 +170,16 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
             { "Part_Bass",  kCommandType_Switch },
             { "Part_Drums", kCommandType_Switch },
             { "Part_Others", kCommandType_Switch },
+        }
+    },
+    {
+        "Part_Detail",
+        {
+            { "Part_Vocal_Volume",  kCommandType_Value },
+            { "Part_Piano_Volume",  kCommandType_Value },
+            { "Part_Bass_Volume",   kCommandType_Value },
+            { "Part_Drums_Volume",  kCommandType_Value },
+            { "Part_Others_Volume", kCommandType_Value },
         }
     }
 };

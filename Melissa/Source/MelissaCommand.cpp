@@ -53,6 +53,10 @@ MelissaCommand::MelissaCommand()
     {
         if (value == 1.f) model_->setPlayingPosMSec(model_->getPlayingPosMSec() - 5000);
     };
+    commands_["Pitch_Reset"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPitch(0);
+    };
     commands_["PitchValue"] = [&](float value)
     {
         model_->setPitch(static_cast<int>(value * (kPitchMax - kPitchMin) + kPitchMin));
@@ -64,6 +68,22 @@ MelissaCommand::MelissaCommand()
     commands_["Pitch_Minus"] = [&](float value)
     {
         if (value == 1.f) model_->setPitch(model_->getPitch() - 1);
+    };
+    commands_["Pitch_1OctUp"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPitch(model_->getPitch() + 12);
+    };
+    commands_["Pitch_1OctDown"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPitch(model_->getPitch() - 12);
+    };
+    commands_["Pitch_2OctUp"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPitch(model_->getPitch() + 24);
+    };
+    commands_["Pitch_2OctDown"] = [&](float value)
+    {
+        if (value == 1.f) model_->setPitch(model_->getPitch() - 24);
     };
 
     // Loop
@@ -336,6 +356,26 @@ MelissaCommand::MelissaCommand()
     commands_["Part_Others"] = [&](float value)
     {
         model_->setPlayPart(kPlayPart_Others_Solo);
+    };
+    commands_["Part_Vocal_Volume"] = [&](float value)
+    {
+        model_->setCustomPartVolume(kCustomPartVolume_Vocal, value * 2 - 1.f);
+    };
+    commands_["Part_Piano_Volume"] = [&](float value)
+    {
+        model_->setCustomPartVolume(kCustomPartVolume_Piano, value * 2 - 1.f);
+    };
+    commands_["Part_Bass_Volume"] = [&](float value)
+    {
+        model_->setCustomPartVolume(kCustomPartVolume_Bass, value * 2 - 1.f);
+    };
+    commands_["Part_Drums_Volume"] = [&](float value)
+    {
+        model_->setCustomPartVolume(kCustomPartVolume_Drums, value * 2 - 1.f);
+    };
+    commands_["Part_Others_Volume"] = [&](float value)
+    {
+        model_->setCustomPartVolume(kCustomPartVolume_Others, value * 2 - 1.f);
     };
 }
 

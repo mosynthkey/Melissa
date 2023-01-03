@@ -21,7 +21,7 @@ namespace BinaryData
     const int            clear_svgSize = 778;
 
     extern const char*   detail_svg;
-    const int            detail_svgSize = 668;
+    const int            detail_svgSize = 738;
 
     extern const char*   down_svg;
     const int            down_svgSize = 524;
@@ -63,10 +63,10 @@ namespace BinaryData
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 10399;
+    const int            enUS_txtSize = 11000;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 11594;
+    const int            jaJP_txtSize = 12390;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110193;

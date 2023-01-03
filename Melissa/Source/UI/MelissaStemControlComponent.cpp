@@ -238,7 +238,33 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     }
     else if (status_ == kStemProviderStatus_NotAvailable)
     {
-        createStemsButton_->setButtonText(TRANS("couldnt_separate"));
+        auto result = MelissaStemProvider::getInstance()->getStemProviderResult();
+        String message = "";
+        if (result == kStemProviderResult_FailedToReadSourceFile)
+        {
+            message = TRANS("stem_err_failed_to_read_source_file");
+        }
+        else if (result == kStemProviderResult_FailedToInitialize)
+        {
+            message = TRANS("stem_err_failed_to_initialize");
+        }
+        else if (result == kStemProviderResult_FailedToSplit)
+        {
+            message = TRANS("stem_err_failed_to_split");
+        }
+        else if (result == kStemProviderResult_FailedToExport)
+        {
+            message = TRANS("stem_err_failed_to_export");
+        }
+        else if (result == kStemProviderResult_Interrupted)
+        {
+            message = TRANS("stem_err_interrupted");
+        }
+        else if (result == kStemProviderResult_UnknownError)
+        {
+            message = TRANS("stem_err_unknown");
+        }
+        createStemsButton_->setButtonText(message);
         createStemsButton_->setEnabled(false);
     }
     else if (status_ == kStemProviderStatus_Processing)

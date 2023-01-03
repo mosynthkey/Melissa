@@ -154,10 +154,6 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
     dataSource_->setMelissaAudioEngine(audioEngine_.get());
     dataSource_->addListener(this);
     
-    deviceManager.initialise(0, 2, XmlDocument::parse(dataSource_->global_.device_).get(), true);
-    deviceManager.addMidiInputDeviceCallback("", this);
-    deviceManager.addChangeListener (this);
-    
     // load setting file
     settingsDir_ = (File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Melissa"));
     if (!(settingsDir_.exists() && settingsDir_.isDirectory())) settingsDir_.createDirectory();
@@ -169,6 +165,11 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
         isFirstLaunch = true;
     }
     dataSource_->loadSettingsFile(settingsFile_);
+    
+    auto xmlDocument = XmlDocument::parse(dataSource_->global_.device_);
+    deviceManager.initialise(0, 2, xmlDocument.get(), true);
+    deviceManager.addMidiInputDeviceCallback("", this);
+    deviceManager.addChangeListener(this);
     
     bpmDetector_ = std::make_unique<MelissaBPMDetector>();
     analyzedBpm_ = -1.f;
@@ -627,7 +628,7 @@ void MainComponent::createUI()
         section->addChildComponent(stemDetailComponent_.get());
         
         stemControlToggleButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        stemControlToggleButton_->setImages(iconImages_[kIcon_Detail].get(), iconHighlightedImages_[kIcon_Detail].get());
+        updateStemToggleButton();
         stemControlToggleButton_->onClick = [&]()
         {
             isStemDetailShown_ = !isStemDetailShown_;
@@ -1885,10 +1886,12 @@ void MainComponent::updateStemToggleButton()
         if (isStemDetailShown_)
         {
             stemControlToggleButton_->setImages(iconImages_[kIcon_Select].get(), iconHighlightedImages_[kIcon_Select].get());
+            stemControlToggleButton_->setTooltip(TRANS("stem_control_select"));
         }
         else
         {
             stemControlToggleButton_->setImages(iconImages_[kIcon_Detail].get(), iconHighlightedImages_[kIcon_Detail].get());
+            stemControlToggleButton_->setTooltip(TRANS("stem_control_detail"));
         }
     }
     else
@@ -2115,35 +2118,6 @@ void MainComponent::stemProviderStatusChanged(StemProviderStatus status)
 
 void MainComponent::stemProviderResultReported(StemProviderResult result)
 {
-    if (result == kStemProviderResult_Success)
-    {
-        popupMessage_->show(TRANS("stem_success"));
-    }
-    else if (result == kStemProviderResult_FailedToReadSourceFile)
-    {
-        popupMessage_->show(TRANS("stem_err_failed_to_read_source_file"));
-    }
-    else if (result == kStemProviderResult_FailedToInitialize)
-    {
-        popupMessage_->show(TRANS("stem_err_failed_to_initialize"));
-    }
-    else if (result == kStemProviderResult_FailedToSplit)
-    {
-        popupMessage_->show(TRANS("stem_err_failed_to_split"));
-    }
-    else if (result == kStemProviderResult_FailedToExport)
-    {
-        popupMessage_->show(TRANS("stem_err_failed_to_export"));
-    }
-    else if (result == kStemProviderResult_Interrupted)
-    {
-        popupMessage_->show(TRANS("stem_err_interrupted"));
-    }
-    else if (result == kStemProviderResult_UnknownError)
-    {
-        popupMessage_->show(TRANS("stem_err_unknown"));
-    }
-    
 }
 
 #if defined(ENABLE_SPEED_TRAINING)

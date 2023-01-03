@@ -19,10 +19,15 @@ void InputFile::Open(std::error_code &err) {
   String file(path_);
   AudioFormatManager formatManager;
   formatManager.registerBasicFormats();
-  reader_ = std::make_shared<AudioFormatReaderSource>(
-      formatManager.createReaderFor(file), true);
+  auto readerForFile = formatManager.createReaderFor(file);
+  if (readerForFile == nullptr)
+  {
+      err = std::make_error_code(std::errc::io_error);
+      return;
+  }
+  reader_ = std::make_shared<AudioFormatReaderSource>(readerForFile, true);
 
-  if (!reader_) {
+  if (reader_ == nullptr) {
     err = std::make_error_code(std::errc::io_error);
     return;
   }
