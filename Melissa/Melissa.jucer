@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
-              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Melissa/Source&#10;../../../Melissa/Source/Audio&#10;../../../Melissa/Source/Audio/soundtouch&#10;../../../Melissa/Source/UI"
+              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Melissa/Source&#10;../../../Melissa/../Source/Audio&#10;../../../Melissa/../Source/Audio/soundtouch&#10;../../../Melissa/../Source/UI"
               version="3.0.0" companyName="Melissa Audio" companyCopyright="Copyright(c) 2022 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.melissa-audio.melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
@@ -88,22 +88,22 @@
       <GROUP id="{D8396015-3B56-0001-03E8-FD830368B22F}" name="Audio">
         <GROUP id="{142E0C66-4BFE-2386-3C2B-5F60DE5F1D7F}" name="soundtouch">
           <FILE id="spzWRt" name="BPMDetect_for_Melissa.cpp" compile="1" resource="0"
-                file="Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp"/>
+                file="../Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp"/>
           <FILE id="LXNLj7" name="BPMDetect_for_Melissa.h" compile="0" resource="0"
-                file="Source/Audio/soundtouch/BPMDetect_for_Melissa.h"/>
+                file="../Source/Audio/soundtouch/BPMDetect_for_Melissa.h"/>
         </GROUP>
         <FILE id="vqc52c" name="MelissaAudioEngine.cpp" compile="1" resource="0"
-              file="Source/Audio/MelissaAudioEngine.cpp"/>
+              file="../Source/Audio/MelissaAudioEngine.cpp"/>
         <FILE id="l6mtHh" name="MelissaAudioEngine.h" compile="0" resource="0"
-              file="Source/Audio/MelissaAudioEngine.h"/>
+              file="../Source/Audio/MelissaAudioEngine.h"/>
         <FILE id="DK4Xfb" name="MelissaBPMDetector.cpp" compile="1" resource="0"
-              file="Source/Audio/MelissaBPMDetector.cpp"/>
+              file="../Source/Audio/MelissaBPMDetector.cpp"/>
         <FILE id="cfJH2n" name="MelissaBPMDetector.h" compile="0" resource="0"
-              file="Source/Audio/MelissaBPMDetector.h"/>
+              file="../Source/Audio/MelissaBPMDetector.h"/>
         <FILE id="S9t2Re" name="MelissaMetronome.cpp" compile="1" resource="0"
-              file="Source/Audio/MelissaMetronome.cpp"/>
+              file="../Source/Audio/MelissaMetronome.cpp"/>
         <FILE id="ID8pHb" name="MelissaMetronome.h" compile="0" resource="0"
-              file="Source/Audio/MelissaMetronome.h"/>
+              file="../Source/Audio/MelissaMetronome.h"/>
       </GROUP>
       <GROUP id="{C784FD4F-59B4-F8AB-54AD-72EDA76F2A73}" name="spleet">
         <FILE id="H6vRwo" name="constant.h" compile="0" resource="0" file="../ThirdParty/spleet/constant.h"/>
@@ -121,143 +121,143 @@
       </GROUP>
       <GROUP id="{F9FED507-2C82-58A1-F717-3A3962290515}" name="UI">
         <FILE id="QJVtXb" name="MelissaAboutComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaAboutComponent.h"/>
+              file="../Source/UI/MelissaAboutComponent.h"/>
         <FILE id="k9AF3k" name="MelissaBottomControlComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaBottomControlComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaBottomControlComponent.cpp"/>
         <FILE id="fuTs88" name="MelissaBottomControlComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaBottomControlComponent.h"/>
+              resource="0" file="../Source/UI/MelissaBottomControlComponent.h"/>
         <FILE id="r13aSZ" name="MelissaBPMSettingComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaBPMSettingComponent.h"/>
+              file="../Source/UI/MelissaBPMSettingComponent.h"/>
         <FILE id="j1BKmo" name="MelissaButtons.h" compile="0" resource="0"
-              file="Source/UI/MelissaButtons.h"/>
+              file="../Source/UI/MelissaButtons.h"/>
         <FILE id="CHNROi" name="MelissaCommandComboBox.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaCommandComboBox.cpp"/>
+              file="../Source/UI/MelissaCommandComboBox.cpp"/>
         <FILE id="C0xuSm" name="MelissaCommandComboBox.h" compile="0" resource="0"
-              file="Source/UI/MelissaCommandComboBox.h"/>
+              file="../Source/UI/MelissaCommandComboBox.h"/>
         <FILE id="lUG0cz" name="MelissaDoubleClickEditLabel.h" compile="1"
-              resource="0" file="Source/UI/MelissaDoubleClickEditLabel.h"/>
+              resource="0" file="../Source/UI/MelissaDoubleClickEditLabel.h"/>
         <FILE id="vQExoN" name="MelissaFileListBox.h" compile="0" resource="0"
-              file="Source/UI/MelissaFileListBox.h"/>
+              file="../Source/UI/MelissaFileListBox.h"/>
         <FILE id="e3sPoO" name="MelissaIncDecButton.h" compile="0" resource="0"
-              file="Source/UI/MelissaIncDecButton.h"/>
+              file="../Source/UI/MelissaIncDecButton.h"/>
         <FILE id="VszgVk" name="MelissaInputDialog.h" compile="0" resource="0"
-              file="Source/UI/MelissaInputDialog.h"/>
-        <FILE id="mYLdQR" name="MelissaLabel.h" compile="0" resource="0" file="Source/UI/MelissaLabel.h"/>
+              file="../Source/UI/MelissaInputDialog.h"/>
+        <FILE id="mYLdQR" name="MelissaLabel.h" compile="0" resource="0" file="../Source/UI/MelissaLabel.h"/>
         <FILE id="x5V2V6" name="MelissaLookAndFeel.h" compile="0" resource="0"
-              file="Source/UI/MelissaLookAndFeel.h"/>
+              file="../Source/UI/MelissaLookAndFeel.h"/>
         <FILE id="cRpsFX" name="MelissaLoopRangeComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaLoopRangeComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaLoopRangeComponent.cpp"/>
         <FILE id="vlIkLU" name="MelissaLoopRangeComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaLoopRangeComponent.h"/>
+              file="../Source/UI/MelissaLoopRangeComponent.h"/>
         <FILE id="qkGitj" name="MelissaMarkerListBox.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaMarkerListBox.cpp"/>
+              file="../Source/UI/MelissaMarkerListBox.cpp"/>
         <FILE id="eNBL9S" name="MelissaMarkerListBox.h" compile="0" resource="0"
-              file="Source/UI/MelissaMarkerListBox.h"/>
+              file="../Source/UI/MelissaMarkerListBox.h"/>
         <FILE id="uBdWEv" name="MelissaMarkerListener.h" compile="0" resource="0"
-              file="Source/UI/MelissaMarkerListener.h"/>
+              file="../Source/UI/MelissaMarkerListener.h"/>
         <FILE id="jUguhW" name="MelissaMarkerMemoComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaMarkerMemoComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaMarkerMemoComponent.cpp"/>
         <FILE id="gg9VzE" name="MelissaMarkerMemoComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaMarkerMemoComponent.h"/>
+              file="../Source/UI/MelissaMarkerMemoComponent.h"/>
         <FILE id="M048TD" name="MelissaModalDialog.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaModalDialog.cpp"/>
+              file="../Source/UI/MelissaModalDialog.cpp"/>
         <FILE id="vNDLTs" name="MelissaModalDialog.h" compile="0" resource="0"
-              file="Source/UI/MelissaModalDialog.h"/>
+              file="../Source/UI/MelissaModalDialog.h"/>
         <FILE id="wlZaGC" name="MelissaOptionDialog.h" compile="0" resource="0"
-              file="Source/UI/MelissaOptionDialog.h"/>
+              file="../Source/UI/MelissaOptionDialog.h"/>
         <FILE id="xOs5Jf" name="MelissaPlaylistComponent.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaPlaylistComponent.cpp"/>
+              file="../Source/UI/MelissaPlaylistComponent.cpp"/>
         <FILE id="nWUw5R" name="MelissaPlaylistComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaPlaylistComponent.h"/>
+              file="../Source/UI/MelissaPlaylistComponent.h"/>
         <FILE id="iTqSQu" name="MelissaPopupMessageComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaPopupMessageComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaPopupMessageComponent.cpp"/>
         <FILE id="jmYNbv" name="MelissaPopupMessageComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaPopupMessageComponent.h"/>
+              resource="0" file="../Source/UI/MelissaPopupMessageComponent.h"/>
         <FILE id="hrreSe" name="MelissaPracticeTableListBox.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaPracticeTableListBox.cpp"/>
+              resource="0" file="../Source/UI/MelissaPracticeTableListBox.cpp"/>
         <FILE id="xpEycd" name="MelissaPracticeTableListBox.h" compile="0"
-              resource="0" file="Source/UI/MelissaPracticeTableListBox.h"/>
+              resource="0" file="../Source/UI/MelissaPracticeTableListBox.h"/>
         <FILE id="o7R50o" name="MelissaScrollLabel.h" compile="0" resource="0"
-              file="Source/UI/MelissaScrollLabel.h"/>
+              file="../Source/UI/MelissaScrollLabel.h"/>
         <FILE id="o9CA46" name="MelissaSectionComponent.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaSectionComponent.cpp"/>
+              file="../Source/UI/MelissaSectionComponent.cpp"/>
         <FILE id="aOumRK" name="MelissaSectionComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaSectionComponent.h"/>
+              file="../Source/UI/MelissaSectionComponent.h"/>
         <FILE id="xej6ih" name="MelissaShortcutComponent.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaShortcutComponent.cpp"/>
+              file="../Source/UI/MelissaShortcutComponent.cpp"/>
         <FILE id="lg92rj" name="MelissaShortcutComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaShortcutComponent.h"/>
+              file="../Source/UI/MelissaShortcutComponent.h"/>
         <FILE id="g3JdDU" name="MelissaSimpleTextButton.h" compile="0" resource="0"
-              file="Source/UI/MelissaSimpleTextButton.h"/>
+              file="../Source/UI/MelissaSimpleTextButton.h"/>
         <FILE id="AnOQkI" name="MelissaStemControlComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaStemControlComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaStemControlComponent.cpp"/>
         <FILE id="qpnMv7" name="MelissaStemControlComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaStemControlComponent.h"/>
+              resource="0" file="../Source/UI/MelissaStemControlComponent.h"/>
         <FILE id="SEErf8" name="MelissaStemDetailComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaStemDetailComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaStemDetailComponent.cpp"/>
         <FILE id="jizXp7" name="MelissaStemDetailComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaStemDetailComponent.h"/>
+              file="../Source/UI/MelissaStemDetailComponent.h"/>
         <FILE id="EpXZNq" name="MelissaTapTempoButton.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaTapTempoButton.cpp"/>
+              file="../Source/UI/MelissaTapTempoButton.cpp"/>
         <FILE id="ltN6TU" name="MelissaTapTempoButton.h" compile="0" resource="0"
-              file="Source/UI/MelissaTapTempoButton.h"/>
+              file="../Source/UI/MelissaTapTempoButton.h"/>
         <FILE id="cNCuxQ" name="MelissaTextEditorWithClearButton.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaTextEditorWithClearButton.cpp"/>
+              resource="0" file="../Source/UI/MelissaTextEditorWithClearButton.cpp"/>
         <FILE id="B5ZTvB" name="MelissaTextEditorWithClearButton.h" compile="0"
-              resource="0" file="Source/UI/MelissaTextEditorWithClearButton.h"/>
+              resource="0" file="../Source/UI/MelissaTextEditorWithClearButton.h"/>
         <FILE id="R9fqkj" name="MelissaTutorialComponent.cpp" compile="1" resource="0"
-              file="Source/UI/MelissaTutorialComponent.cpp"/>
+              file="../Source/UI/MelissaTutorialComponent.cpp"/>
         <FILE id="l5fTTn" name="MelissaTutorialComponent.h" compile="0" resource="0"
-              file="Source/UI/MelissaTutorialComponent.h"/>
+              file="../Source/UI/MelissaTutorialComponent.h"/>
         <FILE id="FUEDk0" name="MelissaUISettings.h" compile="0" resource="0"
-              file="Source/UI/MelissaUISettings.h"/>
+              file="../Source/UI/MelissaUISettings.h"/>
         <FILE id="aIEwhW" name="MelissaWaveformControlComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaWaveformControlComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaWaveformControlComponent.cpp"/>
         <FILE id="PgEvCR" name="MelissaWaveformControlComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaWaveformControlComponent.h"/>
+              resource="0" file="../Source/UI/MelissaWaveformControlComponent.h"/>
         <FILE id="ErgDg2" name="MelissaWaveformMouseEventComponent.cpp" compile="1"
-              resource="0" file="Source/UI/MelissaWaveformMouseEventComponent.cpp"/>
+              resource="0" file="../Source/UI/MelissaWaveformMouseEventComponent.cpp"/>
         <FILE id="oXnnJI" name="MelissaWaveformMouseEventComponent.h" compile="0"
-              resource="0" file="Source/UI/MelissaWaveformMouseEventComponent.h"/>
+              resource="0" file="../Source/UI/MelissaWaveformMouseEventComponent.h"/>
       </GROUP>
-      <FILE id="blXHe3" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="blXHe3" name="Main.cpp" compile="1" resource="0" file="../Source/Main.cpp"/>
       <FILE id="qbxqMN" name="MainComponent.cpp" compile="1" resource="0"
-            file="Source/MainComponent.cpp"/>
-      <FILE id="rcGEPN" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+            file="../Source/MainComponent.cpp"/>
+      <FILE id="rcGEPN" name="MainComponent.h" compile="0" resource="0" file="../Source/MainComponent.h"/>
       <FILE id="Zwbc7A" name="MelissaCommand.cpp" compile="1" resource="0"
-            file="Source/MelissaCommand.cpp"/>
+            file="../Source/MelissaCommand.cpp"/>
       <FILE id="KJ4fpo" name="MelissaCommand.h" compile="0" resource="0"
-            file="Source/MelissaCommand.h"/>
+            file="../Source/MelissaCommand.h"/>
       <FILE id="HbcjE5" name="MelissaDataSource.cpp" compile="1" resource="0"
-            file="Source/MelissaDataSource.cpp"/>
+            file="../Source/MelissaDataSource.cpp"/>
       <FILE id="skT0g0" name="MelissaDataSource.h" compile="0" resource="0"
-            file="Source/MelissaDataSource.h"/>
+            file="../Source/MelissaDataSource.h"/>
       <FILE id="YoXRTK" name="MelissaDefinitions.cpp" compile="1" resource="0"
-            file="Source/MelissaDefinitions.cpp"/>
+            file="../Source/MelissaDefinitions.cpp"/>
       <FILE id="hgx51a" name="MelissaDefinitions.h" compile="0" resource="0"
-            file="Source/MelissaDefinitions.h"/>
-      <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="Source/MelissaHost.h"/>
+            file="../Source/MelissaDefinitions.h"/>
+      <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="../Source/MelissaHost.h"/>
       <FILE id="Pa0qWs" name="MelissaModel.cpp" compile="1" resource="0"
-            file="Source/MelissaModel.cpp"/>
-      <FILE id="k5pm9b" name="MelissaModel.h" compile="0" resource="0" file="Source/MelissaModel.h"/>
+            file="../Source/MelissaModel.cpp"/>
+      <FILE id="k5pm9b" name="MelissaModel.h" compile="0" resource="0" file="../Source/MelissaModel.h"/>
       <FILE id="ll23ca" name="MelissaModelListener.h" compile="0" resource="0"
-            file="Source/MelissaModelListener.h"/>
+            file="../Source/MelissaModelListener.h"/>
       <FILE id="EbvOl3" name="MelissaShortcutManager.cpp" compile="1" resource="0"
-            file="Source/MelissaShortcutManager.cpp"/>
+            file="../Source/MelissaShortcutManager.cpp"/>
       <FILE id="BVlaQE" name="MelissaShortcutManager.h" compile="0" resource="0"
-            file="Source/MelissaShortcutManager.h"/>
+            file="../Source/MelissaShortcutManager.h"/>
       <FILE id="GAQZWU" name="MelissaStemProvider.cpp" compile="1" resource="0"
-            file="Source/MelissaStemProvider.cpp"/>
+            file="../Source/MelissaStemProvider.cpp"/>
       <FILE id="Uzw5Qq" name="MelissaStemProvider.h" compile="0" resource="0"
-            file="Source/MelissaStemProvider.h"/>
+            file="../Source/MelissaStemProvider.h"/>
       <FILE id="TIObTL" name="MelissaUpdateChecker.cpp" compile="1" resource="0"
-            file="Source/MelissaUpdateChecker.cpp"/>
+            file="../Source/MelissaUpdateChecker.cpp"/>
       <FILE id="CE0xXj" name="MelissaUpdateChecker.h" compile="0" resource="0"
-            file="Source/MelissaUpdateChecker.h"/>
+            file="../Source/MelissaUpdateChecker.h"/>
       <FILE id="SSXSfQ" name="MelissaUtility.h" compile="0" resource="0"
-            file="Source/MelissaUtility.h"/>
+            file="../Source/MelissaUtility.h"/>
       <FILE id="Jf7QQv" name="soundtouch_config.h" compile="0" resource="0"
-            file="Source/soundtouch_config.h"/>
+            file="../Source/soundtouch_config.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
