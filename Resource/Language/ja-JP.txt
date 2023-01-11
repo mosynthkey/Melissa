@@ -220,6 +220,7 @@ countries: ja
 "stem_err_failed_to_split" = "分離に失敗しました。分離できませんでした。"
 "stem_err_failed_to_export" = "分離に失敗しました。分離した音声を保存できませんでした。"
 "stem_err_interrupted" = "音源分離処理が中断されました"
+"stem_err_notsupported" = "音源分離の機能はこのバージョンではサポートされていません。"
 "stem_err_unknown" = "分離に失敗しました。不明なエラーが発生しました"
 "reset_part_detail" = "全パートの音量調整をリセット"
 "vocal_custom_volume" = "ボーカルの音量調節"

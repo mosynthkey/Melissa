@@ -25,7 +25,9 @@ enum StemProviderResult
     kStemProviderResult_FailedToSplit,
     kStemProviderResult_FailedToExport,
     kStemProviderResult_Interrupted,
-    kStemProviderResult_UnknownError
+    kStemProviderResult_NotSupported,
+    kStemProviderResult_UnknownError,
+    kNumStemProviderResults
 };
 
 class MelissaStemProviderListener

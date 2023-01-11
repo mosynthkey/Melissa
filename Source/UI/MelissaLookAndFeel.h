@@ -60,12 +60,28 @@ public:
     
     virtual void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        const bool b = tb.getToggleState() || shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        const auto& c = tb.getLocalBounds();
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, b ? 0.8f : 0.4f));
-        g.drawText(tb.getToggleState() ? "On" : "Off", 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
-        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawRoundedRectangle(lineThickness / 2, lineThickness / 2, c.getWidth() - lineThickness - 1, c.getHeight() - lineThickness - 1, (c.getHeight() - lineThickness) / 2, lineThickness);
+        g.setColour(MelissaUISettings::getMainColour());
+        
+        float textAlpha;
+        if (tb.getToggleState())
+        {
+            textAlpha = 1.f;
+            
+            g.setColour(MelissaUISettings::getAccentColour());
+            MelissaUtility::fillRoundRectangle(g, 0, 0, 2, tb.getHeight(), 1, 1, 1, 1);
+        }
+        else if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            textAlpha = 0.6f;
+        }
+        else
+        {
+            textAlpha = 0.2f;
+        }
+        
+        g.setColour(MelissaUISettings::getTextColour(textAlpha));
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        g.drawText(tb.getButtonText(), 4, 0, tb.getWidth() - 4, tb.getHeight(), Justification::centredLeft);
     }
     
     virtual void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override

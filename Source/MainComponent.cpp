@@ -18,6 +18,12 @@
 #include "MelissaUtility.h"
 #include <float.h>
 
+#ifdef MELISSA_USE_SPLEETER
+static constexpr bool isFullVersion = true;
+#else
+static constexpr bool isFullVersion = false;
+#endif
+
 using std::make_unique;
 
 enum
@@ -59,12 +65,17 @@ public:
         
         g.fillAll(backgroundColour);
         
+        // Title
+        g.setColour(MelissaUISettings::getTextColour());
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Large));
+        g.drawText(isFullVersion ? "Melissa" : "Melissa Lite", 60, 10, 150, 30, Justification::centredLeft);
+        
         g.setColour(borderColour);
         
         // lines
         constexpr int lineWidth = 3;
-        g.fillRect(150, 9, lineWidth, 32);
-        g.fillRect(340, 9, lineWidth, 32);
+        g.fillRect(isFullVersion ? 150 : 190, 9, lineWidth, 32);
+        g.fillRect(isFullVersion ? 340 : 380, 9, lineWidth, 32);
         g.fillRect(getWidth() - 370, 9, lineWidth, 32);
         g.fillRect((getWidth() - lineWidth) / 2, 9, lineWidth, 32);
         
@@ -72,10 +83,6 @@ public:
         
         // main volume background
         g.fillRoundedRectangle(getWidth() - 151, 15, 141, 19, 19/2);
-        
-        g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Large));
-        g.drawText("Melissa", 60, 10, 150, 30, Justification::centredLeft);
     }
 };
 
@@ -138,7 +145,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f), isStemDetailShown_(false), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
+MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -623,28 +630,6 @@ void MainComponent::createUI()
         // Stem Button
         stemControlComponent_ = make_unique<MelissaStemControlComponent>();
         section->addAndMakeVisible(stemControlComponent_.get());
-        
-        stemDetailComponent_ = make_unique<MelissaStemDetailComponent>();
-        section->addChildComponent(stemDetailComponent_.get());
-        
-        stemControlToggleButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        updateStemToggleButton();
-        stemControlToggleButton_->onClick = [&]()
-        {
-            isStemDetailShown_ = !isStemDetailShown_;
-            stemDetailComponent_->setVisible(isStemDetailShown_);
-            updateStemToggleButton();
-            
-            if (isStemDetailShown_)
-            {
-                model_->setPlayPart(kPlayPart_Custom);
-            }
-            else
-            {
-                model_->setPlayPart(kPlayPart_All);
-            }
-        };
-        section->addAndMakeVisible(stemControlToggleButton_.get());
     }
     
     {
@@ -1199,7 +1184,6 @@ void MainComponent::createUI()
     labelInfo_[kLabel_MetronomeVolume]  = { "Metronome",       metronomeVolumeSlider_.get() };
     labelInfo_[kLabel_Pitch]            = { "Pitch",           pitchButton_.get() };
     labelInfo_[kLabel_OutputMode]       = { "Output",          outputModeComboBox_.get() };
-    labelInfo_[kLabel_Part]             = { "Part",            stemControlComponent_.get() };
     labelInfo_[kLabel_ATime]            = { "Start",           aButton_.get() };
     labelInfo_[kLabel_BTime]            = { "End",             bButton_.get() };
     labelInfo_[kLabel_Speed]            = { "Speed",           speedButton_.get() };
@@ -1235,6 +1219,11 @@ void MainComponent::createUI()
     updateFileChooserTab(kFileChooserTab_Browse);
     
     waveformComponent_->setMarkerListener(this);
+    
+    if (!isFullVersion)
+    {
+        stemControlComponent_->setVisible(false);
+    }
 }
 
 void MainComponent::showFileChooser()
@@ -1324,7 +1313,7 @@ void MainComponent::resized()
     {
         menuButton_->setBounds(20, (kHeaderHeight - 18) / 2 - 2, 30, 18);
         
-        int x = 170;
+        int x = isFullVersion ? 170 : 210;
         int centerY = kHeaderHeight / 2;
         playbackModeButton_->setSize(28, 22);
         x += (playbackModeButton_->getWidth() / 2);
@@ -1369,9 +1358,15 @@ void MainComponent::resized()
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
     const int totalSectionWidth = getWidth() - sectionMarginX * 4;
+#ifdef MELISSA_USE_SPLEETER
     const int songWidth  = totalSectionWidth * 0.35;
     const int loopWidth  = totalSectionWidth * 0.25;
     const int speedWidth = totalSectionWidth * 0.4;
+#else
+    const int songWidth  = totalSectionWidth * 0.3;
+    const int loopWidth  = totalSectionWidth * 0.3;
+    const int speedWidth = totalSectionWidth * 0.4;
+#endif
     const int metronomeWidth = songWidth;
     const int eqWidth        = loopWidth;
     const int mixerWidth     = speedWidth;
@@ -1379,8 +1374,8 @@ void MainComponent::resized()
     constexpr int controlAWidthMin = 120; // incDecButton etc..
     constexpr int controlBWidthMin = controlAWidthMin + 20;
     constexpr int controlBWidthMax = controlBWidthMin + 100;
-    constexpr int pitchWidth = 110;
-    constexpr int speedOutputWidth = 110;
+    constexpr int pitchWidth = isFullVersion ? 120 : 160;
+    constexpr int speedOutputWidth = 120;
     
     // Song
     {
@@ -1388,12 +1383,11 @@ void MainComponent::resized()
         section->setBounds(10, y, songWidth, 100);
         
         const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        pitchButton_->setBounds(10, y, pitchWidth, controlHeight);
+        
+        pitchButton_->setBounds(isFullVersion ? 10 : ((section->getWidth() - pitchWidth) / 2), y, pitchWidth, controlHeight);
         
         const int stemControlWidth = songWidth - 10 * 3 - pitchButton_->getWidth();
-        stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y, stemControlWidth, controlHeight);
-        stemDetailComponent_->setBounds(pitchButton_->getRight() + 10, y - controlHeight, stemControlWidth, controlHeight * 2);
-        stemControlToggleButton_->setBounds(stemDetailComponent_->getRight() - 10 - 20, pitchButton_->getY() - 24 + 2, 20, 14);
+        stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y - controlHeight, stemControlWidth, controlHeight * 2);
     }
     
     // Loop
@@ -1581,7 +1575,8 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
 {
     if (source == &deviceManager)
     {
-        audioDeviceButton_->setAudioDeviceName(deviceManager.getCurrentAudioDevice()->getName());
+        auto currentAudioDevice = deviceManager.getCurrentAudioDevice();
+        if (currentAudioDevice != nullptr) audioDeviceButton_->setAudioDeviceName(currentAudioDevice->getName());
     }
 }
 
@@ -1876,31 +1871,6 @@ void MainComponent::updatePlayBackModeButton()
     }
 }
 
-void MainComponent::updateStemToggleButton()
-{
-    auto status = MelissaStemProvider::getInstance()->getStemProviderStatus();
-    if (status == kStemProviderStatus_Available)
-    {
-        stemControlToggleButton_->setEnabled(true);
-        
-        if (isStemDetailShown_)
-        {
-            stemControlToggleButton_->setImages(iconImages_[kIcon_Select].get(), iconHighlightedImages_[kIcon_Select].get());
-            stemControlToggleButton_->setTooltip(TRANS("stem_control_select"));
-        }
-        else
-        {
-            stemControlToggleButton_->setImages(iconImages_[kIcon_Detail].get(), iconHighlightedImages_[kIcon_Detail].get());
-            stemControlToggleButton_->setTooltip(TRANS("stem_control_detail"));
-        }
-    }
-    else
-    {
-        stemControlToggleButton_->setEnabled(false);
-    }
-    
-}
-
 void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
 {
 #if defined(ENABLE_SPEED_TRAINING)
@@ -2091,16 +2061,6 @@ void MainComponent::speedChanged(int speed)
 
 void MainComponent::playPartChanged(PlayPart playPart)
 {
-    if (playPart == kPlayPart_Custom)
-    {
-        isStemDetailShown_ = true;
-    }
-    else
-    {
-        isStemDetailShown_ = false;
-    }
-    stemDetailComponent_->setVisible(isStemDetailShown_);
-    updateStemToggleButton();
 }
 
 void MainComponent::controlMessageReceived(const String& controlMessage)
@@ -2113,7 +2073,6 @@ void MainComponent::controlMessageReceived(const String& controlMessage)
 
 void MainComponent::stemProviderStatusChanged(StemProviderStatus status)
 {
-    updateStemToggleButton();
 }
 
 void MainComponent::stemProviderResultReported(StemProviderResult result)

@@ -63,10 +63,10 @@ namespace BinaryData
     const int            up_svgSize = 524;
 
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 11000;
+    const int            enUS_txtSize = 11085;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 12390;
+    const int            jaJP_txtSize = 12506;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110193;

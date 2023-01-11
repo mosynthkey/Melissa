@@ -36,7 +36,11 @@ public:
     
     static Colour getAccentColour(float alpha = 1.f)
     {
+#ifdef MELISSA_USE_SPLEETER
         return isDarkMode ? Colour(0xFF80BFFF).withAlpha(alpha) : Colour(0xFF7DB2FF).withAlpha(alpha);
+#else
+        return isDarkMode ? Colour(0xFF80B3FF).withAlpha(alpha) : Colour(0xFF80B3FF).withAlpha(alpha);
+#endif
     }
     
     static inline bool isDarkMode = "true";

@@ -7,12 +7,15 @@
 
 #include "MelissaStemProvider.h"
 #include "MelissaDataSource.h"
+
+#ifdef MELISSA_USE_SPLEETER
 #include "spleeter/spleeter.h"
 #include "input_file.h"
 #include "output_folder.h"
 #include "utils.h"
 #include "split.h"
 #include "nlohmann/json.hpp"
+#endif
 
 MelissaStemProvider MelissaStemProvider::instance_;
 
@@ -42,15 +45,16 @@ bool MelissaStemProvider::requestStems(const File& file)
 
 void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles)
 {
+
     if (!fileToOpen.existsAsFile()) return;
+    originalFile = fileToOpen;
     
+#ifdef MELISSA_USE_SPLEETER
     // Result 1. fileToOpen has stems
     // Result 2. fileToOpen doesn't have stems
     // Result 3. fileToOpen is a stem
-    
+
     using json = nlohmann::json;
-    
-    originalFile = fileToOpen;
     
     auto fileDir = fileToOpen.getParentDirectory();
     auto fileName = File::createLegalFileName(fileToOpen.getFileName());
@@ -113,6 +117,9 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
             return;
         }
     }
+#else
+    return;
+#endif
 }
 
 void MelissaStemProvider::failedToReadPreparedStems()
@@ -222,6 +229,7 @@ void MelissaStemProvider::run()
 
 StemProviderResult MelissaStemProvider::createStems()
 {
+#ifdef MELISSA_USE_SPLEETER
     const auto currentSongDirectory = songFile_.getParentDirectory();
     const auto songName = File::createLegalFileName(songFile_.getFileName());
     
@@ -324,4 +332,7 @@ StemProviderResult MelissaStemProvider::createStems()
     
     status_ = kStemProviderStatus_Available;
     return kStemProviderResult_Success;
+#endif
+    
+    return kStemProviderResult_NotSupported;
 }

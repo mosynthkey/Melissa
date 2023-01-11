@@ -11,7 +11,6 @@
 #include <numeric>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaAudioEngine.h"
-#include "MelissaBottomControlComponent.h"
 #include "MelissaBPMDetector.h"
 #include "MelissaButtons.h"
 #include "MelissaDataSource.h"
@@ -24,7 +23,6 @@
 #include "MelissaStemProvider.h"
 #include "MelissaPopupMessageComponent.h"
 #include "MelissaStemControlComponent.h"
-#include "MelissaStemDetailComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
@@ -138,7 +136,6 @@ public:
     void timerCallback() override;
     
     void updatePlayBackModeButton();
-    void updateStemToggleButton();
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
     void updateListMemoTab(ListMemoTab tab);
@@ -187,10 +184,7 @@ private:
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<Slider> mainVolumeSlider_;
     
-    std::unique_ptr<DrawableButton> stemControlToggleButton_;
-    bool isStemDetailShown_;
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
-    std::unique_ptr<MelissaStemDetailComponent> stemDetailComponent_;
     
     std::unique_ptr<MelissaPopupMessageComponent> popupMessage_;
     
@@ -336,7 +330,6 @@ private:
         kLabel_MetronomeVolume,
         kLabel_Pitch,
         kLabel_OutputMode,
-        kLabel_Part,
         
         kLabel_ATime,
         kLabel_BTime,

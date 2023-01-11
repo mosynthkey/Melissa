@@ -220,6 +220,7 @@ countries: us
 "stem_err_failed_to_split" = "Music separation : Failed to separate"
 "stem_err_failed_to_export" = "Music separation : Failed to save the results"
 "stem_err_interrupted" = "Music separation : The process is interrupted"
+"stem_err_notsupported" = "Music separation feature isn't supported in this version"
 "stem_err_unknown" = "Music separation : Unknown error occured"
 "reset_part_detail" = "Reset all volume adjustment"
 "vocal_custom_volume" = "Vocal volume"
