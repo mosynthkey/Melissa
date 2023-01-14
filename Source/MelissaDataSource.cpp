@@ -418,7 +418,7 @@ void MelissaDataSource::initFontSettings(const String& fontName)
     StringArray fontCandidates;
     if (!fontName.isEmpty()) fontCandidates.add(fontName);
     
-#if defined(JUCE_MAC)
+#if defined(JUCE_MAC) || defined(JUCE_IOS)
     fontCandidates.mergeArray(StringArray { "YuGothic", "Hiragino Sans", "Arial Unicode MS", "San Francisco" });
 #elif defined(JUCE_WINDOWS)
     fontCandidates.mergeArray(StringArray { "Meiryo UI", "Tahoma" });
