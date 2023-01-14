@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
-              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Melissa/Source&#10;../../../Melissa/../Source/Audio&#10;../../../Melissa/../Source/Audio/soundtouch&#10;../../../Melissa/../Source/UI"
-              version="3.0.0" companyName="Melissa Audio" companyCopyright="Copyright(c) 2022 Masaki Ono"
+              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Melissa/Source&#10;../../../Source/Audio&#10;../../../Source/Audio/soundtouch&#10;../../../Source/UI"
+              version="3.1.0" companyName="Melissa Audio" companyCopyright="Copyright(c) 2023 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.melissa-audio.melissa"
               compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
               jucerFormatVersion="1">
