@@ -25,7 +25,7 @@ public:
         copyrightLabel_ = std::make_unique<Label>();
         copyrightLabel_->setJustificationType(Justification::right);
         copyrightLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        copyrightLabel_->setText("Copyright (c) 2022 Masaki Ono. All rights reserved.", dontSendNotification);
+        copyrightLabel_->setText("Copyright (c) 2023 Masaki Ono. All rights reserved.", dontSendNotification);
         copyrightLabel_->setBounds(0, 200, 600, 30);
         addAndMakeVisible(copyrightLabel_.get());
         
