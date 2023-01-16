@@ -128,6 +128,14 @@ void MelissaDataSource::loadSettingsFile(const File& file)
         if (p->hasProperty("eq_0_freq")) previous_.eqFreq_ = p->getProperty("eq_0_freq");
         if (p->hasProperty("eq_0_gain")) previous_.eqGain_ = p->getProperty("eq_0_gain");
         if (p->hasProperty("eq_0_q"))    previous_.eqQ_    = p->getProperty("eq_0_q");
+
+        const int playPart = p->getProperty("play_part");
+        if (p->hasProperty("play_part"))     previous_.playPart_     = static_cast<PlayPart>(playPart);
+        if (p->hasProperty("vocal_volume"))  previous_.vocalVolume_  = p->getProperty("vocal_volume");
+        if (p->hasProperty("piano_volume"))  previous_.pianoVolume_  = p->getProperty("piano_volume");
+        if (p->hasProperty("bass_volume"))   previous_.bassVolume_   = p->getProperty("bass_volume");
+        if (p->hasProperty("drums_volume"))  previous_.drumsVolume_  = p->getProperty("drums_volume");
+        if (p->hasProperty("others_volume")) previous_.othersVolume_ = p->getProperty("others_volume");
         
         if (p->hasProperty("ui_state"))
         {
@@ -314,6 +322,13 @@ void MelissaDataSource::saveSettingsFile()
     previous->setProperty("eq_0_freq", model_->getEqFreq(0));
     previous->setProperty("eq_0_gain", model_->getEqGain(0));
     previous->setProperty("eq_0_q",    model_->getEqQ(0));
+
+    previous->setProperty("play_part",     model_->getPlayPart());
+    previous->setProperty("vocal_volume",  model_->getCustomPartVolume(kCustomPartVolume_Vocal));
+    previous->setProperty("piano_volume",  model_->getCustomPartVolume(kCustomPartVolume_Piano));
+    previous->setProperty("bass_volume",   model_->getCustomPartVolume(kCustomPartVolume_Bass));
+    previous->setProperty("drums_volume",  model_->getCustomPartVolume(kCustomPartVolume_Drums));
+    previous->setProperty("others_volume", model_->getCustomPartVolume(kCustomPartVolume_Others));
     
     auto uiState = new DynamicObject();
     uiState->setProperty("browser_tab", previous_.uiState_.selectedFileBrowserTab_);
@@ -676,6 +691,12 @@ void MelissaDataSource::restorePreviousState()
         model_->setEqFreq(0, previous_.eqFreq_);
         model_->setEqGain(0, previous_.eqGain_);
         model_->setEqQ(0, previous_.eqQ_);
+        model_->setPlayPart(previous_.playPart_);
+        model_->setCustomPartVolume(kCustomPartVolume_Vocal,  previous_.vocalVolume_);
+        model_->setCustomPartVolume(kCustomPartVolume_Piano,  previous_.pianoVolume_);
+        model_->setCustomPartVolume(kCustomPartVolume_Bass,   previous_.bassVolume_);
+        model_->setCustomPartVolume(kCustomPartVolume_Drums,  previous_.drumsVolume_);
+        model_->setCustomPartVolume(kCustomPartVolume_Others, previous_.othersVolume_);
     });
 }
 

@@ -82,7 +82,7 @@ class MainComponent   : public AudioAppComponent,
                         public Thread::Listener
 {
 public:
-    MainComponent();
+    MainComponent(const String& commandLine = "");
     ~MainComponent();
     
     void createUI();

@@ -42,6 +42,7 @@ public:
             button->setBounds(xPos, margin * 2 + labelSize.second, buttonWidth, controlHeight);
             button->setButtonText(options[button_i]);
             button->onClick = [&, button_i]() {
+                if (onClick_ == nullptr) return;
                 onClick_(button_i);
                 MelissaModalDialog::close();
             };

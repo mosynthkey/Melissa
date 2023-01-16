@@ -145,7 +145,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
+MainComponent::MainComponent(const String& commandLine) : Thread("MelissaProcessThread"), mainVolume_(1.f), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -236,7 +236,7 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
     else
     {
         // Specify the number of input and output channels that we want to open
-        setAudioChannels (2, 2);
+        setAudioChannels (2, 2, xmlDocument.get());
     }
     
     Thread::addListener(this);
@@ -254,8 +254,29 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
     setSize(width, height);
     
     model_->setPlaybackMode(static_cast<PlaybackMode>(dataSource_->global_.playMode_));
+    MelissaShortcutManager::getInstance()->addListener(this);
+    MelissaStemProvider::getInstance()->addListener(this);
     
-    dataSource_->restorePreviousState();
+    File fileToOpen(commandLine);
+    if (fileToOpen.existsAsFile())
+    {
+        dataSource_->loadFileAsync(commandLine);
+    }
+    else
+    {
+        if (commandLine != "--relaunch" && commandLine.isNotEmpty())
+        {
+            const std::vector<String> options = { TRANS("ok") };
+            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("file_not_found") + "\n" + commandLine, options, nullptr);
+            MelissaModalDialog::show(dialog, "Melissa", false);
+        }
+        else
+        {
+            dataSource_->restorePreviousState();
+        }
+
+    }
+
     uiState_ = dataSource_->getPreviousUIState();
     updateFileChooserTab(static_cast<FileChooserTab>(uiState_.selectedFileBrowserTab_));
     playlistComponent_->select(uiState_.selectedPlaylist_);
@@ -278,10 +299,10 @@ MainComponent::MainComponent() : Thread("MelissaProcessThread"), mainVolume_(1.f
     }
 #endif
     
-    MelissaShortcutManager::getInstance()->addListener(this);
-    MelissaStemProvider::getInstance()->addListener(this);
-    
     updatePlayBackModeButton();
+
+    auto currentAudioDevice = deviceManager.getCurrentAudioDevice();
+    if (currentAudioDevice != nullptr) audioDeviceButton_->setAudioDeviceName(currentAudioDevice->getName());
 }
 
 MainComponent::~MainComponent()
@@ -557,7 +578,6 @@ void MainComponent::createUI()
         headerComponent_->addAndMakeVisible(fileNameLabel_.get());
         
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
-        audioDeviceButton_->setAudioDeviceName(deviceManager.getCurrentAudioDevice()->getName());
         audioDeviceButton_->onClick = [&]()
         {
             showAudioMidiSettingsDialog();

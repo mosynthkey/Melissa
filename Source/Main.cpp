@@ -72,7 +72,9 @@ public:
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent(), true);
+
+            auto commandLines = getCommandLineParameterArray();
+            setContentOwned (new MainComponent(commandLines[0]), true);
 
            #if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);

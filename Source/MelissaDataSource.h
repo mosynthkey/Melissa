@@ -98,6 +98,13 @@ public:
         float eqFreq_;
         float eqGain_;
         float eqQ_;
+
+        PlayPart playPart_;
+        float vocalVolume_;
+        float pianoVolume_;
+        float bassVolume_;
+        float drumsVolume_;
+        float othersVolume_;
         
         // ui state
         struct UIState
@@ -113,7 +120,7 @@ public:
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         /* metronomeSw_(false), */ bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
         speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
-        eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f),
+        eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), playPart_(kPlayPart_All), vocalVolume_(0.f), pianoVolume_(0.f), bassVolume_(0.f), drumsVolume_(0.f), othersVolume_(0.f),
         uiState_({0, 0})
         {}
     } previous_;

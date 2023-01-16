@@ -230,3 +230,4 @@ countries: ja
 "others_custom_volume" = "その他のパートの音量調節"
 "stem_control_select" = "パート選択モード"
 "stem_control_detail" = "パート別音量調整モード"
+"file_not_found" = "ファイルが見つかりません"

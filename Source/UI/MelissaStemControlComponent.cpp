@@ -146,6 +146,9 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
     
     // Messages
     createStemsButton_ = std::make_unique<TextButton>();
+#ifdef JUCE_WINDOWS
+    simpleTextButtonLaf_.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::FontSize::kFontSize_Sub));
+#endif
     createStemsButton_->setLookAndFeel(&simpleTextButtonLaf_);
     createStemsButton_->onClick = [&]()
     {
@@ -239,7 +242,7 @@ void MelissaStemControlComponent::paint(Graphics& g)
 {
     auto dataSource = MelissaDataSource::getInstance();
     
-    g.setColour(Colours::white);
+    g.setColour(MelissaUISettings::getTextColour());
     
     g.setFont(dataSource->getFont(MelissaDataSource::Global::kFontSize_Sub));
     g.drawText("Part", 0, 5, titleWidth, 20, Justification::centredLeft);
