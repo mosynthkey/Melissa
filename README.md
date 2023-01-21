@@ -8,10 +8,10 @@
 
 ## Downloads
 ### macOS
-- [Version 3.0.0](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_3_0_0.dmg)
+- [Version 3.1.0](https://github.com/mosynthkey/Melissa/releases/download/v3.1.0/Melissa_3_1_0.dmg)
 
 ### Windows
-- [Version 3.0.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.0.0/Melissa_3.0.0_64.zip)
+- [Version 3.1.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.1.0/Melissa_3.1.0_64.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
