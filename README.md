@@ -45,4 +45,4 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 
 ## License
-[LGPL-2.1 (c) 2022 Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2023 Masaki Ono](LICENSE)
