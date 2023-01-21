@@ -12,9 +12,14 @@
 
 MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::status_ = kUpdateStatus_NotChecked;
 
+#ifdef MELISSA_FULL_VERSION
+static URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa/releases/latest");
+#else
+static URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa_Lite/releases/latest");
+#endif
+
 String MelissaUpdateChecker::getLatestVersionNumberString()
 {
-    URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa/releases/latest");
     std::unique_ptr<InputStream> inStream(latestVersionURL.createInputStream (URL::InputStreamOptions(URL::ParameterHandling::inAddress).withConnectionTimeoutMs(1000)));
     
     if (inStream == nullptr) return "";
@@ -33,7 +38,6 @@ String MelissaUpdateChecker::getLatestVersionNumberString()
 
 String MelissaUpdateChecker::getUpdateContents()
 {
-    URL latestVersionURL ("https://api.github.com/repos/mosynthkey/Melissa/releases/latest");
     std::unique_ptr<InputStream> inStream(latestVersionURL.createInputStream (URL::InputStreamOptions(URL::ParameterHandling::inAddress).withConnectionTimeoutMs(1000)));
     
     if (inStream == nullptr) return "";

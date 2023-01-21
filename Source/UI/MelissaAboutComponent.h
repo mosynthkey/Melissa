@@ -32,7 +32,11 @@ public:
         versionLabel_ = std::make_unique<Label>();
         versionLabel_->setJustificationType(Justification::right);
         versionLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
+#ifdef MELISSA_FULL_VERSION
         versionLabel_->setText(String("Version ") + ProjectInfo::versionString + String(" (Build: ") + __DATE__  + String(")"), dontSendNotification);
+#else
+        versionLabel_->setText(String("Version ") + ProjectInfo::versionString + String(" Lite (Build: ") + __DATE__  + String(")"), dontSendNotification);
+#endif
         versionLabel_->setBounds(0, 230, 600, 30);
         addAndMakeVisible(versionLabel_.get());
         

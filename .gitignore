@@ -33,12 +33,13 @@
 
 # Project / Solution
 Melissa/Builds/*
-Melissa/Builds_Lite/*
+Melissa_Lite/Builds/*
 
 # Installer
 *.dmg
 *.exe
 Installer/macOS/Makefile
+Installer/macOS_Lite/Makefile
 
 # ThirdParty
 ThirdParty/asio/*

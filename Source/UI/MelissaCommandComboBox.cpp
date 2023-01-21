@@ -21,8 +21,10 @@ enum CommandCategory
     kCommandCategory_Mixer,
     kCommandCategory_PracticeList,
     kCommandCategory_Marker,
+#ifdef MELISSA_FULL_VERSION
     kCommandCategory_Part,
     kCommandCategory_PartDetail,
+#endif
     kNumOfCommandCategories
 };
 
@@ -160,6 +162,7 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
             { "SelectMarker_9", kCommandType_Switch },
         }
     },
+#ifdef MELISSA_FULL_VERSION
     {
         "Part",
         {
@@ -182,6 +185,7 @@ static const TitleAndCommandList commandList[kNumOfCommandCategories] =
             { "Part_Others_Volume", kCommandType_Value },
         }
     }
+#endif
 };
 
 MelissaCommandComboBox::MelissaCommandComboBox() : onSelectedCommandChanged_(nullptr), noAssignMenuId_(1), selectedCommand_("")

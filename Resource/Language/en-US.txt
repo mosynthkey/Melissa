@@ -231,3 +231,5 @@ countries: us
 "stem_control_select" = "Part selection mode"
 "stem_control_detail" = "Part volume adjustment mode"
 "file_not_found" = "Couldn't open this file"
+"stem_mix_button" = "Part mix mode"
+"stem_solo_button" = "Part solo mode"

@@ -1,0 +1,4 @@
+root/*
+*.pkg
+Makefile
+old/*

@@ -120,7 +120,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
     // Solo/Mix Toggle Buttons
     mixButton_ = std::make_unique<ToggleButton>();
     mixButton_->setButtonText("Mix");
-    mixButton_->setTooltip("stem_mix_button");
+    mixButton_->setTooltip(TRANS("stem_mix_button"));
     mixButton_->setRadioGroupId(kGroup_SoloMix);
     mixButton_->setToggleState(false, dontSendNotification);
     mixButton_->onClick = [&, model]()
@@ -133,7 +133,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
     
     soloButton_ = std::make_unique<ToggleButton>();
     soloButton_->setButtonText("Solo");
-    soloButton_->setTooltip("stem_solo_button");
+    soloButton_->setTooltip(TRANS("stem_solo_button"));
     soloButton_->setRadioGroupId(kGroup_SoloMix);
     soloButton_->setToggleState(true, dontSendNotification);
     soloButton_->onClick = [&, model]()

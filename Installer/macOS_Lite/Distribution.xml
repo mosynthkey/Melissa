@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="1">
+    <pkg-ref id="com.melissa-audio.melissa-lite"/>
+    <title>Melissa Lite v3.1.0</title>
+    <options customize="never" require-scripts="false" hostArchitectures="x86_64,arm64"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.melissa-audio.melissa-lite"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.melissa-audio.melissa-lite" visible="false">
+        <pkg-ref id="com.melissa-audio.melissa-lite"/>
+    </choice>
+    <pkg-ref id="com.melissa-audio.melissa-lite" version="3.1.0" onConclusion="none">Melissa_Lite_Installer_v3.1.0.pkg</pkg-ref>
+</installer-gui-script>

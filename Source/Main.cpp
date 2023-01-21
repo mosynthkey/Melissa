@@ -74,7 +74,11 @@ public:
             setUsingNativeTitleBar (true);
 
             auto commandLines = getCommandLineParameterArray();
-            setContentOwned (new MainComponent(commandLines[0]), true);
+            setContentOwned (new MainComponent(
+#ifdef JUCE_WINDOWS
+                                               commandLines[0]
+#endif
+                                               ), true);
 
            #if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);

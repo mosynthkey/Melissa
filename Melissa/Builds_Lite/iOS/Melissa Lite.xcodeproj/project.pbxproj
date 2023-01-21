@@ -1,0 +1,995 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04CBF2C196788D5033BCF12C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 671FFD03715ADE9F279A444B /* Foundation.framework */; };
+		075D7C914F4DF05DC4E9C3F3 /* InterpolateShannon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85198D9BE8D259C3B08E6F41 /* InterpolateShannon.cpp */; };
+		0A7F92B7D5940F11353B9115 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFA43A2D267FA59FB7011F0 /* CoreServices.framework */; };
+		0B30FC6CA34EF3E6CDDF202B /* MelissaBPMDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2185E7D5ED602C1F69EFE2 /* MelissaBPMDetector.cpp */; };
+		0C5829052AB3985A6CCF7B05 /* MelissaShortcutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C72634207CF42DF40D9FC6C /* MelissaShortcutManager.cpp */; };
+		127C2F67F6FA0212E6630686 /* MelissaModalDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A53EB84E1136FE60F390FE6B /* MelissaModalDialog.cpp */; };
+		162B74503058663B3EF7C17C /* MelissaStemControlComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B68B05E7B257CAF276A438A /* MelissaStemControlComponent.cpp */; };
+		18B4FC090AE11D65E7ECEBFD /* MelissaDataSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1154B99B3025E87A98FFF592 /* MelissaDataSource.cpp */; };
+		1A2571D48424EF4DF1C6A585 /* MelissaTextEditorWithClearButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2DF221FA117A018622650FE /* MelissaTextEditorWithClearButton.cpp */; };
+		1F4B23233E3BAF0D09A5A823 /* PeakFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF199B34319CEB21151492F /* PeakFinder.cpp */; };
+		24C8C4593063C1247B3B2FFD /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78F5EB736E6E8AA583A546C8 /* CoreImage.framework */; };
+		2625DB27292964FA96F88BEC /* MelissaCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 365A70CEBCC6391C83AE6829 /* MelissaCommand.cpp */; };
+		2A2EA1B1C6B90CBE8F64071B /* include_juce_gui_extra.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD7FF1556B47F44DA36AAB9A /* include_juce_gui_extra.mm */; };
+		2ADD7B3451197E7C4F96554D /* BPMDetect_for_Melissa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52F6F444FC438AF2607178AB /* BPMDetect_for_Melissa.cpp */; };
+		2B4A677E0F59FDFBCD2AFA3C /* FIRFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1730ABBBB9288D6C5620526 /* FIRFilter.cpp */; };
+		2E7A9D28DBFE18122B717166 /* include_juce_opengl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 813A2DBCBDB90D538FB28D8C /* include_juce_opengl.mm */; };
+		3B7BB5395694096D0158A7CA /* sse_optimized.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56FA578BA2C442FAC89F615E /* sse_optimized.cpp */; };
+		3C252E4AF404E4EF2D87BAE9 /* MelissaDefinitions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 118250456F3709AFF506312B /* MelissaDefinitions.cpp */; };
+		3D1727854A91536C49C120B4 /* MelissaWaveformControlComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5652F3447D1F8C5D06612CF0 /* MelissaWaveformControlComponent.cpp */; };
+		412D6B54F5EA5EACD92E7889 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5AD5CF8D800B5B0E27F0B1E7 /* Icon.icns */; };
+		41F61E9733DB5B4FA1C4FE18 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDE828416B5222B3D91EA07C /* AVFoundation.framework */; };
+		49C010104CEFC2960ADA72FB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD663699458E27E8D315DD40 /* CoreText.framework */; };
+		49DA24705E2E1B726C21C9CA /* include_juce_audio_processors_ara.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C2D5841094E5B8E896BD94A /* include_juce_audio_processors_ara.cpp */; };
+		4F67E813DDF1808BC71035E6 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B5ECC6FEB266AC44E0AD085 /* MainComponent.cpp */; };
+		50361DE208C85E532BB64F9B /* include_juce_audio_basics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 585E88C00A05D8F0036FE91C /* include_juce_audio_basics.mm */; };
+		5499BBAE8C2E13369E765F4B /* include_juce_cryptography.mm in Sources */ = {isa = PBXBuildFile; fileRef = FECB551586952B0CE0EEB006 /* include_juce_cryptography.mm */; };
+		563E221C1A262A69166524A7 /* include_juce_core.mm in Sources */ = {isa = PBXBuildFile; fileRef = 16F344935BB5E4AF634DADD1 /* include_juce_core.mm */; };
+		56AA9E80A9B73CCC862F6148 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD37A49C825CB5103005AEF1 /* CoreAudio.framework */; };
+		57058C62FA42EFA317968C29 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDC6F084738E97E28EA1D440 /* LaunchScreen.storyboard */; };
+		5875A312AE1FD93EFDD6C5B2 /* RateTransposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9429DBFDAAD83A8B59788937 /* RateTransposer.cpp */; };
+		59017FB25AC3FD9FD315F4FE /* include_juce_audio_formats.mm in Sources */ = {isa = PBXBuildFile; fileRef = 38CED1020F382397B5FC45AA /* include_juce_audio_formats.mm */; };
+		59A2401F871B311F2FA0B18A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF98710280C7F33D83F042BA /* UIKit.framework */; };
+		5BAB4F813EBE25910F69AA5F /* MelissaPlaylistComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 586DE07BF2E68736D59CB64B /* MelissaPlaylistComponent.cpp */; };
+		5D1DF84453CFA8888971F708 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4AF79B084D6BF3A94CD9732 /* CoreAudioKit.framework */; };
+		636C25EB909AAAD34B6E3A57 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7E6A26302BEF49A71913E9 /* WebKit.framework */; };
+		64D48F26F8F022435D1BC389 /* MelissaLoopRangeComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7BA4889684884B8E036CE705 /* MelissaLoopRangeComponent.cpp */; };
+		664F9D73CE61988D2A58BF2D /* MelissaStemProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8D2F4BC886EF77187492F33C /* MelissaStemProvider.cpp */; };
+		67E9DFA725DA86BE96C458C6 /* SoundTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30E5CCE63416FBEACD809A8C /* SoundTouch.cpp */; };
+		68A622DCB0FD454652820FBD /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7766662467CEACDB8C3BEC90 /* CoreMIDI.framework */; };
+		68DF92CC9249CCE36E9FF05F /* include_juce_audio_utils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86DA9AF689B44802D795386E /* include_juce_audio_utils.mm */; };
+		777867DBCD088F52A2E76552 /* MelissaShortcutComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E81F8550BA919ACAE5DE3F36 /* MelissaShortcutComponent.cpp */; };
+		8493D71EE7F7F7AA9D02EBE9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973B7EC7C18B6B37A6C8048 /* Images.xcassets */; };
+		895989632B25581509DFD427 /* InterpolateCubic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A88D1287C54AE10DB0BB16E /* InterpolateCubic.cpp */; };
+		8AF22E42C94FAED67A8A4B1F /* MelissaDoubleClickEditLabel.h in Sources */ = {isa = PBXBuildFile; fileRef = 95981C6C97CEB8951C1ACDE4 /* MelissaDoubleClickEditLabel.h */; };
+		8BEDC2B143E7A8948072D595 /* InterpolateLinear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6478446902A6858772074F68 /* InterpolateLinear.cpp */; };
+		8E35AC712F3C2496D0D2CCA8 /* include_juce_audio_processors.mm in Sources */ = {isa = PBXBuildFile; fileRef = 02C2BCA35EB7BC0A0F4B5158 /* include_juce_audio_processors.mm */; };
+		9088C60BB70F14F430A569AA /* include_juce_graphics.mm in Sources */ = {isa = PBXBuildFile; fileRef = F998229A0FF1B16829579A32 /* include_juce_graphics.mm */; };
+		95F94E1A50C1A8DCC02B7C91 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4F08E6E135F001714E03CF1 /* AudioToolbox.framework */; };
+		9C5FF2DE104519CF99E3154B /* MelissaMarkerMemoComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D4D7182E25379B4ED3DE31 /* MelissaMarkerMemoComponent.cpp */; };
+		9D4B46244DD57DA8528DA17E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833BFBF0A4047A23760AD9AD /* CoreGraphics.framework */; };
+		9FE8611ABC9F2F01AD266E47 /* MelissaTutorialComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5A6A49F27E7432F239F38A5 /* MelissaTutorialComponent.cpp */; };
+		A167031DAC38F945B3411F6B /* MelissaAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF5098910BC42376B9A0711E /* MelissaAudioEngine.cpp */; };
+		A44E4A1D05FC2F0C5ECB7EFB /* MelissaModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDF53083067F357058F3242A /* MelissaModel.cpp */; };
+		A4FB3462FB96C2053F869D74 /* MelissaMetronome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 465270FAA372248DFDABD968 /* MelissaMetronome.cpp */; };
+		AA95AFC8D02F02488B1A4862 /* TDStretch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD522DAD3DD590148A75B036 /* TDStretch.cpp */; };
+		AD28CD655271922AAA8DE2E2 /* include_juce_data_structures.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3BBFAA502FFE0322231059CA /* include_juce_data_structures.mm */; };
+		B10B96D736060A14967B7BB2 /* MelissaMarkerListBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75D4EFBEBC939C6B17FB33BF /* MelissaMarkerListBox.cpp */; };
+		B3929392E3411470584DEB60 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3036B0F94670519934FF17 /* QuartzCore.framework */; };
+		B492261B813CA2006AEC969C /* include_juce_gui_basics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0932D49E6A76E17B2A4AA04A /* include_juce_gui_basics.mm */; };
+		B94DC91C8ECFB96800E40D09 /* MelissaPracticeTableListBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 927DA09AE3863577C7CDB82B /* MelissaPracticeTableListBox.cpp */; };
+		C90804D8EDB5B93EFC4E1826 /* MelissaSectionComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17F9DDCCDEC325AEF5D2C4AB /* MelissaSectionComponent.cpp */; };
+		D158F39FDC77A9BEFEBC2AE7 /* mmx_optimized.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC5A0100EA9DD6B8E0128888 /* mmx_optimized.cpp */; };
+		D6586EDA4CA12166154D5122 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0022DE096EA0A2555525336 /* Main.cpp */; };
+		D775B92926C22F7BB4D26120 /* include_juce_events.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1559E91B539F055F16BB2F48 /* include_juce_events.mm */; };
+		DB23C248F08E0E520A607645 /* include_juce_audio_processors_lv2_libs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 269D3B77A64588EC545BF625 /* include_juce_audio_processors_lv2_libs.cpp */; };
+		DD9DFEE7736BDF566AF15EFB /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD99564A27CE8F845977180 /* Accelerate.framework */; };
+		E415B2B4C6F536769AB00B93 /* include_juce_audio_devices.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24CD5607342BAAF5E1E1E463 /* include_juce_audio_devices.mm */; };
+		E83E52C21959AB217DA00237 /* AAFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 60A2A4585B994180A8BF8826 /* AAFilter.cpp */; };
+		E8902BCAA320F4EDE9F0D680 /* cpu_detect_x86.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E3FC203E75498C2F3A15E2 /* cpu_detect_x86.cpp */; };
+		ECD24A5B856CBBC63683F317 /* MelissaPopupMessageComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 61F476962952865E295FD76C /* MelissaPopupMessageComponent.cpp */; };
+		EE391804501D5AF557FD4441 /* MelissaWaveformMouseEventComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEF8B6ECEE400B53FF2F6B /* MelissaWaveformMouseEventComponent.cpp */; };
+		EE48BA0FD6F2B7B1BEF6F3A7 /* BinaryData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E5FB9CDCF4DEDE2FE0EF5EA /* BinaryData.cpp */; };
+		EF2C8DE85D3AF37C5D32F6F5 /* MelissaUpdateChecker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB05A2A1084A604EFF66580B /* MelissaUpdateChecker.cpp */; };
+		F11EA8687D4B1F9B92773FF8 /* MelissaTapTempoButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 625672856E76F41C73194C31 /* MelissaTapTempoButton.cpp */; };
+		F2D8693709479DA3FB30D6DA /* FIFOSampleBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CCEA002821986E086B42D0A8 /* FIFOSampleBuffer.cpp */; };
+		F3746A81081F932775D9C3C5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B27F505B331EAE2F1B468 /* OpenGLES.framework */; };
+		F4423BD8DDC2600D46C09FE1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B149AE30B1283E5A1A7B940E /* StoreKit.framework */; };
+		F9D08D99A2B91136A0CA67C8 /* MelissaCommandComboBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 51F5E8D602E62A5315C067BD /* MelissaCommandComboBox.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01939B210C87D3B69829D7C2 /* MelissaLoopRangeComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaLoopRangeComponent.h; path = ../../../Source/UI/MelissaLoopRangeComponent.h; sourceTree = SOURCE_ROOT; };
+		01DB4ECD33FAEA5EB33B3EAE /* MelissaIncDecButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaIncDecButton.h; path = ../../../Source/UI/MelissaIncDecButton.h; sourceTree = SOURCE_ROOT; };
+		0249BA535092C57F047E6C28 /* MelissaPracticeTableListBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaPracticeTableListBox.h; path = ../../../Source/UI/MelissaPracticeTableListBox.h; sourceTree = SOURCE_ROOT; };
+		02C2BCA35EB7BC0A0F4B5158 /* include_juce_audio_processors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_processors.mm; path = ../../JuceLibraryCode/include_juce_audio_processors.mm; sourceTree = SOURCE_ROOT; };
+		0305529B3E0AB87BE3C73A90 /* MelissaAudioEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaAudioEngine.h; path = ../../../Source/Audio/MelissaAudioEngine.h; sourceTree = SOURCE_ROOT; };
+		04806540BFCC216AB57E9967 /* juce_cryptography */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_cryptography; path = "~/Develop/JUCE/modules/juce_cryptography"; sourceTree = "<absolute>"; };
+		04862AF022A148692BDE3BDD /* playlist_add_file.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = playlist_add_file.svg; path = ../../../Resource/Icon/playlist_add_file.svg; sourceTree = SOURCE_ROOT; };
+		074B27F505B331EAE2F1B468 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		07EA4A763E4D2EFE0028FD00 /* TDStretch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TDStretch.h; path = ../../../Submodule/soundtouch/source/SoundTouch/TDStretch.h; sourceTree = SOURCE_ROOT; };
+		0932D49E6A76E17B2A4AA04A /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
+		09DC5993941C1F1C664EA4E0 /* detail.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = detail.svg; path = ../../../Resource/Icon/detail.svg; sourceTree = SOURCE_ROOT; };
+		09F37A665062134CF5156B7A /* MelissaHost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaHost.h; path = ../../../Source/MelissaHost.h; sourceTree = SOURCE_ROOT; };
+		0A6903FB8400795D7D1A01DF /* MelissaMarkerListBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaMarkerListBox.h; path = ../../../Source/UI/MelissaMarkerListBox.h; sourceTree = SOURCE_ROOT; };
+		0BFBCCF5E7EE4F2DFAA1CD0A /* MelissaLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaLabel.h; path = ../../../Source/UI/MelissaLabel.h; sourceTree = SOURCE_ROOT; };
+		0FA12407AF53FA4270B53713 /* arrow_left.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = arrow_left.svg; path = ../../../Resource/Icon/arrow_left.svg; sourceTree = SOURCE_ROOT; };
+		1154B99B3025E87A98FFF592 /* MelissaDataSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaDataSource.cpp; path = ../../../Source/MelissaDataSource.cpp; sourceTree = SOURCE_ROOT; };
+		118250456F3709AFF506312B /* MelissaDefinitions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaDefinitions.cpp; path = ../../../Source/MelissaDefinitions.cpp; sourceTree = SOURCE_ROOT; };
+		12F5EBD39C0AEA820759125A /* Melissa Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Melissa Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1300344A9A074EE943B6BA04 /* STTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = STTypes.h; path = ../../../Submodule/soundtouch/include/STTypes.h; sourceTree = SOURCE_ROOT; };
+		1559E91B539F055F16BB2F48 /* include_juce_events.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_events.mm; path = ../../JuceLibraryCode/include_juce_events.mm; sourceTree = SOURCE_ROOT; };
+		15DC882ACD07845C25586491 /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = "~/Develop/JUCE/modules/juce_events"; sourceTree = "<absolute>"; };
+		161542B93902667D513ED89F /* MelissaUpdateChecker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaUpdateChecker.h; path = ../../../Source/MelissaUpdateChecker.h; sourceTree = SOURCE_ROOT; };
+		16F344935BB5E4AF634DADD1 /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../../JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
+		172BC5EE1479A0EF5A75BD5B /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../../../Resource/icon.png; sourceTree = SOURCE_ROOT; };
+		1768CC5FE44321D087BAD55F /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = "~/Develop/JUCE/modules/juce_core"; sourceTree = "<absolute>"; };
+		179FF253516DCC9C6ED1A7AC /* MelissaUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaUtility.h; path = ../../../Source/MelissaUtility.h; sourceTree = SOURCE_ROOT; };
+		17F9DDCCDEC325AEF5D2C4AB /* MelissaSectionComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaSectionComponent.cpp; path = ../../../Source/UI/MelissaSectionComponent.cpp; sourceTree = SOURCE_ROOT; };
+		1FFA43A2D267FA59FB7011F0 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		210A1DA5E03575B5A9FF573C /* MelissaDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaDataSource.h; path = ../../../Source/MelissaDataSource.h; sourceTree = SOURCE_ROOT; };
+		224D49FB04ECD9CD6597107E /* MelissaTapTempoButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaTapTempoButton.h; path = ../../../Source/UI/MelissaTapTempoButton.h; sourceTree = SOURCE_ROOT; };
+		245A4CF8ED1E345F7AE902D6 /* RateTransposer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RateTransposer.h; path = ../../../Submodule/soundtouch/source/SoundTouch/RateTransposer.h; sourceTree = SOURCE_ROOT; };
+		24CD5607342BAAF5E1E1E463 /* include_juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_devices.mm; path = ../../JuceLibraryCode/include_juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
+		269D3B77A64588EC545BF625 /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
+		28E8E84CA9D73E8B24CE4D70 /* PeakFinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PeakFinder.h; path = ../../../Submodule/soundtouch/source/SoundTouch/PeakFinder.h; sourceTree = SOURCE_ROOT; };
+		2E5FB9CDCF4DEDE2FE0EF5EA /* BinaryData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryData.cpp; path = ../../JuceLibraryCode/BinaryData.cpp; sourceTree = SOURCE_ROOT; };
+		2E7DF84CDAEC7BD6200B783D /* MelissaButtons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaButtons.h; path = ../../../Source/UI/MelissaButtons.h; sourceTree = SOURCE_ROOT; };
+		302B49BF08310F333E4D473B /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = "~/Develop/JUCE/modules/juce_audio_utils"; sourceTree = "<absolute>"; };
+		30B628164F17034804052838 /* MelissaWaveformControlComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaWaveformControlComponent.h; path = ../../../Source/UI/MelissaWaveformControlComponent.h; sourceTree = SOURCE_ROOT; };
+		30E5CCE63416FBEACD809A8C /* SoundTouch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SoundTouch.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/SoundTouch.cpp; sourceTree = SOURCE_ROOT; };
+		324721A9C78446C180AC5CFC /* MelissaModelListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaModelListener.h; path = ../../../Source/MelissaModelListener.h; sourceTree = SOURCE_ROOT; };
+		32E4821CC91F78B5B5D61C7E /* MelissaStemControlComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaStemControlComponent.h; path = ../../../Source/UI/MelissaStemControlComponent.h; sourceTree = SOURCE_ROOT; };
+		365A70CEBCC6391C83AE6829 /* MelissaCommand.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaCommand.cpp; path = ../../../Source/MelissaCommand.cpp; sourceTree = SOURCE_ROOT; };
+		37DD527A83BD17D8412F07A5 /* soundtouch_config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = soundtouch_config.h; path = ../../../Source/soundtouch_config.h; sourceTree = SOURCE_ROOT; };
+		38353AE11D756395A483467C /* InterpolateCubic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InterpolateCubic.h; path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateCubic.h; sourceTree = SOURCE_ROOT; };
+		38791F9F0AC3D1C65C408523 /* BPMDetect_for_Melissa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BPMDetect_for_Melissa.h; path = ../../../Source/Audio/soundtouch/BPMDetect_for_Melissa.h; sourceTree = SOURCE_ROOT; };
+		38A040D0A1F0D1803CCF1F11 /* MelissaDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaDefinitions.h; path = ../../../Source/MelissaDefinitions.h; sourceTree = SOURCE_ROOT; };
+		38CED1020F382397B5FC45AA /* include_juce_audio_formats.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_formats.mm; path = ../../JuceLibraryCode/include_juce_audio_formats.mm; sourceTree = SOURCE_ROOT; };
+		3A197BFCE285C7FFE9AEAE8C /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = "~/Develop/JUCE/modules/juce_audio_processors"; sourceTree = "<absolute>"; };
+		3B586F66BA22343B4A1D9EB9 /* MelissaCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaCommand.h; path = ../../../Source/MelissaCommand.h; sourceTree = SOURCE_ROOT; };
+		3BBFAA502FFE0322231059CA /* include_juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_data_structures.mm; path = ../../JuceLibraryCode/include_juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
+		3C2D5841094E5B8E896BD94A /* include_juce_audio_processors_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_ara.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_ara.cpp; sourceTree = SOURCE_ROOT; };
+		3DF199B34319CEB21151492F /* PeakFinder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PeakFinder.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/PeakFinder.cpp; sourceTree = SOURCE_ROOT; };
+		42B984D3E9C75125FA1D7885 /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = "~/Develop/JUCE/modules/juce_data_structures"; sourceTree = "<absolute>"; };
+		45930713543162FCB45FF7B1 /* MelissaModalDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaModalDialog.h; path = ../../../Source/UI/MelissaModalDialog.h; sourceTree = SOURCE_ROOT; };
+		465270FAA372248DFDABD968 /* MelissaMetronome.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaMetronome.cpp; path = ../../../Source/Audio/MelissaMetronome.cpp; sourceTree = SOURCE_ROOT; };
+		46A30663B572633057B2C56E /* MelissaScrollLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaScrollLabel.h; path = ../../../Source/UI/MelissaScrollLabel.h; sourceTree = SOURCE_ROOT; };
+		4B20DEAEA406997D0C706D9D /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = "~/Develop/JUCE/modules/juce_graphics"; sourceTree = "<absolute>"; };
+		4B5A74CC1C3471492089A027 /* arrow_right.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = arrow_right.svg; path = ../../../Resource/Icon/arrow_right.svg; sourceTree = SOURCE_ROOT; };
+		4C72634207CF42DF40D9FC6C /* MelissaShortcutManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaShortcutManager.cpp; path = ../../../Source/MelissaShortcutManager.cpp; sourceTree = SOURCE_ROOT; };
+		4F09099F8D187699651E3E03 /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = "~/Develop/JUCE/modules/juce_gui_basics"; sourceTree = "<absolute>"; };
+		51F5E8D602E62A5315C067BD /* MelissaCommandComboBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaCommandComboBox.cpp; path = ../../../Source/UI/MelissaCommandComboBox.cpp; sourceTree = SOURCE_ROOT; };
+		52F6F444FC438AF2607178AB /* BPMDetect_for_Melissa.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BPMDetect_for_Melissa.cpp; path = ../../../Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp; sourceTree = SOURCE_ROOT; };
+		5652F3447D1F8C5D06612CF0 /* MelissaWaveformControlComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaWaveformControlComponent.cpp; path = ../../../Source/UI/MelissaWaveformControlComponent.cpp; sourceTree = SOURCE_ROOT; };
+		5669A76EDFD23AB660BA367E /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
+		56FA578BA2C442FAC89F615E /* sse_optimized.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = sse_optimized.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/sse_optimized.cpp; sourceTree = SOURCE_ROOT; };
+		57263FFC7A54AE9AC748C674 /* AppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = SOURCE_ROOT; };
+		585E88C00A05D8F0036FE91C /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../../JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
+		586DE07BF2E68736D59CB64B /* MelissaPlaylistComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaPlaylistComponent.cpp; path = ../../../Source/UI/MelissaPlaylistComponent.cpp; sourceTree = SOURCE_ROOT; };
+		58913A64B8E50A6793485B19 /* MelissaWaveformMouseEventComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaWaveformMouseEventComponent.h; path = ../../../Source/UI/MelissaWaveformMouseEventComponent.h; sourceTree = SOURCE_ROOT; };
+		5AD5CF8D800B5B0E27F0B1E7 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = file.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
+		60031F67453058DA0D751AB8 /* playlist_edit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = playlist_edit.svg; path = ../../../Resource/Icon/playlist_edit.svg; sourceTree = SOURCE_ROOT; };
+		60A2A4585B994180A8BF8826 /* AAFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AAFilter.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/AAFilter.cpp; sourceTree = SOURCE_ROOT; };
+		614EDB0184F75BF3D9F47DD6 /* MelissaLookAndFeel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaLookAndFeel.h; path = ../../../Source/UI/MelissaLookAndFeel.h; sourceTree = SOURCE_ROOT; };
+		61F476962952865E295FD76C /* MelissaPopupMessageComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaPopupMessageComponent.cpp; path = ../../../Source/UI/MelissaPopupMessageComponent.cpp; sourceTree = SOURCE_ROOT; };
+		625672856E76F41C73194C31 /* MelissaTapTempoButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaTapTempoButton.cpp; path = ../../../Source/UI/MelissaTapTempoButton.cpp; sourceTree = SOURCE_ROOT; };
+		627BAFF18D9DD9C9C042A071 /* SoundTouch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SoundTouch.h; path = ../../../Submodule/soundtouch/include/SoundTouch.h; sourceTree = SOURCE_ROOT; };
+		6478446902A6858772074F68 /* InterpolateLinear.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InterpolateLinear.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateLinear.cpp; sourceTree = SOURCE_ROOT; };
+		650E60D623A048E0FCF35009 /* next_button.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = next_button.svg; path = ../../../Resource/Icon/next_button.svg; sourceTree = SOURCE_ROOT; };
+		66DC751BEE210249556371E1 /* MelissaAboutComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaAboutComponent.h; path = ../../../Source/UI/MelissaAboutComponent.h; sourceTree = SOURCE_ROOT; };
+		671FFD03715ADE9F279A444B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		69E84B1CACC8085461C20161 /* InterpolateLinear.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InterpolateLinear.h; path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateLinear.h; sourceTree = SOURCE_ROOT; };
+		6C2376CEA47F3975A5A932FA /* add.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = add.svg; path = ../../../Resource/Icon/add.svg; sourceTree = SOURCE_ROOT; };
+		70185ADDBBAB480111301F02 /* MelissaShortcutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaShortcutManager.h; path = ../../../Source/MelissaShortcutManager.h; sourceTree = SOURCE_ROOT; };
+		71AE6321C8817AB4BF3C47CF /* MelissaShortcutComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaShortcutComponent.h; path = ../../../Source/UI/MelissaShortcutComponent.h; sourceTree = SOURCE_ROOT; };
+		72E3FC203E75498C2F3A15E2 /* cpu_detect_x86.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = cpu_detect_x86.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/cpu_detect_x86.cpp; sourceTree = SOURCE_ROOT; };
+		74E16A7A27B4B0FD379C5C51 /* up.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = up.svg; path = ../../../Resource/Icon/up.svg; sourceTree = SOURCE_ROOT; };
+		75D4EFBEBC939C6B17FB33BF /* MelissaMarkerListBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaMarkerListBox.cpp; path = ../../../Source/UI/MelissaMarkerListBox.cpp; sourceTree = SOURCE_ROOT; };
+		7766662467CEACDB8C3BEC90 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		78B473A6121E9F0E381259AE /* MelissaPopupMessageComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaPopupMessageComponent.h; path = ../../../Source/UI/MelissaPopupMessageComponent.h; sourceTree = SOURCE_ROOT; };
+		78F5EB736E6E8AA583A546C8 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		7BA4889684884B8E036CE705 /* MelissaLoopRangeComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaLoopRangeComponent.cpp; path = ../../../Source/UI/MelissaLoopRangeComponent.cpp; sourceTree = SOURCE_ROOT; };
+		7C964B9C5A1891F513C24DDB /* cpu_detect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cpu_detect.h; path = ../../../Submodule/soundtouch/source/SoundTouch/cpu_detect.h; sourceTree = SOURCE_ROOT; };
+		7D3036B0F94670519934FF17 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		7D6214DFBA1C5C0DBBA9AAE6 /* BinaryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BinaryData.h; path = ../../JuceLibraryCode/BinaryData.h; sourceTree = SOURCE_ROOT; };
+		7DB3FA961B82C5850511F344 /* MainComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainComponent.h; path = ../../../Source/MainComponent.h; sourceTree = SOURCE_ROOT; };
+		807993B371654619CFD050E8 /* MelissaSectionComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaSectionComponent.h; path = ../../../Source/UI/MelissaSectionComponent.h; sourceTree = SOURCE_ROOT; };
+		808CCCECF8CDCF7E0000E874 /* juce_audio_devices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_devices; path = "~/Develop/JUCE/modules/juce_audio_devices"; sourceTree = "<absolute>"; };
+		813A2DBCBDB90D538FB28D8C /* include_juce_opengl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_opengl.mm; path = ../../JuceLibraryCode/include_juce_opengl.mm; sourceTree = SOURCE_ROOT; };
+		828F76474E578B99BD0DA6F1 /* MelissaPlaylistComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaPlaylistComponent.h; path = ../../../Source/UI/MelissaPlaylistComponent.h; sourceTree = SOURCE_ROOT; };
+		831A3D0101D4B87A7C05E677 /* InterpolateShannon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InterpolateShannon.h; path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateShannon.h; sourceTree = SOURCE_ROOT; };
+		833BFBF0A4047A23760AD9AD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		84D4D7182E25379B4ED3DE31 /* MelissaMarkerMemoComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaMarkerMemoComponent.cpp; path = ../../../Source/UI/MelissaMarkerMemoComponent.cpp; sourceTree = SOURCE_ROOT; };
+		85198D9BE8D259C3B08E6F41 /* InterpolateShannon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InterpolateShannon.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateShannon.cpp; sourceTree = SOURCE_ROOT; };
+		86DA9AF689B44802D795386E /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
+		8A7E6A26302BEF49A71913E9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		8AEE364B8B4952A6E328FE69 /* MelissaModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaModel.h; path = ../../../Source/MelissaModel.h; sourceTree = SOURCE_ROOT; };
+		8AF477A83D8A10002923569F /* FIFOSampleBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FIFOSampleBuffer.h; path = ../../../Submodule/soundtouch/include/FIFOSampleBuffer.h; sourceTree = SOURCE_ROOT; };
+		8B5ECC6FEB266AC44E0AD085 /* MainComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainComponent.cpp; path = ../../../Source/MainComponent.cpp; sourceTree = SOURCE_ROOT; };
+		8B68B05E7B257CAF276A438A /* MelissaStemControlComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaStemControlComponent.cpp; path = ../../../Source/UI/MelissaStemControlComponent.cpp; sourceTree = SOURCE_ROOT; };
+		8D2F4BC886EF77187492F33C /* MelissaStemProvider.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaStemProvider.cpp; path = ../../../Source/MelissaStemProvider.cpp; sourceTree = SOURCE_ROOT; };
+		8E83D53866603C30C2D69D52 /* FIRFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FIRFilter.h; path = ../../../Submodule/soundtouch/source/SoundTouch/FIRFilter.h; sourceTree = SOURCE_ROOT; };
+		927DA09AE3863577C7CDB82B /* MelissaPracticeTableListBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaPracticeTableListBox.cpp; path = ../../../Source/UI/MelissaPracticeTableListBox.cpp; sourceTree = SOURCE_ROOT; };
+		9429DBFDAAD83A8B59788937 /* RateTransposer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RateTransposer.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/RateTransposer.cpp; sourceTree = SOURCE_ROOT; };
+		95981C6C97CEB8951C1ACDE4 /* MelissaDoubleClickEditLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaDoubleClickEditLabel.h; path = ../../../Source/UI/MelissaDoubleClickEditLabel.h; sourceTree = SOURCE_ROOT; };
+		9A88D1287C54AE10DB0BB16E /* InterpolateCubic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InterpolateCubic.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/InterpolateCubic.cpp; sourceTree = SOURCE_ROOT; };
+		9D116ACE32B00F34CC0773C1 /* select.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = select.svg; path = ../../../Resource/Icon/select.svg; sourceTree = SOURCE_ROOT; };
+		9F6487F12371B0892E96C7B5 /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = "~/Develop/JUCE/modules/juce_audio_basics"; sourceTree = "<absolute>"; };
+		A0ECA12BA582B37E92A34DD4 /* MelissaTutorialComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaTutorialComponent.h; path = ../../../Source/UI/MelissaTutorialComponent.h; sourceTree = SOURCE_ROOT; };
+		A1C331539A91447A5C80A765 /* loop_playlist.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = loop_playlist.svg; path = ../../../Resource/Icon/loop_playlist.svg; sourceTree = SOURCE_ROOT; };
+		A2DF221FA117A018622650FE /* MelissaTextEditorWithClearButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaTextEditorWithClearButton.cpp; path = ../../../Source/UI/MelissaTextEditorWithClearButton.cpp; sourceTree = SOURCE_ROOT; };
+		A53EB84E1136FE60F390FE6B /* MelissaModalDialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaModalDialog.cpp; path = ../../../Source/UI/MelissaModalDialog.cpp; sourceTree = SOURCE_ROOT; };
+		A847F71E884178D6025B7C1D /* juce_opengl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_opengl; path = "~/Develop/JUCE/modules/juce_opengl"; sourceTree = "<absolute>"; };
+		A916EA0CC5B679D5114CD5A4 /* MelissaUISettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaUISettings.h; path = ../../../Source/UI/MelissaUISettings.h; sourceTree = SOURCE_ROOT; };
+		AB98697757FB5E6343603CC8 /* MelissaStemProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaStemProvider.h; path = ../../../Source/MelissaStemProvider.h; sourceTree = SOURCE_ROOT; };
+		AD522DAD3DD590148A75B036 /* TDStretch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TDStretch.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/TDStretch.cpp; sourceTree = SOURCE_ROOT; };
+		AD663699458E27E8D315DD40 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		ADE092D6EC5B675F706F9C2A /* speaker.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = speaker.svg; path = ../../../Resource/Icon/speaker.svg; sourceTree = SOURCE_ROOT; };
+		B149AE30B1283E5A1A7B940E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		B3FA7A5658F9BF9C6D750320 /* MelissaMarkerListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaMarkerListener.h; path = ../../../Source/UI/MelissaMarkerListener.h; sourceTree = SOURCE_ROOT; };
+		B4AF79B084D6BF3A94CD9732 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		B4F08E6E135F001714E03CF1 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		B8A0C74F8C2F7DD4FA210965 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = ../../../Resource/logo.png; sourceTree = SOURCE_ROOT; };
+		BCF800D6D2C07164C3518AF5 /* playlist_add_playing.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = playlist_add_playing.svg; path = ../../../Resource/Icon/playlist_add_playing.svg; sourceTree = SOURCE_ROOT; };
+		BD37A49C825CB5103005AEF1 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		BDC6F084738E97E28EA1D440 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
+		BDF53083067F357058F3242A /* MelissaModel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaModel.cpp; path = ../../../Source/MelissaModel.cpp; sourceTree = SOURCE_ROOT; };
+		BEC30CA4B2BA09B2C5C2FDC1 /* MelissaTextEditorWithClearButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaTextEditorWithClearButton.h; path = ../../../Source/UI/MelissaTextEditorWithClearButton.h; sourceTree = SOURCE_ROOT; };
+		C0B53709ED84040690BB59B9 /* playlist_remove.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = playlist_remove.svg; path = ../../../Resource/Icon/playlist_remove.svg; sourceTree = SOURCE_ROOT; };
+		C1730ABBBB9288D6C5620526 /* FIRFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FIRFilter.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/FIRFilter.cpp; sourceTree = SOURCE_ROOT; };
+		C2FD2E897FABBC7EAE6127B7 /* MelissaBPMDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaBPMDetector.h; path = ../../../Source/Audio/MelissaBPMDetector.h; sourceTree = SOURCE_ROOT; };
+		C493133C5C5B675B1DD54E21 /* MelissaInputDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaInputDialog.h; path = ../../../Source/UI/MelissaInputDialog.h; sourceTree = SOURCE_ROOT; };
+		C55F7E5D1B5FE5366E0C5723 /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = "~/Develop/JUCE/modules/juce_audio_formats"; sourceTree = "<absolute>"; };
+		C71CF046EC182E64E855E707 /* en-US.txt */ = {isa = PBXFileReference; lastKnownFileType = text.txt; name = "en-US.txt"; path = "../../../Resource/Language/en-US.txt"; sourceTree = SOURCE_ROOT; };
+		C973B7EC7C18B6B37A6C8048 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Melissa Lite/Images.xcassets"; sourceTree = SOURCE_ROOT; };
+		CAD99564A27CE8F845977180 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		CCEA002821986E086B42D0A8 /* FIFOSampleBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FIFOSampleBuffer.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		D204294F1254F465099C2195 /* MelissaSimpleTextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaSimpleTextButton.h; path = ../../../Source/UI/MelissaSimpleTextButton.h; sourceTree = SOURCE_ROOT; };
+		D25ABA091D4E9B329081EF98 /* loop_onesong.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = loop_onesong.svg; path = ../../../Resource/Icon/loop_onesong.svg; sourceTree = SOURCE_ROOT; };
+		D3371EC2E5C6AEACA620F46C /* MelissaBPMSettingComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaBPMSettingComponent.h; path = ../../../Source/UI/MelissaBPMSettingComponent.h; sourceTree = SOURCE_ROOT; };
+		D63E8642C940CB9D1AE653D6 /* MelissaOptionDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaOptionDialog.h; path = ../../../Source/UI/MelissaOptionDialog.h; sourceTree = SOURCE_ROOT; };
+		D674DFC439E93408EC60C30F /* MelissaFileListBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaFileListBox.h; path = ../../../Source/UI/MelissaFileListBox.h; sourceTree = SOURCE_ROOT; };
+		D8B06E81A1DA792D512EFEDE /* AAFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AAFilter.h; path = ../../../Submodule/soundtouch/source/SoundTouch/AAFilter.h; sourceTree = SOURCE_ROOT; };
+		DB2A659861390D5DA3DD748C /* down.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = down.svg; path = ../../../Resource/Icon/down.svg; sourceTree = SOURCE_ROOT; };
+		DD7FF1556B47F44DA36AAB9A /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
+		DE2B19E6D5A2B4478CA3E75B /* MelissaCommandComboBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaCommandComboBox.h; path = ../../../Source/UI/MelissaCommandComboBox.h; sourceTree = SOURCE_ROOT; };
+		DF5098910BC42376B9A0711E /* MelissaAudioEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaAudioEngine.cpp; path = ../../../Source/Audio/MelissaAudioEngine.cpp; sourceTree = SOURCE_ROOT; };
+		DF6E630B492C469AC503CF51 /* MelissaMarkerMemoComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaMarkerMemoComponent.h; path = ../../../Source/UI/MelissaMarkerMemoComponent.h; sourceTree = SOURCE_ROOT; };
+		DFC060CD1A30E9ED0A1860E5 /* FIFOSamplePipe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FIFOSamplePipe.h; path = ../../../Submodule/soundtouch/include/FIFOSamplePipe.h; sourceTree = SOURCE_ROOT; };
+		E0022DE096EA0A2555525336 /* Main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Main.cpp; path = ../../../Source/Main.cpp; sourceTree = SOURCE_ROOT; };
+		E20542890F6EEDEF0CB5A725 /* prev_button.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = prev_button.svg; path = ../../../Resource/Icon/prev_button.svg; sourceTree = SOURCE_ROOT; };
+		E5A6A49F27E7432F239F38A5 /* MelissaTutorialComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaTutorialComponent.cpp; path = ../../../Source/UI/MelissaTutorialComponent.cpp; sourceTree = SOURCE_ROOT; };
+		E7054F638A9EE4FA9C60B978 /* ja-JP.txt */ = {isa = PBXFileReference; lastKnownFileType = text.txt; name = "ja-JP.txt"; path = "../../../Resource/Language/ja-JP.txt"; sourceTree = SOURCE_ROOT; };
+		E81F8550BA919ACAE5DE3F36 /* MelissaShortcutComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaShortcutComponent.cpp; path = ../../../Source/UI/MelissaShortcutComponent.cpp; sourceTree = SOURCE_ROOT; };
+		EA82294F1A6381632E59F860 /* MelissaMetronome.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelissaMetronome.h; path = ../../../Source/Audio/MelissaMetronome.h; sourceTree = SOURCE_ROOT; };
+		ECE85BF6F3E9AD609177119E /* clear.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = clear.svg; path = ../../../Resource/Icon/clear.svg; sourceTree = SOURCE_ROOT; };
+		EEE2A8215A773AA21AD890B7 /* Info-App.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-App.plist"; sourceTree = SOURCE_ROOT; };
+		F171BDD8C4E15CE427AC5A4B /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = "~/Develop/JUCE/modules/juce_gui_extra"; sourceTree = "<absolute>"; };
+		F5CEF8B6ECEE400B53FF2F6B /* MelissaWaveformMouseEventComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaWaveformMouseEventComponent.cpp; path = ../../../Source/UI/MelissaWaveformMouseEventComponent.cpp; sourceTree = SOURCE_ROOT; };
+		F8F4316F53B5C906C4076336 /* playlist_add.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = playlist_add.svg; path = ../../../Resource/Icon/playlist_add.svg; sourceTree = SOURCE_ROOT; };
+		F998229A0FF1B16829579A32 /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
+		FB05A2A1084A604EFF66580B /* MelissaUpdateChecker.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaUpdateChecker.cpp; path = ../../../Source/MelissaUpdateChecker.cpp; sourceTree = SOURCE_ROOT; };
+		FB2185E7D5ED602C1F69EFE2 /* MelissaBPMDetector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MelissaBPMDetector.cpp; path = ../../../Source/Audio/MelissaBPMDetector.cpp; sourceTree = SOURCE_ROOT; };
+		FC5A0100EA9DD6B8E0128888 /* mmx_optimized.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = mmx_optimized.cpp; path = ../../../Submodule/soundtouch/source/SoundTouch/mmx_optimized.cpp; sourceTree = SOURCE_ROOT; };
+		FDE828416B5222B3D91EA07C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		FECB551586952B0CE0EEB006 /* include_juce_cryptography.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_cryptography.mm; path = ../../JuceLibraryCode/include_juce_cryptography.mm; sourceTree = SOURCE_ROOT; };
+		FF98710280C7F33D83F042BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F93666C4182C981FDE875C0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD9DFEE7736BDF566AF15EFB /* Accelerate.framework in Frameworks */,
+				95F94E1A50C1A8DCC02B7C91 /* AudioToolbox.framework in Frameworks */,
+				41F61E9733DB5B4FA1C4FE18 /* AVFoundation.framework in Frameworks */,
+				56AA9E80A9B73CCC862F6148 /* CoreAudio.framework in Frameworks */,
+				5D1DF84453CFA8888971F708 /* CoreAudioKit.framework in Frameworks */,
+				9D4B46244DD57DA8528DA17E /* CoreGraphics.framework in Frameworks */,
+				24C8C4593063C1247B3B2FFD /* CoreImage.framework in Frameworks */,
+				68A622DCB0FD454652820FBD /* CoreMIDI.framework in Frameworks */,
+				0A7F92B7D5940F11353B9115 /* CoreServices.framework in Frameworks */,
+				49C010104CEFC2960ADA72FB /* CoreText.framework in Frameworks */,
+				04CBF2C196788D5033BCF12C /* Foundation.framework in Frameworks */,
+				F3746A81081F932775D9C3C5 /* OpenGLES.framework in Frameworks */,
+				B3929392E3411470584DEB60 /* QuartzCore.framework in Frameworks */,
+				F4423BD8DDC2600D46C09FE1 /* StoreKit.framework in Frameworks */,
+				59A2401F871B311F2FA0B18A /* UIKit.framework in Frameworks */,
+				636C25EB909AAAD34B6E3A57 /* WebKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0CF48DE1C5C7F7757663629E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CAD99564A27CE8F845977180 /* Accelerate.framework */,
+				B4F08E6E135F001714E03CF1 /* AudioToolbox.framework */,
+				FDE828416B5222B3D91EA07C /* AVFoundation.framework */,
+				BD37A49C825CB5103005AEF1 /* CoreAudio.framework */,
+				B4AF79B084D6BF3A94CD9732 /* CoreAudioKit.framework */,
+				833BFBF0A4047A23760AD9AD /* CoreGraphics.framework */,
+				78F5EB736E6E8AA583A546C8 /* CoreImage.framework */,
+				7766662467CEACDB8C3BEC90 /* CoreMIDI.framework */,
+				1FFA43A2D267FA59FB7011F0 /* CoreServices.framework */,
+				AD663699458E27E8D315DD40 /* CoreText.framework */,
+				671FFD03715ADE9F279A444B /* Foundation.framework */,
+				074B27F505B331EAE2F1B468 /* OpenGLES.framework */,
+				7D3036B0F94670519934FF17 /* QuartzCore.framework */,
+				B149AE30B1283E5A1A7B940E /* StoreKit.framework */,
+				FF98710280C7F33D83F042BA /* UIKit.framework */,
+				8A7E6A26302BEF49A71913E9 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2F90F2269188A738FDC576CA /* Melissa Lite */ = {
+			isa = PBXGroup;
+			children = (
+				CE9148CF9223383D004C947D /* Resource */,
+				D536BBCAD7491E5DA45157C3 /* soundtouch */,
+				E9F1721F868F6EDA77B7EEF1 /* Source */,
+			);
+			name = "Melissa Lite";
+			sourceTree = "<group>";
+		};
+		30E06BCEA3E638E8EF08E63B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				12F5EBD39C0AEA820759125A /* Melissa Lite.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		454B512F8D7421B1A06E0813 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				2F90F2269188A738FDC576CA /* Melissa Lite */,
+				58A8B7D19028F8BEB594BBCE /* JUCE Modules */,
+				803F7C35AB73509FA7AE9A63 /* JUCE Library Code */,
+				FC433FEB96CD91D34995DD49 /* Resources */,
+				0CF48DE1C5C7F7757663629E /* Frameworks */,
+				30E06BCEA3E638E8EF08E63B /* Products */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		58A8B7D19028F8BEB594BBCE /* JUCE Modules */ = {
+			isa = PBXGroup;
+			children = (
+				9F6487F12371B0892E96C7B5 /* juce_audio_basics */,
+				808CCCECF8CDCF7E0000E874 /* juce_audio_devices */,
+				C55F7E5D1B5FE5366E0C5723 /* juce_audio_formats */,
+				3A197BFCE285C7FFE9AEAE8C /* juce_audio_processors */,
+				302B49BF08310F333E4D473B /* juce_audio_utils */,
+				1768CC5FE44321D087BAD55F /* juce_core */,
+				04806540BFCC216AB57E9967 /* juce_cryptography */,
+				42B984D3E9C75125FA1D7885 /* juce_data_structures */,
+				15DC882ACD07845C25586491 /* juce_events */,
+				4B20DEAEA406997D0C706D9D /* juce_graphics */,
+				4F09099F8D187699651E3E03 /* juce_gui_basics */,
+				F171BDD8C4E15CE427AC5A4B /* juce_gui_extra */,
+				A847F71E884178D6025B7C1D /* juce_opengl */,
+			);
+			name = "JUCE Modules";
+			sourceTree = "<group>";
+		};
+		7E9A679AA99E0C1C1E08CDBE /* soundtouch */ = {
+			isa = PBXGroup;
+			children = (
+				52F6F444FC438AF2607178AB /* BPMDetect_for_Melissa.cpp */,
+				38791F9F0AC3D1C65C408523 /* BPMDetect_for_Melissa.h */,
+			);
+			name = soundtouch;
+			sourceTree = "<group>";
+		};
+		803F7C35AB73509FA7AE9A63 /* JUCE Library Code */ = {
+			isa = PBXGroup;
+			children = (
+				57263FFC7A54AE9AC748C674 /* AppConfig.h */,
+				2E5FB9CDCF4DEDE2FE0EF5EA /* BinaryData.cpp */,
+				7D6214DFBA1C5C0DBBA9AAE6 /* BinaryData.h */,
+				585E88C00A05D8F0036FE91C /* include_juce_audio_basics.mm */,
+				24CD5607342BAAF5E1E1E463 /* include_juce_audio_devices.mm */,
+				38CED1020F382397B5FC45AA /* include_juce_audio_formats.mm */,
+				02C2BCA35EB7BC0A0F4B5158 /* include_juce_audio_processors.mm */,
+				3C2D5841094E5B8E896BD94A /* include_juce_audio_processors_ara.cpp */,
+				269D3B77A64588EC545BF625 /* include_juce_audio_processors_lv2_libs.cpp */,
+				86DA9AF689B44802D795386E /* include_juce_audio_utils.mm */,
+				16F344935BB5E4AF634DADD1 /* include_juce_core.mm */,
+				FECB551586952B0CE0EEB006 /* include_juce_cryptography.mm */,
+				3BBFAA502FFE0322231059CA /* include_juce_data_structures.mm */,
+				1559E91B539F055F16BB2F48 /* include_juce_events.mm */,
+				F998229A0FF1B16829579A32 /* include_juce_graphics.mm */,
+				0932D49E6A76E17B2A4AA04A /* include_juce_gui_basics.mm */,
+				DD7FF1556B47F44DA36AAB9A /* include_juce_gui_extra.mm */,
+				813A2DBCBDB90D538FB28D8C /* include_juce_opengl.mm */,
+				5669A76EDFD23AB660BA367E /* JuceHeader.h */,
+			);
+			name = "JUCE Library Code";
+			sourceTree = "<group>";
+		};
+		81C9A9371BCDBAB216CF9161 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				7E9A679AA99E0C1C1E08CDBE /* soundtouch */,
+				DF5098910BC42376B9A0711E /* MelissaAudioEngine.cpp */,
+				0305529B3E0AB87BE3C73A90 /* MelissaAudioEngine.h */,
+				FB2185E7D5ED602C1F69EFE2 /* MelissaBPMDetector.cpp */,
+				C2FD2E897FABBC7EAE6127B7 /* MelissaBPMDetector.h */,
+				465270FAA372248DFDABD968 /* MelissaMetronome.cpp */,
+				EA82294F1A6381632E59F860 /* MelissaMetronome.h */,
+			);
+			name = Audio;
+			sourceTree = "<group>";
+		};
+		8D0080AB747B3DCDAE18B09F /* Icon */ = {
+			isa = PBXGroup;
+			children = (
+				6C2376CEA47F3975A5A932FA /* add.svg */,
+				0FA12407AF53FA4270B53713 /* arrow_left.svg */,
+				4B5A74CC1C3471492089A027 /* arrow_right.svg */,
+				ECE85BF6F3E9AD609177119E /* clear.svg */,
+				09DC5993941C1F1C664EA4E0 /* detail.svg */,
+				DB2A659861390D5DA3DD748C /* down.svg */,
+				D25ABA091D4E9B329081EF98 /* loop_onesong.svg */,
+				A1C331539A91447A5C80A765 /* loop_playlist.svg */,
+				650E60D623A048E0FCF35009 /* next_button.svg */,
+				F8F4316F53B5C906C4076336 /* playlist_add.svg */,
+				04862AF022A148692BDE3BDD /* playlist_add_file.svg */,
+				BCF800D6D2C07164C3518AF5 /* playlist_add_playing.svg */,
+				60031F67453058DA0D751AB8 /* playlist_edit.svg */,
+				C0B53709ED84040690BB59B9 /* playlist_remove.svg */,
+				E20542890F6EEDEF0CB5A725 /* prev_button.svg */,
+				9D116ACE32B00F34CC0773C1 /* select.svg */,
+				ADE092D6EC5B675F706F9C2A /* speaker.svg */,
+				74E16A7A27B4B0FD379C5C51 /* up.svg */,
+			);
+			name = Icon;
+			sourceTree = "<group>";
+		};
+		CE9148CF9223383D004C947D /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				8D0080AB747B3DCDAE18B09F /* Icon */,
+				CFD1F0E0F16A157B4CFB9FD8 /* Language */,
+				172BC5EE1479A0EF5A75BD5B /* icon.png */,
+				B8A0C74F8C2F7DD4FA210965 /* logo.png */,
+			);
+			name = Resource;
+			sourceTree = "<group>";
+		};
+		CFD1F0E0F16A157B4CFB9FD8 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				C71CF046EC182E64E855E707 /* en-US.txt */,
+				E7054F638A9EE4FA9C60B978 /* ja-JP.txt */,
+			);
+			name = Language;
+			sourceTree = "<group>";
+		};
+		D536BBCAD7491E5DA45157C3 /* soundtouch */ = {
+			isa = PBXGroup;
+			children = (
+				60A2A4585B994180A8BF8826 /* AAFilter.cpp */,
+				D8B06E81A1DA792D512EFEDE /* AAFilter.h */,
+				7C964B9C5A1891F513C24DDB /* cpu_detect.h */,
+				72E3FC203E75498C2F3A15E2 /* cpu_detect_x86.cpp */,
+				CCEA002821986E086B42D0A8 /* FIFOSampleBuffer.cpp */,
+				8AF477A83D8A10002923569F /* FIFOSampleBuffer.h */,
+				DFC060CD1A30E9ED0A1860E5 /* FIFOSamplePipe.h */,
+				C1730ABBBB9288D6C5620526 /* FIRFilter.cpp */,
+				8E83D53866603C30C2D69D52 /* FIRFilter.h */,
+				9A88D1287C54AE10DB0BB16E /* InterpolateCubic.cpp */,
+				38353AE11D756395A483467C /* InterpolateCubic.h */,
+				6478446902A6858772074F68 /* InterpolateLinear.cpp */,
+				69E84B1CACC8085461C20161 /* InterpolateLinear.h */,
+				85198D9BE8D259C3B08E6F41 /* InterpolateShannon.cpp */,
+				831A3D0101D4B87A7C05E677 /* InterpolateShannon.h */,
+				FC5A0100EA9DD6B8E0128888 /* mmx_optimized.cpp */,
+				3DF199B34319CEB21151492F /* PeakFinder.cpp */,
+				28E8E84CA9D73E8B24CE4D70 /* PeakFinder.h */,
+				9429DBFDAAD83A8B59788937 /* RateTransposer.cpp */,
+				245A4CF8ED1E345F7AE902D6 /* RateTransposer.h */,
+				30E5CCE63416FBEACD809A8C /* SoundTouch.cpp */,
+				627BAFF18D9DD9C9C042A071 /* SoundTouch.h */,
+				56FA578BA2C442FAC89F615E /* sse_optimized.cpp */,
+				1300344A9A074EE943B6BA04 /* STTypes.h */,
+				AD522DAD3DD590148A75B036 /* TDStretch.cpp */,
+				07EA4A763E4D2EFE0028FD00 /* TDStretch.h */,
+			);
+			name = soundtouch;
+			sourceTree = "<group>";
+		};
+		D8C159D31E79B80232605A8E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				66DC751BEE210249556371E1 /* MelissaAboutComponent.h */,
+				D3371EC2E5C6AEACA620F46C /* MelissaBPMSettingComponent.h */,
+				2E7DF84CDAEC7BD6200B783D /* MelissaButtons.h */,
+				51F5E8D602E62A5315C067BD /* MelissaCommandComboBox.cpp */,
+				DE2B19E6D5A2B4478CA3E75B /* MelissaCommandComboBox.h */,
+				95981C6C97CEB8951C1ACDE4 /* MelissaDoubleClickEditLabel.h */,
+				D674DFC439E93408EC60C30F /* MelissaFileListBox.h */,
+				01DB4ECD33FAEA5EB33B3EAE /* MelissaIncDecButton.h */,
+				C493133C5C5B675B1DD54E21 /* MelissaInputDialog.h */,
+				0BFBCCF5E7EE4F2DFAA1CD0A /* MelissaLabel.h */,
+				614EDB0184F75BF3D9F47DD6 /* MelissaLookAndFeel.h */,
+				7BA4889684884B8E036CE705 /* MelissaLoopRangeComponent.cpp */,
+				01939B210C87D3B69829D7C2 /* MelissaLoopRangeComponent.h */,
+				75D4EFBEBC939C6B17FB33BF /* MelissaMarkerListBox.cpp */,
+				0A6903FB8400795D7D1A01DF /* MelissaMarkerListBox.h */,
+				B3FA7A5658F9BF9C6D750320 /* MelissaMarkerListener.h */,
+				84D4D7182E25379B4ED3DE31 /* MelissaMarkerMemoComponent.cpp */,
+				DF6E630B492C469AC503CF51 /* MelissaMarkerMemoComponent.h */,
+				A53EB84E1136FE60F390FE6B /* MelissaModalDialog.cpp */,
+				45930713543162FCB45FF7B1 /* MelissaModalDialog.h */,
+				D63E8642C940CB9D1AE653D6 /* MelissaOptionDialog.h */,
+				586DE07BF2E68736D59CB64B /* MelissaPlaylistComponent.cpp */,
+				828F76474E578B99BD0DA6F1 /* MelissaPlaylistComponent.h */,
+				61F476962952865E295FD76C /* MelissaPopupMessageComponent.cpp */,
+				78B473A6121E9F0E381259AE /* MelissaPopupMessageComponent.h */,
+				927DA09AE3863577C7CDB82B /* MelissaPracticeTableListBox.cpp */,
+				0249BA535092C57F047E6C28 /* MelissaPracticeTableListBox.h */,
+				46A30663B572633057B2C56E /* MelissaScrollLabel.h */,
+				17F9DDCCDEC325AEF5D2C4AB /* MelissaSectionComponent.cpp */,
+				807993B371654619CFD050E8 /* MelissaSectionComponent.h */,
+				E81F8550BA919ACAE5DE3F36 /* MelissaShortcutComponent.cpp */,
+				71AE6321C8817AB4BF3C47CF /* MelissaShortcutComponent.h */,
+				D204294F1254F465099C2195 /* MelissaSimpleTextButton.h */,
+				8B68B05E7B257CAF276A438A /* MelissaStemControlComponent.cpp */,
+				32E4821CC91F78B5B5D61C7E /* MelissaStemControlComponent.h */,
+				625672856E76F41C73194C31 /* MelissaTapTempoButton.cpp */,
+				224D49FB04ECD9CD6597107E /* MelissaTapTempoButton.h */,
+				A2DF221FA117A018622650FE /* MelissaTextEditorWithClearButton.cpp */,
+				BEC30CA4B2BA09B2C5C2FDC1 /* MelissaTextEditorWithClearButton.h */,
+				E5A6A49F27E7432F239F38A5 /* MelissaTutorialComponent.cpp */,
+				A0ECA12BA582B37E92A34DD4 /* MelissaTutorialComponent.h */,
+				A916EA0CC5B679D5114CD5A4 /* MelissaUISettings.h */,
+				5652F3447D1F8C5D06612CF0 /* MelissaWaveformControlComponent.cpp */,
+				30B628164F17034804052838 /* MelissaWaveformControlComponent.h */,
+				F5CEF8B6ECEE400B53FF2F6B /* MelissaWaveformMouseEventComponent.cpp */,
+				58913A64B8E50A6793485B19 /* MelissaWaveformMouseEventComponent.h */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		E9F1721F868F6EDA77B7EEF1 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				81C9A9371BCDBAB216CF9161 /* Audio */,
+				D8C159D31E79B80232605A8E /* UI */,
+				E0022DE096EA0A2555525336 /* Main.cpp */,
+				8B5ECC6FEB266AC44E0AD085 /* MainComponent.cpp */,
+				7DB3FA961B82C5850511F344 /* MainComponent.h */,
+				365A70CEBCC6391C83AE6829 /* MelissaCommand.cpp */,
+				3B586F66BA22343B4A1D9EB9 /* MelissaCommand.h */,
+				1154B99B3025E87A98FFF592 /* MelissaDataSource.cpp */,
+				210A1DA5E03575B5A9FF573C /* MelissaDataSource.h */,
+				118250456F3709AFF506312B /* MelissaDefinitions.cpp */,
+				38A040D0A1F0D1803CCF1F11 /* MelissaDefinitions.h */,
+				09F37A665062134CF5156B7A /* MelissaHost.h */,
+				BDF53083067F357058F3242A /* MelissaModel.cpp */,
+				8AEE364B8B4952A6E328FE69 /* MelissaModel.h */,
+				324721A9C78446C180AC5CFC /* MelissaModelListener.h */,
+				4C72634207CF42DF40D9FC6C /* MelissaShortcutManager.cpp */,
+				70185ADDBBAB480111301F02 /* MelissaShortcutManager.h */,
+				8D2F4BC886EF77187492F33C /* MelissaStemProvider.cpp */,
+				AB98697757FB5E6343603CC8 /* MelissaStemProvider.h */,
+				FB05A2A1084A604EFF66580B /* MelissaUpdateChecker.cpp */,
+				161542B93902667D513ED89F /* MelissaUpdateChecker.h */,
+				179FF253516DCC9C6ED1A7AC /* MelissaUtility.h */,
+				37DD527A83BD17D8412F07A5 /* soundtouch_config.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		FC433FEB96CD91D34995DD49 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EEE2A8215A773AA21AD890B7 /* Info-App.plist */,
+				C973B7EC7C18B6B37A6C8048 /* Images.xcassets */,
+				BDC6F084738E97E28EA1D440 /* LaunchScreen.storyboard */,
+				5AD5CF8D800B5B0E27F0B1E7 /* Icon.icns */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B20050DB0486B13C02459057 /* Melissa Lite - App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20AE2A0A8D44CB865E2F71A1 /* Build configuration list for PBXNativeTarget "Melissa Lite - App" */;
+			buildPhases = (
+				1DC77948689B1C07DFF16DF3 /* Resources */,
+				2B72516B4107BC7E5C3B2921 /* Sources */,
+				F93666C4182C981FDE875C0E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Melissa Lite - App";
+			productName = "Melissa Lite";
+			productReference = 12F5EBD39C0AEA820759125A /* Melissa Lite.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7B6AAFAA6062749FBB12FE1E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1340;
+				ORGANIZATIONNAME = "Melissa Audio";
+				TargetAttributes = {
+					B20050DB0486B13C02459057 = {
+						DevelopmentTeam = Q255T75HNZ;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.HardenedRuntime = {
+								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.InterAppAudio = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 0;
+							};
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = 28BFF5D5269E332022533CCA /* Build configuration list for PBXProject "Melissa Lite" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 454B512F8D7421B1A06E0813 /* Source */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B20050DB0486B13C02459057 /* Melissa Lite - App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1DC77948689B1C07DFF16DF3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8493D71EE7F7F7AA9D02EBE9 /* Images.xcassets in Resources */,
+				57058C62FA42EFA317968C29 /* LaunchScreen.storyboard in Resources */,
+				412D6B54F5EA5EACD92E7889 /* Icon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B72516B4107BC7E5C3B2921 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E83E52C21959AB217DA00237 /* AAFilter.cpp in Sources */,
+				E8902BCAA320F4EDE9F0D680 /* cpu_detect_x86.cpp in Sources */,
+				F2D8693709479DA3FB30D6DA /* FIFOSampleBuffer.cpp in Sources */,
+				2B4A677E0F59FDFBCD2AFA3C /* FIRFilter.cpp in Sources */,
+				895989632B25581509DFD427 /* InterpolateCubic.cpp in Sources */,
+				8BEDC2B143E7A8948072D595 /* InterpolateLinear.cpp in Sources */,
+				075D7C914F4DF05DC4E9C3F3 /* InterpolateShannon.cpp in Sources */,
+				D158F39FDC77A9BEFEBC2AE7 /* mmx_optimized.cpp in Sources */,
+				1F4B23233E3BAF0D09A5A823 /* PeakFinder.cpp in Sources */,
+				5875A312AE1FD93EFDD6C5B2 /* RateTransposer.cpp in Sources */,
+				67E9DFA725DA86BE96C458C6 /* SoundTouch.cpp in Sources */,
+				3B7BB5395694096D0158A7CA /* sse_optimized.cpp in Sources */,
+				AA95AFC8D02F02488B1A4862 /* TDStretch.cpp in Sources */,
+				2ADD7B3451197E7C4F96554D /* BPMDetect_for_Melissa.cpp in Sources */,
+				A167031DAC38F945B3411F6B /* MelissaAudioEngine.cpp in Sources */,
+				0B30FC6CA34EF3E6CDDF202B /* MelissaBPMDetector.cpp in Sources */,
+				A4FB3462FB96C2053F869D74 /* MelissaMetronome.cpp in Sources */,
+				F9D08D99A2B91136A0CA67C8 /* MelissaCommandComboBox.cpp in Sources */,
+				8AF22E42C94FAED67A8A4B1F /* MelissaDoubleClickEditLabel.h in Sources */,
+				64D48F26F8F022435D1BC389 /* MelissaLoopRangeComponent.cpp in Sources */,
+				B10B96D736060A14967B7BB2 /* MelissaMarkerListBox.cpp in Sources */,
+				9C5FF2DE104519CF99E3154B /* MelissaMarkerMemoComponent.cpp in Sources */,
+				127C2F67F6FA0212E6630686 /* MelissaModalDialog.cpp in Sources */,
+				5BAB4F813EBE25910F69AA5F /* MelissaPlaylistComponent.cpp in Sources */,
+				ECD24A5B856CBBC63683F317 /* MelissaPopupMessageComponent.cpp in Sources */,
+				B94DC91C8ECFB96800E40D09 /* MelissaPracticeTableListBox.cpp in Sources */,
+				C90804D8EDB5B93EFC4E1826 /* MelissaSectionComponent.cpp in Sources */,
+				777867DBCD088F52A2E76552 /* MelissaShortcutComponent.cpp in Sources */,
+				162B74503058663B3EF7C17C /* MelissaStemControlComponent.cpp in Sources */,
+				F11EA8687D4B1F9B92773FF8 /* MelissaTapTempoButton.cpp in Sources */,
+				1A2571D48424EF4DF1C6A585 /* MelissaTextEditorWithClearButton.cpp in Sources */,
+				9FE8611ABC9F2F01AD266E47 /* MelissaTutorialComponent.cpp in Sources */,
+				3D1727854A91536C49C120B4 /* MelissaWaveformControlComponent.cpp in Sources */,
+				EE391804501D5AF557FD4441 /* MelissaWaveformMouseEventComponent.cpp in Sources */,
+				D6586EDA4CA12166154D5122 /* Main.cpp in Sources */,
+				4F67E813DDF1808BC71035E6 /* MainComponent.cpp in Sources */,
+				2625DB27292964FA96F88BEC /* MelissaCommand.cpp in Sources */,
+				18B4FC090AE11D65E7ECEBFD /* MelissaDataSource.cpp in Sources */,
+				3C252E4AF404E4EF2D87BAE9 /* MelissaDefinitions.cpp in Sources */,
+				A44E4A1D05FC2F0C5ECB7EFB /* MelissaModel.cpp in Sources */,
+				0C5829052AB3985A6CCF7B05 /* MelissaShortcutManager.cpp in Sources */,
+				664F9D73CE61988D2A58BF2D /* MelissaStemProvider.cpp in Sources */,
+				EF2C8DE85D3AF37C5D32F6F5 /* MelissaUpdateChecker.cpp in Sources */,
+				EE48BA0FD6F2B7B1BEF6F3A7 /* BinaryData.cpp in Sources */,
+				50361DE208C85E532BB64F9B /* include_juce_audio_basics.mm in Sources */,
+				E415B2B4C6F536769AB00B93 /* include_juce_audio_devices.mm in Sources */,
+				59017FB25AC3FD9FD315F4FE /* include_juce_audio_formats.mm in Sources */,
+				8E35AC712F3C2496D0D2CCA8 /* include_juce_audio_processors.mm in Sources */,
+				49DA24705E2E1B726C21C9CA /* include_juce_audio_processors_ara.cpp in Sources */,
+				DB23C248F08E0E520A607645 /* include_juce_audio_processors_lv2_libs.cpp in Sources */,
+				68DF92CC9249CCE36E9FF05F /* include_juce_audio_utils.mm in Sources */,
+				563E221C1A262A69166524A7 /* include_juce_core.mm in Sources */,
+				5499BBAE8C2E13369E765F4B /* include_juce_cryptography.mm in Sources */,
+				AD28CD655271922AAA8DE2E2 /* include_juce_data_structures.mm in Sources */,
+				D775B92926C22F7BB4D26120 /* include_juce_events.mm in Sources */,
+				9088C60BB70F14F430A569AA /* include_juce_graphics.mm in Sources */,
+				B492261B813CA2006AEC969C /* include_juce_gui_basics.mm in Sources */,
+				2A2EA1B1C6B90CBE8F64071B /* include_juce_gui_extra.mm in Sources */,
+				2E7A9D28DBFE18122B717166 /* include_juce_opengl.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		03EC51ABB28F80965BFA5DD2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_NAME = "Melissa Lite";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WARNING_CFLAGS = "-Wreorder";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		9EC503FB843014E7D842E837 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = Q255T75HNZ;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
+					"DEBUG=1",
+					"JUCE_IN_APP_PURCHASES=1",
+					"JUCE_CONTENT_SHARING=1",
+					_USE_MATH_DEFINES,
+					"JUCER_XCODE_IPHONE_B836CE66=1",
+					"JUCE_APP_VERSION=3.0.0",
+					"JUCE_APP_VERSION_HEX=0x30000",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(HOME)/Develop/JUCE/modules",
+					"$(SRCROOT)/../../../Submodule/soundtouch/include",
+					"$(SRCROOT)/../../../Submodule/soundtouch/source/SoundTouch",
+					"$(SRCROOT)/../../../Submodule/json/single_include",
+					"$(SRCROOT)/../../../Source",
+					"$(SRCROOT)/../../../Source/Audio",
+					"$(SRCROOT)/../../../Source/Audio/soundtouch",
+					"$(SRCROOT)/../../../Source/UI",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Info-App.plist";
+				INFOPLIST_PREPROCESS = NO;
+				INSTALL_PATH = "$(HOME)/Applications";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(HOME)/Develop/JUCE/modules $(SRCROOT)/../../../Submodule/soundtouch/include $(SRCROOT)/../../../Submodule/soundtouch/source/SoundTouch $(SRCROOT)/../../../Submodule/json/single_include $(SRCROOT)/../../../Source $(SRCROOT)/../../../Source/Audio $(SRCROOT)/../../../Source/Audio/soundtouch $(SRCROOT)/../../../Source/UI";
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Metal,
+					"-weak_framework",
+					MetalKit,
+					"-weak_framework",
+					UserNotifications,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.melissa-audio.melissa-lite";
+				PRODUCT_NAME = "Melissa Lite";
+				USE_HEADERMAP = NO;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
+			};
+			name = Debug;
+		};
+		B572681B2FC3CF0EA18839D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = Q255T75HNZ;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"JUCE_IN_APP_PURCHASES=1",
+					"JUCE_CONTENT_SHARING=1",
+					_USE_MATH_DEFINES,
+					"JUCER_XCODE_IPHONE_B836CE66=1",
+					"JUCE_APP_VERSION=3.0.0",
+					"JUCE_APP_VERSION_HEX=0x30000",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(HOME)/Develop/JUCE/modules",
+					"$(SRCROOT)/../../../Submodule/soundtouch/include",
+					"$(SRCROOT)/../../../Submodule/soundtouch/source/SoundTouch",
+					"$(SRCROOT)/../../../Submodule/json/single_include",
+					"$(SRCROOT)/../../../Source",
+					"$(SRCROOT)/../../../Source/Audio",
+					"$(SRCROOT)/../../../Source/Audio/soundtouch",
+					"$(SRCROOT)/../../../Source/UI",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Info-App.plist";
+				INFOPLIST_PREPROCESS = NO;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LLVM_LTO = YES;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(HOME)/Develop/JUCE/modules $(SRCROOT)/../../../Submodule/soundtouch/include $(SRCROOT)/../../../Submodule/soundtouch/source/SoundTouch $(SRCROOT)/../../../Submodule/json/single_include $(SRCROOT)/../../../Source $(SRCROOT)/../../../Source/Audio $(SRCROOT)/../../../Source/Audio/soundtouch $(SRCROOT)/../../../Source/UI";
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Metal,
+					"-weak_framework",
+					MetalKit,
+					"-weak_framework",
+					UserNotifications,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.melissa-audio.melissa-lite";
+				PRODUCT_NAME = "Melissa Lite";
+				USE_HEADERMAP = NO;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
+			};
+			name = Release;
+		};
+		E4597C077E043EF486C71E3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "Melissa Lite";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WARNING_CFLAGS = "-Wreorder";
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		20AE2A0A8D44CB865E2F71A1 /* Build configuration list for PBXNativeTarget "Melissa Lite - App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9EC503FB843014E7D842E837 /* Debug */,
+				B572681B2FC3CF0EA18839D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		28BFF5D5269E332022533CCA /* Build configuration list for PBXProject "Melissa Lite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03EC51ABB28F80965BFA5DD2 /* Release */,
+				E4597C077E043EF486C71E3F /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7B6AAFAA6062749FBB12FE1E /* Project object */;
+}

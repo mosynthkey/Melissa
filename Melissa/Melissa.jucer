@@ -4,8 +4,8 @@
               headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Source&#10;../../../Source/Audio&#10;../../../Source/Audio/soundtouch&#10;../../../Source/UI"
               version="3.1.0" companyName="Melissa Audio" companyCopyright="Copyright(c) 2023 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.melissa-audio.melissa"
-              compilerFlagSchemes="" defines="_USE_MATH_DEFINES" displaySplashScreen="1"
-              jucerFormatVersion="1">
+              compilerFlagSchemes="" defines="_USE_MATH_DEFINES&#10;MELISSA_FULL_VERSION"
+              displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
       <GROUP id="{C5AC6B22-7389-6732-F819-CB34CCC7D946}" name="Icon">
