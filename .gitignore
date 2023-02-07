@@ -43,3 +43,4 @@ Installer/macOS_Lite/Makefile
 
 # ThirdParty
 ThirdParty/asio/*
+ThirdParty/GoogleMobileAdsSdkiOS-10.0.0
