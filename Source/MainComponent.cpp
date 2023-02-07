@@ -11,6 +11,7 @@
 #include "MelissaBPMSettingComponent.h"
 #include "MelissaDefinitions.h"
 #include "MelissaInputDialog.h"
+#include "MelissaMobileSupport.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaShortcutComponent.h"
 #include "MelissaStemProvider.h"
@@ -1234,16 +1235,23 @@ void MainComponent::createUI()
     tooltipWindow_->setLookAndFeel(&laf_);
     tooltipWindow_->setMillisecondsBeforeTipAppears(1000);
     
+#ifdef JUCE_IOS
+    importButton_ = std::make_unique<TextButton>();
+    importButton_->setButtonText(TRANS("import"));
+    importButton_->onClick = [&]()
+    {
+        showFileChooser();
+    };
+    addAndMakeVisible(importButton_.get());
+#endif
+    
     updateSpeedModeTab(kSpeedModeTab_Basic);
     updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
     
     waveformComponent_->setMarkerListener(this);
     
-    if (!isFullVersion)
-    {
-        stemControlComponent_->setVisible(false);
-    }
+    if (!isFullVersion) stemControlComponent_->setVisible(false);
 }
 
 void MainComponent::showFileChooser()
@@ -1251,9 +1259,16 @@ void MainComponent::showFileChooser()
     fileChooser_ = std::make_unique<FileChooser>("Open", File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
     fileChooser_->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [&, this] (const FileChooser& chooser) {
         auto fileUrl = chooser.getURLResult();
+
         if (fileUrl.isLocalFile())
         {
+            
+#ifdef JUCE_IOS
+            // Copy this file to sandbox
+            dataSource_->loadFileAsync(MelissaMobileSupport::importFile(fileUrl).getFullPathName());
+#else
             dataSource_->loadFileAsync(fileUrl.getLocalFile().getFullPathName());
+#endif
         }
     });
 }
@@ -1587,6 +1602,10 @@ void MainComponent::resized()
     }
     
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
+    
+#ifdef JUCE_IOS
+    importButton_->setBounds(10, headerComponent_->getBottom() + 10, 100, 30);
+#endif
     
     MelissaModalDialog::resize();
 }
