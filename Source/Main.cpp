@@ -11,6 +11,12 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MainComponent.h"
 
+using namespace juce;
+
+#ifdef JUCE_IOS
+#include "MelissaAd.h"
+#endif
+
 //==============================================================================
 class MelissaApplication  : public JUCEApplication
 {
@@ -33,6 +39,11 @@ public:
         mainWindow->setAlwaysOnTop(true);
         mainWindow->setWantsKeyboardFocus(true);
         mainWindow->setAlwaysOnTop(false);
+        
+        
+#ifdef JUCE_IOS
+    MelissaAd::initialize();
+#endif
     }
 
     void shutdown() override
@@ -87,6 +98,7 @@ public:
             centreWithSize (getWidth(), getHeight());
             setResizeLimits(1300, 680, 32768, 32768);
            #endif
+
 
             setVisible (true);
         }

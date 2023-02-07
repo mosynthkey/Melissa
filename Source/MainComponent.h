@@ -350,6 +350,7 @@ private:
     
 #ifdef JUCE_IOS
     std::unique_ptr<TextButton> importButton_;
+    std::unique_ptr<UIViewComponent> adComponent_;
 #endif
     
     MelissaLookAndFeel laf_;
