@@ -348,6 +348,10 @@ private:
     std::array<std::pair<String, Component*>, kNumOfLabels> labelInfo_;
     std::unique_ptr<Label> labels_[kNumOfLabels];
     
+#ifdef JUCE_IOS
+    std::unique_ptr<TextButton> importButton_;
+#endif
+    
     MelissaLookAndFeel laf_;
     MelissaLookAndFeel_FileBrowser browserLaf_;
     MelissaLookAndFeel_Tab tabLaf_;
