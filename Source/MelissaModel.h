@@ -148,7 +148,7 @@ private:
     float playingPosRatio_;
     float bpm_, beatPositionMSec_;
     int accent_;
-    String filePath_;
+    juce::String filePath_;
     OutputMode outputMode_;
     bool eqSwitch_;
     float eqFreq_;

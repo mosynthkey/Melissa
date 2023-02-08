@@ -11,6 +11,8 @@
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaMarkerMemoComponent::MelissaMarkerMemoComponent()
 {
     dataSource_ = MelissaDataSource::getInstance();

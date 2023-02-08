@@ -9,6 +9,8 @@
 #include "MelissaDoubleClickEditLabel.h"
 #include "MelissaPracticeTableListBox.h"
 
+using namespace juce;
+
 class LoopRangeComponent : public Component
 {
 public:

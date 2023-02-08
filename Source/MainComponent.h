@@ -42,6 +42,10 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
+#ifdef JUCE_IOS
+#include "MelissaMobileSupport.h"
+#endif
+
 enum SpeedModeTab
 {
     kSpeedModeTab_Basic,
@@ -64,25 +68,25 @@ enum ListMemoTab
     kListMemoTab_Memo
 };
 
-class MainComponent   : public AudioAppComponent,
-                        public ChangeListener,
-                        public FileDragAndDropTarget,
-                        public FileBrowserListener,
-                        public KeyListener,
+class MainComponent   : public juce::AudioAppComponent,
+                        public juce::ChangeListener,
+                        public juce::FileDragAndDropTarget,
+                        public juce::FileBrowserListener,
+                        public juce::KeyListener,
                         public MelissaDataSourceListener,
                         public MelissaHost,
                         public MelissaMarkerListener,
                         public MelissaModelListener,
                         public MelissaShortcutListener,
                         public MelissaStemProviderListener,
-                        public MenuBarModel,
-                        public MidiInputCallback,
-                        public Timer,
-                        public Thread,
-                        public Thread::Listener
+                        public juce::MenuBarModel,
+                        public juce::MidiInputCallback,
+                        public juce::Timer,
+                        public juce::Thread,
+                        public juce::Thread::Listener
 {
 public:
-    MainComponent(const String& commandLine = "");
+    MainComponent(const juce::String& commandLine = "");
     ~MainComponent();
     
     void createUI();
@@ -90,41 +94,41 @@ public:
     
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     void resized() override;
     
     // ChangeListener
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(juce::ChangeBroadcaster* source) override;
     
     // FileDragAndDropTarget
-    bool isInterestedInFileDrag(const StringArray &files) override;
-    void filesDropped(const StringArray& files, int x, int y) override;
+    bool isInterestedInFileDrag(const juce::StringArray &files) override;
+    void filesDropped(const juce::StringArray& files, int x, int y) override;
     
     // FileBrowserListener
     void selectionChanged() override {};
-    void fileClicked(const File& file, const MouseEvent& e) override {}
-    void fileDoubleClicked(const File& file) override;
-    void browserRootChanged(const File& newRoot) override;
+    void fileClicked(const juce::File& file, const juce::MouseEvent& e) override {}
+    void fileDoubleClicked(const juce::File& file) override;
+    void browserRootChanged(const juce::File& newRoot) override;
     
     // KeyListener
-    bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
+    bool keyPressed(const juce::KeyPress& key, Component* originatingComponent) override;
     
     // Melissa
     void closeTutorial() override;
     
     // MelissaDataSourceListener
-    void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
-    void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) override;
+    void songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate) override;
+    void fileLoadStatusChanged(FileLoadStatus status, const juce::String& filePath) override;
     
     // MenuBarModel
-    StringArray getMenuBarNames() override;
-    PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
+    juce::StringArray getMenuBarNames() override;
+    juce::PopupMenu getMenuForIndex (int topLevelMenuIndex, const juce::String& menuName) override;
     void menuItemSelected (int menuItemID, int topLevelMenuIndex) override;
     
     // MidiInputCallback
-    void handleIncomingMidiMessage(MidiInput *source, const MidiMessage &message) override;
+    void handleIncomingMidiMessage(juce::MidiInput *source, const juce::MidiMessage &message) override;
 
     // Thread
     void run() override;
@@ -132,7 +136,7 @@ public:
     // Thread
     void exitSignalSent() override;
     
-    // Timer
+    // juce::Timer
     void timerCallback() override;
     
     void updatePlayBackModeButton();
@@ -145,7 +149,7 @@ public:
     void resetLoop();
     void saveMemo();
     
-    var getSongSetting(String fileName);
+    juce::var getSongSetting(juce::String fileName);
     void showAudioMidiSettingsDialog();
     void showShortcutDialog();
     void showAboutDialog();
@@ -166,54 +170,54 @@ private:
     bool shouldUpdateBpm_;
     MelissaDataSource::Previous::UIState uiState_;
     
-    std::shared_ptr<AudioSampleBuffer> audioSampleBuf_;
+    std::shared_ptr<juce::AudioSampleBuffer> audioSampleBuf_;
     float mainVolume_;
     
     class HeaderComponent;
     std::unique_ptr<HeaderComponent> headerComponent_;
     
     std::unique_ptr<MelissaPlayPauseButton> playPauseButton_;
-    std::unique_ptr<DrawableButton> prevButton_;
-    std::unique_ptr<DrawableButton> nextButton_;
-    std::unique_ptr<DrawableButton> playbackModeButton_;
-    std::unique_ptr<Label> timeLabel_;
-    std::unique_ptr<Label> fileNameLabel_;
+    std::unique_ptr<juce::DrawableButton> prevButton_;
+    std::unique_ptr<juce::DrawableButton> nextButton_;
+    std::unique_ptr<juce::DrawableButton> playbackModeButton_;
+    std::unique_ptr<juce::Label> timeLabel_;
+    std::unique_ptr<juce::Label> fileNameLabel_;
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
-    std::unique_ptr<Slider> mainVolumeSlider_;
+    std::unique_ptr<juce::Slider> mainVolumeSlider_;
     
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     
     std::unique_ptr<MelissaPopupMessageComponent> popupMessage_;
     
-    std::unique_ptr<PopupMenu> extraAppleMenuItems_;
-    std::unique_ptr<MenuBarComponent> menuBar_;
+    std::unique_ptr<juce::PopupMenu> extraAppleMenuItems_;
+    std::unique_ptr<juce::MenuBarComponent> menuBar_;
     
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaMarkerMemoComponent> markerMemoComponent_;
-    std::unique_ptr<Label> controlComponent_;
+    std::unique_ptr<juce::Label> controlComponent_;
     class RoundedComponent;
     std::unique_ptr<RoundedComponent> fileComponent_;
     std::unique_ptr<RoundedComponent> listComponent_;
     
 
 
-    std::unique_ptr<ToggleButton> metronomeOnOffButton_;
+    std::unique_ptr<juce::ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> accentPositionButton_;
     std::unique_ptr<MelissaIncDecButton> accentButton_;
     
-    std::unique_ptr<Slider> musicVolumeSlider_;
-    std::unique_ptr<Slider> volumeBalanceSlider_;
-    std::unique_ptr<Slider> metronomeVolumeSlider_;
+    std::unique_ptr<juce::Slider> musicVolumeSlider_;
+    std::unique_ptr<juce::Slider> volumeBalanceSlider_;
+    std::unique_ptr<juce::Slider> metronomeVolumeSlider_;
     
     std::unique_ptr<MelissaIncDecButton> aButton_;
     std::unique_ptr<MelissaIncDecButton> bButton_;
-    std::unique_ptr<DrawableButton> aResetButton_;
-    std::unique_ptr<DrawableButton> bResetButton_;
-    std::unique_ptr<TextButton> resetButton_;
+    std::unique_ptr<juce::DrawableButton> aResetButton_;
+    std::unique_ptr<juce::DrawableButton> bResetButton_;
+    std::unique_ptr<juce::TextButton> resetButton_;
     
     enum
     {
@@ -238,8 +242,8 @@ private:
         kColorInfo_WhiteToMain,
     };
     
-    std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
-    std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
+    std::unique_ptr<juce::Drawable> iconImages_[kNumOfIcons];
+    std::unique_ptr<juce::Drawable> iconHighlightedImages_[kNumOfIcons];
     ColorInfo iconColorInfo_[kNumOfIcons];
     
 #if defined(ENABLE_SPEED_TRAINING)
@@ -253,9 +257,9 @@ private:
 #endif
     
     std::unique_ptr<MelissaIncDecButton> speedButton_;
-    std::unique_ptr<Viewport> speedPresetViewport_;
+    std::unique_ptr<juce::Viewport> speedPresetViewport_;
     std::unique_ptr<Component> speedPresetComponent_;
-    std::unique_ptr<TextButton> speedPresetButtons_[kNumOfSpeedPresets];
+    std::unique_ptr<juce::TextButton> speedPresetButtons_[kNumOfSpeedPresets];
 
 #if defined(ENABLE_SPEED_TRAINING)
     class SlashComponent;
@@ -274,38 +278,38 @@ private:
         EqBandMid1,
         kNumOfEqBands
     };
-    std::unique_ptr<ToggleButton> eqSwitchButton_;
-    std::unique_ptr<Slider> eqFreqKnobs_[kNumOfEqBands];
-    std::unique_ptr<Slider> eqQKnobs_[kNumOfEqBands];
-    std::unique_ptr<Slider> eqGainKnobs_[kNumOfEqBands];
+    std::unique_ptr<juce::ToggleButton> eqSwitchButton_;
+    std::unique_ptr<juce::Slider> eqFreqKnobs_[kNumOfEqBands];
+    std::unique_ptr<juce::Slider> eqQKnobs_[kNumOfEqBands];
+    std::unique_ptr<juce::Slider> eqGainKnobs_[kNumOfEqBands];
     class QIconComponent;
     std::unique_ptr<QIconComponent> qIconComponents_[2];
-    std::unique_ptr<Label> knobLabels_[kNumOfEqBands * 3];
+    std::unique_ptr<juce::Label> knobLabels_[kNumOfEqBands * 3];
     
-    std::unique_ptr<ToggleButton> browseToggleButton_;
-    std::unique_ptr<ToggleButton> playlistToggleButton_;
-    std::unique_ptr<ToggleButton> historyToggleButton_;
-    std::unique_ptr<WildcardFileFilter> wildCardFilter_;
-    std::unique_ptr<FileBrowserComponent> fileBrowserComponent_;
+    std::unique_ptr<juce::ToggleButton> browseToggleButton_;
+    std::unique_ptr<juce::ToggleButton> playlistToggleButton_;
+    std::unique_ptr<juce::ToggleButton> historyToggleButton_;
+    std::unique_ptr<juce::WildcardFileFilter> wildCardFilter_;
+    std::unique_ptr<juce::FileBrowserComponent> fileBrowserComponent_;
     std::unique_ptr<MelissaFileListBox> historyTable_;
     
-    std::unique_ptr<ToggleButton> practiceListToggleButton_;
-    std::unique_ptr<ToggleButton> markerListToggleButton_;
-    std::unique_ptr<ToggleButton> memoToggleButton_;
-    std::unique_ptr<TextEditor> memoTextEditor_;
-    std::unique_ptr<DrawableButton> addToPracticeButton_;
+    std::unique_ptr<juce::ToggleButton> practiceListToggleButton_;
+    std::unique_ptr<juce::ToggleButton> markerListToggleButton_;
+    std::unique_ptr<juce::ToggleButton> memoToggleButton_;
+    std::unique_ptr<juce::TextEditor> memoTextEditor_;
+    std::unique_ptr<juce::DrawableButton> addToPracticeButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
-    std::unique_ptr<DrawableButton> practiceListUpButton_;
-    std::unique_ptr<DrawableButton> practiceListDownButton_;
-    std::unique_ptr<DrawableButton> addMarkerButton_;
+    std::unique_ptr<juce::DrawableButton> practiceListUpButton_;
+    std::unique_ptr<juce::DrawableButton> practiceListDownButton_;
+    std::unique_ptr<juce::DrawableButton> addMarkerButton_;
     std::unique_ptr<MelissaMarkerListBox> markerTable_;
     
-    std::unique_ptr<ComboBox> outputModeComboBox_;
+    std::unique_ptr<juce::ComboBox> outputModeComboBox_;
     
     std::unique_ptr<MelissaPlaylistComponent> playlistComponent_;
     std::unique_ptr<MelissaModalDialog> modalDialog_;
     
-    std::unique_ptr<FileChooser> fileChooser_;
+    std::unique_ptr<juce::FileChooser> fileChooser_;
     
     enum
     {
@@ -345,12 +349,12 @@ private:
         kNumOfLabels
     };
     
-    std::array<std::pair<String, Component*>, kNumOfLabels> labelInfo_;
-    std::unique_ptr<Label> labels_[kNumOfLabels];
+    std::array<std::pair<juce::String, Component*>, kNumOfLabels> labelInfo_;
+    std::unique_ptr<juce::Label> labels_[kNumOfLabels];
     
 #ifdef JUCE_IOS
-    std::unique_ptr<TextButton> importButton_;
-    std::unique_ptr<UIViewComponent> adComponent_;
+    std::unique_ptr<juce::TextButton> importButton_;
+    std::unique_ptr<MelissaAdComponent> adComponent_;
 #endif
     
     MelissaLookAndFeel laf_;
@@ -365,22 +369,22 @@ private:
     MelissaLookAndFeel_SimpleTextEditor simpleTextEditorLaf_;
     std::vector<Component*> lafList_;
     
-    String fileName_, fileFullPath_;
-    File settingsDir_, settingsFile_;
+    juce::String fileName_, fileFullPath_;
+    juce::File settingsDir_, settingsFile_;
     bool nextFileNameShown_;    
     bool shouldExit_;
     bool isLangJapanese_;
     bool requestedKeyboardFocusOnFirstLaunch_;
     
-    std::unique_ptr<TooltipWindow> tooltipWindow_;
+    std::unique_ptr<juce::TooltipWindow> tooltipWindow_;
     
     std::vector<float> timeIndicesMSec_;
     
     bool prepareingNextSong_;
     void loadPrevSong();
     void loadNextSong();
-    String getPrevSongFilePath();
-    String getNextSongFilePath();
+    juce::String getPrevSongFilePath();
+    juce::String getNextSongFilePath();
     
     // MelissaModelListener
     void musicVolumeChanged(float volume) override;
@@ -389,7 +393,7 @@ private:
     void playPartChanged(PlayPart playPart) override;
     
     // MelissaShortcutListener
-    void controlMessageReceived(const String& controlMessage) override;
+    void controlMessageReceived(const juce::String& controlMessage) override;
     
     // MelissaStemProviderListener
     void stemProviderStatusChanged(StemProviderStatus status) override;

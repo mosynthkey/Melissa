@@ -14,6 +14,19 @@ class MelissaMobileSupport
 public:
     MelissaMobileSupport() {}
     
-    static File importFile(const URL& fileUrl);
+    static juce::File importFile(const juce::URL& fileUrl);
     
+};
+
+class MelissaAdComponent : public juce::Component
+{
+public:
+    MelissaAdComponent();
+    ~MelissaAdComponent();
+    
+    void resized() override;
+    void paint(juce::Graphics& g) override;
+    
+private:
+    juce::UIViewComponent uiViewComponent;
 };

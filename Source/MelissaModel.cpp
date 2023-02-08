@@ -9,6 +9,8 @@
 #include "MelissaModel.h"
 #include "MelissaStemProvider.h"
 
+using namespace juce;
+
 MelissaModel MelissaModel::instance_;
 
 void MelissaModel::setLengthMSec(float lengthMSec)

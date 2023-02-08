@@ -10,10 +10,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaLookAndFeel.h"
 
-class MelissaDoubleClickEditLabel : public Label
+class MelissaDoubleClickEditLabel : public juce::Label
 {
 public:
-    MelissaDoubleClickEditLabel(TableListBoxModel* owner, int rowNumber, int columnId) : owner_(owner), rowNumber_(rowNumber), columnId_(columnId)
+    MelissaDoubleClickEditLabel(juce::TableListBoxModel* owner, int rowNumber, int columnId) : owner_(owner), rowNumber_(rowNumber), columnId_(columnId)
     {
         setLookAndFeel(&laf_);
         setEditable(false, true);
@@ -25,7 +25,7 @@ public:
         setLookAndFeel(nullptr);
     }
     
-    void mouseDown(const MouseEvent& event) override
+    void mouseDown(const juce::MouseEvent& event) override
     {
         owner_->cellClicked(rowNumber_, columnId_, event);
     }
@@ -45,7 +45,7 @@ public:
     int getColumnId() const { return columnId_; }
     
 private:
-    TableListBoxModel* owner_;
+    juce::TableListBoxModel* owner_;
     int rowNumber_;
     int columnId_;
     

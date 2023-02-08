@@ -15,7 +15,7 @@
 #include "MelissaModel.h"
 #include "MelissaWaveformMouseEventComponent.h"
 
-class MelissaWaveformControlComponent : public Component,
+class MelissaWaveformControlComponent : public juce::Component,
                                         public MelissaDataSourceListener,
                                         public MelissaWaveformMouseEventListener
 {
@@ -31,7 +31,7 @@ public:
     void setMarkerListener(MelissaMarkerListener* listener) { listener_ = listener; }
     
     // MelissaDataSourceListener
-    void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) override;
+    void songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate) override;
     void markerUpdated() override;
     
     // MelissaWaveformMouseEventListener
@@ -49,10 +49,10 @@ private:
     std::unique_ptr<MelissaLoopRangeComponent> loopRangeComponent_;
     std::unique_ptr<MelissaWaveformMouseEventComponent> mouseEventComponent_;
     
-    std::vector<std::unique_ptr<Label>> timeLabels_;
+    std::vector<std::unique_ptr<juce::Label>> timeLabels_;
     void arrangeTimeLabels() const;
     
-    std::unique_ptr<Label> posTooltip_;
+    std::unique_ptr<juce::Label> posTooltip_;
     float timeSec_;
     
     MelissaMarkerListener* listener_;

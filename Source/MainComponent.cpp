@@ -19,6 +19,8 @@
 #include "MelissaUtility.h"
 #include <float.h>
 
+using namespace juce;
+
 #ifdef MELISSA_USE_SPLEETER
 static constexpr bool isFullVersion = true;
 #else
@@ -1243,6 +1245,10 @@ void MainComponent::createUI()
         showFileChooser();
     };
     addAndMakeVisible(importButton_.get());
+    
+    adComponent_ = std::make_unique<MelissaAdComponent>();
+    addAndMakeVisible(adComponent_.get());
+    
 #endif
     
     updateSpeedModeTab(kSpeedModeTab_Basic);
@@ -1549,10 +1555,18 @@ void MainComponent::resized()
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
     }
     
+#ifdef JUCE_IOS
+    constexpr int kAdHeight = 90;
+#endif
+    
     // File component (Browser / Playlist / History)
     {
         int y = controlComponent_->getBottom() + kGradationHeight - 10;
+#ifdef JUCE_IOS
+        int h = (getHeight() - 10) - y - kAdHeight;
+#else
         int h = (getHeight() - 10) - y;
+#endif
         fileComponent_->setBounds(10, y, songWidth, h);
         int x = fileComponent_->getRight() + 10;
         listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
@@ -1605,6 +1619,7 @@ void MainComponent::resized()
     
 #ifdef JUCE_IOS
     importButton_->setBounds(10, headerComponent_->getBottom() + 10, 100, 30);
+    adComponent_->setBounds(0, getHeight() - kAdHeight, getWidth(), kAdHeight);
 #endif
     
     MelissaModalDialog::resize();

@@ -9,6 +9,8 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
+using namespace juce;
+
 class MelissaWaveformControlComponent::WaveformView : public Component,
                                                       public MelissaModelListener,
                                                       public MelissaWaveformMouseEventListener,

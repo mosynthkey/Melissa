@@ -7,6 +7,8 @@
 
 #include "MelissaShortcutManager.h"
 
+using namespace juce;
+
 MelissaShortcutManager MelissaShortcutManager::instance_;
 
 MelissaShortcutManager::MelissaShortcutManager() : enable_(true)

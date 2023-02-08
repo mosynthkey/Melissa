@@ -10,6 +10,8 @@
 #include "MelissaTextEditorWithClearButton.h"
 #include "MelissaUISettings.h"
 
+using namespace juce;
+
 MelissaTextEditorWithClearButton::MelissaTextEditorWithClearButton()
 {
     clearButtonDrawable_ = Drawable::createFromImageData(BinaryData::clear_svg, BinaryData::clear_svgSize);

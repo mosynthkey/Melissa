@@ -13,11 +13,11 @@
 #include "MelissaModelListener.h"
 #include "MelissaUISettings.h"
 
-class MelissaMenuButton : public Button
+class MelissaMenuButton : public juce::Button
 {
 public:
-    MelissaMenuButton() : Button(""), showBudge_(true) { }
-    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    MelissaMenuButton() : juce::Button(""), showBudge_(true) { }
+    void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         constexpr int lineHeight = 2;
         
@@ -30,7 +30,7 @@ public:
         
         if (showBudge_)
         {
-            g.setColour(Colours::red);
+            g.setColour(juce::Colours::red);
             g.fillEllipse(22, 0, 8, 8);
         }
     }
@@ -44,11 +44,11 @@ private:
     bool showBudge_;
 };
 
-class MelissaAddButton : public Button
+class MelissaAddButton : public juce::Button
 {
 public:
-    MelissaAddButton() : Button("") { }
-    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    MelissaAddButton() : juce::Button("") { }
+    void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         constexpr int lineThickness = 2;
         
@@ -67,11 +67,11 @@ public:
     }
 };
 
-class MelissaPlayPauseButton : public Button, public MelissaModelListener
+class MelissaPlayPauseButton : public juce::Button, public MelissaModelListener
 {
 public:
-    MelissaPlayPauseButton(const String& name = "") :
-    Button(name), drawPlayIcon_(true)
+    MelissaPlayPauseButton(const juce::String& name = "") :
+    juce::Button(name), drawPlayIcon_(true)
     {
         MelissaModel::getInstance()->addListener(this);
     }
@@ -83,7 +83,7 @@ public:
     }
     
 private:
-    void paintButton (Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void paintButton (juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const auto& b = getLocalBounds();
         
@@ -102,7 +102,7 @@ private:
             const int x0 = (w - triW) * 4.f / 7.f;
             const int y0 = (h - triH) / 2;
             
-            Path path;
+            juce::Path path;
             path.addTriangle (x0, y0, x0, y0 + triH, x0 + triW, h / 2);
             g.fillPath(path);
         }
@@ -119,18 +119,18 @@ private:
     bool drawPlayIcon_;
 };
 
-class CloseButton : public Button
+class CloseButton : public juce::Button
 {
 public:
-    CloseButton() : Button("")  { }
+    CloseButton() : juce::Button("")  { }
     ~CloseButton() { }
     
-    void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void paintButton(juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
         const int size = getWidth();
-        g.setColour(Colours::black.withAlpha(0.4f));
+        g.setColour(juce::Colours::black.withAlpha(0.4f));
         g.fillRoundedRectangle(0, 0, size, size, size / 5);
         
         if (highlighted)
@@ -140,34 +140,34 @@ public:
         }
         
         const int margin = 4;
-        g.setColour(Colours::white.withAlpha(0.8f));
+        g.setColour(juce::Colours::white.withAlpha(0.8f));
         g.drawLine(margin, margin, size - margin, size - margin);
         g.drawLine(margin, size - margin, size - margin, margin);
         
     }
 };
 
-class BackgroundButton : public Button
+class BackgroundButton : public juce::Button
 {
 public:
-    BackgroundButton() : Button("")  { }
+    BackgroundButton() : juce::Button("")  { }
     ~BackgroundButton() { }
-    void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override { }
+    void paintButton(juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override { }
 };
 
-class MelissaRoundButton : public Button
+class MelissaRoundButton : public juce::Button
 {
 public:
-    MelissaRoundButton(const String& title) : Button(""), title_(title)
+    MelissaRoundButton(const juce::String& title) : juce::Button(""), title_(title)
     {
         // default
         normalColour_ = MelissaUISettings::getAccentColour(0.6f);
         highlightedColour_ = downColour_ = MelissaUISettings::getAccentColour(1.f);
     }
     
-    void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void paintButton(juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        Colour colour = normalColour_;
+        juce::Colour colour = normalColour_;
         if (shouldDrawButtonAsDown)
         {
             colour = downColour_;
@@ -182,16 +182,16 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(font_);
-        g.drawText(title_, 0, 0, getWidth(), getHeight(), Justification::centred);
+        g.drawText(title_, 0, 0, getWidth(), getHeight(), juce::Justification::centred);
     }
 
-    void setFont(Font font)
+    void setFont(juce::Font font)
     {
         font_ = font;
         repaint();
     }
     
-    void setColour(Colour normalColour, Colour highlightedColour, Colour downColour)
+    void setColour(juce::Colour normalColour, juce::Colour highlightedColour, juce::Colour downColour)
     {
         normalColour_ = normalColour;
         highlightedColour_ = highlightedColour;
@@ -200,16 +200,17 @@ public:
     }
     
 private:
-    String title_;
-    Font font_;
-    Colour normalColour_, highlightedColour_, downColour_;
+    juce::String title_;
+    juce::Font font_;
+    juce::Colour normalColour_, highlightedColour_, downColour_;
 };
 
-class MelissaAudioDeviceButton : public Button
+class MelissaAudioDeviceButton : public juce::Button
 {
 public:
-    MelissaAudioDeviceButton() : Button(""), name_()
+    MelissaAudioDeviceButton() : juce::Button(""), name_()
     {
+        using namespace juce;
         normal_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
         normal_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
         
@@ -219,7 +220,7 @@ public:
     
     ~MelissaAudioDeviceButton() { }
     
-    void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
         {
@@ -232,17 +233,17 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour((shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(name_, 30, 0, getWidth() - 30, getHeight(), Justification::centred);
+        g.drawText(name_, 30, 0, getWidth() - 30, getHeight(), juce::Justification::centred);
     }
     
-    void setAudioDeviceName(const String& name)
+    void setAudioDeviceName(const juce::String& name)
     {
         name_ = name;
         repaint();
     }
     
 private:
-    String name_;
-    std::unique_ptr<Drawable> normal_;
-    std::unique_ptr<Drawable> highlighted_;
+    juce::String name_;
+    std::unique_ptr<juce::Drawable> normal_;
+    std::unique_ptr<juce::Drawable> highlighted_;
 };

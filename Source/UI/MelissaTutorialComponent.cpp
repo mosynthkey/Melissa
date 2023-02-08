@@ -11,6 +11,8 @@
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaTutorialComponent::MelissaTutorialComponent(MelissaHost* host) : host_(host), currentPage_(0)
 {
     setInterceptsMouseClicks(false, true);

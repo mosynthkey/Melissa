@@ -9,6 +9,8 @@
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaSectionComponent::MelissaSectionComponent(const String& title) :
 title_(title)
 {

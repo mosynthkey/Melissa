@@ -10,11 +10,12 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "BinaryData.h"
 
-class MelissaAboutComponent : public Component
+class MelissaAboutComponent : public juce::Component
 {
 public:
     MelissaAboutComponent()
     {
+        using namespace juce;
         setSize(600, 290);
         
         imageComponent_ = std::make_unique<ImageComponent>();
@@ -22,20 +23,20 @@ public:
         imageComponent_->setBounds(0, 0, 600, 200);
         addAndMakeVisible(imageComponent_.get());
         
-        copyrightLabel_ = std::make_unique<Label>();
+        copyrightLabel_ = std::make_unique<juce::Label>();
         copyrightLabel_->setJustificationType(Justification::right);
         copyrightLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         copyrightLabel_->setText("Copyright (c) 2023 Masaki Ono. All rights reserved.", dontSendNotification);
         copyrightLabel_->setBounds(0, 200, 600, 30);
         addAndMakeVisible(copyrightLabel_.get());
         
-        versionLabel_ = std::make_unique<Label>();
+        versionLabel_ = std::make_unique<juce::Label>();
         versionLabel_->setJustificationType(Justification::right);
         versionLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
 #ifdef MELISSA_FULL_VERSION
-        versionLabel_->setText(String("Version ") + ProjectInfo::versionString + String(" (Build: ") + __DATE__  + String(")"), dontSendNotification);
+        versionLabel_->setText(String("Version ") + ProjectInfo::versionString + juce::String(" (Build: ") + __DATE__  + juce::String(")"), dontSendNotification);
 #else
-        versionLabel_->setText(String("Version ") + ProjectInfo::versionString + String(" Lite (Build: ") + __DATE__  + String(")"), dontSendNotification);
+        versionLabel_->setText(String("Version ") + ProjectInfo::versionString + juce::String(" Lite (Build: ") + __DATE__  + juce::String(")"), dontSendNotification);
 #endif
         versionLabel_->setBounds(0, 230, 600, 30);
         addAndMakeVisible(versionLabel_.get());
@@ -54,9 +55,9 @@ public:
     }
     
 private:
-    std::unique_ptr<ImageComponent> imageComponent_;
-    std::unique_ptr<Label> copyrightLabel_;
-    std::unique_ptr<Label> versionLabel_;
-    std::unique_ptr<HyperlinkButton> websiteLinkButton_;
-    std::unique_ptr<HyperlinkButton> gitHubLinkButton_;
+    std::unique_ptr<juce::ImageComponent> imageComponent_;
+    std::unique_ptr<juce::Label> copyrightLabel_;
+    std::unique_ptr<juce::Label> versionLabel_;
+    std::unique_ptr<juce::HyperlinkButton> websiteLinkButton_;
+    std::unique_ptr<juce::HyperlinkButton> gitHubLinkButton_;
 };

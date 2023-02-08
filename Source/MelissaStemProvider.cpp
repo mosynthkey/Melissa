@@ -17,6 +17,8 @@
 #include "nlohmann/json.hpp"
 #endif
 
+using namespace juce;
+
 MelissaStemProvider MelissaStemProvider::instance_;
 
 static const String stemFileName = "stem_info.json";

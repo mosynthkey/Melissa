@@ -13,7 +13,7 @@
 #include "MelissaDataSource.h"
 #include "MelissaShortcutManager.h"
 
-class MelissaShortcutComponent : public Component,
+class MelissaShortcutComponent : public juce::Component,
                                  public MelissaDataSourceListener,
                                  public MelissaShortcutListener
 {
@@ -21,15 +21,15 @@ public:
     MelissaShortcutComponent();
     ~MelissaShortcutComponent();
     void resized() override;
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     
-    void controlMessageReceived(const String& controlMessage) override;
+    void controlMessageReceived(const juce::String& controlMessage) override;
     
 private:
-    std::unique_ptr<Label> commandLabel_;
+    std::unique_ptr<juce::Label> commandLabel_;
     std::unique_ptr<MelissaCommandComboBox> assignCombobox_;
-    std::unique_ptr<TextButton> resetButton_;
-    std::unique_ptr<TextButton> resetAllButton_;
+    std::unique_ptr<juce::TextButton> resetButton_;
+    std::unique_ptr<juce::TextButton> resetAllButton_;
     
     class ShortcutListBox;
     std::unique_ptr<ShortcutListBox> shortcutListBox_;
@@ -40,5 +40,5 @@ private:
     MelissaShortcutManager* shortcutManager_;
     
     int registerEditY_;
-    Rectangle<int> listRect_;
+    juce::Rectangle<int> listRect_;
 };

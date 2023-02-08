@@ -10,6 +10,8 @@
 #include "MelissaModelListener.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaCommand MelissaCommand::instance_;
 
 MelissaCommand::MelissaCommand()

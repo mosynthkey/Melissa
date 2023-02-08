@@ -11,6 +11,8 @@
 #include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
 
+using namespace juce;
+
 enum
 {
     kMaxSizeOfHistoryList = 40,

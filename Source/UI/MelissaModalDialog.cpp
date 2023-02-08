@@ -8,6 +8,8 @@
 #include "MelissaModalDialog.h"
 #include "MelissaDataSource.h"
 
+using namespace juce;
+
 enum
 {
     kMargin = 4,

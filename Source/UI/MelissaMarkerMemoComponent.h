@@ -11,31 +11,31 @@
 #include "MelissaDataSource.h"
 #include "MelissaMarkerListener.h"
 
-class MelissaMarkerMemoComponent : public Component,
+class MelissaMarkerMemoComponent : public juce::Component,
                                    public MelissaDataSourceListener
 {
 public:
     MelissaMarkerMemoComponent();
-    void setFont(Font font) { font_ = font; }
+    void setFont(juce::Font font) { font_ = font; }
     void setMarkerListener(MelissaMarkerListener* listener) { listener_ = listener; }
     
     // Component
-    void paint(Graphics& g) override;
-    void mouseDown(const MouseEvent& event) override;
+    void paint(juce::Graphics& g) override;
+    void mouseDown(const juce::MouseEvent& event) override;
     
 private:
     void markerUpdated() override { repaint(); }
     
     MelissaDataSource* dataSource_;
-    Font font_;
+    juce::Font font_;
     MelissaMarkerListener* listener_;
     
     struct MelissaMarkerLabelInfo
     {
         int x_, width_;
         float posRatio_;
-        String memo_;
-        Colour colour_;
+        juce::String memo_;
+        juce::Colour colour_;
         bool shorten_;
         int originalWidth_;
         int markerIndex_;

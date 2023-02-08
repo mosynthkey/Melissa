@@ -26,33 +26,33 @@ class MelissaDataSourceListener
 public:
     virtual ~MelissaDataSourceListener() { }
     
-    virtual void songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate) { }
+    virtual void songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate) { }
     virtual void historyUpdated() { }
     virtual void playlistUpdated(size_t index) { }
     virtual void practiceListUpdated() { }
     virtual void markerUpdated() { }
-    virtual void fileLoadStatusChanged(FileLoadStatus status, const String& filePath) { }
+    virtual void fileLoadStatusChanged(FileLoadStatus status, const juce::String& filePath) { }
     virtual void shortcutUpdated() { }
-    virtual void colourChanged(const Colour& mainColour, const Colour& subColour, const Colour& accentColour, const Colour& textColour, const Colour& waveformColour) { }
-    virtual void fontChanged(const Font& mainFont, const Font& subFont, const Font& miniFont) { }
+    virtual void colourChanged(const juce::Colour& mainColour, const juce::Colour& subColour, const juce::Colour& accentColour, const juce::Colour& textColour, const juce::Colour& waveformColour) { }
+    virtual void fontChanged(const juce::Font& mainFont, const juce::Font& subFont, const juce::Font& miniFont) { }
 };
 
-class MelissaDataSource : public AsyncUpdater
+class MelissaDataSource : public juce::AsyncUpdater
 {
 public:
-    typedef Array<String> FilePathList;
+    typedef juce::Array<juce::String> FilePathList;
     
     struct Global
     {
-        String version_;
-        String rootDir_;
+        juce::String version_;
+        juce::String rootDir_;
         int width_;
         int height_;
-        String device_;
+        juce::String device_;
         int playMode_;
-        std::map<String, String> shortcut_;
-        String uiTheme_;
-        String fontName_;
+        std::map<juce::String, juce::String> shortcut_;
+        juce::String uiTheme_;
+        juce::String fontName_;
         enum FontSize
         {
             kFontSize_Large,
@@ -65,13 +65,13 @@ public:
         
         Global() : version_(ProjectInfo::versionString), width_(1400), height_(860), uiTheme_("System_Dark")
         {
-            rootDir_ = File::getSpecialLocation(File::userMusicDirectory).getFullPathName();
+            rootDir_ = juce::File::getSpecialLocation(juce::File::userMusicDirectory).getFullPathName();
         }
     } global_;
     
     struct Previous
     {
-        String filePath_;
+        juce::String filePath_;
         float pitch_;
         
         float aRatio_;
@@ -129,7 +129,7 @@ public:
     
     struct Playlist
     {
-        String name_;
+        juce::String name_;
         FilePathList list_;
         
         Playlist() : name_("Playlist") {}
@@ -138,7 +138,7 @@ public:
     
     struct Song
     {
-        String filePath_;
+        juce::String filePath_;
         float pitch_;
         OutputMode outputMode_;
         float musicVolume_;
@@ -161,11 +161,11 @@ public:
         float eqFreq_;
         float eqGain_;
         float eqQ_;
-        String memo_;
+        juce::String memo_;
         
         struct PracticeList
         {
-            String name_;
+            juce::String name_;
             float aRatio_;
             float bRatio_;
             
@@ -207,7 +207,7 @@ public:
         {
             float position_;
             int colourR_, colourG_, colourB_;
-            String memo_;
+            juce::String memo_;
         };
         std::vector<Marker> markers_;
         
@@ -222,37 +222,37 @@ public:
     void addListener(MelissaDataSourceListener* listener) { listeners_.emplace_back(listener); }
     void removeListener(MelissaDataSourceListener* listener);
     
-    void loadSettingsFile(const File& file);
+    void loadSettingsFile(const juce::File& file);
     void validateSettings();
     void saveSettingsFile();
-    const String& getCurrentSongFilePath() { return currentSongFilePath_; }
+    const juce::String& getCurrentSongFilePath() { return currentSongFilePath_; }
     
-    // Font
-    void initFontSettings(const String& fontName = "");
-    bool isFontAvailable(const String& fontName) const;
-    String getFontName() const { return global_.fontName_; }
-    Font getFont(Global::FontSize size) const;
+    // juce::Font
+    void initFontSettings(const juce::String& fontName = "");
+    bool isFontAvailable(const juce::String& fontName) const;
+    juce::String getFontName() const { return global_.fontName_; }
+    juce::Font getFont(Global::FontSize size) const;
     
     bool isFileLoaded() const { return originalAudioSampleBuf_ != nullptr; }
-    static String getCompatibleFileExtensions();
-    void loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
-    void loadFileAsync(const String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(File(filePath), functionToCallAfterFileLoad); }
+    static juce::String getCompatibleFileExtensions();
+    void loadFileAsync(const juce::File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
+    void loadFileAsync(const juce::String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(juce::File(filePath), functionToCallAfterFileLoad); }
     float readBuffer(size_t ch, size_t index, PlayPart playPart);
     double getSampleRate() const { return sampleRate_; }
     size_t getBufferLength() const { return (originalAudioSampleBuf_ == nullptr ? 0 : originalAudioSampleBuf_->getNumSamples()); }
     void disposeBuffer();
     
     // Shortcut
-    void setDefaultShortcut(const String& eventName);
+    void setDefaultShortcut(const juce::String& eventName);
     void setDefaultShortcuts(bool removeAll = false);
-    std::map<String, String> getAllAssignedShortcuts() const;
-    String getAssignedShortcut(const String& eventName);
-    void registerShortcut(const String& eventName, const String& command);
-    void deregisterShortcut(const String& eventName);
+    std::map<juce::String, juce::String> getAllAssignedShortcuts() const;
+    juce::String getAssignedShortcut(const juce::String& eventName);
+    void registerShortcut(const juce::String& eventName, const juce::String& command);
+    void deregisterShortcut(const juce::String& eventName);
     
     // UI Theme
-    String getUITheme() const;
-    void setUITheme(const String& uiTheme_);
+    juce::String getUITheme() const;
+    void setUITheme(const juce::String& uiTheme_);
     
     // Previous
     void restorePreviousState();
@@ -264,26 +264,26 @@ public:
     
     // Playlist
     size_t getNumOfPlaylists() { return playlists_.size(); }
-    String getPlaylistName(size_t index) const;
-    void   setPlaylistName(size_t index, const String& name);
+    juce::String getPlaylistName(size_t index) const;
+    void   setPlaylistName(size_t index, const juce::String& name);
     void   getPlaylist(size_t index, FilePathList& list) const;
     void   setPlaylist(size_t index, const FilePathList& list);
-    void   addToPlaylist(size_t index, const String& filePath);
+    void   addToPlaylist(size_t index, const juce::String& filePath);
     void   removeFromPlaylist(size_t playlistIndex, size_t index);
-    size_t createPlaylist(const String& name);
+    size_t createPlaylist(const juce::String& name);
     void   removePlaylist(size_t index);
     
     // Song (Current)
     void saveSongState();
-    String getMemo() const;
-    void saveMemo(const String& memo);
+    juce::String getMemo() const;
+    void saveMemo(const juce::String& memo);
     
     // Practice list
     void getPracticeList(std::vector<Song::PracticeList>& list);
     size_t getNumPracticeList() const;
-    void addPracticeList(const String& name);
+    void addPracticeList(const juce::String& name);
     void removePracticeList(size_t index);
-    void overwritePracticeList(size_t index, const String& name);
+    void overwritePracticeList(size_t index, const juce::String& name);
     void overwritePracticeList(size_t index, const Song::PracticeList& list);
     void swapPracticeList(size_t indexA, size_t indexB);
     
@@ -311,19 +311,19 @@ private:
     static MelissaDataSource instance_;
     
     // History
-    void addToHistory(const String& filePath);
+    void addToHistory(const juce::String& filePath);
     
     MelissaAudioEngine* audioEngine_;
     MelissaModel* model_;
     double sampleRate_;
-    File settingsFile_;
-    String currentSongFilePath_;
-    File fileToload_;
-    std::map<std::string, File> stemFiles_;
+    juce::File settingsFile_;
+    juce::String currentSongFilePath_;
+    juce::File fileToload_;
+    std::map<std::string, juce::File> stemFiles_;
     std::function<void()> functionToCallAfterFileLoad_;
     std::vector<MelissaDataSourceListener*> listeners_;
-    std::unique_ptr<AudioSampleBuffer> originalAudioSampleBuf_;
-    std::unique_ptr<AudioSampleBuffer> stemAudioSampleBuf_[kNumStemFiles];
+    std::unique_ptr<juce::AudioSampleBuffer> originalAudioSampleBuf_;
+    std::unique_ptr<juce::AudioSampleBuffer> stemAudioSampleBuf_[kNumStemFiles];
     bool wasPlaying_;
-    std::map<String, String> defaultShortcut_;
+    std::map<juce::String, juce::String> defaultShortcut_;
 };

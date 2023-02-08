@@ -11,6 +11,8 @@
 #include "MelissaPopupMessageComponent.h"
 #include "MelissaStemControlComponent.h"
 
+using namespace juce;
+
 enum
 {
     kMelissaStemButtonGroup = 4000,

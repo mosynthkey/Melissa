@@ -12,11 +12,13 @@
 #include "MelissaModalDialog.h"
 #include "MelissaUtility.h"
 
-class MelissaOptionDialog : public Component
+class MelissaOptionDialog : public juce::Component
 {
 public:
-    MelissaOptionDialog(const String& labelString, const std::vector<String>& options, std::function<void(size_t index)> onClick) : onClick_(onClick)
+    MelissaOptionDialog(const juce::String& labelString, const std::vector<juce::String>& options, std::function<void(size_t index)> onClick) : onClick_(onClick)
     {
+        using namespace juce;
+        
         constexpr int buttonWidth = 120;
         constexpr int controlHeight = 30;
         constexpr int margin = 10;
@@ -29,7 +31,7 @@ public:
         
         setSize(width, height);
         
-        label_ = std::make_unique<Label>();
+        label_ = std::make_unique<juce::Label>();
         label_->setFont(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main)));
         label_->setText(labelString, dontSendNotification);
         label_->setBounds(margin, margin, labelSize.first, labelSize.second);
@@ -54,7 +56,7 @@ public:
     }
     
 private:
-    std::unique_ptr<Label> label_;
-    std::vector<std::unique_ptr<TextButton>> optionButtons_;
+    std::unique_ptr<juce::Label> label_;
+    std::vector<std::unique_ptr<juce::TextButton>> optionButtons_;
     std::function<void(size_t)> onClick_;
 };

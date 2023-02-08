@@ -10,6 +10,8 @@
 #include "MelissaTapTempoButton.h"
 #include "MelissaUISettings.h"
 
+using namespace juce;
+
 namespace
 {
 constexpr float kTimeOutMSec = 60.f / kBpmMin * 1000;

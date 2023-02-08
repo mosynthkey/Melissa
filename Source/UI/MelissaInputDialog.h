@@ -13,12 +13,13 @@
 #include "MelissaModalDialog.h"
 #include "MelissaTextEditorWithClearButton.h"
 
-
-class MelissaInputDialog : public Component, public TextEditor::Listener
+class MelissaInputDialog : public juce::Component, public juce::TextEditor::Listener
 {
 public:
-    MelissaInputDialog(const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick) : onClick_(onClick)
+    MelissaInputDialog(const juce::String& labelString,  const juce::String& defaultTextEditorString, std::function<void(const juce::String& string)> onClick) : onClick_(onClick)
     {
+        using namespace juce;
+        
         constexpr int textEditorWidth = 440;
         constexpr int buttonWidth = 120;
         constexpr int controlHeight = 30;
@@ -62,8 +63,10 @@ public:
         setLookAndFeel(&laf_);
     }
     
-    MelissaInputDialog(const String& labelString,  const String& defaultTextEditorString, std::function<void(const String& string)> onClick, const std::vector<String>& inputList) : onClick_(onClick)
+    MelissaInputDialog(const juce::String& labelString,  const juce::String& defaultTextEditorString, std::function<void(const juce::String& string)> onClick, const std::vector<juce::String>& inputList) : onClick_(onClick)
     {
+        using namespace juce;
+        
         const int numControlsHorizontal = 8;
         const int numControlsVertical = 3 + (static_cast<int>(inputList.size()) + numControlsHorizontal - 1) / numControlsHorizontal;
         
@@ -140,9 +143,9 @@ public:
         setLookAndFeel(nullptr);
     }
     
-    void textEditorReturnKeyPressed(TextEditor& editor) override
+    void textEditorReturnKeyPressed(juce::TextEditor& editor) override
     {
-        const String text = textEditor_->getText();
+        const juce::String text = textEditor_->getText();
         onClick_(text);
         MelissaModalDialog::close();
     }
@@ -150,10 +153,10 @@ public:
 private:
     MelissaHost* host_;
     MelissaLookAndFeel laf_;
-    std::unique_ptr<Label> label_;
+    std::unique_ptr<juce::Label> label_;
     std::unique_ptr<MelissaTextEditorWithClearButton> textEditor_;
-    std::unique_ptr<TextButton> okButton_;
-    std::unique_ptr<TextButton> cancelButton_;
-    std::vector<std::unique_ptr<TextButton>> inputButtons_;
-    std::function<void(const String& string)> onClick_;
+    std::unique_ptr<juce::TextButton> okButton_;
+    std::unique_ptr<juce::TextButton> cancelButton_;
+    std::vector<std::unique_ptr<juce::TextButton>> inputButtons_;
+    std::function<void(const juce::String& string)> onClick_;
 };

@@ -9,7 +9,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class IncDecButton : public Button
+class IncDecButton : public juce::Button
 {
 public:
     enum Type
@@ -19,9 +19,9 @@ public:
     } type_;
     
     IncDecButton(Type type, std::function<void(bool)> onClick) :
-    Button(""), type_(type), onClick_(onClick) { }
+    juce::Button(""), type_(type), onClick_(onClick) { }
     
-    void paintButton(Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void paintButton(juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const int32_t lineLength = 8, lineWidth = 2;
         
@@ -38,7 +38,7 @@ public:
         }
     }
     
-    void clicked(const ModifierKeys& modifiers) override
+    void clicked(const juce::ModifierKeys& modifiers) override
     {
         if (onClick_ != nullptr) onClick_(modifiers.isShiftDown());
     }
@@ -47,7 +47,7 @@ public:
 };
 
 
-class MelissaIncDecButton : public Component
+class MelissaIncDecButton : public juce::Component
 {
 public:
     enum Event
@@ -65,13 +65,14 @@ public:
         kButtonPosition_Right,
     };
     
-    MelissaIncDecButton(int dragStep, const String& decTooltipStr = "", const String& incTooltipStr = "")  :
+    MelissaIncDecButton(int dragStep, const juce::String& decTooltipStr = "", const juce::String& incTooltipStr = "")  :
     funcButtonPos_(kButtonPosition_None),
     funcButtonTitle_(""),
     dragStep_(dragStep),
     prevMouseY_(0),
     diffY_(0)
     {
+        using namespace juce;
         label_ = std::make_unique<Label>();
         label_->setInterceptsMouseClicks(false, true);
         label_->setJustificationType(Justification::centred);
@@ -90,7 +91,7 @@ public:
         funcButton_ = nullptr;
     }
     
-    void addFunctionButton(ButtonPosition funcButtonPos, const String& funcButtonTitle = "", const String& funcTooltipStr = "")
+    void addFunctionButton(ButtonPosition funcButtonPos, const juce::String& funcButtonTitle = "", const juce::String& funcTooltipStr = "")
     {
         funcButtonPos_ = funcButtonPos;
         funcButtonTitle_ = funcButtonTitle;
@@ -115,32 +116,32 @@ public:
         }
         else if (funcButtonPos_ == kButtonPosition_Left)
         {
-            funcButton_->setBounds(Rectangle(0, 0, funcButtonWidth, h).reduced(4, 4));
+            funcButton_->setBounds(juce::Rectangle(0, 0, funcButtonWidth, h).reduced(4, 4));
             label_->setBounds(funcButtonWidth, 0, w - funcButtonWidth, h);
         }
         else
         {
             label_->setBounds(0, 0, w - funcButtonWidth, h);
-            funcButton_->setBounds(Rectangle(w - funcButtonWidth, 0, funcButtonWidth, h).reduced(4, 4));
+            funcButton_->setBounds(juce::Rectangle(w - funcButtonWidth, 0, funcButtonWidth, h).reduced(4, 4));
         }
         
         decButton_->setBounds(label_->getX(), 0, incDecButtonSize, incDecButtonSize);
         incButton_->setBounds(label_->getRight() - incDecButtonSize, 0, incDecButtonSize, incDecButtonSize);
     }
     
-    void paint(Graphics& g) override
+    void paint(juce::Graphics& g) override
     {
         const auto b = getLocalBounds();
         g.setColour(MelissaUISettings::getSubColour());
         g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
     }
     
-    void mouseDown(const MouseEvent& event) override
+    void mouseDown(const juce::MouseEvent& event) override
     {
         prevMouseY_ = event.getScreenY();
     }
     
-    void mouseDrag(const MouseEvent& event) override
+    void mouseDrag(const juce::MouseEvent& event) override
     {
         diffY_ += (event.getScreenY() - prevMouseY_);
         prevMouseY_ = event.getScreenY();
@@ -157,32 +158,32 @@ public:
         }
     }
     
-    void mouseDoubleClick(const MouseEvent& event) override
+    void mouseDoubleClick(const juce::MouseEvent& event) override
     {
         onClick_(kEvent_Double, false);
     }
 
 
-    void mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel) override
+    void mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel) override
     {
         onClick_((wheel.deltaY > 0) ? kEvent_Inc : kEvent_Dec, true);
     }
     
-    void setText(const String& str)
+    void setText(const juce::String& str)
     {
-        label_->setText(str, dontSendNotification);
+        label_->setText(str, juce::dontSendNotification);
     }
     
     std::function<void(Event, bool)> onClick_;
     
 private:
-    std::unique_ptr<Label> label_;
+    std::unique_ptr<juce::Label> label_;
     std::unique_ptr<IncDecButton> decButton_;
     std::unique_ptr<IncDecButton> incButton_;
     std::unique_ptr<MelissaRoundButton> funcButton_;
     
     ButtonPosition funcButtonPos_;
-    String funcButtonTitle_;
+    juce::String funcButtonTitle_;
     bool isMouseIn_;
     int dragStep_;
     int prevMouseY_;

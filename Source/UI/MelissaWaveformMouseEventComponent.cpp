@@ -7,6 +7,8 @@
 
 #include "MelissaWaveformMouseEventComponent.h"
 
+using namespace juce;
+
 void MelissaWaveformMouseEventComponent::addListener(MelissaWaveformMouseEventListener* listener)
 {
     listeners_.emplace_back(listener);

@@ -14,8 +14,8 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaUISettings.h"
 
-class MelissaFileListBox : public ListBox,
-                           public ListBoxModel,
+class MelissaFileListBox : public juce::ListBox,
+                           public juce::ListBoxModel,
                            public MelissaDataSourceListener
 {
 public:
@@ -25,7 +25,7 @@ public:
         kTarget_Playlist,
     };
     
-    MelissaFileListBox(const String& componentName = "") :
+    MelissaFileListBox(const juce::String& componentName = "") :
     target_(kTarget_History),
     dataSource_(MelissaDataSource::getInstance())
     {
@@ -33,7 +33,7 @@ public:
         setModel(this);
         
         dataSource_->addListener(this);
-        popupMenu_ = std::make_unique<PopupMenu>();
+        popupMenu_ = std::make_unique<juce::PopupMenu>();
         popupMenu_->setLookAndFeel(&laf_);
         setOutlineThickness(1.f);
     }
@@ -54,7 +54,7 @@ public:
         return list_.size();
     }
     
-    void listBoxItemClicked(int row, const MouseEvent& e) override
+    void listBoxItemClicked(int row, const juce::MouseEvent& e) override
     {
         if (e.mods.isRightButtonDown())
         {
@@ -67,7 +67,7 @@ public:
             popupMenu_->addItem(kMenuId_Remove, TRANS("remove"), true);
             popupMenu_->addItem(kMenuId_Reveal, TRANS("reveal"), true);
             
-            popupMenu_->showMenuAsync(PopupMenu::Options(), [&, row](int result) {
+            popupMenu_->showMenuAsync(juce::PopupMenu::Options(), [&, row](int result) {
                 if (result == kMenuId_Remove)
                 {
                     if (target_ == kTarget_History)
@@ -82,22 +82,22 @@ public:
                 }
                 else if (result == kMenuId_Reveal)
                 {
-                    File file = list_[row];
+                    juce::File file = list_[row];
                     if (file.existsAsFile()) file.revealToUser();
                 }
             });
         }
     }
     
-    void listBoxItemDoubleClicked(int row, const MouseEvent& e) override
+    void listBoxItemDoubleClicked(int row, const juce::MouseEvent& e) override
     {
         dataSource_->loadFileAsync(list_[row]);
     }
     
-    void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override
+    void paintListBoxItem(int rowNumber, juce::Graphics &g, int width, int height, bool rowIsSelected) override
     {
-        const String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
-        const String fileName = File(fullPath).getFileName();
+        const juce::String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
+        const juce::String fileName = juce::File(fullPath).getFileName();
         
         if (rowIsSelected)
         {
@@ -106,7 +106,7 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(fileName, 10, 0, width - 20, height, Justification::left);
+        g.drawText(fileName, 10, 0, width - 20, height, juce::Justification::left);
     }
     
     void moveSelected(int incDecValue)
@@ -152,7 +152,7 @@ public:
     }
     
 private:
-    std::unique_ptr<PopupMenu> popupMenu_;
+    std::unique_ptr<juce::PopupMenu> popupMenu_;
     Target target_;
     MelissaDataSource* dataSource_;
     MelissaDataSource::FilePathList list_;

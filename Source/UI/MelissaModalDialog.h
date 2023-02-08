@@ -12,17 +12,17 @@
 #include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
-class MelissaDialog : public Component
+class MelissaDialog : public juce::Component
 {
 public:
-    MelissaDialog(std::shared_ptr<Component> contentComponent, const String& title, bool closeOnClickingOutside);
-    void paint(Graphics& g) override;
+    MelissaDialog(std::shared_ptr<Component> contentComponent, const juce::String& title, bool closeOnClickingOutside);
+    void paint(juce::Graphics& g) override;
     void resized() override;
     
 private:
     std::unique_ptr<BackgroundButton> backgroundButton_;
     std::unique_ptr<CloseButton> closeButton_;
-    std::unique_ptr<Label> titleLabel_;
+    std::unique_ptr<juce::Label> titleLabel_;
     std::shared_ptr<Component> contentComponent_;
     bool closeOnClickingOutside_;
 };
@@ -32,12 +32,12 @@ class MelissaModalDialog
 public:
     MelissaModalDialog() {}
     
-    static void setParentComponent(Component* parentComponent) { parentComponent_ = parentComponent; }
-    static void show(std::shared_ptr<Component> component, const String& title, bool closeOnClickingOutside = true);
+    static void setParentComponent(juce::Component* parentComponent) { parentComponent_ = parentComponent; }
+    static void show(std::shared_ptr<juce::Component> component, const juce::String& title, bool closeOnClickingOutside = true);
     static void close();
     static void resize();
     
 private:
-    static Component* parentComponent_;
+    static juce::Component* parentComponent_;
     static std::unique_ptr<MelissaDialog> dialog_;
 };
