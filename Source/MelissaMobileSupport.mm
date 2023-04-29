@@ -36,12 +36,21 @@ juce::File MelissaMobileSupport::importFile(const juce::URL& fileUrl)
 }
 
 AdMobAdDelegateViewController *viewController;
+//RewardAdViewController *viewController;
 
 MelissaAdComponent::MelissaAdComponent()
 {
     viewController = [[AdMobAdDelegateViewController alloc] init];
+    //viewController = [[RewardAdViewController alloc] init];
     uiViewComponent.setView([viewController view]);
     addAndMakeVisible(uiViewComponent);
+    
+    //auto area = Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
+    //DBG( "ios area: " << area.toString() );
+    //setSize(area.getWidth(), area.getHeight());
+    
+    //[viewController loadRewardedAd];
+    //[viewController loadBannerAd];
 }
 
 MelissaAdComponent::~MelissaAdComponent()
@@ -57,4 +66,10 @@ void MelissaAdComponent::resized()
 void MelissaAdComponent::paint(Graphics& g)
 {
     g.fillAll(MelissaUISettings::getMainColour());
+}
+
+void MelissaAdComponent::show()
+{
+    //[viewController show];
+    [viewController loadBannerAd];
 }

@@ -229,10 +229,6 @@
       <FILE id="hgx51a" name="MelissaDefinitions.h" compile="0" resource="0"
             file="../Source/MelissaDefinitions.h"/>
       <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="../Source/MelissaHost.h"/>
-      <FILE id="OIxyhL" name="MelissaMobileSupport.cpp" compile="1" resource="0"
-            file="../Source/MelissaMobileSupport.cpp"/>
-      <FILE id="RTYqR8" name="MelissaMobileSupport.h" compile="0" resource="0"
-            file="../Source/MelissaMobileSupport.h"/>
       <FILE id="Pa0qWs" name="MelissaModel.cpp" compile="1" resource="0"
             file="../Source/MelissaModel.cpp"/>
       <FILE id="k5pm9b" name="MelissaModel.h" compile="0" resource="0" file="../Source/MelissaModel.h"/>

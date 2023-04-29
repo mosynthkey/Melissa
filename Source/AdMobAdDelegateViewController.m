@@ -37,12 +37,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.bannerView = [[GADBannerView alloc] init];
+    self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
     self.bannerView.delegate = self;
     [self addBannerViewToView:self.bannerView];
     
     self.bannerView.adUnitID = @"ca-app-pub-3940256099942544/2934735716";
     self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -63,6 +64,7 @@
 }
 
 - (void)loadBannerAd {
+    return;
     // Step 2 - Determine the view width to use for the ad width.
     CGRect frame = self.view.frame;
     // Here safe area is taken into account, hence the view frame is used after
@@ -77,10 +79,10 @@
     // preloaded for a future orientation change or different orientation, the
     // function for the relevant orientation should be used.
     self.bannerView.adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(viewWidth);
-    
+    NSLog(@"%@", self.bannerView);
+     
     // Step 4 - Create an ad request and load the adaptive banner ad.
-    GADRequest *request = [GADRequest request];
-    [self.bannerView loadRequest:request];
+    [self.bannerView loadRequest:[GADRequest request]];
 }
 
 - (void)addBannerViewToView:(UIView *)bannerView {
@@ -88,18 +90,18 @@
     [self.view addSubview:bannerView];
     [self.view addConstraints:@[
         [NSLayoutConstraint constraintWithItem:bannerView
-                                     attribute:NSLayoutAttributeBottom
+                                     attribute:NSLayoutAttributeTop
                                      relatedBy:NSLayoutRelationEqual
                                         toItem:self.view.safeAreaLayoutGuide
-                                     attribute:NSLayoutAttributeBottom
+                                     attribute:NSLayoutAttributeTop
                                     multiplier:1
                                       constant:0],
         [NSLayoutConstraint constraintWithItem:bannerView
                                      attribute:NSLayoutAttributeCenterX
                                      relatedBy:NSLayoutRelationEqual
-                                        toItem:self.view
+                                        toItem:self.view.safeAreaLayoutGuide
                                      attribute:NSLayoutAttributeCenterX
-                                    multiplier:1
+                                    multiplier:0.5
                                       constant:0]
     ]];
 }
@@ -109,6 +111,7 @@
 // Called when an ad request loaded an ad.
 - (void)adViewDidReceiveAd:(GADBannerView *)bannerView {
     NSLog(@"%s", __PRETTY_FUNCTION__);
+    [self addBannerViewToView:self.bannerView];
 }
 
 // Called when an ad request failed.
@@ -136,6 +139,61 @@
 // that will launch another application (such as the App Store).
 - (void)adViewWillLeaveApplication:(GADBannerView *)bannerView {
     NSLog(@"%s", __PRETTY_FUNCTION__);
+}
+
+@end
+
+
+@interface RewardAdViewController ()
+
+@property(nonatomic, strong) GADRewardedAd *rewardedAd;
+
+@end
+
+@implementation RewardAdViewController
+- (void)loadRewardedAd {
+    GADRequest *request = [GADRequest request];
+    [GADRewardedAd
+     loadWithAdUnitID:@"ca-app-pub-3940256099942544/1712485313"
+     request:request
+     completionHandler:^(GADRewardedAd *ad, NSError *error) {
+        if (error) {
+            NSLog(@"Rewarded ad failed to load with error: %@", [error localizedDescription]);
+            return;
+        }
+        self.rewardedAd = ad;
+        NSLog(@"Rewarded ad loaded.");
+    }];
+}
+
+
+/// Tells the delegate that the ad failed to present full screen content.
+- (void)ad:(nonnull id<GADFullScreenPresentingAd>)ad
+didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
+    NSLog(@"Ad did fail to present full screen content.");
+}
+
+/// Tells the delegate that the ad presented full screen content.
+- (void)adDidPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
+    NSLog(@"Ad did present full screen content.");
+}
+
+/// Tells the delegate that the ad dismissed full screen content.
+- (void)adDidDismissFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
+    NSLog(@"Ad did dismiss full screen content.");
+}
+
+- (void)show {
+    if (self.rewardedAd) {
+        [self.rewardedAd presentFromRootViewController:self
+                              userDidEarnRewardHandler:^{
+            GADAdReward *reward =
+            self.rewardedAd.adReward;
+            // TODO: Reward the user!
+        }];
+    } else {
+        NSLog(@"Ad wasn't ready");
+    }
 }
 
 @end

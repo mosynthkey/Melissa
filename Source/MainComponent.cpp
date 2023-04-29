@@ -1242,6 +1242,8 @@ void MainComponent::createUI()
     importButton_->setButtonText(TRANS("import"));
     importButton_->onClick = [&]()
     {
+        //adComponent_->setVisible(true);
+        //adComponent_->show();
         showFileChooser();
     };
     addAndMakeVisible(importButton_.get());
@@ -1556,7 +1558,8 @@ void MainComponent::resized()
     }
     
 #ifdef JUCE_IOS
-    constexpr int kAdHeight = 90;
+    const int kAdWidth = getWidth();
+    constexpr int kAdHeight = 50 + 10;
 #endif
     
     // File component (Browser / Playlist / History)
@@ -1619,7 +1622,9 @@ void MainComponent::resized()
     
 #ifdef JUCE_IOS
     importButton_->setBounds(10, headerComponent_->getBottom() + 10, 100, 30);
-    adComponent_->setBounds(0, getHeight() - kAdHeight, getWidth(), kAdHeight);
+    adComponent_->setBounds(0, getBottom() - kAdHeight, kAdWidth, kAdHeight);
+    adComponent_->show();
+    //adComponent_->setBounds(0, 0, getWidth(), getHeight());
 #endif
     
     MelissaModalDialog::resize();

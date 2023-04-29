@@ -11,4 +11,5 @@
 void MelissaAd::initialize()
 {
     [GADMobileAds.sharedInstance startWithCompletionHandler:nil];
+    GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ GADSimulatorID ];
 }
