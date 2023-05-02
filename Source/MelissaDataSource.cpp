@@ -435,8 +435,10 @@ void MelissaDataSource::initFontSettings(const String& fontName)
     StringArray fontCandidates;
     if (!fontName.isEmpty()) fontCandidates.add(fontName);
     
-#if defined(JUCE_MAC) || defined(JUCE_IOS)
+#if defined(JUCE_MAC)
     fontCandidates.mergeArray(StringArray { "YuGothic", "Hiragino Sans", "Arial Unicode MS", "San Francisco" });
+#elif defined(JUCE_IOS)
+    fontCandidates.mergeArray(StringArray { "San Francisco", "YuGothic", "Hiragino Sans", "Arial Unicode MS" });
 #elif defined(JUCE_WINDOWS)
     fontCandidates.mergeArray(StringArray { "Meiryo UI", "Tahoma" });
 #else
@@ -465,27 +467,35 @@ Font MelissaDataSource::getFont(Global::FontSize size) const
 #ifdef JUCE_WINDOWS
     fontSizeOffset = 2;
 #endif
+    
+    int fontSize = 0;
 
     if (size == Global::kFontSize_Large)
     {
-        return Font(global_.fontName_, 20 + fontSizeOffset, Font::plain);
+        fontSize = 20 + fontSizeOffset;
     }
     else if (size == Global::kFontSize_Main)
     {
-        return Font(global_.fontName_, 17 + fontSizeOffset, Font::plain);
+        fontSize = 17 + fontSizeOffset;
     }
     else if (size == Global::kFontSize_Sub)
     {
-        return Font(global_.fontName_, 15 + fontSizeOffset, Font::plain);
+        fontSize = 15 + fontSizeOffset;
     }
     else if (size == Global::kFontSize_Small)
     {
-        return Font(global_.fontName_, 13 + fontSizeOffset, Font::plain);
+        fontSize = 13 + fontSizeOffset;
     }
     else
     {
-        return Font(global_.fontName_, 12 + fontSizeOffset, Font::plain);
+        fontSize = 12 + fontSizeOffset;
     }
+    
+#ifdef JUCE_IOS
+    fontSize -= 2;
+#endif
+    
+    return Font(global_.fontName_, fontSize, Font::plain);
 }
 
 String MelissaDataSource::getCompatibleFileExtensions()
@@ -499,6 +509,8 @@ String MelissaDataSource::getCompatibleFileExtensions()
 void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> functionToCallAfterFileLoad)
 {
     functionToCallAfterFileLoad_ = functionToCallAfterFileLoad;
+    
+    printf("File path = %s", file.getFullPathName().toRawUTF8());
     
     if (file.existsAsFile())
     {
@@ -667,8 +679,14 @@ void MelissaDataSource::setUITheme(const String& uiTheme)
 
 void MelissaDataSource::restorePreviousState()
 {
+#ifdef JUCE_IOS
+    String fileName = File(previous_.filePath_).getFileName();
+    File file = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(fileName);
+    
+#else
     File file(previous_.filePath_);
     if (!file.existsAsFile()) return;
+#endif
     
     loadFileAsync(file, [&]() {
         model_->setPitch(previous_.pitch_);
@@ -1212,6 +1230,7 @@ void MelissaDataSource::handleAsyncUpdate()
     if (wasPlaying_) model_->setPlaybackStatus(kPlaybackStatus_Playing);
     
     saveSongState();
+    saveSettingsFile();
 }
 
 void MelissaDataSource::addToHistory(const String& filePath)

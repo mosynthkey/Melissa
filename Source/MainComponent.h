@@ -17,8 +17,10 @@
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
+#include "MelissaIconTextComponent.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
+#include "MelissaSeparatorComponent.h"
 #include "MelissaShortcutManager.h"
 #include "MelissaStemProvider.h"
 #include "MelissaPopupMessageComponent.h"
@@ -90,7 +92,10 @@ public:
     ~MainComponent();
     
     void createUI();
+    void createMenu();
     void showFileChooser();
+    void resized_Desktop();
+    void resized_Mobile();
     
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
@@ -354,7 +359,28 @@ private:
     
 #ifdef JUCE_IOS
     std::unique_ptr<juce::TextButton> importButton_;
+    std::unique_ptr<juce::TextButton> debugButton_;
     std::unique_ptr<MelissaAdComponent> adComponent_;
+    
+    enum
+    {
+        kSeparator_Upper,
+        kSeparator_Lower,
+        kSeparator_Loop,
+        kNumSeparators
+    };
+    std::unique_ptr<MelissaSeparatorComponent> separators_[kNumSeparators];
+    
+    enum
+    {
+        kIconText_Pitch,
+        kIconText_Loop,
+        kIconText_Speed,
+        kNumIconTexts
+    };
+    std::unique_ptr<MelissaIconTextComponent> iconTexts_[kNumIconTexts];
+    
+    std::unique_ptr<juce::Label> safeAreaComponent_;
 #endif
     
     MelissaLookAndFeel laf_;

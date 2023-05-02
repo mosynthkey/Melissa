@@ -233,3 +233,6 @@ countries: ja
 "file_not_found" = "ファイルが見つかりません"
 "stem_mix_button" = "各パートの音量を調整"
 "stem_solo_button" = "各パートを個別に再生"
+"pitch_short" = "音程"
+"loop_short" = "ループ"
+"speed_short" = "速度"

@@ -23,7 +23,11 @@ public:
     
     void paintButton(juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+#ifdef JUCE_IOS
+        const int32_t lineLength = 10, lineWidth = 2;
+#else
         const int32_t lineLength = 8, lineWidth = 2;
+#endif
         
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
@@ -107,8 +111,16 @@ public:
     {
         const auto w = getWidth();
         const auto h = getHeight();
-        const auto incDecButtonSize = h;
+#ifdef JUCE_IOS
+        const auto incDecButtonWidth = 30;
+        const auto incDecButtonHeight = h;
+        const auto funcButtonWidth = std::clamp(w - 100, 40, 50);
+#else
+        const auto incDecButtonWidth = h;
+        const auto incDecButtonHeight = h;
         const auto funcButtonWidth = 50;
+#endif
+        
         
         if (funcButtonPos_ == kButtonPosition_None)
         {
@@ -125,8 +137,8 @@ public:
             funcButton_->setBounds(juce::Rectangle(w - funcButtonWidth, 0, funcButtonWidth, h).reduced(4, 4));
         }
         
-        decButton_->setBounds(label_->getX(), 0, incDecButtonSize, incDecButtonSize);
-        incButton_->setBounds(label_->getRight() - incDecButtonSize, 0, incDecButtonSize, incDecButtonSize);
+        decButton_->setBounds(label_->getX(), 0, incDecButtonWidth, incDecButtonHeight);
+        incButton_->setBounds(label_->getRight() - incDecButtonWidth, 0, incDecButtonWidth, incDecButtonHeight);
     }
     
     void paint(juce::Graphics& g) override

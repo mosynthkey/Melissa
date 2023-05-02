@@ -233,3 +233,6 @@ countries: us
 "file_not_found" = "Couldn't open this file"
 "stem_mix_button" = "Part mix mode"
 "stem_solo_button" = "Part solo mode"
+"pitch_short" = "Pitch"
+"loop_short" = "Loop"
+"speed_short" = "Speed"

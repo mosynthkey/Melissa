@@ -27,6 +27,12 @@ static constexpr bool isFullVersion = true;
 static constexpr bool isFullVersion = false;
 #endif
 
+#ifdef JUCE_IOS
+static constexpr bool isDesktop = false;
+#else
+static constexpr bool isDesktop = true;
+#endif
+
 using std::make_unique;
 
 enum
@@ -421,7 +427,6 @@ void MainComponent::createUI()
         }
     }
     
-    
     menuBar_ = make_unique<MenuBarComponent>(this);
     addAndMakeVisible(menuBar_.get());
     
@@ -431,113 +436,23 @@ void MainComponent::createUI()
     extraAppleMenuItems_->addItem(TRANS("preferences"),   [&]() { showAudioMidiSettingsDialog(); });
     
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
+#elif JUCE_IOS
+    safeAreaComponent_ = std::make_unique<Label>();
+    safeAreaComponent_->setColour(Label::outlineColourId, Colours::pink.withAlpha(0.5f));
+    safeAreaComponent_->toBack();
+    addAndMakeVisible(safeAreaComponent_.get());
 #endif
     
     headerComponent_ = std::make_unique<HeaderComponent>();
     addAndMakeVisible(headerComponent_.get());
     
-    menuButton_ = std::make_unique<MelissaMenuButton>();
-    menuButton_->onClick = [&]()
-    {
-        const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
-        
-        PopupMenu menu;
-        menu.setLookAndFeel(&laf_);
-        menu.addItem(kMenuID_About, TRANS("about_melissa"));
-        menu.addItem(kMenuID_Manual, TRANS("open_manual"));
-        menu.addItem(kMenuID_VersionCheck, updateExists ? TRANS("update_exists") : TRANS("check_update"));
-        menu.addSeparator();
-        menu.addItem(kMenuID_Preferences, TRANS("audio_midi_settings"));
-        menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
-        
-        PopupMenu uiThemeMenu;
-        const auto uiTheme = dataSource_->getUITheme();
-        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, uiTheme == "System_Dark");
-        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, uiTheme == "System_Light");
-        menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
-        
-        menu.addSeparator();
-        menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
-        
-#if defined(ENABLE_TUTORIAL)
-        menu.addItem(kMenuID_Tutorial, TRANS("tutorial"));
-#endif
-        
-        menu.addSeparator();
-        PopupMenu advancedMenu;
-        advancedMenu.addItem(kMenuID_RevealSettingsFile, TRANS("reveal_settings_file"));
-        menu.addSubMenu(TRANS("advanced_settings"), advancedMenu);
-        
-        menu.showMenuAsync(PopupMenu::Options(), [&](int result) {
-            model_->setPlaybackStatus(kPlaybackStatus_Stop);
-            if (result == kMenuID_About)
-            {
-                showAboutDialog();
-            }
-            else if (result == kMenuID_Manual)
-            {
-                URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
-            }
-            else if (result == kMenuID_VersionCheck)
-            {
-                showUpdateDialog(true);
-            }
-            else if (result == kMenuID_Preferences)
-            {
-                showAudioMidiSettingsDialog();
-            }
-            else if (result == kMenuID_Shortcut)
-            {
-                showShortcutDialog();
-            }
-            else if (result == kMenuID_UITheme_Auto || result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
-            {
-                const std::vector<String> options = { TRANS("ok") };
-                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index) {
-                    String uiTheme;
-                    if (result == kMenuID_UITheme_Auto)
-                    {
-                        uiTheme = "System_Auto";
-                    }
-                    else if (result == kMenuID_UITheme_Dark)
-                    {
-                        uiTheme = "System_Dark";
-                    }
-                    else
-                    {
-                        uiTheme = "System_Light";
-                    }
-                    dataSource_->setUITheme(uiTheme);
-                    File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
-                    JUCEApplicationBase::quit();
-                });
-                MelissaModalDialog::show(dialog, TRANS("ui_theme"));
-            }
-            else if (result == kMenuID_Tutorial)
-            {
-                showTutorial();
-            }
-            else if (result == kMenuID_TwitterShare)
-            {
-                if (isLangJapanese_)
-                {
-                    URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
-                }
-                else
-                {
-                    URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
-                }
-            }
-            else if (result == kMenuID_RevealSettingsFile)
-            {
-                settingsFile_.revealToUser();
-            }
-        });
-    };
-    menuButton_->setBudgeVisibility(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
-    headerComponent_->addAndMakeVisible(menuButton_.get());
+    createMenu();
     
     {
+        // Header
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(headerComponent_.get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
+        componentToAdd->addAndMakeVisible(menuButton_.get());
+        
         playbackModeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         playbackModeButton_->setImages(iconImages_[kIcon_LoopOneSong].get(), iconHighlightedImages_[kIcon_LoopOneSong].get());
         playbackModeButton_->onClick = [&]()
@@ -553,39 +468,39 @@ void MainComponent::createUI()
             }
             updatePlayBackModeButton();
         };
-        headerComponent_->addAndMakeVisible(playbackModeButton_.get());
+        componentToAdd->addAndMakeVisible(playbackModeButton_.get());
         
         playPauseButton_ = make_unique<MelissaPlayPauseButton>("PlayButton");
         playPauseButton_->onClick = [this]() { model_->togglePlaybackStatus(); };
-        headerComponent_->addAndMakeVisible(playPauseButton_.get());
+        componentToAdd->addAndMakeVisible(playPauseButton_.get());
         
         prevButton_ = make_unique<DrawableButton>("PrevButton", DrawableButton::ImageRaw);
         prevButton_->setImages(iconImages_[kIcon_Prev].get(), iconHighlightedImages_[kIcon_Prev].get());
         prevButton_->onClick = [this]() { prev(); };
-        headerComponent_->addAndMakeVisible(prevButton_.get());
+        componentToAdd->addAndMakeVisible(prevButton_.get());
         
         nextButton_ = make_unique<DrawableButton>("NextButton", DrawableButton::ImageRaw);
         nextButton_->setImages(iconImages_[kIcon_Next].get(), iconHighlightedImages_[kIcon_Next].get());
         nextButton_->onClick = [this]() { next(); };
-        headerComponent_->addAndMakeVisible(nextButton_.get());
+        componentToAdd->addAndMakeVisible(nextButton_.get());
         
         timeLabel_ = make_unique<Label>();
         timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         timeLabel_->setJustificationType(Justification::centredLeft);
         timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
-        headerComponent_->addAndMakeVisible(timeLabel_.get());
+        componentToAdd->addAndMakeVisible(timeLabel_.get());
         
         fileNameLabel_ = make_unique<Label>();
         fileNameLabel_->setJustificationType(Justification::centredRight);
         fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
-        headerComponent_->addAndMakeVisible(fileNameLabel_.get());
+        componentToAdd->addAndMakeVisible(fileNameLabel_.get());
         
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
         audioDeviceButton_->onClick = [&]()
         {
             showAudioMidiSettingsDialog();
         };
-        headerComponent_->addAndMakeVisible(audioDeviceButton_.get());
+        componentToAdd->addAndMakeVisible(audioDeviceButton_.get());
         
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         mainVolumeSlider_->setTooltip(TRANS("volume_main"));
@@ -596,43 +511,47 @@ void MainComponent::createUI()
         {
             model_->setMainVolume(mainVolumeSlider_->getValue());
         };
-        headerComponent_->addAndMakeVisible(mainVolumeSlider_.get());
-    }
-    
-    waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
-    addAndMakeVisible(waveformComponent_.get());
-    
-    markerMemoComponent_ = make_unique<MelissaMarkerMemoComponent>();
-    markerMemoComponent_->setMarkerListener(this);
-    markerMemoComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
-    addAndMakeVisible(markerMemoComponent_.get());
-    
-    popupMessage_ = std::make_unique<MelissaPopupMessageComponent>();
-    addChildComponent(popupMessage_.get());
-    
-    controlComponent_ = make_unique<Label>();
-    controlComponent_->setOpaque(false);
-    controlComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
-    addAndMakeVisible(controlComponent_.get());
-    
-    String sectionTitles[kNumOfSections] =
-    {
-        "Song",
-        "Loop",
-        "Speed",
-        "Metronome",
-        "EQ",
-        "Mixer"
-    };
-    for (size_t sectionIndex = 0; sectionIndex < kNumOfSections; ++sectionIndex)
-    {
-        auto s = std::make_unique<MelissaSectionComponent>(sectionTitles[sectionIndex]);
-        addAndMakeVisible(s.get());
-        sectionComponents_[sectionIndex] = std::move(s);
+        componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
     }
     
     {
-        auto section = sectionComponents_[kSection_Song].get();
+        Component* componentToAdd = isDesktop ? this : reinterpret_cast<Component*>(safeAreaComponent_.get());
+        
+        waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
+        componentToAdd->addAndMakeVisible(waveformComponent_.get());
+        
+        markerMemoComponent_ = make_unique<MelissaMarkerMemoComponent>();
+        markerMemoComponent_->setMarkerListener(this);
+        markerMemoComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
+        componentToAdd->addAndMakeVisible(markerMemoComponent_.get());
+        
+        popupMessage_ = std::make_unique<MelissaPopupMessageComponent>();
+        componentToAdd->addChildComponent(popupMessage_.get());
+        
+        controlComponent_ = make_unique<Label>();
+        controlComponent_->setOpaque(false);
+        controlComponent_->setColour(Label::backgroundColourId, MelissaUISettings::getSubColour());
+        componentToAdd->addAndMakeVisible(controlComponent_.get());
+        
+        String sectionTitles[kNumOfSections] =
+        {
+            "Song",
+            "Loop",
+            "Speed",
+            "Metronome",
+            "EQ",
+            "Mixer"
+        };
+        for (size_t sectionIndex = 0; sectionIndex < kNumOfSections; ++sectionIndex)
+        {
+            auto s = std::make_unique<MelissaSectionComponent>(sectionTitles[sectionIndex]);
+            componentToAdd->addAndMakeVisible(s.get());
+            sectionComponents_[sectionIndex] = std::move(s);
+        }
+    }
+    
+    {
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(sectionComponents_[kSection_Song].get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
         pitchButton_ = make_unique<MelissaIncDecButton>(16, TRANS("tooltip_pitch_dec"), TRANS("tooltip_pitch_inc"));
         pitchButton_->setText("Original");
@@ -648,15 +567,15 @@ void MainComponent::createUI()
                 model_->setPitch(model_->getPitch() + sign * (b ? 0.1 : 1));
             }
         };
-        section->addAndMakeVisible(pitchButton_.get());
+        componentToAdd->addAndMakeVisible(pitchButton_.get());
         
         // Stem Button
         stemControlComponent_ = make_unique<MelissaStemControlComponent>();
-        section->addAndMakeVisible(stemControlComponent_.get());
+        componentToAdd->addAndMakeVisible(stemControlComponent_.get());
     }
     
     {
-        auto section = sectionComponents_[kSection_Loop].get();
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(sectionComponents_[kSection_Loop].get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
         aButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_start_dec"), TRANS("tooltip_loop_start_inc"));
         aButton_->setText("-:--");
@@ -677,12 +596,11 @@ void MainComponent::createUI()
                 model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
             }
         };
-        section->addAndMakeVisible(aButton_.get());
+        componentToAdd->addAndMakeVisible(aButton_.get());
 
         bButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_loop_end_dec"), TRANS("tooltip_loop_end_inc"));
         bButton_->setText("-:--");
         bButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Left, "B", TRANS("tooltip_loop_end_set"));
-        bButton_->setBounds(0, 240, 140, 34);
         bButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
@@ -699,7 +617,7 @@ void MainComponent::createUI()
                 model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
             }
         };
-        section->addAndMakeVisible(bButton_.get());
+        componentToAdd->addAndMakeVisible(bButton_.get());
         
         aResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         aResetButton_->setTooltip(TRANS("tooltip_loop_start_reset"));
@@ -708,7 +626,7 @@ void MainComponent::createUI()
         {
             model_->setLoopAPosRatio(0.f);
         };
-        section->addAndMakeVisible(aResetButton_.get());
+        componentToAdd->addAndMakeVisible(aResetButton_.get());
         
         bResetButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         bResetButton_->setTooltip(TRANS("tooltip_loop_end_reset"));
@@ -717,21 +635,21 @@ void MainComponent::createUI()
         {
             model_->setLoopBPosRatio(1.f);
         };
-        section->addAndMakeVisible(bResetButton_.get());
+        componentToAdd->addAndMakeVisible(bResetButton_.get());
 
         resetButton_ = make_unique<TextButton>();
         resetButton_->setButtonText("Reset");
         resetButton_->setTooltip(TRANS("tooltip_loop_reset"));
         resetButton_->onClick = [this]() { resetLoop(); };
         resetButton_->setLookAndFeel(&simpleTextButtonLaf_);
-        section->addAndMakeVisible(resetButton_.get());
+        componentToAdd->addAndMakeVisible(resetButton_.get());
     }
     
     {
-        auto section = sectionComponents_[kSection_Speed].get();
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(sectionComponents_[kSection_Speed].get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
         speedModeNormalComponent_ = make_unique<Component>();
-        section->addAndMakeVisible(speedModeNormalComponent_.get());
+        componentToAdd->addAndMakeVisible(speedModeNormalComponent_.get());
         
 #if defined(ENABLE_SPEED_TRAINING)
         speedModeTrainingComponent_ = make_unique<Component>();
@@ -761,6 +679,8 @@ void MainComponent::createUI()
         speedModeTrainingToggleButton_->setToggleState(false, dontSendNotification);
         section->addAndMakeVisible(speedModeTrainingToggleButton_.get());
 #endif
+        
+        componentToAdd = isDesktop ? reinterpret_cast<Component*>(speedModeNormalComponent_.get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
 
         speedButton_ = make_unique<MelissaIncDecButton>(2, TRANS("tooltip_speed_dec"), TRANS("tooltip_speed_inc"));
         speedButton_->setText("100 %");
@@ -776,14 +696,14 @@ void MainComponent::createUI()
                 model_->setSpeed(model_->getSpeed() + (b ? sign * 10 : sign));
             }
         };
-        speedModeNormalComponent_->addAndMakeVisible(speedButton_.get());
+        componentToAdd->addAndMakeVisible(speedButton_.get());
         
         speedPresetViewport_ = make_unique<Viewport>();
         speedPresetViewport_->setScrollBarThickness(kScrollbarThichness);
-        speedModeNormalComponent_->addAndMakeVisible(speedPresetViewport_.get());
+        componentToAdd->addAndMakeVisible(speedPresetViewport_.get());
         
         speedPresetComponent_ = make_unique<Component>();
-        speedModeNormalComponent_->addAndMakeVisible(speedPresetComponent_.get());
+        componentToAdd->addAndMakeVisible(speedPresetComponent_.get());
         constexpr int presetButtonMargin = 4;
         constexpr int controlHeight = 30;
         int speedButtonX = 0;
@@ -873,7 +793,7 @@ void MainComponent::createUI()
     }
     
     {
-        auto section = sectionComponents_[kSection_Metronome].get();
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(sectionComponents_[kSection_Metronome].get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
         metronomeOnOffButton_ = make_unique<ToggleButton>();
         metronomeOnOffButton_->setTooltip(TRANS("metronome_switch"));
@@ -884,7 +804,7 @@ void MainComponent::createUI()
             const auto on = metronomeOnOffButton_->getToggleState();
             model_->setMetronomeSwitch(on);
         };
-        section->addAndMakeVisible(metronomeOnOffButton_.get());
+        componentToAdd->addAndMakeVisible(metronomeOnOffButton_.get());
         
         bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome_bpm_dec"), TRANS("metronome_bpm_inc"));
         bpmButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Edit", TRANS("metronome_bpm_edit"));
@@ -905,7 +825,7 @@ void MainComponent::createUI()
                 model_->setBpm(std::clamp<int>(model_->getBpm() + sign, kBpmMin, kBpmMax));
             }
         };
-        section->addAndMakeVisible(bpmButton_.get());
+        componentToAdd->addAndMakeVisible(bpmButton_.get());
         
         accentPositionButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome_accent_position_dec"), TRANS("metronome_accent_position_inc"));
         accentPositionButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Set", TRANS("metronome_accent_position_set"));
@@ -924,7 +844,7 @@ void MainComponent::createUI()
                 model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
             }
         };
-        section->addAndMakeVisible(accentPositionButton_.get());
+        componentToAdd->addAndMakeVisible(accentPositionButton_.get());
         
         accentButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome_accent_dec"), TRANS("metronome_accent_inc"));
         accentButton_->onClick_= [this](MelissaIncDecButton::Event event, bool b)
@@ -938,11 +858,11 @@ void MainComponent::createUI()
                 model_->setAccent(model_->getAccent() + sign);
             }
         };
-        section->addAndMakeVisible(accentButton_.get());
+        componentToAdd->addAndMakeVisible(accentButton_.get());
     }
     
     {
-        auto section = sectionComponents_[kSection_Eq].get();
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(sectionComponents_[kSection_Eq].get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
         eqSwitchButton_ = std::make_unique<ToggleButton>();
         eqSwitchButton_->setTooltip(TRANS("eq_switch"));
@@ -953,7 +873,7 @@ void MainComponent::createUI()
             const auto on = eqSwitchButton_->getToggleState();
             model_->setEqSwitch(on);
         };
-        section->addAndMakeVisible(eqSwitchButton_.get());
+        componentToAdd->addAndMakeVisible(eqSwitchButton_.get());
         
         for (size_t bandIndex = 0; bandIndex < kNumOfEqBands; ++bandIndex)
         {
@@ -967,7 +887,7 @@ void MainComponent::createUI()
                 auto value = eqFreqKnobs_[bandIndex]->getValue();
                 model_->setEqFreq(0, 20 * std::pow(1000, value));
             };
-            section->addAndMakeVisible(freqKnob.get());
+            componentToAdd->addAndMakeVisible(freqKnob.get());
             eqFreqKnobs_[bandIndex] = std::move(freqKnob);
             
             auto qKnob = std::make_unique<Slider>();
@@ -980,7 +900,7 @@ void MainComponent::createUI()
                 auto value = eqQKnobs_[bandIndex]->getValue();
                 model_->setEqQ(0, value);
             };
-            section->addAndMakeVisible(qKnob.get());
+            componentToAdd->addAndMakeVisible(qKnob.get());
             eqQKnobs_[bandIndex] = std::move(qKnob);
             
             auto gainKnob = std::make_unique<Slider>();
@@ -993,7 +913,7 @@ void MainComponent::createUI()
                 auto value = eqGainKnobs_[bandIndex]->getValue();
                 model_->setEqGain(0, value);
             };
-            section->addAndMakeVisible(gainKnob.get());
+            componentToAdd->addAndMakeVisible(gainKnob.get());
             eqGainKnobs_[bandIndex] = std::move(gainKnob);
         }
         
@@ -1007,19 +927,19 @@ void MainComponent::createUI()
             l->setJustificationType(Justification::centred);
             l->setColour(Label::textColourId, MelissaUISettings::getTextColour());
             l->toBack();
-            section->addAndMakeVisible(l.get());
+            componentToAdd->addAndMakeVisible(l.get());
             knobLabels_[labelIndex] = std::move(l);
         }
         
         for (size_t qIconIndex = 0; qIconIndex < 2; ++qIconIndex)
         {
             qIconComponents_[qIconIndex] = std::make_unique<QIconComponent>(0.25 + 0.5 * qIconIndex);
-            section->addAndMakeVisible(qIconComponents_[qIconIndex].get());
+            componentToAdd->addAndMakeVisible(qIconComponents_[qIconIndex].get());
         }
     }
     
     {
-        auto section = sectionComponents_[kSection_Mixer].get();
+        Component* componentToAdd = isDesktop ? reinterpret_cast<Component*>(sectionComponents_[kSection_Mixer].get()) : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
         outputModeComboBox_ = make_unique<ComboBox>();
         outputModeComboBox_->setTooltip(TRANS("output_mode"));
@@ -1035,7 +955,7 @@ void MainComponent::createUI()
         };
         outputModeComboBox_->setSelectedId(kOutputMode_LR + 1);
         outputModeComboBox_->setWantsKeyboardFocus(false);
-        section->addAndMakeVisible(outputModeComboBox_.get());
+        componentToAdd->addAndMakeVisible(outputModeComboBox_.get());
     
         musicVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         musicVolumeSlider_->setTooltip(TRANS("volume_music"));
@@ -1046,7 +966,7 @@ void MainComponent::createUI()
         {
             model_->setMusicVolume(musicVolumeSlider_->getValue());
         };
-        section->addAndMakeVisible(musicVolumeSlider_.get());
+        componentToAdd->addAndMakeVisible(musicVolumeSlider_.get());
         
         volumeBalanceSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         volumeBalanceSlider_->setTooltip(TRANS("volume_balance"));
@@ -1058,7 +978,7 @@ void MainComponent::createUI()
         {
             model_->setMusicMetronomeBalance(volumeBalanceSlider_->getValue());
         };
-        section->addAndMakeVisible(volumeBalanceSlider_.get());
+        componentToAdd->addAndMakeVisible(volumeBalanceSlider_.get());
         
         metronomeVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         metronomeVolumeSlider_->setTooltip(TRANS("volume_metronome"));
@@ -1069,7 +989,7 @@ void MainComponent::createUI()
         {
             model_->setMetronomeVolume(metronomeVolumeSlider_->getValue());
         };
-        section->addAndMakeVisible(metronomeVolumeSlider_.get());
+        componentToAdd->addAndMakeVisible(metronomeVolumeSlider_.get());
     }
     
     fileComponent_ = std::make_unique<RoundedComponent>(MelissaUISettings::getSubColour());
@@ -1239,18 +1159,65 @@ void MainComponent::createUI()
     
 #ifdef JUCE_IOS
     importButton_ = std::make_unique<TextButton>();
-    importButton_->setButtonText(TRANS("import"));
+    importButton_->setButtonText("IMP");
     importButton_->onClick = [&]()
     {
         //adComponent_->setVisible(true);
         //adComponent_->show();
         showFileChooser();
     };
-    addAndMakeVisible(importButton_.get());
+    safeAreaComponent_->addAndMakeVisible(importButton_.get());
+    
+    debugButton_ = std::make_unique<TextButton>();
+    debugButton_->setButtonText("DBG");
+    debugButton_->onClick = [&]()
+    {
+        MelissaDataSource::Song::Marker marker;
+        
+        marker.position_ = 0.5f;
+        Colour colour = Colour::fromRGB(255, 160, 160);
+        colour = colour.withHue(marker.position_);
+        marker.colourR_  = colour.getRed();
+        marker.colourG_  = colour.getGreen();
+        marker.colourB_  = colour.getBlue();
+        marker.memo_     = "Melissa Mobile Coming soon...";
+        dataSource_->addMarker(marker);
+        
+        marker.position_ = 0.f;
+        colour = colour.withHue(marker.position_);
+        marker.colourR_  = colour.getRed();
+        marker.colourG_  = colour.getGreen();
+        marker.colourB_  = colour.getBlue();
+        marker.memo_     = "Start";
+        dataSource_->addMarker(marker);
+        
+        marker.position_ = 1.f;
+        colour = colour.withHue(marker.position_);
+        marker.colourR_  = colour.getRed();
+        marker.colourG_  = colour.getGreen();
+        marker.colourB_  = colour.getBlue();
+        marker.memo_     = "End";
+        dataSource_->addMarker(marker);
+    };
+    safeAreaComponent_->addAndMakeVisible(debugButton_.get());
+    
+    iconTexts_[kIconText_Pitch] = std::make_unique<MelissaIconTextComponent>(BinaryData::pitch_svg, BinaryData::pitch_svgSize, MelissaUISettings::getAccentColour().withHue(0.f), TRANS("pitch_short"));
+    safeAreaComponent_->addAndMakeVisible(iconTexts_[kIconText_Pitch].get());
+    
+    iconTexts_[kIconText_Loop] = std::make_unique<MelissaIconTextComponent>(BinaryData::loop_svg, BinaryData::loop_svgSize, MelissaUISettings::getAccentColour().withHue(0.2f), TRANS("loop_short"));
+    safeAreaComponent_->addAndMakeVisible(iconTexts_[kIconText_Loop].get());
+    
+    iconTexts_[kIconText_Speed] = std::make_unique<MelissaIconTextComponent>(BinaryData::speed_svg, BinaryData::pitch_svgSize, MelissaUISettings::getAccentColour().withHue(0.4f), TRANS("speed_short"));
+    safeAreaComponent_->addAndMakeVisible(iconTexts_[kIconText_Speed].get());
     
     adComponent_ = std::make_unique<MelissaAdComponent>();
-    addAndMakeVisible(adComponent_.get());
+    safeAreaComponent_->addAndMakeVisible(adComponent_.get());
     
+    for (int separatorIndex = 0; separatorIndex < kNumSeparators; ++separatorIndex)
+    {
+        separators_[separatorIndex] = std::make_unique<MelissaSeparatorComponent>();
+        safeAreaComponent_->addAndMakeVisible(separators_[separatorIndex].get());
+    }
 #endif
     
     updateSpeedModeTab(kSpeedModeTab_Basic);
@@ -1260,6 +1227,109 @@ void MainComponent::createUI()
     waveformComponent_->setMarkerListener(this);
     
     if (!isFullVersion) stemControlComponent_->setVisible(false);
+}
+
+void MainComponent::createMenu()
+{
+    menuButton_ = std::make_unique<MelissaMenuButton>();
+    menuButton_->setBudgeVisibility(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
+    menuButton_->onClick = [&]()
+    {
+        const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
+        
+        PopupMenu menu;
+        menu.setLookAndFeel(&laf_);
+        menu.addItem(kMenuID_About, TRANS("about_melissa"));
+        menu.addItem(kMenuID_Manual, TRANS("open_manual"));
+        menu.addItem(kMenuID_VersionCheck, updateExists ? TRANS("update_exists") : TRANS("check_update"));
+        menu.addSeparator();
+        menu.addItem(kMenuID_Preferences, TRANS("audio_midi_settings"));
+        menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
+        
+        PopupMenu uiThemeMenu;
+        const auto uiTheme = dataSource_->getUITheme();
+        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, uiTheme == "System_Dark");
+        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, uiTheme == "System_Light");
+        menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
+        
+        menu.addSeparator();
+        menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
+        
+#if defined(ENABLE_TUTORIAL)
+        menu.addItem(kMenuID_Tutorial, TRANS("tutorial"));
+#endif
+        
+        menu.addSeparator();
+        PopupMenu advancedMenu;
+        advancedMenu.addItem(kMenuID_RevealSettingsFile, TRANS("reveal_settings_file"));
+        menu.addSubMenu(TRANS("advanced_settings"), advancedMenu);
+        
+        menu.showMenuAsync(PopupMenu::Options(), [&](int result) {
+            model_->setPlaybackStatus(kPlaybackStatus_Stop);
+            if (result == kMenuID_About)
+            {
+                showAboutDialog();
+            }
+            else if (result == kMenuID_Manual)
+            {
+                URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
+            }
+            else if (result == kMenuID_VersionCheck)
+            {
+                showUpdateDialog(true);
+            }
+            else if (result == kMenuID_Preferences)
+            {
+                showAudioMidiSettingsDialog();
+            }
+            else if (result == kMenuID_Shortcut)
+            {
+                showShortcutDialog();
+            }
+            else if (result == kMenuID_UITheme_Auto || result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
+            {
+                const std::vector<String> options = { TRANS("ok") };
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index) {
+                    String uiTheme;
+                    if (result == kMenuID_UITheme_Auto)
+                    {
+                        uiTheme = "System_Auto";
+                    }
+                    else if (result == kMenuID_UITheme_Dark)
+                    {
+                        uiTheme = "System_Dark";
+                    }
+                    else
+                    {
+                        uiTheme = "System_Light";
+                    }
+                    dataSource_->setUITheme(uiTheme);
+                    File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
+                    JUCEApplicationBase::quit();
+                });
+                MelissaModalDialog::show(dialog, TRANS("ui_theme"));
+            }
+            else if (result == kMenuID_Tutorial)
+            {
+                showTutorial();
+            }
+            else if (result == kMenuID_TwitterShare)
+            {
+                if (isLangJapanese_)
+                {
+                    URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+                }
+                else
+                {
+                    URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+                }
+            }
+            else if (result == kMenuID_RevealSettingsFile)
+            {
+                settingsFile_.revealToUser();
+            }
+        });
+    };
 }
 
 void MainComponent::showFileChooser()
@@ -1281,74 +1351,7 @@ void MainComponent::showFileChooser()
     });
 }
 
-void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
-{
-    audioEngine_->setOutputSampleRate(sampleRate);
-    metronome_->setOutputSampleRate(sampleRate);
-}
-
-void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
-{
-    const auto numSamples = bufferToFill.numSamples;
-    if (timeIndicesMSec_.size() != numSamples)
-    {
-        timeIndicesMSec_.resize(numSamples);
-    }
-    bufferToFill.clearActiveBufferRegion();
-    
-    const size_t numOfChannels = bufferToFill.buffer->getNumChannels();
-    
-    if (numOfChannels == 1)
-    {
-        float* buffer[] = { bufferToFill.buffer->getWritePointer(0) };
-        if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
-        {
-            audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
-        }
-        metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
-        
-        for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
-        {
-            buffer[0][sampleIndex] *= mainVolume_;
-        }
-    }
-    else if (numOfChannels == 2)
-    {
-        float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
-        if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
-        {
-            audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
-        }
-        metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
-        for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
-        {
-            buffer[0][sampleIndex] *= mainVolume_;
-            buffer[1][sampleIndex] *= mainVolume_;
-        }
-    }
-    else
-    {
-        jassertfalse;
-    }
-    
-
-        
-}
-
-void MainComponent::releaseResources()
-{
-    // This will be called when the audio device stops, or when it is being
-    // restarted due to a setting change.
-    
-    // For more details, see the help for AudioProcessor::releaseResources()
-}
-
-void MainComponent::paint(Graphics& g)
-{
-    g.fillAll(MelissaUISettings::getMainColour());
-}
-
-void MainComponent::resized()
+void MainComponent::resized_Desktop()
 {
     constexpr int kHeaderHeight = 50;
     headerComponent_->setBounds(0, 0, getWidth(), kHeaderHeight);
@@ -1391,8 +1394,9 @@ void MainComponent::resized()
     
     popupMessage_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
     
+    constexpr int kOffset = 20;
     waveformComponent_->setBounds(30, headerComponent_->getBottom() + 40, getWidth() - 30 * 2, 160);
-    markerMemoComponent_->setBounds(50, headerComponent_->getBottom() + 4, getWidth() - 50 * 2, 30);
+    markerMemoComponent_->setBounds(waveformComponent_->getX() - kOffset, waveformComponent_->getY() - 36, waveformComponent_->getWidth() - kOffset * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
@@ -1557,19 +1561,10 @@ void MainComponent::resized()
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
     }
     
-#ifdef JUCE_IOS
-    const int kAdWidth = getWidth();
-    constexpr int kAdHeight = 50 + 10;
-#endif
-    
     // File component (Browser / Playlist / History)
     {
         int y = controlComponent_->getBottom() + kGradationHeight - 10;
-#ifdef JUCE_IOS
-        int h = (getHeight() - 10) - y - kAdHeight;
-#else
         int h = (getHeight() - 10) - y;
-#endif
         fileComponent_->setBounds(10, y, songWidth, h);
         int x = fileComponent_->getRight() + 10;
         listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
@@ -1619,12 +1614,163 @@ void MainComponent::resized()
     }
     
     if (tutorialComponent_ != nullptr) tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
+}
+
+void MainComponent::resized_Mobile()
+{
+    auto safeBounds = [this]
+    {
+        auto bounds = getLocalBounds();
+        if (auto* display = Desktop::getInstance().getDisplays().getDisplayForRect(getScreenBounds()))
+            return display->safeAreaInsets.subtractedFrom (display->keyboardInsets.subtractedFrom (bounds));
+        return bounds;
+    }();
+    
+    safeAreaComponent_->toBack();
+    safeAreaComponent_->setBounds(safeBounds);
+    const int width = safeAreaComponent_->getWidth();
     
 #ifdef JUCE_IOS
-    importButton_->setBounds(10, headerComponent_->getBottom() + 10, 100, 30);
-    adComponent_->setBounds(0, getBottom() - kAdHeight, kAdWidth, kAdHeight);
+    const int kAdWidth = getWidth();
+    constexpr int kAdHeight = 50 + 10;
+#endif
+    
+    menuButton_->setBounds(10, 4, 30, 18);
+    
+    constexpr int kXOffset = 0;
+    
+    
+    // Waveform
+    {
+        constexpr int kWaveformOffset = 0;
+        waveformComponent_->setBounds(kXOffset, 50, width - kXOffset, 90);
+        markerMemoComponent_->setBounds(waveformComponent_->getX() - kWaveformOffset, waveformComponent_->getY() - 18, waveformComponent_->getWidth() + kWaveformOffset, 16);
+        
+        separators_[kSeparator_Upper]->setBounds(kXOffset, 140, width - kXOffset, 2);
+        separators_[kSeparator_Lower]->setBounds(kXOffset, 192, width - kXOffset, 2);
+    }
+    
+    // Center controls
+    {
+        constexpr int controlY = 147;
+        int x = kXOffset;
+        
+        constexpr int iconWidth = 40;
+        constexpr int minButtonAWidth = 90;
+        constexpr int minButtonBWidth = 140;
+        constexpr int playButtonWidth = 50;
+        constexpr int playButtonHeight = 50;
+        constexpr int xMargin = 10;
+        constexpr int loopLineLength = 10;
+        
+        const int totalButtonWidth = width - (playButtonWidth + iconWidth + xMargin + iconWidth + loopLineLength + xMargin + iconWidth + xMargin);
+        const int buttonAWidth = totalButtonWidth * minButtonAWidth / (minButtonAWidth * 2 + minButtonBWidth * 2);
+        const int buttonBWidth = totalButtonWidth * minButtonBWidth / (minButtonAWidth * 2 + minButtonBWidth * 2);
+        
+        
+        playPauseButton_->setBounds(kXOffset, 142, playButtonWidth, playButtonHeight);
+        x += playPauseButton_->getWidth();
+        
+        iconTexts_[kIconText_Pitch]->setBounds(x, controlY + 4, iconWidth, 36);
+        x += iconTexts_[kIconText_Pitch]->getWidth();
+        pitchButton_->setBounds(x, controlY, buttonAWidth, 40);
+        x += pitchButton_->getWidth();
+        
+        x += xMargin;
+        iconTexts_[kIconText_Loop]->setBounds(x, controlY + 4, iconWidth, 36);
+        x += iconTexts_[kIconText_Loop]->getWidth();
+        aButton_->setBounds(x, controlY, buttonBWidth, 40);
+        x += aButton_->getWidth();
+        
+        separators_[kSeparator_Loop]->setBounds(x, controlY + 19, loopLineLength, 2);
+        x += loopLineLength;
+        bButton_->setBounds(x, controlY, buttonBWidth, 40);
+        x += bButton_->getWidth();
+        
+        x += xMargin;
+        iconTexts_[kIconText_Speed]->setBounds(x, controlY + 4, iconWidth, 36);
+        x += iconTexts_[kIconText_Speed]->getWidth();
+        speedButton_->setBounds(x, controlY, buttonAWidth, 40);
+        x += speedButton_->getWidth();
+    }
+    
+    adComponent_->setBounds((getWidth() - kAdWidth) / 2, getBottom() - kAdHeight, kAdWidth, kAdHeight);
     adComponent_->show();
-    //adComponent_->setBounds(0, 0, getWidth(), getHeight());
+    
+    importButton_->setBounds(100, 0, 50, 20);
+    debugButton_ ->setBounds(160, 0, 50, 20);
+}
+
+void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+{
+    audioEngine_->setOutputSampleRate(sampleRate);
+    metronome_->setOutputSampleRate(sampleRate);
+}
+
+void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
+{
+    const auto numSamples = bufferToFill.numSamples;
+    if (timeIndicesMSec_.size() != numSamples)
+    {
+        timeIndicesMSec_.resize(numSamples);
+    }
+    bufferToFill.clearActiveBufferRegion();
+    
+    const size_t numOfChannels = bufferToFill.buffer->getNumChannels();
+    
+    if (numOfChannels == 1)
+    {
+        float* buffer[] = { bufferToFill.buffer->getWritePointer(0) };
+        if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
+        {
+            audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        }
+        metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        
+        for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
+        {
+            buffer[0][sampleIndex] *= mainVolume_;
+        }
+    }
+    else if (numOfChannels == 2)
+    {
+        float* buffer[] = { bufferToFill.buffer->getWritePointer(0), bufferToFill.buffer->getWritePointer(1) };
+        if (model_->getPlaybackStatus() == kPlaybackStatus_Playing && !prepareingNextSong_)
+        {
+            audioEngine_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        }
+        metronome_->render(buffer, numOfChannels, timeIndicesMSec_, bufferToFill.numSamples);
+        for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
+        {
+            buffer[0][sampleIndex] *= mainVolume_;
+            buffer[1][sampleIndex] *= mainVolume_;
+        }
+    }
+    else
+    {
+        jassertfalse;
+    }
+}
+
+void MainComponent::releaseResources()
+{
+    // This will be called when the audio device stops, or when it is being
+    // restarted due to a setting change.
+    
+    // For more details, see the help for AudioProcessor::releaseResources()
+}
+
+void MainComponent::paint(Graphics& g)
+{
+    g.fillAll(MelissaUISettings::getMainColour());
+}
+
+void MainComponent::resized()
+{
+#if JUCE_IOS
+    resized_Mobile();
+#else
+    resized_Desktop();
 #endif
     
     MelissaModalDialog::resize();

@@ -199,17 +199,25 @@ public:
     
     void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        constexpr float headHeight = 20;
+        
         constexpr float bodyWidth = 3;
         
+#ifdef JUCE_IOS
+        constexpr float headHeight = 10;
+        constexpr float headRound = 4;
+#else
+        constexpr float headHeight = 20;
+        constexpr float headRound = 4;
+#endif
+        
         g.setColour(colour_);
-        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, headRound);
         g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight - 2, bodyWidth, getHeight() - headHeight + 2);
         
         if (isMouseOn_)
         {
             g.setColour(Colours::black.withAlpha(0.2f));
-            g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+            g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, headRound);
             g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight, bodyWidth, getHeight() - headHeight);
         }
     }
@@ -294,7 +302,11 @@ MelissaWaveformControlComponent::~MelissaWaveformControlComponent() {}
 
 void MelissaWaveformControlComponent::resized()
 {
+#ifdef JUCE_IOS
+    waveformView_->setBounds(20, 10, getWidth() - 20 * 2, getHeight() - 28);
+#else
     waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40);
+#endif
     markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
     
     loopRangeComponent_->setBounds(waveformView_->getBounds());
@@ -349,7 +361,11 @@ void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t
         l->setJustificationType(Justification::centred);
         l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
         l->setText(text, dontSendNotification);
+#ifdef JUCE_IOS
+        l->setSize(MelissaUtility::getStringSize(l->getFont(), l->getText()).first, 18);
+#else
         l->setSize(MelissaUtility::getStringSize(l->getFont(), l->getText()).first, 20);
+#endif
         addAndMakeVisible(l.get());
         return l;
     };
@@ -406,7 +422,11 @@ void MelissaWaveformControlComponent::arrangeMarkers() const
     for (auto&& m : markers_)
     {
         const int x = waveformView_->getX() + waveformView_->getWidth() * m->getPosition();
+#ifdef JUCE_IOS
+        m->setBounds(x - 4, 0, 8, getHeight() - 18);
+#else
         m->setBounds(x - 4, 0, 8, getHeight() - 20);
+#endif
     }
 }
 

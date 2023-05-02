@@ -62,17 +62,26 @@ namespace BinaryData
     extern const char*   up_svg;
     const int            up_svgSize = 524;
 
+    extern const char*   speed_svg;
+    const int            speed_svgSize = 757;
+
+    extern const char*   loop_svg;
+    const int            loop_svgSize = 617;
+
+    extern const char*   pitch_svg;
+    const int            pitch_svgSize = 874;
+
     extern const char*   enUS_txt;
-    const int            enUS_txtSize = 11204;
+    const int            enUS_txtSize = 11274;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 12671;
+    const int            jaJP_txtSize = 12748;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110193;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 21;
+    const int namedResourceListSize = 24;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

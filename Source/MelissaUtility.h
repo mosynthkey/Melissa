@@ -53,7 +53,7 @@ public:
         
         if (sign == 0)
         {
-            return "Original";
+            return "0";
         }
         else if (sign > 0)
         {

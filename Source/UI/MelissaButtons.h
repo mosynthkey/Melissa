@@ -24,9 +24,15 @@ public:
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         g.setColour(MelissaUISettings::getWaveformColour().withAlpha(highlighted ? 1.f : 0.6f));
         
-        g.fillRoundedRectangle(0, 4, 26, lineHeight, lineHeight / 2);
+#ifdef JUCE_IOS
+        g.fillRoundedRectangle(0,  4, 26, lineHeight, lineHeight / 2);
         g.fillRoundedRectangle(0, 10, 22, lineHeight, lineHeight / 2);
         g.fillRoundedRectangle(0, 16, 18, lineHeight, lineHeight / 2);
+#else
+        g.fillRoundedRectangle(0,  4, 26, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 10, 22, lineHeight, lineHeight / 2);
+        g.fillRoundedRectangle(0, 16, 18, lineHeight, lineHeight / 2);
+#endif
         
         if (showBudge_)
         {
@@ -85,6 +91,7 @@ public:
 private:
     void paintButton (juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+        g.fillAll(MelissaUISettings::getMainColour());
         const auto& b = getLocalBounds();
         
         const int w = b.getWidth();
@@ -93,10 +100,9 @@ private:
         const int triH = h * 3.f / 7.f;
         
         const bool on = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        //g.setColour(MelissaUISettings::getSubColour());
-        //g.fillEllipse(t / 2, t / 2, w - t - 1, h - t - 1);
         
         g.setColour(MelissaUISettings::getTextColour(on ? 1.f : 0.8f));
+        
         if (drawPlayIcon_)
         {
             const int x0 = (w - triW) * 4.f / 7.f;
