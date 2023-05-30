@@ -41,16 +41,8 @@ AdMobAdDelegateViewController *viewController;
 MelissaAdComponent::MelissaAdComponent()
 {
     viewController = [[AdMobAdDelegateViewController alloc] init];
-    //viewController = [[RewardAdViewController alloc] init];
     uiViewComponent.setView([viewController view]);
     addAndMakeVisible(uiViewComponent);
-    
-    //auto area = Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
-    //DBG( "ios area: " << area.toString() );
-    //setSize(area.getWidth(), area.getHeight());
-    
-    //[viewController loadRewardedAd];
-    //[viewController loadBannerAd];
 }
 
 MelissaAdComponent::~MelissaAdComponent()
@@ -61,15 +53,12 @@ MelissaAdComponent::~MelissaAdComponent()
 void MelissaAdComponent::resized()
 {
     uiViewComponent.setBounds(getLocalBounds());
+    viewController.view.frame = CGRectMake(0, 0, getWidth(), getHeight());
 }
 
 void MelissaAdComponent::paint(Graphics& g)
 {
     g.fillAll(MelissaUISettings::getMainColour());
-}
-
-void MelissaAdComponent::show()
-{
-    //[viewController show];
-    [viewController loadBannerAd];
+    g.setColour(Colours::pink);
+    g.drawRect(getLocalBounds());
 }

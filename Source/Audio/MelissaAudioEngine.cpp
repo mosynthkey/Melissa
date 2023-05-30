@@ -299,6 +299,9 @@ void MelissaAudioEngine::process()
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     while (receivedSampleSize == 0)
     {
+        size_t readStartIndex = static_cast<size_t>(readIndex_);
+        int numSamplesToRead = 0;
+        
         for (size_t iSample = 0; iSample < processLength_; ++iSample)
         {
             if (readIndex_ > bIndex_)
@@ -306,6 +309,7 @@ void MelissaAudioEngine::process()
                 if (loop_)
                 {
                     readIndex_ = aIndex_;
+                    break;
 #if defined(ENABLE_SPEED_TRAINING)
                     ++count_;
                     
@@ -326,9 +330,19 @@ void MelissaAudioEngine::process()
             mutex_.lock();
             sampleIndexStretcher_->putSampleIndex(readIndex_);
             mutex_.unlock();
-            bufferForSoundTouch_[iSample * 2 + 0] = shouldProcess_ ? dataSource_->readBuffer(0, readIndex_, playPart_) : 0.f;
-            bufferForSoundTouch_[iSample * 2 + 1] = shouldProcess_ ? dataSource_->readBuffer(1, readIndex_, playPart_) : 0.f;
+            ++numSamplesToRead;
             ++readIndex_;
+        }
+        
+        float lCh[processLength_];
+        float rCh[processLength_];
+        float* readAudio[] = {lCh, rCh };
+        if (shouldProcess_) dataSource_->readBuffer(MelissaDataSource::kReader_Playback, readIndex_, numSamplesToRead, playPart_, readAudio);
+        
+        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+        {
+            bufferForSoundTouch_[sampleIndex * 2 + 0] = lCh[sampleIndex];
+            bufferForSoundTouch_[sampleIndex * 2 + 1] = rCh[sampleIndex];
         }
         
         soundTouch_->putSamples(bufferForSoundTouch_, processLength_);

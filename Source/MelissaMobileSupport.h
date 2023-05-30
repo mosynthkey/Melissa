@@ -27,8 +27,6 @@ public:
     void resized() override;
     void paint(juce::Graphics& g) override;
     
-    void show();
-    
 private:
     juce::UIViewComponent uiViewComponent;
 };

@@ -33,19 +33,22 @@ void MelissaBPMDetector::process(bool* processFinished, float* bpm)
     constexpr size_t processBufferLength = processLength * 2 /* Stereo */;
     float buffer[processBufferLength];
     
-    for (size_t bufferIndex = 0; bufferIndex < processBufferLength; bufferIndex += 2)
+    float lCh[processLength], rCh[processLength];
+    float* audioData[] = { lCh, rCh };
+    const size_t startReadIndex = processStartIndex_;
+    const size_t endReadIndex = std::min(startReadIndex + processLength - 1, bufferLength_ - 1);
+    const size_t numReadSample = endReadIndex - startReadIndex + 1;
+    dataSource_->readBuffer(MelissaDataSource::kReader_BPM, startReadIndex, static_cast<int>(numReadSample), kPlayPart_All, audioData);
+    
+    for (int sampleIndex = 0; sampleIndex < numReadSample; ++sampleIndex)
     {
-        if (bufferLength_ * 2 <= processStartIndex_ + bufferIndex)
-        {
-            *processFinished = true;
-            break;
-        }
-        buffer[bufferIndex + 0] = dataSource_->readBuffer(0, processStartIndex_ + bufferIndex, kPlayPart_All);
-        buffer[bufferIndex + 1] = dataSource_->readBuffer(1, processStartIndex_ + bufferIndex + 1, kPlayPart_All);
+        buffer[sampleIndex * 2 + 0] = lCh[sampleIndex];
+        buffer[sampleIndex * 2 + 1] = rCh[sampleIndex];
     }
-    processStartIndex_ += processBufferLength;
     bpmDetect_->inputSamples(buffer, processLength);
     
+    processStartIndex_ += processBufferLength;
+    if (bufferLength_ <= processStartIndex_) *processFinished = true;
     if (!(*processFinished)) return;
     
     const auto beatsLength = bpmDetect_->getBeats(nullptr, nullptr, 0);

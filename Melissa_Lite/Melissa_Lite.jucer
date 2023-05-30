@@ -15,11 +15,13 @@
         <FILE id="blXWlQ" name="clear.svg" compile="0" resource="1" file="../Resource/Icon/clear.svg"/>
         <FILE id="iBdhPo" name="detail.svg" compile="0" resource="1" file="../Resource/Icon/detail.svg"/>
         <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="../Resource/Icon/down.svg"/>
+        <FILE id="y8fFPi" name="loop.svg" compile="0" resource="1" file="../Resource/Icon/loop.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="../Resource/Icon/loop_onesong.svg"/>
         <FILE id="VQA9um" name="loop_playlist.svg" compile="0" resource="1"
               file="../Resource/Icon/loop_playlist.svg"/>
         <FILE id="bpsEcP" name="next_button.svg" compile="0" resource="1" file="../Resource/Icon/next_button.svg"/>
+        <FILE id="k3knn8" name="pitch.svg" compile="0" resource="1" file="../Resource/Icon/pitch.svg"/>
         <FILE id="hK6blR" name="playlist_add.svg" compile="0" resource="1"
               file="../Resource/Icon/playlist_add.svg"/>
         <FILE id="Y8Sfap" name="playlist_add_file.svg" compile="0" resource="1"
@@ -33,10 +35,9 @@
         <FILE id="EmNChd" name="prev_button.svg" compile="0" resource="1" file="../Resource/Icon/prev_button.svg"/>
         <FILE id="VcmlO2" name="select.svg" compile="0" resource="1" file="../Resource/Icon/select.svg"/>
         <FILE id="UIEkzL" name="speaker.svg" compile="0" resource="1" file="../Resource/Icon/speaker.svg"/>
-        <FILE id="vnhVAn" name="up.svg" compile="0" resource="1" file="../Resource/Icon/up.svg"/>
         <FILE id="slBAIZ" name="speed.svg" compile="0" resource="1" file="../Resource/Icon/speed.svg"/>
-        <FILE id="y8fFPi" name="loop.svg" compile="0" resource="1" file="../Resource/Icon/loop.svg"/>
-        <FILE id="k3knn8" name="pitch.svg" compile="0" resource="1" file="../Resource/Icon/pitch.svg"/>
+        <FILE id="Ou1Pqt" name="temp.svg" compile="0" resource="1" file="../Resource/Icon/temp.svg"/>
+        <FILE id="vnhVAn" name="up.svg" compile="0" resource="1" file="../Resource/Icon/up.svg"/>
       </GROUP>
       <GROUP id="{13F7DA8C-49BC-B15D-488E-08446D708C0E}" name="Language">
         <FILE id="Fir0aa" name="en-US.txt" compile="0" resource="1" file="../Resource/Language/en-US.txt"/>
@@ -111,8 +112,6 @@
       <GROUP id="{F9FED507-2C82-58A1-F717-3A3962290515}" name="UI">
         <FILE id="QJVtXb" name="MelissaAboutComponent.h" compile="0" resource="0"
               file="../Source/UI/MelissaAboutComponent.h"/>
-        <FILE id="fFmnS6" name="MelissaSeparatorComponent.h" compile="0" resource="0"
-              file="../Source/UI/MelissaSeparatorComponent.h"/>
         <FILE id="r13aSZ" name="MelissaBPMSettingComponent.h" compile="0" resource="0"
               file="../Source/UI/MelissaBPMSettingComponent.h"/>
         <FILE id="j1BKmo" name="MelissaButtons.h" compile="0" resource="0"
@@ -146,6 +145,10 @@
               resource="0" file="../Source/UI/MelissaMarkerMemoComponent.cpp"/>
         <FILE id="gg9VzE" name="MelissaMarkerMemoComponent.h" compile="0" resource="0"
               file="../Source/UI/MelissaMarkerMemoComponent.h"/>
+        <FILE id="Ik8aTS" name="MelissaMobileMenuComponent.cpp" compile="1"
+              resource="0" file="../Source/UI/MelissaMobileMenuComponent.cpp"/>
+        <FILE id="ML0B17" name="MelissaMobileMenuComponent.h" compile="0" resource="0"
+              file="../Source/UI/MelissaMobileMenuComponent.h"/>
         <FILE id="M048TD" name="MelissaModalDialog.cpp" compile="1" resource="0"
               file="../Source/UI/MelissaModalDialog.cpp"/>
         <FILE id="vNDLTs" name="MelissaModalDialog.h" compile="0" resource="0"
@@ -170,6 +173,8 @@
               file="../Source/UI/MelissaSectionComponent.cpp"/>
         <FILE id="aOumRK" name="MelissaSectionComponent.h" compile="0" resource="0"
               file="../Source/UI/MelissaSectionComponent.h"/>
+        <FILE id="fFmnS6" name="MelissaSeparatorComponent.h" compile="0" resource="0"
+              file="../Source/UI/MelissaSeparatorComponent.h"/>
         <FILE id="xej6ih" name="MelissaShortcutComponent.cpp" compile="1" resource="0"
               file="../Source/UI/MelissaShortcutComponent.cpp"/>
         <FILE id="lg92rj" name="MelissaShortcutComponent.h" compile="0" resource="0"

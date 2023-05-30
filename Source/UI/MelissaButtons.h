@@ -253,3 +253,76 @@ private:
     std::unique_ptr<juce::Drawable> normal_;
     std::unique_ptr<juce::Drawable> highlighted_;
 };
+
+class MelissaIconTextButton : public juce::Button
+{
+public:
+    MelissaIconTextButton(const void* imageData, const size_t imageNumBytes, const juce::Colour& colour, const juce::String& text)  : juce::Button("")
+    {
+        image_ = juce::Drawable::createFromImageData(imageData, imageNumBytes);
+        image_->replaceColour(juce::Colours::black, colour);
+        
+        text_ = text;
+    }
+    
+    ~MelissaIconTextButton() {}
+    
+    void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        constexpr int xSize = 24;
+        image_->drawAt(g, (getWidth() - xSize) / 2, 0, 1.f);
+        
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
+        g.setColour(MelissaUISettings::getTextColour());
+        g.drawText(text_, 0, getHeight() - 16, getWidth(), 16, juce::Justification::centred);
+    }
+    
+    void setText(const juce::String& text)
+    {
+        text_ = text;
+        repaint();
+    }
+    
+private:
+    std::unique_ptr<juce::Drawable> image_;
+    juce::String text_;
+};
+
+class MelissaControlButton : public juce::Button
+{
+public:
+    MelissaControlButton()  : juce::Button("")
+    {
+    }
+    
+    ~MelissaControlButton() {}
+    
+    void setText(const juce::String& text)
+    {
+        text_ = text;
+    }
+    
+    void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const bool isOn = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
+        g.setColour(MelissaUISettings::getMainColour());
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), static_cast<float>(getHeight()), 4);
+        
+        if (isOn)
+        {
+            g.setColour(MelissaUISettings::getAccentColour(0.5f));
+            g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), static_cast<float>(getHeight()), 4);
+        }
+        
+        g.setColour(MelissaUISettings::getSubColour());
+        g.drawRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), static_cast<float>(getHeight()), 4, 4);
+        
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
+        g.setColour(MelissaUISettings::getTextColour());
+        //g.drawText(text_, getLocalBounds().reduced(10, 10), juce::Justification::centredBottom);
+        g.drawMultiLineText(text_, 10, getHeight() / 2, getWidth() - 20, juce::Justification::centred);
+    }
+    
+private:
+    juce::String text_;
+};

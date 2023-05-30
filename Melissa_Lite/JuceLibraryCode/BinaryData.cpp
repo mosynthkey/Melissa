@@ -76,163 +76,8 @@ static const unsigned char temp_binary_data_5[] =
 
 const char* down_svg = (const char*) temp_binary_data_5;
 
-//================== loop_onesong.svg ==================
-static const unsigned char temp_binary_data_6[] =
-"<svg width=\"28\" height=\"22\" viewBox=\"0 0 28 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2.55279 4.89443C2.73705 4.5259 3.26295 4.5259 3.44721 4.89443L5.6382 9.27639C5.80442 9.60884 5.56267 10 5.19098 10H0.809017C0.437326 10 0.195578 9.60884 0.361803 9.27639L2.55279 4.89443Z\" fill=\""
-"white\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M25.4472 17.1056C25.263 17.4741 24.737 17.4741 24.5528 17.1056L22.3618 12.7236C22.1956 12.3912 22.4373 12 22.809 12H27.191C27.5627 12 27.8044 12.3912 27.6382 12.7236L25.4472 17.1056Z\" fill=\"whit"
-"e\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22 2H4H2V0H4H22C24.2091 0 26 1.79086 26 4V12H24V4C24 2.89543 23.1046 2 22 2ZM26 20H24H6C4.89543 20 4 19.1046 4 18V10H2V18C2 20.2091 3.79086 22 6 22H24H26V20Z\" fill=\"white\"/>\n"
-"<rect x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* loop_onesong_svg = (const char*) temp_binary_data_6;
-
-//================== loop_playlist.svg ==================
-static const unsigned char temp_binary_data_7[] =
-"<svg width=\"28\" height=\"22\" viewBox=\"0 0 28 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2.55279 4.89443C2.73705 4.5259 3.26295 4.5259 3.44721 4.89443L5.6382 9.27639C5.80442 9.60884 5.56267 10 5.19098 10H0.809017C0.437326 10 0.195578 9.60884 0.361803 9.27639L2.55279 4.89443Z\" fill=\""
-"white\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M25.4472 17.1056C25.263 17.4741 24.737 17.4741 24.5528 17.1056L22.3618 12.7236C22.1956 12.3912 22.4373 12 22.809 12H27.191C27.5627 12 27.8044 12.3912 27.6382 12.7236L25.4472 17.1056Z\" fill=\"whit"
-"e\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22 2H4H2V0H4H22C24.2091 0 26 1.79086 26 4V12H24V4C24 2.89543 23.1046 2 22 2ZM26 20H24H6C4.89543 20 4 19.1046 4 18V10H2V18C2 20.2091 3.79086 22 6 22H24H26V20Z\" fill=\"white\"/>\n"
-"<rect x=\"7.5\" y=\"5.5\" width=\"13\" height=\"11\" rx=\"1.5\" stroke=\"white\"/>\n"
-"<rect x=\"13.25\" y=\"9.25\" width=\"5.5\" height=\"0.5\" rx=\"0.25\" stroke=\"white\" stroke-width=\"0.5\"/>\n"
-"<rect x=\"13.25\" y=\"12.25\" width=\"5.5\" height=\"0.5\" rx=\"0.25\" stroke=\"white\" stroke-width=\"0.5\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.1056 10.5528C12.4741 10.737 12.4741 11.263 12.1056 11.4472L9.72361 12.6382C9.39116 12.8044 9 12.5627 9 12.191V9.80902C9 9.43733 9.39116 9.19558 9.72361 9.3618L12.1056 10.5528Z\" fill=\"white\""
-"/>\n"
-"</svg>\n";
-
-const char* loop_playlist_svg = (const char*) temp_binary_data_7;
-
-//================== next_button.svg ==================
-static const unsigned char temp_binary_data_8[] =
-"<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<path id=\"next_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M14 0.5H16V16.5H14V9.32464C13.9727 9.34317 13.9442 9.36066 13.9143 9.37701L1.48047 16.1889C0.814054 16.554 0 16.0718 0 15.3119V1.68809C0 0.928215 0.814052 0.44598 1.48047 0.8110"
-"78L13.9143 7.62299C13.9442 7.63934 13.9727 7.65683 14 7.67536V0.5Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* next_button_svg = (const char*) temp_binary_data_8;
-
-//================== playlist_add.svg ==================
-static const unsigned char temp_binary_data_9[] =
-"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM14 8C14 7.44769 14.4477 7 15 7C15.5523 7 16 7.44769 16 8V14H22C22.5523 14 23"
-" 14.4477 23 15C23 15.5523 22.5523 16 22 16H16V22C16 22.5523 15.5523 23 15 23C14.4477 23 14 22.5523 14 22V16H8C7.44772 16 7 15.5523 7 15C7 14.4477 7.44772 14 8 14H14V8Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* playlist_add_svg = (const char*) temp_binary_data_9;
-
-//================== playlist_add_file.svg ==================
-static const unsigned char temp_binary_data_10[] =
-"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 6C0 2.68629 2.68629 0 6 0H24C27.3137 0 30 2.68629 30 6V24C30 27.3137 27.3137 30 24 30H6C2.68629 30 0 27.3137 0 24V6ZM13 3L6 10H12C12.5523 10 13 9.55228 13 9V3ZM15.7143 8.66667V5H22V17.0224C19.1"
-"968 17.275 17 19.631 17 22.5C17 23.02 17.0722 23.5232 17.207 24H8V12.6667H11.7143C13.9234 12.6667 15.7143 10.8758 15.7143 8.66667ZM18.2572 26H8C6.89543 26 6 25.1046 6 24V12.6667V10.6667H8H11.7143C12.8189 10.6667 13.7143 9.77124 13.7143 8.66667V5V3H15"
-".7143H22C23.1046 3 24 3.89543 24 5V17.207C26.3085 17.86 28 19.9824 28 22.5C28 25.5376 25.5376 28 22.5 28C20.7921 28 19.266 27.2215 18.2572 26Z\" fill=\"white\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22.5 19C22.2239 19 22 19.2239 22 19.5V22H19.5C19.2239 22 19 22.2239 19 22.5C19 22.7761 19.2239 23 19.5 23H22V25.5C22 25.7761 22.2239 26 22.5 26C22.7761 26 23 25.7761 23 25.5V23H25.5C25.7761 23 26"
-" 22.7761 26 22.5C26 22.2239 25.7761 22 25.5 22H23V19.5C23 19.2239 22.7761 19 22.5 19Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* playlist_add_file_svg = (const char*) temp_binary_data_10;
-
-//================== playlist_add_playing.svg ==================
-static const unsigned char temp_binary_data_11[] =
-"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM15 24C15.7378 24 16.455 23.9112 17.1412 23.7437C17.0488 23.3441 17 22.9277 1"
-"7 22.5C17 19.4624 19.4624 17 22.5 17C22.9277 17 23.3441 17.0488 23.7437 17.1412C23.9112 16.455 24 15.7378 24 15C24 10.0294 19.9706 6 15 6C10.0294 6 6 10.0294 6 15C6 19.9706 10.0294 24 15 24ZM15 26C16.0238 26 17.0148 25.8601 17.9552 25.5985C18.9456 27"
-".0484 20.6117 28 22.5 28C25.5376 28 28 25.5376 28 22.5C28 20.6117 27.0484 18.9456 25.5985 17.9552C25.8601 17.0148 26 16.0238 26 15C26 8.92487 21.0751 4 15 4C8.92487 4 4 8.92487 4 15C4 21.0751 8.92487 26 15 26ZM19.5708 15.8575C20.2182 15.4691 20.2182 "
-"14.5309 19.5708 14.1425L12.5145 9.9087C11.848 9.50878 11 9.9889 11 10.7662V19.2338C11 20.0111 11.848 20.4912 12.5145 20.0913L19.5708 15.8575ZM22.5 19C22.1778 19 21.9167 19.2612 21.9167 19.5833V21.9167H19.5833C19.2612 21.9167 19 22.1778 19 22.5C19 22."
-"8222 19.2612 23.0833 19.5833 23.0833H21.9167V25.4167C21.9167 25.7388 22.1778 26 22.5 26C22.8222 26 23.0833 25.7388 23.0833 25.4167V23.0833H25.4167C25.7388 23.0833 26 22.8222 26 22.5C26 22.1778 25.7388 21.9167 25.4167 21.9167H23.0833V19.5833C23.0833 1"
-"9.2612 22.8222 19 22.5 19Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* playlist_add_playing_svg = (const char*) temp_binary_data_11;
-
-//================== playlist_edit.svg ==================
-static const unsigned char temp_binary_data_12[] =
-"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM18.7784 5.52512C18.5393 5.38705 18.2335 5.46899 18.0954 5.70813L16.8787 7.81"
-"561L20.3659 9.82896L19.89 10.6532L16.4028 8.63985L10.2996 19.211L10.2914 19.2246C9.68897 20.2681 9.14978 23.2154 10.0216 23.7188C10.8935 24.2222 13.2182 22.2091 13.7788 21.2381L13.779 21.2382L21.5828 7.72159C21.7209 7.48245 21.639 7.17665 21.3998 7.0"
-"3858L18.7784 5.52512Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* playlist_edit_svg = (const char*) temp_binary_data_12;
-
-//================== playlist_remove.svg ==================
-static const unsigned char temp_binary_data_13[] =
-"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM9.34191 10.7524C8.95139 10.3618 8.95139 9.72867 9.34191 9.33815C9.73244 8.94"
-"762 10.3656 8.94762 10.7561 9.33815L14.9988 13.5808L19.2414 9.33815C19.6319 8.94762 20.2651 8.94762 20.6556 9.33815C21.0461 9.72867 21.0461 10.3618 20.6556 10.7524L16.413 14.995L20.6556 19.2376C21.0461 19.6282 21.0461 20.2613 20.6556 20.6519C20.2651 "
-"21.0424 19.6319 21.0424 19.2414 20.6519L14.9988 16.4092L10.7561 20.6519C10.3656 21.0424 9.73244 21.0424 9.34191 20.6519C8.95139 20.2613 8.95139 19.6282 9.34191 19.2376L13.5846 14.995L9.34191 10.7524Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* playlist_remove_svg = (const char*) temp_binary_data_13;
-
-//================== prev_button.svg ==================
-static const unsigned char temp_binary_data_14[] =
-"<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<path id=\"prev_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2 0.5H0V16.5H2V9.32464C2.02727 9.34317 2.05582 9.36066 2.08566 9.37701L14.5195 16.1889C15.1859 16.554 16 16.0718 16 15.3119V1.68809C16 0.928215 15.1859 0.44598 14.5195 0.811078"
-"L2.08567 7.62299C2.05582 7.63934 2.02727 7.65683 2 7.67536V0.5Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* prev_button_svg = (const char*) temp_binary_data_14;
-
-//================== select.svg ==================
-static const unsigned char temp_binary_data_15[] =
-"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7 0C3.134 0 0 3.13401 0 7C0 10.866 3.134 14 7 14H13C16.866 14 20 10.866 20 7C20 3.13401 16.866 0 13 0H7ZM5 6C4.44771 6 4 6.44772 4 7C4 7.55228 4.44771 8 5 8H9C9.55229 8 10 7.55228 10 7C10 6.44772"
-" 9.55229 6 9 6H5ZM16 7C16 7.55228 15.5523 8 15 8C14.4477 8 14 7.55228 14 7C14 6.44772 14.4477 6 15 6C15.5523 6 16 6.44772 16 7ZM12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z\" fill=\"whi"
-"te\"/>\n"
-"</svg>\n";
-
-const char* select_svg = (const char*) temp_binary_data_15;
-
-//================== speaker.svg ==================
-static const unsigned char temp_binary_data_16[] =
-"<svg width=\"20\" height=\"30\" viewBox=\"0 0 20 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect x=\"1\" y=\"1\" width=\"18\" height=\"28\" rx=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
-"<circle cx=\"10\" cy=\"9\" r=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
-"<circle cx=\"10\" cy=\"20\" r=\"2\" fill=\"white\"/>\n"
-"<circle cx=\"10\" cy=\"20\" r=\"4\" stroke=\"white\" stroke-width=\"2\"/>\n"
-"</svg>\n";
-
-const char* speaker_svg = (const char*) temp_binary_data_16;
-
-//================== up.svg ==================
-static const unsigned char temp_binary_data_17[] =
-"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM15.8638 9.48077C15.4779 8.81927 14.5221 8.81927 14.1362 9.48077L8.87726 18.4"
-"962C8.48837 19.1628 8.96924 20 9.74103 20H20.259C21.0308 20 21.5116 19.1628 21.1227 18.4962L15.8638 9.48077Z\" fill=\"white\"/>\n"
-"</svg>\n";
-
-const char* up_svg = (const char*) temp_binary_data_17;
-
-//================== speed.svg ==================
-static const unsigned char temp_binary_data_18[] =
-"<svg width=\"24\" height=\"18\" viewBox=\"0 0 24 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-"<g clip-path=\"url(#clip0_560_1151)\">\n"
-"<circle cx=\"12\" cy=\"11\" r=\"10\" stroke=\"black\" stroke-width=\"2\" stroke-dasharray=\"8 1\"/>\n"
-"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M18 11C18 14.3137 15.3137 17 12 17C8.68629 17 6 14.3137 6 11C6 8.76444 7.22263 6.81445 9.03571 5.7822L10.0921 8.68467C9.42515 9.23491 9 10.0678 9 11C9 12.6568 10.3431 14 12 14C13.6569 14 15 12.656"
-"8 15 11C15 9.3431 13.6569 7.99995 12 7.99995C11.9904 7.99995 11.9809 8 11.9713 8.00008L10.915 5.09785C11.2669 5.03358 11.6295 5 12 5C15.3137 5 18 7.68629 18 11Z\" fill=\"black\"/>\n"
-"</g>\n"
-"<defs>\n"
-"<clipPath id=\"clip0_560_1151\">\n"
-"<rect width=\"24\" height=\"18\" fill=\"white\"/>\n"
-"</clipPath>\n"
-"</defs>\n"
-"</svg>\n";
-
-const char* speed_svg = (const char*) temp_binary_data_18;
-
 //================== loop.svg ==================
-static const unsigned char temp_binary_data_19[] =
+static const unsigned char temp_binary_data_6[] =
 "<svg width=\"24\" height=\"18\" viewBox=\"0 0 24 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<g clip-path=\"url(#clip0_560_927)\">\n"
 "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7 2H17C19.7614 2 22 4.23858 22 7C22 9.41896 20.2822 11.4367 18 11.9V13.9291C21.3923 13.4439 24 10.5265 24 7C24 3.13401 20.866 0 17 0H7C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14H14V12H7C4.2"
@@ -246,10 +91,49 @@ static const unsigned char temp_binary_data_19[] =
 "</defs>\n"
 "</svg>\n";
 
-const char* loop_svg = (const char*) temp_binary_data_19;
+const char* loop_svg = (const char*) temp_binary_data_6;
+
+//================== loop_onesong.svg ==================
+static const unsigned char temp_binary_data_7[] =
+"<svg width=\"28\" height=\"22\" viewBox=\"0 0 28 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2.55279 4.89443C2.73705 4.5259 3.26295 4.5259 3.44721 4.89443L5.6382 9.27639C5.80442 9.60884 5.56267 10 5.19098 10H0.809017C0.437326 10 0.195578 9.60884 0.361803 9.27639L2.55279 4.89443Z\" fill=\""
+"white\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M25.4472 17.1056C25.263 17.4741 24.737 17.4741 24.5528 17.1056L22.3618 12.7236C22.1956 12.3912 22.4373 12 22.809 12H27.191C27.5627 12 27.8044 12.3912 27.6382 12.7236L25.4472 17.1056Z\" fill=\"whit"
+"e\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22 2H4H2V0H4H22C24.2091 0 26 1.79086 26 4V12H24V4C24 2.89543 23.1046 2 22 2ZM26 20H24H6C4.89543 20 4 19.1046 4 18V10H2V18C2 20.2091 3.79086 22 6 22H24H26V20Z\" fill=\"white\"/>\n"
+"<rect x=\"13\" y=\"6\" width=\"2\" height=\"10\" rx=\"1\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* loop_onesong_svg = (const char*) temp_binary_data_7;
+
+//================== loop_playlist.svg ==================
+static const unsigned char temp_binary_data_8[] =
+"<svg width=\"28\" height=\"22\" viewBox=\"0 0 28 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2.55279 4.89443C2.73705 4.5259 3.26295 4.5259 3.44721 4.89443L5.6382 9.27639C5.80442 9.60884 5.56267 10 5.19098 10H0.809017C0.437326 10 0.195578 9.60884 0.361803 9.27639L2.55279 4.89443Z\" fill=\""
+"white\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M25.4472 17.1056C25.263 17.4741 24.737 17.4741 24.5528 17.1056L22.3618 12.7236C22.1956 12.3912 22.4373 12 22.809 12H27.191C27.5627 12 27.8044 12.3912 27.6382 12.7236L25.4472 17.1056Z\" fill=\"whit"
+"e\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22 2H4H2V0H4H22C24.2091 0 26 1.79086 26 4V12H24V4C24 2.89543 23.1046 2 22 2ZM26 20H24H6C4.89543 20 4 19.1046 4 18V10H2V18C2 20.2091 3.79086 22 6 22H24H26V20Z\" fill=\"white\"/>\n"
+"<rect x=\"7.5\" y=\"5.5\" width=\"13\" height=\"11\" rx=\"1.5\" stroke=\"white\"/>\n"
+"<rect x=\"13.25\" y=\"9.25\" width=\"5.5\" height=\"0.5\" rx=\"0.25\" stroke=\"white\" stroke-width=\"0.5\"/>\n"
+"<rect x=\"13.25\" y=\"12.25\" width=\"5.5\" height=\"0.5\" rx=\"0.25\" stroke=\"white\" stroke-width=\"0.5\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.1056 10.5528C12.4741 10.737 12.4741 11.263 12.1056 11.4472L9.72361 12.6382C9.39116 12.8044 9 12.5627 9 12.191V9.80902C9 9.43733 9.39116 9.19558 9.72361 9.3618L12.1056 10.5528Z\" fill=\"white\""
+"/>\n"
+"</svg>\n";
+
+const char* loop_playlist_svg = (const char*) temp_binary_data_8;
+
+//================== next_button.svg ==================
+static const unsigned char temp_binary_data_9[] =
+"<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path id=\"next_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M14 0.5H16V16.5H14V9.32464C13.9727 9.34317 13.9442 9.36066 13.9143 9.37701L1.48047 16.1889C0.814054 16.554 0 16.0718 0 15.3119V1.68809C0 0.928215 0.814052 0.44598 1.48047 0.8110"
+"78L13.9143 7.62299C13.9442 7.63934 13.9727 7.65683 14 7.67536V0.5Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* next_button_svg = (const char*) temp_binary_data_9;
 
 //================== pitch.svg ==================
-static const unsigned char temp_binary_data_20[] =
+static const unsigned char temp_binary_data_10[] =
 "<svg width=\"24\" height=\"18\" viewBox=\"0 0 24 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<g clip-path=\"url(#clip0_560_926)\">\n"
 "<path d=\"M0 18C6.24857 14.4771 9 11.4557 9 9C9 7.18714 8.08714 5.14286 5.14286 5.14286C4.24286 5.14286 3.35571 5.50286 2.57143 6.00429V0H0M2.57143 13.3457V9.33429C3.36857 8.47286 4.43571 7.71429 5.14286 7.71429C5.90143 7.71429 6.42857 7.80429 6.4285"
@@ -264,10 +148,135 @@ static const unsigned char temp_binary_data_20[] =
 "</defs>\n"
 "</svg>\n";
 
-const char* pitch_svg = (const char*) temp_binary_data_20;
+const char* pitch_svg = (const char*) temp_binary_data_10;
+
+//================== playlist_add.svg ==================
+static const unsigned char temp_binary_data_11[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM14 8C14 7.44769 14.4477 7 15 7C15.5523 7 16 7.44769 16 8V14H22C22.5523 14 23"
+" 14.4477 23 15C23 15.5523 22.5523 16 22 16H16V22C16 22.5523 15.5523 23 15 23C14.4477 23 14 22.5523 14 22V16H8C7.44772 16 7 15.5523 7 15C7 14.4477 7.44772 14 8 14H14V8Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* playlist_add_svg = (const char*) temp_binary_data_11;
+
+//================== playlist_add_file.svg ==================
+static const unsigned char temp_binary_data_12[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0 6C0 2.68629 2.68629 0 6 0H24C27.3137 0 30 2.68629 30 6V24C30 27.3137 27.3137 30 24 30H6C2.68629 30 0 27.3137 0 24V6ZM13 3L6 10H12C12.5523 10 13 9.55228 13 9V3ZM15.7143 8.66667V5H22V17.0224C19.1"
+"968 17.275 17 19.631 17 22.5C17 23.02 17.0722 23.5232 17.207 24H8V12.6667H11.7143C13.9234 12.6667 15.7143 10.8758 15.7143 8.66667ZM18.2572 26H8C6.89543 26 6 25.1046 6 24V12.6667V10.6667H8H11.7143C12.8189 10.6667 13.7143 9.77124 13.7143 8.66667V5V3H15"
+".7143H22C23.1046 3 24 3.89543 24 5V17.207C26.3085 17.86 28 19.9824 28 22.5C28 25.5376 25.5376 28 22.5 28C20.7921 28 19.266 27.2215 18.2572 26Z\" fill=\"white\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22.5 19C22.2239 19 22 19.2239 22 19.5V22H19.5C19.2239 22 19 22.2239 19 22.5C19 22.7761 19.2239 23 19.5 23H22V25.5C22 25.7761 22.2239 26 22.5 26C22.7761 26 23 25.7761 23 25.5V23H25.5C25.7761 23 26"
+" 22.7761 26 22.5C26 22.2239 25.7761 22 25.5 22H23V19.5C23 19.2239 22.7761 19 22.5 19Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* playlist_add_file_svg = (const char*) temp_binary_data_12;
+
+//================== playlist_add_playing.svg ==================
+static const unsigned char temp_binary_data_13[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM15 24C15.7378 24 16.455 23.9112 17.1412 23.7437C17.0488 23.3441 17 22.9277 1"
+"7 22.5C17 19.4624 19.4624 17 22.5 17C22.9277 17 23.3441 17.0488 23.7437 17.1412C23.9112 16.455 24 15.7378 24 15C24 10.0294 19.9706 6 15 6C10.0294 6 6 10.0294 6 15C6 19.9706 10.0294 24 15 24ZM15 26C16.0238 26 17.0148 25.8601 17.9552 25.5985C18.9456 27"
+".0484 20.6117 28 22.5 28C25.5376 28 28 25.5376 28 22.5C28 20.6117 27.0484 18.9456 25.5985 17.9552C25.8601 17.0148 26 16.0238 26 15C26 8.92487 21.0751 4 15 4C8.92487 4 4 8.92487 4 15C4 21.0751 8.92487 26 15 26ZM19.5708 15.8575C20.2182 15.4691 20.2182 "
+"14.5309 19.5708 14.1425L12.5145 9.9087C11.848 9.50878 11 9.9889 11 10.7662V19.2338C11 20.0111 11.848 20.4912 12.5145 20.0913L19.5708 15.8575ZM22.5 19C22.1778 19 21.9167 19.2612 21.9167 19.5833V21.9167H19.5833C19.2612 21.9167 19 22.1778 19 22.5C19 22."
+"8222 19.2612 23.0833 19.5833 23.0833H21.9167V25.4167C21.9167 25.7388 22.1778 26 22.5 26C22.8222 26 23.0833 25.7388 23.0833 25.4167V23.0833H25.4167C25.7388 23.0833 26 22.8222 26 22.5C26 22.1778 25.7388 21.9167 25.4167 21.9167H23.0833V19.5833C23.0833 1"
+"9.2612 22.8222 19 22.5 19Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* playlist_add_playing_svg = (const char*) temp_binary_data_13;
+
+//================== playlist_edit.svg ==================
+static const unsigned char temp_binary_data_14[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM18.7784 5.52512C18.5393 5.38705 18.2335 5.46899 18.0954 5.70813L16.8787 7.81"
+"561L20.3659 9.82896L19.89 10.6532L16.4028 8.63985L10.2996 19.211L10.2914 19.2246C9.68897 20.2681 9.14978 23.2154 10.0216 23.7188C10.8935 24.2222 13.2182 22.2091 13.7788 21.2381L13.779 21.2382L21.5828 7.72159C21.7209 7.48245 21.639 7.17665 21.3998 7.0"
+"3858L18.7784 5.52512Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* playlist_edit_svg = (const char*) temp_binary_data_14;
+
+//================== playlist_remove.svg ==================
+static const unsigned char temp_binary_data_15[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68629 0 0 2.68629 0 6V24C0 27.3137 2.68629 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68629 27.3137 0 24 0H6ZM9.34191 10.7524C8.95139 10.3618 8.95139 9.72867 9.34191 9.33815C9.73244 8.94"
+"762 10.3656 8.94762 10.7561 9.33815L14.9988 13.5808L19.2414 9.33815C19.6319 8.94762 20.2651 8.94762 20.6556 9.33815C21.0461 9.72867 21.0461 10.3618 20.6556 10.7524L16.413 14.995L20.6556 19.2376C21.0461 19.6282 21.0461 20.2613 20.6556 20.6519C20.2651 "
+"21.0424 19.6319 21.0424 19.2414 20.6519L14.9988 16.4092L10.7561 20.6519C10.3656 21.0424 9.73244 21.0424 9.34191 20.6519C8.95139 20.2613 8.95139 19.6282 9.34191 19.2376L13.5846 14.995L9.34191 10.7524Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* playlist_remove_svg = (const char*) temp_binary_data_15;
+
+//================== prev_button.svg ==================
+static const unsigned char temp_binary_data_16[] =
+"<svg width=\"16\" height=\"17\" viewBox=\"0 0 16 17\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path id=\"prev_button\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2 0.5H0V16.5H2V9.32464C2.02727 9.34317 2.05582 9.36066 2.08566 9.37701L14.5195 16.1889C15.1859 16.554 16 16.0718 16 15.3119V1.68809C16 0.928215 15.1859 0.44598 14.5195 0.811078"
+"L2.08567 7.62299C2.05582 7.63934 2.02727 7.65683 2 7.67536V0.5Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* prev_button_svg = (const char*) temp_binary_data_16;
+
+//================== select.svg ==================
+static const unsigned char temp_binary_data_17[] =
+"<svg width=\"20\" height=\"14\" viewBox=\"0 0 20 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7 0C3.134 0 0 3.13401 0 7C0 10.866 3.134 14 7 14H13C16.866 14 20 10.866 20 7C20 3.13401 16.866 0 13 0H7ZM5 6C4.44771 6 4 6.44772 4 7C4 7.55228 4.44771 8 5 8H9C9.55229 8 10 7.55228 10 7C10 6.44772"
+" 9.55229 6 9 6H5ZM16 7C16 7.55228 15.5523 8 15 8C14.4477 8 14 7.55228 14 7C14 6.44772 14.4477 6 15 6C15.5523 6 16 6.44772 16 7ZM12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8Z\" fill=\"whi"
+"te\"/>\n"
+"</svg>\n";
+
+const char* select_svg = (const char*) temp_binary_data_17;
+
+//================== speaker.svg ==================
+static const unsigned char temp_binary_data_18[] =
+"<svg width=\"20\" height=\"30\" viewBox=\"0 0 20 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect x=\"1\" y=\"1\" width=\"18\" height=\"28\" rx=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"<circle cx=\"10\" cy=\"9\" r=\"3\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"<circle cx=\"10\" cy=\"20\" r=\"2\" fill=\"white\"/>\n"
+"<circle cx=\"10\" cy=\"20\" r=\"4\" stroke=\"white\" stroke-width=\"2\"/>\n"
+"</svg>\n";
+
+const char* speaker_svg = (const char*) temp_binary_data_18;
+
+//================== speed.svg ==================
+static const unsigned char temp_binary_data_19[] =
+"<svg width=\"24\" height=\"18\" viewBox=\"0 0 24 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<g clip-path=\"url(#clip0_560_1151)\">\n"
+"<circle cx=\"12\" cy=\"11\" r=\"10\" stroke=\"black\" stroke-width=\"2\" stroke-dasharray=\"8 1\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M18 11C18 14.3137 15.3137 17 12 17C8.68629 17 6 14.3137 6 11C6 8.76444 7.22263 6.81445 9.03571 5.7822L10.0921 8.68467C9.42515 9.23491 9 10.0678 9 11C9 12.6568 10.3431 14 12 14C13.6569 14 15 12.656"
+"8 15 11C15 9.3431 13.6569 7.99995 12 7.99995C11.9904 7.99995 11.9809 8 11.9713 8.00008L10.915 5.09785C11.2669 5.03358 11.6295 5 12 5C15.3137 5 18 7.68629 18 11Z\" fill=\"black\"/>\n"
+"</g>\n"
+"<defs>\n"
+"<clipPath id=\"clip0_560_1151\">\n"
+"<rect width=\"24\" height=\"18\" fill=\"white\"/>\n"
+"</clipPath>\n"
+"</defs>\n"
+"</svg>\n";
+
+const char* speed_svg = (const char*) temp_binary_data_19;
+
+//================== temp.svg ==================
+static const unsigned char temp_binary_data_20[] =
+"<svg width=\"24\" height=\"18\" viewBox=\"0 0 24 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M9 2C6.79086 2 5 3.79086 5 6V12C5 14.2091 6.79086 16 9 16H15C17.2091 16 19 14.2091 19 12V6C19 3.79086 17.2091 2 15 2H9ZM9 4C7.89543 4 7 4.89543 7 6V12C7 13.1046 7.89543 14 9 14H15C16.1046 14 17 13"
+".1046 17 12V6C17 4.89543 16.1046 4 15 4H9Z\" fill=\"black\"/>\n"
+"</svg>\n";
+
+const char* temp_svg = (const char*) temp_binary_data_20;
+
+//================== up.svg ==================
+static const unsigned char temp_binary_data_21[] =
+"<svg width=\"30\" height=\"30\" viewBox=\"0 0 30 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+"<rect width=\"30\" height=\"30\" rx=\"6\" fill=\"black\"/>\n"
+"<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 0C2.68628 0 0 2.68628 0 6V24C0 27.3137 2.68628 30 6 30H24C27.3137 30 30 27.3137 30 24V6C30 2.68628 27.3137 0 24 0H6ZM15.8638 9.48077C15.4779 8.81927 14.5221 8.81927 14.1362 9.48077L8.87726 18.4"
+"962C8.48837 19.1628 8.96924 20 9.74103 20H20.259C21.0308 20 21.5116 19.1628 21.1227 18.4962L15.8638 9.48077Z\" fill=\"white\"/>\n"
+"</svg>\n";
+
+const char* up_svg = (const char*) temp_binary_data_21;
 
 //================== en-US.txt ==================
-static const unsigned char temp_binary_data_21[] =
+static const unsigned char temp_binary_data_22[] =
 "language: English\n"
 "countries: us\n"
 "\n"
@@ -508,10 +517,10 @@ static const unsigned char temp_binary_data_21[] =
 "\"loop_short\" = \"Loop\"\n"
 "\"speed_short\" = \"Speed\"\n";
 
-const char* enUS_txt = (const char*) temp_binary_data_21;
+const char* enUS_txt = (const char*) temp_binary_data_22;
 
 //================== ja-JP.txt ==================
-static const unsigned char temp_binary_data_22[] =
+static const unsigned char temp_binary_data_23[] =
 { 108,97,110,103,117,97,103,101,58,32,74,97,112,97,110,101,115,101,10,99,111,117,110,116,114,105,101,115,58,32,106,97,10,10,34,97,98,111,117,116,95,109,101,108,105,115,115,97,34,32,61,32,34,77,101,108,105,115,115,97,227,129,171,227,129,164,227,129,132,
 227,129,166,34,10,34,112,114,101,102,101,114,101,110,99,101,115,34,32,61,32,34,232,168,173,229,174,154,34,10,34,97,117,100,105,111,95,109,105,100,105,95,115,101,116,116,105,110,103,115,34,32,61,32,34,65,117,100,105,111,32,47,32,77,73,68,73,32,232,168,
 173,229,174,154,34,10,34,115,104,111,114,116,99,117,116,95,115,101,116,116,105,110,103,115,34,32,61,32,34,227,130,183,227,131,167,227,131,188,227,131,136,227,130,171,227,131,131,227,131,136,232,168,173,229,174,154,34,10,34,101,110,116,101,114,95,108,
@@ -703,10 +712,10 @@ static const unsigned char temp_binary_data_22[] =
 34,229,144,132,227,131,145,227,131,188,227,131,136,227,130,146,229,128,139,229,136,165,227,129,171,229,134,141,231,148,159,34,10,34,112,105,116,99,104,95,115,104,111,114,116,34,32,61,32,34,233,159,179,231,168,139,34,10,34,108,111,111,112,95,115,104,111,
 114,116,34,32,61,32,34,227,131,171,227,131,188,227,131,151,34,10,34,115,112,101,101,100,95,115,104,111,114,116,34,32,61,32,34,233,128,159,229,186,166,34,10,0,0 };
 
-const char* jaJP_txt = (const char*) temp_binary_data_22;
+const char* jaJP_txt = (const char*) temp_binary_data_23;
 
 //================== logo.png ==================
-static const unsigned char temp_binary_data_23[] =
+static const unsigned char temp_binary_data_24[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,88,0,0,0,200,8,6,0,0,0,52,159,159,182,0,0,0,9,112,72,89,115,0,0,22,37,0,0,22,37,1,73,82,36,240,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,1,174,6,73,68,65,84,
 120,1,236,189,233,207,117,219,150,23,52,198,122,223,123,171,234,86,221,42,17,40,21,13,4,34,118,40,34,54,96,67,217,32,81,17,10,240,147,77,226,23,163,255,135,77,140,70,19,53,26,63,216,125,81,52,106,108,162,38,246,137,216,124,83,18,131,138,128,10,134,70,
 26,161,224,214,173,123,238,57,231,125,246,240,217,107,142,95,51,230,90,207,123,206,169,42,64,18,246,57,207,187,247,94,107,174,57,71,251,27,99,142,57,215,218,249,203,127,213,223,243,136,245,202,215,191,122,125,203,243,141,159,163,94,255,205,62,240,252,
@@ -2274,7 +2283,7 @@ static const unsigned char temp_binary_data_23[] =
 170,92,166,248,122,242,174,232,215,200,162,184,186,174,203,115,51,37,61,239,63,131,75,160,108,123,86,215,112,204,114,50,244,232,241,103,42,167,1,37,80,254,21,254,0,195,89,190,199,63,211,150,32,78,227,57,148,230,255,0,10,174,4,79,62,207,213,75,0,0,0,0,
 73,69,78,68,174,66,96,130,0,0 };
 
-const char* logo_png = (const char*) temp_binary_data_23;
+const char* logo_png = (const char*) temp_binary_data_24;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -2294,9 +2303,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb444b572:  numBytes = 778; return clear_svg;
         case 0xc2407576:  numBytes = 738; return detail_svg;
         case 0x5514f147:  numBytes = 524; return down_svg;
+        case 0x8693c249:  numBytes = 617; return loop_svg;
         case 0xa4568785:  numBytes = 891; return loop_onesong_svg;
         case 0x424dc432:  numBytes = 1337; return loop_playlist_svg;
         case 0x58f4b0a3:  numBytes = 429; return next_button_svg;
+        case 0x207510e5:  numBytes = 874; return pitch_svg;
         case 0x6e376459:  numBytes = 583; return playlist_add_svg;
         case 0x30ca904c:  numBytes = 1155; return playlist_add_file_svg;
         case 0x58a0d7c8:  numBytes = 1442; return playlist_add_playing_svg;
@@ -2305,10 +2316,9 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xe0989163:  numBytes = 426; return prev_button_svg;
         case 0x9d5144a1:  numBytes = 602; return select_svg;
         case 0x6d373624:  numBytes = 357; return speaker_svg;
-        case 0xcdfe36c0:  numBytes = 524; return up_svg;
         case 0x9e1e726c:  numBytes = 757; return speed_svg;
-        case 0x8693c249:  numBytes = 617; return loop_svg;
-        case 0x207510e5:  numBytes = 874; return pitch_svg;
+        case 0xb1352779:  numBytes = 407; return temp_svg;
+        case 0xcdfe36c0:  numBytes = 524; return up_svg;
         case 0x4c8ea738:  numBytes = 11274; return enUS_txt;
         case 0x9153efee:  numBytes = 12748; return jaJP_txt;
         case 0x78ded995:  numBytes = 110193; return logo_png;
@@ -2327,9 +2337,11 @@ const char* namedResourceList[] =
     "clear_svg",
     "detail_svg",
     "down_svg",
+    "loop_svg",
     "loop_onesong_svg",
     "loop_playlist_svg",
     "next_button_svg",
+    "pitch_svg",
     "playlist_add_svg",
     "playlist_add_file_svg",
     "playlist_add_playing_svg",
@@ -2338,10 +2350,9 @@ const char* namedResourceList[] =
     "prev_button_svg",
     "select_svg",
     "speaker_svg",
-    "up_svg",
     "speed_svg",
-    "loop_svg",
-    "pitch_svg",
+    "temp_svg",
+    "up_svg",
     "enUS_txt",
     "jaJP_txt",
     "logo_png"
@@ -2355,9 +2366,11 @@ const char* originalFilenames[] =
     "clear.svg",
     "detail.svg",
     "down.svg",
+    "loop.svg",
     "loop_onesong.svg",
     "loop_playlist.svg",
     "next_button.svg",
+    "pitch.svg",
     "playlist_add.svg",
     "playlist_add_file.svg",
     "playlist_add_playing.svg",
@@ -2366,10 +2379,9 @@ const char* originalFilenames[] =
     "prev_button.svg",
     "select.svg",
     "speaker.svg",
-    "up.svg",
     "speed.svg",
-    "loop.svg",
-    "pitch.svg",
+    "temp.svg",
+    "up.svg",
     "en-US.txt",
     "ja-JP.txt",
     "logo.png"

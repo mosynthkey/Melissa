@@ -233,13 +233,22 @@ public:
     juce::String getFontName() const { return global_.fontName_; }
     juce::Font getFont(Global::FontSize size) const;
     
-    bool isFileLoaded() const { return originalAudioSampleBuf_ != nullptr; }
+    bool isFileLoaded() const { return originalAudioReaders_[kReader_Playback] != nullptr; }
     static juce::String getCompatibleFileExtensions();
     void loadFileAsync(const juce::File& file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const juce::String& filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(juce::File(filePath), functionToCallAfterFileLoad); }
-    float readBuffer(size_t ch, size_t index, PlayPart playPart);
+    
+    enum Reader
+    {
+        kReader_Playback,
+        kReader_Waveform,
+        kReader_BPM,
+        kNumReaders
+    };
+    bool readBuffer(Reader reader, size_t startIndex, int numSamplesToRead, PlayPart playPart, float* const* destChannels);
+    
     double getSampleRate() const { return sampleRate_; }
-    size_t getBufferLength() const { return (originalAudioSampleBuf_ == nullptr ? 0 : originalAudioSampleBuf_->getNumSamples()); }
+    size_t getBufferLength() const { return (originalAudioReaders_[kReader_Playback] == nullptr ? 0 : originalAudioReaders_[kReader_Playback]->lengthInSamples); }
     void disposeBuffer();
     
     // Shortcut
@@ -322,8 +331,10 @@ private:
     std::map<std::string, juce::File> stemFiles_;
     std::function<void()> functionToCallAfterFileLoad_;
     std::vector<MelissaDataSourceListener*> listeners_;
-    std::unique_ptr<juce::AudioSampleBuffer> originalAudioSampleBuf_;
-    std::unique_ptr<juce::AudioSampleBuffer> stemAudioSampleBuf_[kNumStemFiles];
+    
+    std::unique_ptr<juce::AudioFormatReader> originalAudioReaders_[kNumReaders];
+    std::unique_ptr<juce::AudioFormatReader> stemAudioReaders_[kNumStemFiles];
+    
     bool wasPlaying_;
     std::map<juce::String, juce::String> defaultShortcut_;
 };

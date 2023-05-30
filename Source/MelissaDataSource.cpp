@@ -510,8 +510,6 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
 {
     functionToCallAfterFileLoad_ = functionToCallAfterFileLoad;
     
-    printf("File path = %s", file.getFullPathName().toRawUTF8());
-    
     if (file.existsAsFile())
     {
         auto stemProvider = MelissaStemProvider::getInstance();
@@ -530,45 +528,56 @@ void MelissaDataSource::loadFileAsync(const File& file, std::function<void()> fu
     }
 }
 
-float MelissaDataSource::readBuffer(size_t ch, size_t index, PlayPart playPart)
+bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamplesToRead, PlayPart playPart, float* const* destChannels)
 {
-    if (originalAudioSampleBuf_ == nullptr) return 0.f;
+    auto originalReader = originalAudioReaders_[reader].get();
+    if (originalReader == nullptr) return false;
     
-    const int numOfChs   = originalAudioSampleBuf_->getNumChannels();
-    const int bufferSize = originalAudioSampleBuf_->getNumSamples();
+    const int numOfChs   = originalReader->getChannelLayout().size();
+    const int bufferSize = originalReader->lengthInSamples;
     
-    if (2 <= ch || numOfChs <= ch) ch = 0;
-    const int intCh = static_cast<int>(ch);
-    
-    if (bufferSize <= index) return 0.f;
-    const int intIndex = static_cast<int>(index);
+    if (bufferSize <= startIndex) return false;
+    const int intIndex = static_cast<int>(startIndex);
     
     if (playPart == kPlayPart_All)
     {
-        return originalAudioSampleBuf_->getSample(intCh, intIndex);
+        originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+        return true;
     }
     else if (kPlayPart_Instruments <= playPart && playPart <= kPlayPart_Others_Solo)
     {
         const int partIndex = playPart - kPlayPart_Instruments;
-        if (stemAudioSampleBuf_[partIndex] != nullptr && index < stemAudioSampleBuf_[partIndex]->getNumSamples())
+        auto stemAudioReader = stemAudioReaders_[partIndex].get();
+        if (stemAudioReader != nullptr && startIndex < stemAudioReader->lengthInSamples)
         {
-            return stemAudioSampleBuf_[partIndex]->getSample(intCh, intIndex);
+            stemAudioReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+            return true;
         }
     }
     else if (playPart == kPlayPart_Custom)
     {
+#if 0
         for (int part = kPlayPart_Instruments; part <= kPlayPart_Others_Solo; ++part)
         {
             const int partIndex = part - kPlayPart_Instruments;
-            if (stemAudioSampleBuf_[partIndex] == nullptr || stemAudioSampleBuf_[partIndex]->getNumSamples() <= index) return 0.f;
+            auto stemAudioReader = stemAudioReaders_[partIndex].get();
+            if (stemAudioReader == nullptr || stemAudioReader->lengthInSamples <= startIndex) return 0.f;
         }
         
-        const float inst   = stemAudioSampleBuf_[kStemFile_Instruments]->getSample(intCh, intIndex);
-        const float vocal  = stemAudioSampleBuf_[kStemFile_Vocals]->getSample(intCh, intIndex);
-        const float piano  = stemAudioSampleBuf_[kStemFile_Piano]->getSample(intCh, intIndex);
-        const float bass   = stemAudioSampleBuf_[kStemFile_Bass]->getSample(intCh, intIndex);
-        const float drums  = stemAudioSampleBuf_[kStemFile_Drums]->getSample(intCh, intIndex);
-        const float others = stemAudioSampleBuf_[kStemFile_Others]->getSample(intCh, intIndex);
+        auto getSampleFromStem = [&](StemFile stem, int intCh, int intIndex)
+        {
+            float audioSample[2];
+            float* destChannels[] = { &audioSample[0], &audioSample[1] };
+            stemAudioReaders_[stem]->read(destChannels, 2, static_cast<int64>(startIndex), 1);
+            return audioSample[intCh];
+        };
+        
+        const float inst   = getSampleFromStem(kStemFile_Instruments, intCh, intIndex);
+        const float vocal  = getSampleFromStem(kStemFile_Vocals, intCh, intIndex);
+        const float piano  = getSampleFromStem(kStemFile_Piano, intCh, intIndex);
+        const float bass   = getSampleFromStem(kStemFile_Bass, intCh, intIndex);
+        const float drums  = getSampleFromStem(kStemFile_Drums, intCh, intIndex);
+        const float others = getSampleFromStem(kStemFile_Others, intCh, intIndex);
         
         const float vocalVolume = model_->getCustomPartVolume(kCustomPartVolume_Vocal);
         const float pianoVolume = model_->getCustomPartVolume(kCustomPartVolume_Piano);
@@ -577,25 +586,16 @@ float MelissaDataSource::readBuffer(size_t ch, size_t index, PlayPart playPart)
         const float othersVolume = model_->getCustomPartVolume(kCustomPartVolume_Others);
         
         return (inst + vocal) + (vocal * vocalVolume) + (piano * pianoVolume) + (bass * bassVolume) + (drums * drumsVolume) + (others * othersVolume );
+#endif
     }
     
-    return 0.f;
+    return false;
 }
 
 void MelissaDataSource::disposeBuffer()
 {
-    if (originalAudioSampleBuf_ == nullptr) return;
-    originalAudioSampleBuf_->clear();
-    originalAudioSampleBuf_ = nullptr;
-    
-    for (auto&& stemBuf : stemAudioSampleBuf_)
-    {
-        if (stemBuf != nullptr)
-        {
-            stemBuf->clear();
-            stemBuf = nullptr;
-        }
-    }
+    for (auto&& reader : originalAudioReaders_) reader = nullptr;
+    for (auto&& stemReader : stemAudioReaders_) stemReader = nullptr;
 }
 
 void MelissaDataSource::setDefaultShortcut(const String& eventName)
@@ -1115,20 +1115,29 @@ void MelissaDataSource::handleAsyncUpdate()
     File originalFile;
     std::map<std::string, File> stemFiles;
     
-    auto reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(fileToload_));
-    if (reader == nullptr)
+    for (auto&& reader : originalAudioReaders_) reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(fileToload_));
+    
+    bool loadSucceeded = true;
+    for (auto&& read : originalAudioReaders_) loadSucceeded &= (read != nullptr);
+    if (!loadSucceeded)
     {
         for (auto&& l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, fileToload_.getFullPathName());
+        disposeBuffer();
         return;
     }
     
-    // read audio data from reader
-    
     // original file
-    const int lengthInSamples = static_cast<int>(reader->lengthInSamples);
-    originalAudioSampleBuf_ = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-    reader->read(originalAudioSampleBuf_.get(), 0, lengthInSamples, 0, true, true);
-    sampleRate_ = reader->sampleRate;
+    const int lengthInSamples = static_cast<int>(originalAudioReaders_[kReader_Playback]->lengthInSamples);
+    try
+    {
+        sampleRate_ = originalAudioReaders_[kReader_Playback]->sampleRate;
+    }
+    catch (...)
+    {
+        for (auto&& l : listeners_) l->fileLoadStatusChanged(kFileLoadStatus_Failed, fileToload_.getFullPathName());
+        disposeBuffer();
+        return;
+    }
     
     // stem files
     if (stemFiles_.size() == kNumStemFiles)
@@ -1136,17 +1145,13 @@ void MelissaDataSource::handleAsyncUpdate()
         for (int stemFileIndex = 0; stemFileIndex < kNumStemFiles; ++stemFileIndex)
         {
             const auto stemName = MelissaStemProvider::partNames_[stemFileIndex];
-            auto readerForStem = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(stemFiles_[stemName]));
-            if (readerForStem == nullptr)
+            stemAudioReaders_[stemFileIndex].reset(formatManager.createReaderFor(stemFiles_[stemName]));
+            if (stemAudioReaders_[stemFileIndex] == nullptr)
             {
                 stemFiles_.clear();
                 MelissaStemProvider::getInstance()->failedToReadPreparedStems();
                 break;
             }
-            
-            const int lengthInSamples = static_cast<int>(readerForStem->lengthInSamples);
-            stemAudioSampleBuf_[stemFileIndex] = std::make_unique<AudioSampleBuffer>(2, lengthInSamples);
-            readerForStem->read(stemAudioSampleBuf_[stemFileIndex].get(), 0, lengthInSamples, 0, true, true);
         }
     }
     
@@ -1217,7 +1222,7 @@ void MelissaDataSource::handleAsyncUpdate()
         model_->setEqGain(0, 0.f);
         model_->setEqQ(0, 7.f);
     }
-    model_->setLengthMSec(lengthInSamples / reader->sampleRate * 1000.f);
+    model_->setLengthMSec(lengthInSamples / originalAudioReaders_[kReader_Playback]->sampleRate * 1000.f);
     model_->setLoopPosRatio(0.f, 1.f);
     model_->setPlayingPosRatio(0.f);
     model_->setPlayPart(kPlayPart_All);

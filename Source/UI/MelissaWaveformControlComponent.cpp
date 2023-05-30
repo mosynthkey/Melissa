@@ -122,18 +122,25 @@ public:
         if (numOfStrip_ <= 0 || bufferLength == 0 || previewBuffer_.size() == 0) return;
         
         float preview, previewMax = 0.f;
+        
+        const size_t stripSize =  bufferLength / numOfStrip_;
+        float lCh[stripSize], rCh[stripSize];
+        float* audioData[] = { lCh, rCh };
+        
         for (int32_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
         {
             preview = 0.f;
-            for (int32_t iBuffer = 0; iBuffer < bufferLength / numOfStrip_; ++iBuffer)
+            
+            const size_t startIndex = iStrip * stripSize;
+            const size_t endIndex = std::min<size_t>(startIndex + stripSize - 1, bufferLength - 1);
+            const size_t numSamplesToRead = endIndex - startIndex + 1;
+            
+            dataSource->readBuffer(MelissaDataSource::kReader_Waveform, startIndex, static_cast<int>(numSamplesToRead), kPlayPart_All, audioData);
+            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
             {
-                const size_t bufIndex = iStrip * (bufferLength / numOfStrip_) + iBuffer;
-                if (bufIndex >= bufferLength) break;
-                const auto l = dataSource->readBuffer(0, bufIndex, kPlayPart_All);
-                const auto r = dataSource->readBuffer(1, bufIndex, kPlayPart_All);
-                preview += (l * l + r * r);
+                preview += (lCh[sampleIndex] * lCh[sampleIndex] + rCh[sampleIndex] * rCh[sampleIndex]);
             }
-            preview /= (bufferLength / numOfStrip_);
+            preview /= numSamplesToRead;
             if (preview >= 1.f) preview = 1.f;
             if (previewMax < preview) previewMax = preview;
             previewBuffer_[iStrip] = preview;

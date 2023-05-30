@@ -17,7 +17,6 @@
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
-#include "MelissaIconTextComponent.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaScrollLabel.h"
 #include "MelissaSeparatorComponent.h"
@@ -46,6 +45,7 @@
 
 #ifdef JUCE_IOS
 #include "MelissaMobileSupport.h"
+#include "MelissaMobileMenuComponent.h"
 #endif
 
 enum SpeedModeTab
@@ -68,6 +68,20 @@ enum ListMemoTab
     kListMemoTab_Practice,
     kListMemoTab_Marker,
     kListMemoTab_Memo
+};
+
+enum ControlPage
+{
+    kControlPage_Home,
+    kControlPage_Current,
+    kControlPage_Expand_Shrink,
+    kControlPage_List,
+    kControlPage_Marker,
+    kControlPage_Mixer,
+    kControlPage_EQ,
+    kControlPage_Metronome,
+    kControlPage_Note,
+    kNumControlPages
 };
 
 class MainComponent   : public juce::AudioAppComponent,
@@ -148,6 +162,7 @@ public:
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
     void updateListMemoTab(ListMemoTab tab);
+    void updateControlPage(ControlPage page);
     
     void prev();
     void next();
@@ -361,6 +376,8 @@ private:
     std::unique_ptr<juce::TextButton> importButton_;
     std::unique_ptr<juce::TextButton> debugButton_;
     std::unique_ptr<MelissaAdComponent> adComponent_;
+    std::unique_ptr<MelissaMobileMenuComponent> menuComponent_;
+    std::unique_ptr<juce::ComponentAnimator> menuComponentAnimator_;
     
     enum
     {
@@ -376,11 +393,24 @@ private:
         kIconText_Pitch,
         kIconText_Loop,
         kIconText_Speed,
+        
+        kIconText_Control_Begin,
+        kIconText_Control_End = kIconText_Control_Begin + kNumControlPages - 1,
+        
         kNumIconTexts
     };
-    std::unique_ptr<MelissaIconTextComponent> iconTexts_[kNumIconTexts];
-    
+    std::unique_ptr<MelissaIconTextButton> iconTextButtons_[kNumIconTexts];
+    std::unique_ptr<juce::Label> pages_[kNumControlPages];
+    bool showAllControlIcons_;
+    ControlPage currentControlPage_;
+
     std::unique_ptr<juce::Label> safeAreaComponent_;
+    
+    enum
+    {
+        kNumControlButtons = 16,
+    };
+    std::unique_ptr<MelissaControlButton> controlButtons_[kNumControlButtons];
 #endif
     
     MelissaLookAndFeel laf_;

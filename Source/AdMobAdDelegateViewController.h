@@ -20,7 +20,6 @@
 #import <UIKit/UIKit.h>
 
 @interface AdMobAdDelegateViewController : UIViewController
-- (void)loadBannerAd;
 @end
 
 @interface RewardAdViewController : UIViewController

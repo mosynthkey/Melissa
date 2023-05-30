@@ -154,7 +154,7 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent(const String& commandLine) : Thread("MelissaProcessThread"), mainVolume_(1.f), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
+MainComponent::MainComponent(const String& commandLine) : Thread("MelissaProcessThread"), mainVolume_(1.f), showAllControlIcons_(false), currentControlPage_(kControlPage_List), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -438,7 +438,7 @@ void MainComponent::createUI()
     MenuBarModel::setMacMainMenu(this, extraAppleMenuItems_.get());
 #elif JUCE_IOS
     safeAreaComponent_ = std::make_unique<Label>();
-    safeAreaComponent_->setColour(Label::outlineColourId, Colours::pink.withAlpha(0.5f));
+    //safeAreaComponent_->setColour(Label::outlineColourId, Colours::pink.withAlpha(0.5f));
     safeAreaComponent_->toBack();
     addAndMakeVisible(safeAreaComponent_.get());
 #endif
@@ -1162,8 +1162,6 @@ void MainComponent::createUI()
     importButton_->setButtonText("IMP");
     importButton_->onClick = [&]()
     {
-        //adComponent_->setVisible(true);
-        //adComponent_->show();
         showFileChooser();
     };
     safeAreaComponent_->addAndMakeVisible(importButton_.get());
@@ -1201,14 +1199,104 @@ void MainComponent::createUI()
     };
     safeAreaComponent_->addAndMakeVisible(debugButton_.get());
     
-    iconTexts_[kIconText_Pitch] = std::make_unique<MelissaIconTextComponent>(BinaryData::pitch_svg, BinaryData::pitch_svgSize, MelissaUISettings::getAccentColour().withHue(0.f), TRANS("pitch_short"));
-    safeAreaComponent_->addAndMakeVisible(iconTexts_[kIconText_Pitch].get());
-    
-    iconTexts_[kIconText_Loop] = std::make_unique<MelissaIconTextComponent>(BinaryData::loop_svg, BinaryData::loop_svgSize, MelissaUISettings::getAccentColour().withHue(0.2f), TRANS("loop_short"));
-    safeAreaComponent_->addAndMakeVisible(iconTexts_[kIconText_Loop].get());
-    
-    iconTexts_[kIconText_Speed] = std::make_unique<MelissaIconTextComponent>(BinaryData::speed_svg, BinaryData::pitch_svgSize, MelissaUISettings::getAccentColour().withHue(0.4f), TRANS("speed_short"));
-    safeAreaComponent_->addAndMakeVisible(iconTexts_[kIconText_Speed].get());
+    {
+        iconTextButtons_[kIconText_Pitch] = std::make_unique<MelissaIconTextButton>(BinaryData::pitch_svg, BinaryData::pitch_svgSize, MelissaUISettings::getAccentColour().withHue(0.f), TRANS("pitch_short"));
+        safeAreaComponent_->addAndMakeVisible(iconTextButtons_[kIconText_Pitch].get());
+        
+        iconTextButtons_[kIconText_Loop] = std::make_unique<MelissaIconTextButton>(BinaryData::loop_svg, BinaryData::loop_svgSize, MelissaUISettings::getAccentColour().withHue(0.2f), TRANS("loop_short"));
+        safeAreaComponent_->addAndMakeVisible(iconTextButtons_[kIconText_Loop].get());
+        
+        iconTextButtons_[kIconText_Speed] = std::make_unique<MelissaIconTextButton>(BinaryData::speed_svg, BinaryData::pitch_svgSize, MelissaUISettings::getAccentColour().withHue(0.4f), TRANS("speed_short"));
+        safeAreaComponent_->addAndMakeVisible(iconTextButtons_[kIconText_Speed].get());
+        
+        const String names[kNumControlPages] = { "Home", "Current", ">>", "List", "Marker", "Mixer", "EQ", "Metro", "Note" };
+        for (int pageIndex = kControlPage_Home; pageIndex < kNumControlPages; ++pageIndex)
+        {
+            const int buttonIndex = kIconText_Control_Begin + pageIndex;
+            iconTextButtons_[buttonIndex] = std::make_unique<MelissaIconTextButton>(BinaryData::temp_svg, BinaryData::temp_svgSize, MelissaUISettings::getAccentColour(), names[pageIndex]);
+            iconTextButtons_[buttonIndex]->onClick = [&, this, buttonIndex, pageIndex, names]()
+            {
+                if (pageIndex == kControlPage_Expand_Shrink)
+                {
+                    showAllControlIcons_ = !showAllControlIcons_;
+                    iconTextButtons_[kIconText_Control_Begin + kControlPage_Expand_Shrink]->setText(showAllControlIcons_ ? "<<" : ">>");
+                    iconTextButtons_[kIconText_Control_Begin + kControlPage_Current]->setVisible(!showAllControlIcons_);
+                    
+                    resized();
+                }
+                else if (pageIndex == kControlPage_Current)
+                {
+                    updateControlPage(static_cast<ControlPage>(currentControlPage_));
+                }
+                else
+                {
+                    if (kControlPage_List <= pageIndex && pageIndex <= kControlPage_Note)
+                    {
+                        iconTextButtons_[kIconText_Control_Begin + kControlPage_Current]->setText(names[pageIndex]);
+                        currentControlPage_ = static_cast<ControlPage>(pageIndex);
+                    }
+                    updateControlPage(static_cast<ControlPage>(static_cast<ControlPage>(pageIndex)));
+                }
+            };
+            safeAreaComponent_->addAndMakeVisible(iconTextButtons_[buttonIndex].get());
+            
+            if (pageIndex == kControlPage_Current || pageIndex == kControlPage_Expand_Shrink) continue;
+            pages_[pageIndex] = std::make_unique<Label>();
+            pages_[pageIndex]->setColour(Label::backgroundColourId, MelissaUISettings::getMainColour());
+            //pages_[pageIndex]->setColour(Label::outlineColourId, Colours::pink);
+            //pages_[pageIndex]->setText(names[pageIndex], dontSendNotification);
+            safeAreaComponent_->addChildComponent(pages_[pageIndex].get());
+        }
+        for (auto&& page : pages_) if (page != nullptr) page->toFront(false);
+        
+        for (int buttonIndex = 0; buttonIndex < kNumControlButtons; ++buttonIndex)
+        {
+            controlButtons_[buttonIndex] = std::make_unique<MelissaControlButton>();
+            pages_[kControlPage_Home]->addAndMakeVisible(controlButtons_[buttonIndex].get());
+        }
+        
+        controlButtons_[0]->setText("<|");
+        controlButtons_[0]->onClick = [&]() { MelissaCommand::getInstance()->excuteCommand("Back", 1.f); };
+        
+        controlButtons_[1]->setText("-5s");
+        controlButtons_[1]->onClick = [&]() { MelissaCommand::getInstance()->excuteCommand("PlaybackPosition_Minus5Sec", 1.f); };
+        
+        controlButtons_[2]->setText("-1s");
+        controlButtons_[2]->onClick = [&]() { MelissaCommand::getInstance()->excuteCommand("PlaybackPosition_Minus1Sec", 1.f); };
+        
+        controlButtons_[3]->setText("+1s");
+        controlButtons_[3]->onClick = [&]() { MelissaCommand::getInstance()->excuteCommand("PlaybackPosition_Plus1Sec", 1.f); };
+        
+        controlButtons_[4]->setText("+5s");
+        controlButtons_[4]->onClick = [&]() { MelissaCommand::getInstance()->excuteCommand("PlaybackPosition_Plus5Sec", 1.f); };
+        
+        controlButtons_[5]->setText("Reset\nLoop");
+        controlButtons_[5]->onClick = [&]() { model_->setLoopPosRatio(0.f, 1.f); };
+        
+        controlButtons_[6]->setText("Set Marker");
+        controlButtons_[6]->onClick = [&]() { dataSource_->addDefaultMarker(model_->getPlayingPosRatio()); };
+        
+        controlButtons_[7]->setText("Prev Marker");
+        controlButtons_[7]->onClick = [&]() {
+            float position = 0.f;
+            std::vector<MelissaDataSource::Song::Marker> markers;
+            dataSource_->getMarkers(markers);
+            for (auto&& m : markers)
+            {
+                if (model_->getPlayingPosRatio() < m.position_) break;
+                position = m.position_;
+            }
+            model_->setPlayingPosRatio(position);
+        };
+        
+        for (int speedButtonIndex = 0; speedButtonIndex < 8; ++speedButtonIndex)
+        {
+            const int speed = 65 + speedButtonIndex * 5;
+            controlButtons_[8 + speedButtonIndex]->setText("Speed\n" + String(speed) + "%");
+            controlButtons_[8 + speedButtonIndex]->onClick = [&, speed]() { model_->setSpeed(speed); };
+        }
+        
+    }
     
     adComponent_ = std::make_unique<MelissaAdComponent>();
     safeAreaComponent_->addAndMakeVisible(adComponent_.get());
@@ -1223,6 +1311,7 @@ void MainComponent::createUI()
     updateSpeedModeTab(kSpeedModeTab_Basic);
     updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
+    updateControlPage(kControlPage_Home);
     
     waveformComponent_->setMarkerListener(this);
     
@@ -1235,6 +1324,20 @@ void MainComponent::createMenu()
     menuButton_->setBudgeVisibility(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
     menuButton_->onClick = [&]()
     {
+#ifdef JUCE_IOS
+        
+        if (menuComponent_ == nullptr)
+        {
+            menuComponent_ = std::make_unique<MelissaMobileMenuComponent>();
+            safeAreaComponent_->addAndMakeVisible(menuComponent_.get());
+        }
+        else
+        {
+            menuComponent_ = nullptr;
+        }
+
+        resized();
+#else
         const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
         
         PopupMenu menu;
@@ -1329,7 +1432,12 @@ void MainComponent::createMenu()
                 settingsFile_.revealToUser();
             }
         });
+#endif
     };
+    
+#ifdef JUCE_IOS
+    menuComponentAnimator_ = std::make_unique<ComponentAnimator>();
+#endif
 }
 
 void MainComponent::showFileChooser()
@@ -1631,14 +1739,16 @@ void MainComponent::resized_Mobile()
     const int width = safeAreaComponent_->getWidth();
     
 #ifdef JUCE_IOS
-    const int kAdWidth = getWidth();
-    constexpr int kAdHeight = 50 + 10;
+    constexpr int kAdWidth = 320;
+    constexpr int kAdHeight = 50;
 #endif
     
     menuButton_->setBounds(10, 4, 30, 18);
     
     constexpr int kXOffset = 0;
-    
+    constexpr int kTextIconWidth = 40;
+    constexpr int kTextIconHeight = 36;
+    constexpr int xMargin = 10;
     
     // Waveform
     {
@@ -1655,30 +1765,27 @@ void MainComponent::resized_Mobile()
         constexpr int controlY = 147;
         int x = kXOffset;
         
-        constexpr int iconWidth = 40;
         constexpr int minButtonAWidth = 90;
         constexpr int minButtonBWidth = 140;
         constexpr int playButtonWidth = 50;
         constexpr int playButtonHeight = 50;
-        constexpr int xMargin = 10;
         constexpr int loopLineLength = 10;
         
-        const int totalButtonWidth = width - (playButtonWidth + iconWidth + xMargin + iconWidth + loopLineLength + xMargin + iconWidth + xMargin);
+        const int totalButtonWidth = width - (playButtonWidth + kTextIconWidth + xMargin + kTextIconWidth + loopLineLength + xMargin + kTextIconWidth + xMargin);
         const int buttonAWidth = totalButtonWidth * minButtonAWidth / (minButtonAWidth * 2 + minButtonBWidth * 2);
         const int buttonBWidth = totalButtonWidth * minButtonBWidth / (minButtonAWidth * 2 + minButtonBWidth * 2);
-        
         
         playPauseButton_->setBounds(kXOffset, 142, playButtonWidth, playButtonHeight);
         x += playPauseButton_->getWidth();
         
-        iconTexts_[kIconText_Pitch]->setBounds(x, controlY + 4, iconWidth, 36);
-        x += iconTexts_[kIconText_Pitch]->getWidth();
+        iconTextButtons_[kIconText_Pitch]->setBounds(x, controlY + 4, kTextIconWidth, 36);
+        x += iconTextButtons_[kIconText_Pitch]->getWidth();
         pitchButton_->setBounds(x, controlY, buttonAWidth, 40);
         x += pitchButton_->getWidth();
         
         x += xMargin;
-        iconTexts_[kIconText_Loop]->setBounds(x, controlY + 4, iconWidth, 36);
-        x += iconTexts_[kIconText_Loop]->getWidth();
+        iconTextButtons_[kIconText_Loop]->setBounds(x, controlY + 4, kTextIconWidth, 36);
+        x += iconTextButtons_[kIconText_Loop]->getWidth();
         aButton_->setBounds(x, controlY, buttonBWidth, 40);
         x += aButton_->getWidth();
         
@@ -1688,17 +1795,60 @@ void MainComponent::resized_Mobile()
         x += bButton_->getWidth();
         
         x += xMargin;
-        iconTexts_[kIconText_Speed]->setBounds(x, controlY + 4, iconWidth, 36);
-        x += iconTexts_[kIconText_Speed]->getWidth();
+        iconTextButtons_[kIconText_Speed]->setBounds(x, controlY + 4, kTextIconWidth, 36);
+        x += iconTextButtons_[kIconText_Speed]->getWidth();
         speedButton_->setBounds(x, controlY, buttonAWidth, 40);
         x += speedButton_->getWidth();
     }
     
-    adComponent_->setBounds((getWidth() - kAdWidth) / 2, getBottom() - kAdHeight, kAdWidth, kAdHeight);
-    adComponent_->show();
+    {
+        int x = 0;
+        int y = 200;
+        int kNumRowIcons = 3;
+        int xMargin = 2;
+        int yMargin = ((safeAreaComponent_->getHeight() - kAdHeight - y) - (kTextIconHeight * kNumRowIcons)) / (kNumRowIcons - 1);
+        
+        for (int pageIndex = 0; pageIndex < kNumControlPages; ++pageIndex)
+        {
+            const int row = pageIndex % kNumRowIcons;
+            const int column = pageIndex / kNumRowIcons;
+            iconTextButtons_[kIconText_Control_Begin + pageIndex]->setBounds(x + (kTextIconWidth + xMargin) * column, y + (kTextIconHeight + yMargin) * row, kTextIconWidth, kTextIconHeight);
+        }
+        
+        const int controlPageX = showAllControlIcons_ ? iconTextButtons_[kIconText_Control_Begin + kNumControlPages - 1]->getRight() : iconTextButtons_[kIconText_Control_Begin + kControlPage_Home]->getRight();
+        
+        for (int pageIndex = 0; pageIndex < kNumControlPages; ++pageIndex)
+        {
+            if (pages_[pageIndex] != nullptr) pages_[pageIndex]->setBounds(controlPageX, y, safeAreaComponent_->getWidth() - controlPageX, safeAreaComponent_->getHeight() - kAdHeight - y);
+        }
+        
+        for (int buttonIndex = 0; buttonIndex < kNumControlButtons; ++buttonIndex)
+        {
+            constexpr int numButtonInRow = 2;
+            constexpr int numButtonInColumn = kNumControlButtons / numButtonInRow;
+            const int row = buttonIndex / numButtonInColumn;
+            const int column = buttonIndex % numButtonInColumn;
+            
+            const int buttonMargin = 2;
+            const int buttonWidth = (pages_[kControlPage_Home]->getWidth() - buttonMargin * (numButtonInColumn - 1)) / numButtonInColumn;
+            const int buttonHeight = (pages_[kControlPage_Home]->getHeight() - buttonMargin * (numButtonInRow - 1)) / numButtonInRow;
+            
+            controlButtons_[buttonIndex]->setBounds(column * (buttonWidth + buttonMargin), row * (buttonHeight + buttonMargin), buttonWidth, buttonHeight);
+        }
+    }
+    
+    adComponent_->setBounds((safeAreaComponent_->getWidth() - kAdWidth) / 2, safeAreaComponent_->getBottom() - kAdHeight, kAdWidth, kAdHeight);
+    
+    if (menuComponent_ != nullptr)
+    {
+        menuComponent_->setBounds(- safeBounds.getWidth(), 0, safeBounds.getWidth(), safeBounds.getHeight());
+        menuComponentAnimator_->animateComponent(menuComponent_.get(), safeAreaComponent_->getLocalBounds(), 1.f, 200.f, true, 1, 0);
+    }
     
     importButton_->setBounds(100, 0, 50, 20);
     debugButton_ ->setBounds(160, 0, 50, 20);
+    
+    menuButton_->toFront(false);
 }
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -2106,6 +2256,14 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
     practiceListDownButton_->setVisible(tab == kListMemoTab_Practice);
     markerTable_->setVisible(tab == kListMemoTab_Marker);
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
+}
+
+void MainComponent::updateControlPage(ControlPage page)
+{
+    for (int pageIndex = 0; pageIndex < kNumControlPages; ++pageIndex)
+    {
+        if (pages_[pageIndex] != nullptr) pages_[pageIndex]->setVisible(page == pageIndex);
+    }
 }
 
 void MainComponent::prev()
