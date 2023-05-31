@@ -2261,7 +2261,7 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
 
 void MainComponent::updateControlPage(ControlPage page)
 {
-#ifdef JUCE_IOSs
+#ifdef JUCE_IOS
     for (int pageIndex = 0; pageIndex < kNumControlPages; ++pageIndex)
     {
         if (pages_[pageIndex] != nullptr) pages_[pageIndex]->setVisible(page == pageIndex);

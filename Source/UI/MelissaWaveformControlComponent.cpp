@@ -352,11 +352,15 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
     {
         posTooltip_->setTopLeftPosition(x, getHeight() - posTooltip_->getHeight());
         
+        int prevLabelRight = -1;
         for (auto&& l : timeLabels_)
         {
             const auto x0 = posTooltip_->getX();
             const auto x1 = posTooltip_->getRight();
-            l->setVisible(x1 < l->getX() || l->getRight() < x0);
+            const int x = l->getX();
+            const bool show = (prevLabelRight <= x);
+            if (show) prevLabelRight = l->getRight();
+            l->setVisible(show && (x1 < l->getX() || l->getRight() < x0));
         }
         posTooltip_->setVisible(true);
     }
@@ -365,7 +369,7 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
 void MelissaWaveformControlComponent::hideTimeTooltip()
 {
     posTooltip_->setVisible(false);
-    for (auto&& l : timeLabels_) l->setVisible(true);
+    arrangeTimeLabels();
 }
 
 void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
@@ -453,17 +457,14 @@ void MelissaWaveformControlComponent::arrangeMarkers() const
 void MelissaWaveformControlComponent::arrangeTimeLabels() const
 {
     int minuteIndex = 0;
+    int prevLabelRight = -1;
     for (auto&& l : timeLabels_)
     {
-        int x = waveformView_->getX() + waveformView_->getWidth() * (minuteIndex * 60.f / timeSec_)  - l->getWidth() / 2;
-        /*
-        if (minuteIndex == timeLabels_.size() - 1)
-        {
-            x = waveformView_->getX() + waveformView_->getWidth() - l->getWidth() / 2;
-        }
-         */
-        
+        const int x = waveformView_->getX() + waveformView_->getWidth() * (minuteIndex * 60.f / timeSec_)  - l->getWidth() / 2;
         l->setTopLeftPosition(x, getHeight() - l->getHeight());
+        const bool show = (prevLabelRight <= x);
+        l->setVisible(show);
+        if (show) prevLabelRight = l->getRight();
         ++minuteIndex;
     }
 }

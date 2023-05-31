@@ -53,7 +53,11 @@ public:
         
         if (sign == 0)
         {
+#ifdef JUCE_IOS
             return "0";
+#else
+            return "Original";
+#endif
         }
         else if (sign > 0)
         {
