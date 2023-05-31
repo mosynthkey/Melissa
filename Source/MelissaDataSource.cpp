@@ -533,11 +533,10 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     auto originalReader = originalAudioReaders_[reader].get();
     if (originalReader == nullptr) return false;
     
-    const int numOfChs   = originalReader->getChannelLayout().size();
-    const int bufferSize = originalReader->lengthInSamples;
+    const int numOfChs    = originalReader->getChannelLayout().size();
+    const auto bufferSize = originalReader->lengthInSamples;
     
     if (bufferSize <= startIndex) return false;
-    const int intIndex = static_cast<int>(startIndex);
     
     if (playPart == kPlayPart_All)
     {
@@ -556,37 +555,46 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     }
     else if (playPart == kPlayPart_Custom)
     {
-#if 0
-        for (int part = kPlayPart_Instruments; part <= kPlayPart_Others_Solo; ++part)
+        constexpr int kMaxNmSamplesToRead = 4096 * 2;
+        if (kMaxNmSamplesToRead <= numSamplesToRead) return false;
+        
+        for (int stemIndex = 0; stemIndex < kNumStemFiles; ++stemIndex)
         {
-            const int partIndex = part - kPlayPart_Instruments;
-            auto stemAudioReader = stemAudioReaders_[partIndex].get();
-            if (stemAudioReader == nullptr || stemAudioReader->lengthInSamples <= startIndex) return 0.f;
+             if (stemAudioReaders_[stemIndex] == nullptr || stemAudioReaders_[stemIndex]->lengthInSamples <= startIndex)
+            {
+                assert(false);
+                return false ;
+            }
         }
         
-        auto getSampleFromStem = [&](StemFile stem, int intCh, int intIndex)
-        {
-            float audioSample[2];
-            float* destChannels[] = { &audioSample[0], &audioSample[1] };
-            stemAudioReaders_[stem]->read(destChannels, 2, static_cast<int64>(startIndex), 1);
-            return audioSample[intCh];
+        const float volumes[kNumStemFiles] = {
+            1.f,
+            1.f + model_->getCustomPartVolume(kCustomPartVolume_Vocal),
+            model_->getCustomPartVolume(kCustomPartVolume_Piano),
+            model_->getCustomPartVolume(kCustomPartVolume_Bass),
+            model_->getCustomPartVolume(kCustomPartVolume_Drums),
+            model_->getCustomPartVolume(kCustomPartVolume_Others),
         };
         
-        const float inst   = getSampleFromStem(kStemFile_Instruments, intCh, intIndex);
-        const float vocal  = getSampleFromStem(kStemFile_Vocals, intCh, intIndex);
-        const float piano  = getSampleFromStem(kStemFile_Piano, intCh, intIndex);
-        const float bass   = getSampleFromStem(kStemFile_Bass, intCh, intIndex);
-        const float drums  = getSampleFromStem(kStemFile_Drums, intCh, intIndex);
-        const float others = getSampleFromStem(kStemFile_Others, intCh, intIndex);
+        static float tempBuffer[2 /* Stereo */][kMaxNmSamplesToRead];
+        float* tempBuffers[] = { tempBuffer[0], tempBuffer[1] };
         
-        const float vocalVolume = model_->getCustomPartVolume(kCustomPartVolume_Vocal);
-        const float pianoVolume = model_->getCustomPartVolume(kCustomPartVolume_Piano);
-        const float bassVolume = model_->getCustomPartVolume(kCustomPartVolume_Bass);
-        const float drumsVolume = model_->getCustomPartVolume(kCustomPartVolume_Drums);
-        const float othersVolume = model_->getCustomPartVolume(kCustomPartVolume_Others);
+        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+        {
+            destChannels[0][sampleIndex] = destChannels[1][sampleIndex] = 0.f;
+        }
         
-        return (inst + vocal) + (vocal * vocalVolume) + (piano * pianoVolume) + (bass * bassVolume) + (drums * drumsVolume) + (others * othersVolume );
-#endif
+        for (int stemIndex = 0; stemIndex < kNumStemFiles; ++stemIndex)
+        {
+            stemAudioReaders_[stemIndex]->read(tempBuffers, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+            {
+                destChannels[0][sampleIndex] += tempBuffer[0][sampleIndex] * volumes[stemIndex];
+                destChannels[1][sampleIndex] += tempBuffer[1][sampleIndex] * volumes[stemIndex];
+            }
+        }
+        
+        return true;
     }
     
     return false;

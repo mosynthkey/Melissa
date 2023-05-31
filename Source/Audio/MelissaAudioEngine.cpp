@@ -299,7 +299,6 @@ void MelissaAudioEngine::process()
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     while (receivedSampleSize == 0)
     {
-        size_t readStartIndex = static_cast<size_t>(readIndex_);
         int numSamplesToRead = 0;
         
         for (size_t iSample = 0; iSample < processLength_; ++iSample)

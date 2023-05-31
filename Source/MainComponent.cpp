@@ -11,7 +11,6 @@
 #include "MelissaBPMSettingComponent.h"
 #include "MelissaDefinitions.h"
 #include "MelissaInputDialog.h"
-#include "MelissaMobileSupport.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaShortcutComponent.h"
 #include "MelissaStemProvider.h"
@@ -154,7 +153,11 @@ private:
     Colour colour_;
 };
 
-MainComponent::MainComponent(const String& commandLine) : Thread("MelissaProcessThread"), mainVolume_(1.f), showAllControlIcons_(false), currentControlPage_(kControlPage_List), nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
+MainComponent::MainComponent(const String& commandLine) : Thread("MelissaProcessThread"), mainVolume_(1.f),
+#ifdef JUCE_IOS
+showAllControlIcons_(false), currentControlPage_(kControlPage_List),
+#endif
+nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
@@ -1726,6 +1729,7 @@ void MainComponent::resized_Desktop()
 
 void MainComponent::resized_Mobile()
 {
+#ifdef JUCE_IOS
     auto safeBounds = [this]
     {
         auto bounds = getLocalBounds();
@@ -1737,11 +1741,8 @@ void MainComponent::resized_Mobile()
     safeAreaComponent_->toBack();
     safeAreaComponent_->setBounds(safeBounds);
     const int width = safeAreaComponent_->getWidth();
-    
-#ifdef JUCE_IOS
     constexpr int kAdWidth = 320;
     constexpr int kAdHeight = 50;
-#endif
     
     menuButton_->setBounds(10, 4, 30, 18);
     
@@ -1755,7 +1756,6 @@ void MainComponent::resized_Mobile()
         constexpr int kWaveformOffset = 0;
         waveformComponent_->setBounds(kXOffset, 50, width - kXOffset, 90);
         markerMemoComponent_->setBounds(waveformComponent_->getX() - kWaveformOffset, waveformComponent_->getY() - 18, waveformComponent_->getWidth() + kWaveformOffset, 16);
-        
         separators_[kSeparator_Upper]->setBounds(kXOffset, 140, width - kXOffset, 2);
         separators_[kSeparator_Lower]->setBounds(kXOffset, 192, width - kXOffset, 2);
     }
@@ -1849,6 +1849,7 @@ void MainComponent::resized_Mobile()
     debugButton_ ->setBounds(160, 0, 50, 20);
     
     menuButton_->toFront(false);
+#endif
 }
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -2260,10 +2261,12 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
 
 void MainComponent::updateControlPage(ControlPage page)
 {
+#ifdef JUCE_IOSs
     for (int pageIndex = 0; pageIndex < kNumControlPages; ++pageIndex)
     {
         if (pages_[pageIndex] != nullptr) pages_[pageIndex]->setVisible(page == pageIndex);
     }
+#endif
 }
 
 void MainComponent::prev()

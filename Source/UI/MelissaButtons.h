@@ -91,7 +91,9 @@ public:
 private:
     void paintButton (juce::Graphics &g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+#ifdef JUCE_IOS
         g.fillAll(MelissaUISettings::getMainColour());
+#endif
         const auto& b = getLocalBounds();
         
         const int w = b.getWidth();

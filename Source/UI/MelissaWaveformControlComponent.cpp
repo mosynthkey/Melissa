@@ -94,6 +94,42 @@ public:
         update_();
     }
     
+    void loadWaveform()
+    {
+        auto dataSource = MelissaDataSource::getInstance();
+        const size_t bufferLength = dataSource->getBufferLength();
+        
+        if (bufferLength == 0) return;
+        
+        float preview, previewMax = 0.f;
+        
+        const size_t stripSize =  bufferLength / kNumStrips;
+        float lCh[stripSize], rCh[stripSize];
+        float* audioData[] = { lCh, rCh };
+        
+        for (int32_t iStrip = 0; iStrip < kNumStrips; ++iStrip)
+        {
+            preview = 0.f;
+            
+            const size_t startIndex = iStrip * stripSize;
+            const size_t endIndex = std::min<size_t>(startIndex + stripSize - 1, bufferLength - 1);
+            const size_t numSamplesToRead = endIndex - startIndex + 1;
+            
+            dataSource->readBuffer(MelissaDataSource::kReader_Waveform, startIndex, static_cast<int>(numSamplesToRead), kPlayPart_All, audioData);
+            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+            {
+                preview += (lCh[sampleIndex] * lCh[sampleIndex] + rCh[sampleIndex] * rCh[sampleIndex]);
+            }
+            preview /= numSamplesToRead;
+            if (preview >= 1.f) preview = 1.f;
+            if (previewMax < preview) previewMax = preview;
+            strips_[iStrip] = preview;
+        }
+        
+        // normalize
+        for (int stripIndex = 0; stripIndex < kNumStrips; ++stripIndex) strips_[stripIndex] /= previewMax;
+    }
+    
     void update(bool immediately = false)
     {
         stopTimer();
@@ -116,40 +152,14 @@ public:
     
     void update_()
     {
-        auto dataSource = MelissaDataSource::getInstance();
-        const size_t bufferLength = dataSource->getBufferLength();
+        if (numOfStrip_ <= 0) return;
         
-        if (numOfStrip_ <= 0 || bufferLength == 0 || previewBuffer_.size() == 0) return;
-        
-        float preview, previewMax = 0.f;
-        
-        const size_t stripSize =  bufferLength / numOfStrip_;
-        float lCh[stripSize], rCh[stripSize];
-        float* audioData[] = { lCh, rCh };
-        
-        for (int32_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
+        for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
         {
-            preview = 0.f;
-            
-            const size_t startIndex = iStrip * stripSize;
-            const size_t endIndex = std::min<size_t>(startIndex + stripSize - 1, bufferLength - 1);
-            const size_t numSamplesToRead = endIndex - startIndex + 1;
-            
-            dataSource->readBuffer(MelissaDataSource::kReader_Waveform, startIndex, static_cast<int>(numSamplesToRead), kPlayPart_All, audioData);
-            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
-            {
-                preview += (lCh[sampleIndex] * lCh[sampleIndex] + rCh[sampleIndex] * rCh[sampleIndex]);
-            }
-            preview /= numSamplesToRead;
-            if (preview >= 1.f) preview = 1.f;
-            if (previewMax < preview) previewMax = preview;
-            previewBuffer_[iStrip] = preview;
-        }
-        
-        // normalize
-        for (int iPreviewBuffer = 0; iPreviewBuffer < previewBuffer_.size(); ++iPreviewBuffer)
-        {
-            previewBuffer_[iPreviewBuffer] /= previewMax;
+            const float floatIndex = previewIndex / static_cast<float>(numOfStrip_) * (kNumStrips - 1);
+            const int intIndex = static_cast<int>(floatIndex);
+            const float interpolation = floatIndex - intIndex;
+            previewBuffer_[previewIndex] = strips_[intIndex] * (1.f - interpolation) + strips_[intIndex + 1] * interpolation;
         }
         
         repaint();
@@ -193,6 +203,8 @@ private:
     std::shared_ptr<Label> current_;
     const int32_t waveformStripWidth_ = 3, waveformStripInterval_ = 1;
     size_t numOfStrip_;
+    static constexpr int kNumStrips = 1000;
+    float strips_[kNumStrips];
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
@@ -359,6 +371,7 @@ void MelissaWaveformControlComponent::hideTimeTooltip()
 void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     timeSec_ = static_cast<float>(bufferLength) / sampleRate;
+    waveformView_->loadWaveform();
     waveformView_->update(true);
     
     timeLabels_.clear();

@@ -404,14 +404,13 @@ private:
     bool showAllControlIcons_;
     ControlPage currentControlPage_;
 
-    std::unique_ptr<juce::Label> safeAreaComponent_;
-    
     enum
     {
         kNumControlButtons = 16,
     };
     std::unique_ptr<MelissaControlButton> controlButtons_[kNumControlButtons];
 #endif
+    std::unique_ptr<juce::Label> safeAreaComponent_;
     
     MelissaLookAndFeel laf_;
     MelissaLookAndFeel_FileBrowser browserLaf_;
