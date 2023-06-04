@@ -236,3 +236,7 @@ countries: us
 "pitch_short" = "Pitch"
 "loop_short" = "Loop"
 "speed_short" = "Speed"
+"export"="Export"
+"file_format"="File format"
+"save" = "Save"
+"export_completed" = "Export completed"

@@ -15,6 +15,7 @@
         <FILE id="blXWlQ" name="clear.svg" compile="0" resource="1" file="../Resource/Icon/clear.svg"/>
         <FILE id="iBdhPo" name="detail.svg" compile="0" resource="1" file="../Resource/Icon/detail.svg"/>
         <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="../Resource/Icon/down.svg"/>
+        <FILE id="SoGtnj" name="export.svg" compile="0" resource="1" file="../Resource/Icon/export.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="../Resource/Icon/loop_onesong.svg"/>
         <FILE id="VQA9um" name="loop_playlist.svg" compile="0" resource="1"
@@ -132,6 +133,10 @@
               file="../Source/UI/MelissaCommandComboBox.h"/>
         <FILE id="lUG0cz" name="MelissaDoubleClickEditLabel.h" compile="1"
               resource="0" file="../Source/UI/MelissaDoubleClickEditLabel.h"/>
+        <FILE id="lUgB8c" name="MelissaExportComponent.cpp" compile="1" resource="0"
+              file="../Source/UI/MelissaExportComponent.cpp"/>
+        <FILE id="hr2Qqn" name="MelissaExportComponent.h" compile="0" resource="0"
+              file="../Source/UI/MelissaExportComponent.h"/>
         <FILE id="vQExoN" name="MelissaFileListBox.h" compile="0" resource="0"
               file="../Source/UI/MelissaFileListBox.h"/>
         <FILE id="e3sPoO" name="MelissaIncDecButton.h" compile="0" resource="0"
@@ -228,6 +233,14 @@
             file="../Source/MelissaDefinitions.cpp"/>
       <FILE id="hgx51a" name="MelissaDefinitions.h" compile="0" resource="0"
             file="../Source/MelissaDefinitions.h"/>
+      <FILE id="nGqi5K" name="MelissaExporter.cpp" compile="1" resource="0"
+            file="../Source/MelissaExporter.cpp"/>
+      <FILE id="pUHdtG" name="MelissaExporter.h" compile="0" resource="0"
+            file="../Source/MelissaExporter.h"/>
+      <FILE id="YKTMce" name="MelissaExportManager.cpp" compile="1" resource="0"
+            file="../Source/MelissaExportManager.cpp"/>
+      <FILE id="qqMS9I" name="MelissaExportManager.h" compile="0" resource="0"
+            file="../Source/MelissaExportManager.h"/>
       <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="../Source/MelissaHost.h"/>
       <FILE id="Pa0qWs" name="MelissaModel.cpp" compile="1" resource="0"
             file="../Source/MelissaModel.cpp"/>

@@ -236,3 +236,7 @@ countries: ja
 "pitch_short" = "音程"
 "loop_short" = "ループ"
 "speed_short" = "速度"
+"export"="エクスポート"
+"file_format"="フォーマット"
+"save" = "保存"
+"export_completed" = "エクスポート完了"

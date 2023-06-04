@@ -10,6 +10,7 @@
 #include "MelissaAboutComponent.h"
 #include "MelissaBPMSettingComponent.h"
 #include "MelissaDefinitions.h"
+#include "MelissaExportComponent.h"
 #include "MelissaInputDialog.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaShortcutComponent.h"
@@ -408,6 +409,10 @@ void MainComponent::createUI()
         iconHighlightedImages_[kIcon_Select] = Drawable::createFromImageData(BinaryData::select_svg, BinaryData::select_svgSize);
         iconColorInfo_[kIcon_Select] = kColorInfo_WhiteToAccent;
         
+        iconImages_[kIcon_Export] = Drawable::createFromImageData(BinaryData::export_svg, BinaryData::export_svgSize);
+        iconHighlightedImages_[kIcon_Export] = Drawable::createFromImageData(BinaryData::export_svg, BinaryData::export_svgSize);
+        iconColorInfo_[kIcon_Export] = kColorInfo_None;
+        
         for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
         {
             if (iconColorInfo_[iconIndex] == kColorInfo_None)
@@ -504,6 +509,17 @@ void MainComponent::createUI()
             showAudioMidiSettingsDialog();
         };
         componentToAdd->addAndMakeVisible(audioDeviceButton_.get());
+        
+        exportButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        exportButton_->setTooltip(TRANS("export"));
+        exportButton_->setImages(iconImages_[kIcon_Export].get(), iconHighlightedImages_[kIcon_Export].get());
+        exportButton_->onClick = [&]()
+        {
+            auto component = std::make_shared<MelissaExportComponent>();
+            component->setSize(500, 50);
+            MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("export"));
+        };
+        componentToAdd->addAndMakeVisible(exportButton_.get());
         
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         mainVolumeSlider_->setTooltip(TRANS("volume_main"));
@@ -1501,6 +1517,8 @@ void MainComponent::resized_Desktop()
         
         constexpr int kAudioDeviceButtonWidth = 200;
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        
+        exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
     }
     
     popupMessage_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
@@ -2555,6 +2573,11 @@ void MainComponent::mainVolumeChanged(float mainVolume)
 {
     mainVolume_ = mainVolume;
     mainVolumeSlider_->setValue(mainVolume, dontSendNotification);
+}
+
+void MainComponent::exportCompleted(bool result, juce::String message)
+{
+    MessageManager::callAsync([&, message]() { popupMessage_->show(message); });
 }
 
 void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)

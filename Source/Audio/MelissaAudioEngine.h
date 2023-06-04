@@ -17,6 +17,27 @@
 class MelissaDataSource;
 class MelissaModel;
 
+class MelissaEqualizer
+{
+public:
+    MelissaEqualizer();
+    void reset();
+    void updateCoefs();
+    void process(float* inBuffer, float* outBuffer);
+    void setSampleRate(float sampleRate);
+    void setFreq(float freq);
+    void setGain(float gain);
+    void setQ(float q);
+    
+private:
+    float a[3], b[3];
+    static constexpr size_t kNumOfZs_ = 4;
+    static constexpr size_t kNumOfChs = 2;
+    float z_[kNumOfChs][kNumOfZs_];
+    float shouldUpdateCoefs_;
+    float sampleRate_, freq_, gainDb_, q_;
+};
+
 class MelissaAudioEngine : public MelissaModelListener
 {
 public:
@@ -48,9 +69,6 @@ public:
     
     Status getStatus() const;
     void setStatus(Status status);
-    
-    // for debug
-    std::string getStatusString() const;
     
 private:
     MelissaModel* model_;
@@ -100,9 +118,8 @@ private:
     float volumeBalance_;
     OutputMode outputMode_;
     
-    class Equalizer;
     bool eqSwitch_;
-    std::unique_ptr<Equalizer> eq_;
+    std::unique_ptr<MelissaEqualizer> eq_;
     
     PlayPart playPart_;
     

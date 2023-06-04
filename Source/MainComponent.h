@@ -205,6 +205,8 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
+    std::unique_ptr<juce::DrawableButton> exportButton_;
+    
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
     
@@ -221,8 +223,6 @@ private:
     class RoundedComponent;
     std::unique_ptr<RoundedComponent> fileComponent_;
     std::unique_ptr<RoundedComponent> listComponent_;
-    
-
 
     std::unique_ptr<juce::ToggleButton> metronomeOnOffButton_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
@@ -252,6 +252,7 @@ private:
         kIcon_Down,
         kIcon_Detail,
         kIcon_Select,
+        kIcon_Export,
         kNumOfIcons
     };
     
@@ -475,6 +476,7 @@ private:
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
     void mainVolumeChanged(float mainVolume) override;
+    void exportCompleted(bool result, juce::String message) override;
     
     // MelissaMarkerListener
     void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;

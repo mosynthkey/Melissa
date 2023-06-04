@@ -22,7 +22,8 @@ public:
     numOfStrip_(0),
     clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
     currentMouseOnStripIndex_(-1),
-    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f)
+    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f),
+    isWaveformLoad_(false)
     {
         MelissaModel::getInstance()->addListener(this);
         
@@ -30,6 +31,8 @@ public:
         current_->setColour(Label::backgroundColourId, MelissaUISettings::getAccentColour());
         current_->setInterceptsMouseClicks(false, false);
         addAndMakeVisible(current_.get());
+        
+        std::fill(previewBuffer_.begin(), previewBuffer_.end(), 0.f);
     };
     
     void resized() override
@@ -45,7 +48,9 @@ public:
             const int32_t height = previewBuffer_[iStrip] * getHeight();
             const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
             
-            if (iStrip == static_cast<size_t>(playingPosRatio_ * numOfStrip_))
+            const auto currentStrip = (iStrip == static_cast<size_t>(playingPosRatio_ * numOfStrip_));
+            
+            if (currentStrip)
             {
                 g.setColour(colour.withAlpha(1.f));
             }
@@ -58,6 +63,12 @@ public:
                 g.setColour(colour.withAlpha(0.4f));
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
+            
+            if (currentStrip)
+            {
+                g.setColour(MelissaUISettings::getTextColour(0.2f));
+                g.fillRect(x, 0, waveformStripWidth_, getHeight() - height);
+            }
         }
     }
     
@@ -96,6 +107,7 @@ public:
     
     void loadWaveform()
     {
+        
         auto dataSource = MelissaDataSource::getInstance();
         const size_t bufferLength = dataSource->getBufferLength();
         
@@ -128,6 +140,8 @@ public:
         
         // normalize
         for (int stripIndex = 0; stripIndex < kNumStrips; ++stripIndex) strips_[stripIndex] /= previewMax;
+        
+        isWaveformLoad_ = true;
     }
     
     void update(bool immediately = false)
@@ -152,14 +166,22 @@ public:
     
     void update_()
     {
+        if (!isWaveformLoad_) return;
         if (numOfStrip_ <= 0) return;
         
+        float maxPreviewBuffer = 0.f;
         for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
         {
             const float floatIndex = previewIndex / static_cast<float>(numOfStrip_) * (kNumStrips - 1);
             const int intIndex = static_cast<int>(floatIndex);
             const float interpolation = floatIndex - intIndex;
             previewBuffer_[previewIndex] = strips_[intIndex] * (1.f - interpolation) + strips_[intIndex + 1] * interpolation;
+            if (maxPreviewBuffer < previewBuffer_[previewIndex]) maxPreviewBuffer = previewBuffer_[previewIndex];
+        }
+        
+        for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
+        {
+            previewBuffer_[previewIndex] /= maxPreviewBuffer;
         }
         
         repaint();
@@ -209,6 +231,7 @@ private:
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
     std::vector<float> previewBuffer_;
+    bool isWaveformLoad_;
 };
 
 class MelissaWaveformControlComponent::Marker : public Button

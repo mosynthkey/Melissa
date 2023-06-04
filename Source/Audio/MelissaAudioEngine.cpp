@@ -88,96 +88,85 @@ private:
     size_t prevQueSize_;
 };
 
-class MelissaAudioEngine::Equalizer
+
+MelissaEqualizer::MelissaEqualizer() :
+shouldUpdateCoefs_(true)
 {
-public:
-    Equalizer() :
-    shouldUpdateCoefs_(true)
+    sampleRate_ = 48000;
+    freq_ = 500;
+    q_ = 7.f;
+    gainDb_ = 0.f;
+    reset();
+}
+
+void MelissaEqualizer::reset()
+{
+    for (size_t chIndex = 0; chIndex < kNumOfChs; ++chIndex)
     {
-        sampleRate_ = 48000;
-        freq_ = 500;
-        q_ = 7.f;
-        gainDb_ = 0.f;
-        reset();
+        std::fill(z_[chIndex], z_[chIndex] + kNumOfZs_, 0.f);
     }
+}
+
+void MelissaEqualizer::updateCoefs()
+{
+    const float gain = pow(10, abs(gainDb_) / 20.f) * ((gainDb_ > 0) ? 1 : -1);
+    const float omega = 2.f * M_PI *  freq_ / sampleRate_;
+    const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
+    const float A     = pow(10.f, (gain / 40.f) );
+     
+    a[0] =  1.0f + alpha / A;
+    a[1] = -2.0f * cos(omega);
+    a[2] =  1.0f - alpha / A ;
+    b[0] =  1.0f + alpha * A ;
+    b[1] = -2.0f * cos(omega);
+    b[2] =  1.0f - alpha * A ;
     
-    void reset()
-    {
-        for (size_t chIndex = 0; chIndex < kNumOfChs; ++chIndex)
-        {
-            std::fill(z_[chIndex], z_[chIndex] + kNumOfZs_, 0.f);
-        }
-    }
+    shouldUpdateCoefs_ = false;
+}
+
+void MelissaEqualizer::process(float* inBuffer, float* outBuffer)
+{
+    if (shouldUpdateCoefs_) updateCoefs();
     
-    void updateCoefs()
+    for (size_t chIndex = 0; chIndex < 2; ++chIndex)
     {
-        const float gain = pow(10, abs(gainDb_) / 20.f) * ((gainDb_ > 0) ? 1 : -1);
-        const float omega = 2.f * M_PI *  freq_ / sampleRate_;
-        const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
-        const float A     = pow(10.f, (gain / 40.f) );
-         
-        a[0] =  1.0f + alpha / A;
-        a[1] = -2.0f * cos(omega);
-        a[2] =  1.0f - alpha / A ;
-        b[0] =  1.0f + alpha * A ;
-        b[1] = -2.0f * cos(omega);
-        b[2] =  1.0f - alpha * A ;
+        const float signalIn = inBuffer[chIndex];
+        outBuffer[chIndex] = (b[0] / a[0]) * signalIn
+                           + (b[1] / a[0]) * z_[chIndex][0]
+                           + (b[2] / a[0]) * z_[chIndex][1]
+                           - (a[1] / a[0]) * z_[chIndex][2]
+                           - (a[2] / a[0]) * z_[chIndex][3];
         
-        shouldUpdateCoefs_ = false;
+        z_[chIndex][1] = z_[chIndex][0];
+        z_[chIndex][0] = signalIn;
+        z_[chIndex][3] = z_[chIndex][2];
+        z_[chIndex][2] = outBuffer[chIndex];
     }
-    
-    void process(float* inBuffer, float* outBuffer)
-    {
-        if (shouldUpdateCoefs_) updateCoefs();
-        
-        for (size_t chIndex = 0; chIndex < 2; ++chIndex)
-        {
-            const float signalIn = inBuffer[chIndex];
-            outBuffer[chIndex] = (b[0] / a[0]) * signalIn
-                               + (b[1] / a[0]) * z_[chIndex][0]
-                               + (b[2] / a[0]) * z_[chIndex][1]
-                               - (a[1] / a[0]) * z_[chIndex][2]
-                               - (a[2] / a[0]) * z_[chIndex][3];
-            
-            z_[chIndex][1] = z_[chIndex][0];
-            z_[chIndex][0] = signalIn;
-            z_[chIndex][3] = z_[chIndex][2];
-            z_[chIndex][2] = outBuffer[chIndex];
-        }
-    }
-    
-    void setSampleRate(float sampleRate)
-    {
-        sampleRate_ = sampleRate;
-        shouldUpdateCoefs_ = true;
-    }
-    
-    void setFreq(float freq)
-    {
-        freq_ = freq;
-        shouldUpdateCoefs_ = true;
-    }
-    
-    void setGain(float gain)
-    {
-        gainDb_ = gain;
-        shouldUpdateCoefs_ = true;
-    }
-    
-    void setQ(float q)
-    {
-        q_ = q;
-        shouldUpdateCoefs_ = true;
-    }
-    
-private:
-    float a[3], b[3];
-    static constexpr size_t kNumOfZs_ = 4;
-    static constexpr size_t kNumOfChs = 2;
-    float z_[kNumOfChs][kNumOfZs_];
-    float shouldUpdateCoefs_;
-    float sampleRate_, freq_, gainDb_, q_;
-};
+}
+
+void MelissaEqualizer::setSampleRate(float sampleRate)
+{
+    sampleRate_ = sampleRate;
+    shouldUpdateCoefs_ = true;
+}
+
+void MelissaEqualizer::setFreq(float freq)
+{
+    freq_ = freq;
+    shouldUpdateCoefs_ = true;
+}
+
+void MelissaEqualizer::setGain(float gain)
+{
+    gainDb_ = gain;
+    shouldUpdateCoefs_ = true;
+}
+
+void MelissaEqualizer::setQ(float q)
+{
+    q_ = q;
+    shouldUpdateCoefs_ = true;
+}
 
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
@@ -188,7 +177,7 @@ count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), 
 currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
-    eq_ = std::make_unique<Equalizer>();
+    eq_ = std::make_unique<MelissaEqualizer>();
 }
 
 MelissaAudioEngine::~MelissaAudioEngine() {}
@@ -420,32 +409,6 @@ MelissaAudioEngine::Status MelissaAudioEngine::getStatus() const
 void MelissaAudioEngine::setStatus(Status status)
 {
     status_ = status;
-}
-
-std::string MelissaAudioEngine::getStatusString() const
-{
-    std::stringstream ss;
-    
-    constexpr size_t numOfBlocks = 60;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(readIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";;
-    ss << "r" << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < numOfBlocks; ++iBlock) ss << "#";
-    ss << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(aIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";
-    ss << "A" << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(bIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";;
-    ss << "B";
-    
-    ss << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(processStartIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";;
-    ss << "S";
-    
-    return ss.str();
 }
 
 void MelissaAudioEngine::playbackModeChanged(PlaybackMode mode)

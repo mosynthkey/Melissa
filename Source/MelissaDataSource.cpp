@@ -1111,6 +1111,11 @@ void MelissaDataSource::overwriteMarker(size_t index, const Song::Marker& marker
     }
 }
 
+void MelissaDataSource::notifyExportCompleted(bool result, juce::String message)
+{
+    for (auto&& l : listeners_) l->exportCompleted(result, message);
+}
+
 void MelissaDataSource::handleAsyncUpdate()
 {
     // load file asynchronously
