@@ -10,7 +10,6 @@
 #include "MelissaAboutComponent.h"
 #include "MelissaBPMSettingComponent.h"
 #include "MelissaDefinitions.h"
-#include "MelissaExportComponent.h"
 #include "MelissaInputDialog.h"
 #include "MelissaOptionDialog.h"
 #include "MelissaShortcutComponent.h"
@@ -31,6 +30,7 @@ static constexpr bool isFullVersion = false;
 static constexpr bool isDesktop = false;
 #else
 static constexpr bool isDesktop = true;
+#include "MelissaExportComponent.h"
 #endif
 
 using std::make_unique;
@@ -244,12 +244,12 @@ nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requested
         && ! RuntimePermissions::isGranted (RuntimePermissions::recordAudio))
     {
         RuntimePermissions::request (RuntimePermissions::recordAudio,
-                                     [&] (bool granted) { if (granted)  setAudioChannels (2, 2); });
+                                     [&] (bool granted) { if (granted)  setAudioChannels (0, 2); });
     }
     else
     {
         // Specify the number of input and output channels that we want to open
-        setAudioChannels (2, 2, xmlDocument.get());
+        setAudioChannels (0, 2, xmlDocument.get());
     }
     
     Thread::addListener(this);
@@ -515,9 +515,11 @@ void MainComponent::createUI()
         exportButton_->setImages(iconImages_[kIcon_Export].get(), iconHighlightedImages_[kIcon_Export].get());
         exportButton_->onClick = [&]()
         {
+#ifndef JUCE_IOS
             auto component = std::make_shared<MelissaExportComponent>();
-            component->setSize(500, 50);
+            component->setSize(620, 400);
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("export"));
+#endif
         };
         componentToAdd->addAndMakeVisible(exportButton_.get());
         
@@ -1351,6 +1353,10 @@ void MainComponent::createMenu()
         {
             menuComponent_ = std::make_unique<MelissaMobileMenuComponent>();
             safeAreaComponent_->addAndMakeVisible(menuComponent_.get());
+            
+            fileListBox_ = std::make_unique<MelissaMobileFileListBox>();
+            fileListBox_->setTarget(MelissaMobileFileListBox::kTarget_Dummy);
+            menuComponent_->addAndMakeVisible(fileListBox_.get());
         }
         else
         {
@@ -1864,7 +1870,9 @@ void MainComponent::resized_Mobile()
     if (menuComponent_ != nullptr)
     {
         menuComponent_->setBounds(- safeBounds.getWidth(), 0, safeBounds.getWidth(), safeBounds.getHeight());
-        menuComponentAnimator_->animateComponent(menuComponent_.get(), safeAreaComponent_->getLocalBounds(), 1.f, 200.f, true, 1, 0);
+        menuComponentAnimator_->animateComponent(menuComponent_.get(), safeAreaComponent_->getLocalBounds(), 1.f, 250.f, true, 1, 0);
+        
+        fileListBox_->setBounds(0, 0, 100, 100);
     }
     
     importButton_->setBounds(100, 0, 50, 20);

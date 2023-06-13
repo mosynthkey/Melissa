@@ -16,6 +16,7 @@
         <FILE id="iBdhPo" name="detail.svg" compile="0" resource="1" file="../Resource/Icon/detail.svg"/>
         <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="../Resource/Icon/down.svg"/>
         <FILE id="y8fFPi" name="loop.svg" compile="0" resource="1" file="../Resource/Icon/loop.svg"/>
+        <FILE id="Xz9oTn" name="export.svg" compile="0" resource="1" file="../Resource/Icon/export.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="../Resource/Icon/loop_onesong.svg"/>
         <FILE id="VQA9um" name="loop_playlist.svg" compile="0" resource="1"
@@ -145,6 +146,8 @@
               resource="0" file="../Source/UI/MelissaMarkerMemoComponent.cpp"/>
         <FILE id="gg9VzE" name="MelissaMarkerMemoComponent.h" compile="0" resource="0"
               file="../Source/UI/MelissaMarkerMemoComponent.h"/>
+        <FILE id="iHZBxz" name="MelissaMobileFileListBox.h" compile="0" resource="0"
+              file="../Source/UI/MelissaMobileFileListBox.h"/>
         <FILE id="Ik8aTS" name="MelissaMobileMenuComponent.cpp" compile="1"
               resource="0" file="../Source/UI/MelissaMobileMenuComponent.cpp"/>
         <FILE id="ML0B17" name="MelissaMobileMenuComponent.h" compile="0" resource="0"

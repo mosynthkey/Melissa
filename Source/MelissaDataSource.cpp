@@ -864,12 +864,24 @@ String MelissaDataSource::getMemo() const
     return "";
 }
 
-void MelissaDataSource::getPracticeList(std::vector<MelissaDataSource::Song::PracticeList>& list)
+void MelissaDataSource::getSong(const juce::String& songPath, Song& song) const
+{
+    for (auto&& s : songs_)
+    {
+        if (s.filePath_ == songPath)
+        {
+            song = s;
+            break;
+        }
+    }
+}
+
+void MelissaDataSource::getPracticeList(const juce::String& songPath, std::vector<Song::PracticeList>& list)
 {
     list.clear();
     for (auto&& song : songs_)
     {
-        if (song.filePath_ == currentSongFilePath_)
+        if (song.filePath_ == songPath)
         {
             list = song.practiceList_;
             return;
@@ -877,7 +889,12 @@ void MelissaDataSource::getPracticeList(std::vector<MelissaDataSource::Song::Pra
     }
 }
 
-size_t MelissaDataSource::getNumPracticeList() const
+void MelissaDataSource::getCurrentPracticeList(std::vector<MelissaDataSource::Song::PracticeList>& list)
+{
+    getPracticeList(currentSongFilePath_, list);
+}
+
+size_t MelissaDataSource::getNumCurrentPracticeList() const
 {
     for (auto&& song : songs_)
     {
@@ -1005,7 +1022,7 @@ void MelissaDataSource::overwritePracticeList(size_t index, const Song::Practice
 
 void MelissaDataSource::swapPracticeList(size_t indexA, size_t indexB)
 {
-    const auto size = getNumPracticeList();
+    const auto size = getNumCurrentPracticeList();
     if (size <= indexA || size <= indexB) return;
     
     for (auto&& song : songs_)

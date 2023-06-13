@@ -46,6 +46,7 @@
 #ifdef JUCE_IOS
 #include "MelissaMobileSupport.h"
 #include "MelissaMobileMenuComponent.h"
+#include "MelissaMobileFileListBox.h"
 #endif
 
 enum SpeedModeTab
@@ -381,6 +382,8 @@ private:
 #endif
     std::unique_ptr<MelissaMobileMenuComponent> menuComponent_;
     std::unique_ptr<juce::ComponentAnimator> menuComponentAnimator_;
+    
+    std::unique_ptr<MelissaMobileFileListBox> fileListBox_;
     
     enum
     {

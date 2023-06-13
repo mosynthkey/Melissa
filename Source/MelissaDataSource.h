@@ -287,10 +287,12 @@ public:
     void saveSongState();
     juce::String getMemo() const;
     void saveMemo(const juce::String& memo);
+    void getSong(const juce::String& songPath, Song& song) const;
     
     // Practice list
-    void getPracticeList(std::vector<Song::PracticeList>& list);
-    size_t getNumPracticeList() const;
+    void getPracticeList(const juce::String& songPath, std::vector<Song::PracticeList>& list);
+    void getCurrentPracticeList(std::vector<Song::PracticeList>& list);
+    size_t getNumCurrentPracticeList() const;
     void addPracticeList(const juce::String& name);
     void removePracticeList(size_t index);
     void overwritePracticeList(size_t index, const juce::String& name);

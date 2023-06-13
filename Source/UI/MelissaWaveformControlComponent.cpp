@@ -107,7 +107,6 @@ public:
     
     void loadWaveform()
     {
-        
         auto dataSource = MelissaDataSource::getInstance();
         const size_t bufferLength = dataSource->getBufferLength();
         
@@ -115,9 +114,11 @@ public:
         
         float preview, previewMax = 0.f;
         
-        const size_t stripSize =  bufferLength / kNumStrips;
-        float lCh[stripSize], rCh[stripSize];
-        float* audioData[] = { lCh, rCh };
+        const int64 stripSize =  bufferLength / kNumStrips;
+        
+        auto lCh = std::make_unique<float[]>(stripSize + 1);
+        auto rCh = std::make_unique<float[]>(stripSize + 1);
+        float* audioData[] = { lCh.get(), rCh.get() };
         
         for (int32_t iStrip = 0; iStrip < kNumStrips; ++iStrip)
         {
@@ -140,7 +141,7 @@ public:
         
         // normalize
         for (int stripIndex = 0; stripIndex < kNumStrips; ++stripIndex) strips_[stripIndex] /= previewMax;
-        
+         
         isWaveformLoad_ = true;
     }
     

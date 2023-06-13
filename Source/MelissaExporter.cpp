@@ -52,6 +52,9 @@ void MelissaExporter::addInputFile(std::vector<FileAndVolume> fileAndVolumes_, f
     input->fadeOutNumSamples = fadeOutMSec * sampleRate / 1000;
     input->gapMSec = gapMSec;
     
+    if ((input->startSampleIndex - input->fadeInNumSamples) < 0) input->fadeInNumSamples = input->startSampleIndex;
+    if (numOfSamples <= (input->endSampleIndex + input->fadeOutNumSamples)) input->fadeOutNumSamples = (numOfSamples - 1) - input->endSampleIndex;
+    
     inputs_.emplace_back(std::move(input));
 }
 
@@ -152,7 +155,7 @@ void MelissaExporter::exportToFile()
                 else if (input->endSampleIndex < readIndex && readIndex < (input->endSampleIndex + input->fadeOutNumSamples))
                 {
                     // Fade out
-                    volume[index] = 1.f - (volumeIndex - input->endSampleIndex) / static_cast<float>(input->fadeInNumSamples);
+                    volume[index] = 1.f - (volumeIndex - input->endSampleIndex) / static_cast<float>(input->fadeOutNumSamples);
                 }
             }
             
@@ -192,15 +195,7 @@ void MelissaExporter::exportToFile()
             for (int index = 0; index < numReceivedSamples; ++index)
             {
                 float eqBuffer[] = { bufferForSoundTouch[index * kNumChannels + 0], bufferForSoundTouch[index * kNumChannels + 1] };
-                if (eqBuffer[0] > 1.f)
-                {
-                    printf("");
-                }
                 if (input->eqSwitch) eq.process(eqBuffer, eqBuffer);
-                if (eqBuffer[0] > 1.f)
-                {
-                    printf("");
-                }
                 writePointers[0][index] = eqBuffer[0];
                 writePointers[1][index] = eqBuffer[1];
             }
@@ -211,6 +206,7 @@ void MelissaExporter::exportToFile()
             // add gap
             const auto numGapSamples = input->gapMSec * outputSampleRate / 1000;
             AudioBuffer<float> blankAudioBuffer(kNumChannels, numGapSamples);
+            blankAudioBuffer.clear();
             writer->writeFromAudioSampleBuffer(blankAudioBuffer, 0, numGapSamples);
         }
     }

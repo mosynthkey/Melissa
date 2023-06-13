@@ -228,7 +228,7 @@ MelissaCommand::MelissaCommand()
         auto model = MelissaModel::getInstance();
         
         std::vector<MelissaDataSource::Song::PracticeList> list;
-        dataSource->getPracticeList(list);
+        dataSource->getCurrentPracticeList(list);
         if (list.size() <= index) return;
         
         model->setLoopPosRatio(list[index].aRatio_, list[index].bRatio_);

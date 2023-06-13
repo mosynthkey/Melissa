@@ -279,11 +279,14 @@ public:
      
     virtual void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& cb) override
     {
+        const bool enabled = cb.isEnabled();
         const auto b = cb.getLocalBounds();
+        
         g.setColour(MelissaUISettings::getSubColour());
         g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
         
-        g.setColour(MelissaUISettings::getTextColour(0.5f));
+        g.setColour(MelissaUISettings::getTextColour(enabled ? 0.5f : 0.1f));
+        
         constexpr int triHeight = 6;
         constexpr int triWidth = 12;
         g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
@@ -522,11 +525,12 @@ public:
     
     virtual void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& cb) override
     {
+        const bool enabled = cb.isEnabled();
         const auto b = cb.getLocalBounds();
         g.setColour(MelissaUISettings::getMainColour());
         g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
         
-        g.setColour(MelissaUISettings::getTextColour(0.5f));
+        g.setColour(MelissaUISettings::getTextColour(enabled ? 0.5f : 0.1f));
         constexpr int triHeight = 6;
         constexpr int triWidth = 12;
         g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
