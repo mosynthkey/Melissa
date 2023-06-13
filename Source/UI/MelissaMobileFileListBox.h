@@ -15,36 +15,32 @@
 #include "MelissaUISettings.h"
 
 class MelissaMobileFileListBox : public juce::ListBox,
-                           public juce::ListBoxModel,
-                           public MelissaDataSourceListener
+                                 public juce::ListBoxModel,
+                                 public MelissaDataSourceListener
 {
 public:
-    enum Target
-    {
-        kTarget_History = -1,
-        kTarget_Playlist,
-        kTarget_Dummy,
-    };
-    
     MelissaMobileFileListBox(const juce::String& componentName = "") :
-    target_(kTarget_Dummy),
     dataSource_(MelissaDataSource::getInstance())
     {
+        list_.clear();
+        
+        constexpr int numDummyData = 50;
+        list_.resize(numDummyData);
+        
+        using namespace juce;
+        for (int i = 0; i < numDummyData; ++i) list_[i] = (String("Dummy ") + String(i));
+        
         juce::ListBox(componentName, this);
         setModel(this);
         
         dataSource_->addListener(this);
         setOutlineThickness(1.f);
+        
+        setRowHeight(60);
     }
     
     ~MelissaMobileFileListBox()
     {
-    }
-    
-    void setTarget(Target target)
-    {
-        target_ = target;
-        updateList();
     }
     
     int getNumRows() override
@@ -67,7 +63,7 @@ public:
     void paintListBoxItem(int rowNumber, juce::Graphics &g, int width, int height, bool rowIsSelected) override
     {
         const juce::String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
-        const juce::String fileName = juce::File(fullPath).getFileName();
+        //const juce::String fileName = juce::File(fullPath).getFileName();
         
         g.setColour(juce::Colours::pink);
         g.drawRect(0, 0, getWidth(), getHeight());
@@ -79,64 +75,10 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(fileName, 10, 0, width - 20, height, juce::Justification::left);
-    }
-    
-    void moveSelected(int incDecValue)
-    {
-        if (target_ == kTarget_History) return;
-        
-        const int fromIndex = getSelectedRow();
-        const int toIndex   = getSelectedRow() + incDecValue;
-        if (toIndex < 0 || list_.size() <= toIndex) return;
-        
-        const size_t index = static_cast<size_t>(target_);
-        dataSource_->playlists_[index].list_.swap(fromIndex, toIndex);
-        selectRow(toIndex);
-        
-        updateList();
-    }
-    
-    void updateList()
-    {
-        if (target_ == kTarget_History)
-        {
-            list_ = dataSource_->history_;
-        }
-        else if (target_ == kTarget_Playlist)
-        {
-            const size_t index = static_cast<size_t>(target_);
-            list_ = dataSource_->playlists_[index].list_;
-        }
-        else
-        {
-            list_.clear();
-            
-            list_.resize(3);
-            list_[0] = "Test A";
-            list_[1] = "Test B";
-            list_[2] = "Test C";
-            
-        }
-        updateContent();
-        repaint();
-    }
-    
-    void historyUpdated() override
-    {
-        if (target_ != kTarget_History) return;
-        updateList();
-        selectRow(0);
-    }
-    
-    void playlistUpdated(size_t index) override
-    {
-        updateList();
+        g.drawText(fullPath, 10, 0, width - 20, height, juce::Justification::left);
     }
     
 private:
-    Target target_;
     MelissaDataSource* dataSource_;
-    MelissaDataSource::FilePathList list_;
-    MelissaLookAndFeel laf_;
+    std::vector<juce::String> list_;
 };

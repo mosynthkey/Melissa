@@ -1355,7 +1355,6 @@ void MainComponent::createMenu()
             safeAreaComponent_->addAndMakeVisible(menuComponent_.get());
             
             fileListBox_ = std::make_unique<MelissaMobileFileListBox>();
-            fileListBox_->setTarget(MelissaMobileFileListBox::kTarget_Dummy);
             menuComponent_->addAndMakeVisible(fileListBox_.get());
         }
         else
@@ -1872,7 +1871,7 @@ void MainComponent::resized_Mobile()
         menuComponent_->setBounds(- safeBounds.getWidth(), 0, safeBounds.getWidth(), safeBounds.getHeight());
         menuComponentAnimator_->animateComponent(menuComponent_.get(), safeAreaComponent_->getLocalBounds(), 1.f, 250.f, true, 1, 0);
         
-        fileListBox_->setBounds(0, 0, 100, 100);
+        fileListBox_->setBounds(menuComponent_->getWidth() / 2 + 10, 10, menuComponent_->getWidth() / 2 - 20, menuComponent_->getHeight() - 20);
     }
     
     importButton_->setBounds(100, 0, 50, 20);
