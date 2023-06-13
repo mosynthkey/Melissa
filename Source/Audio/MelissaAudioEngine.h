@@ -125,6 +125,10 @@ private:
     
     Status status_;
     
+    bool enableCountIn_;
+    float previousRenderedPosMSec_;
+    size_t countInSampleIndex_;
+    
     // MelissaModelListener
     void playbackModeChanged(PlaybackMode mode) override;
     void musicVolumeChanged(float volume) override;

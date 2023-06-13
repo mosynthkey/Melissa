@@ -1991,6 +1991,9 @@ void MainComponent::filesDropped(const StringArray& files, int x, int y)
 
 bool MainComponent::keyPressed(const KeyPress &key, Component* originatingComponent)
 {
+#ifdef JUCE_MAC
+    if (key.getTextDescription() == "command + Q") JUCEApplication::quit();
+#endif
     return MelissaShortcutManager::getInstance()->processKeyboardMessage(key.getTextDescription());
 }
 
