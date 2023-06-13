@@ -1317,8 +1317,10 @@ void MainComponent::createUI()
         
     }
     
+#ifdef ENABLE_MOBILEAD
     adComponent_ = std::make_unique<MelissaAdComponent>();
     safeAreaComponent_->addAndMakeVisible(adComponent_.get());
+#endif
     
     for (int separatorIndex = 0; separatorIndex < kNumSeparators; ++separatorIndex)
     {
@@ -1855,7 +1857,9 @@ void MainComponent::resized_Mobile()
         }
     }
     
+#ifdef ENABLE_MOBILEAD
     adComponent_->setBounds((safeAreaComponent_->getWidth() - kAdWidth) / 2, safeAreaComponent_->getBottom() - kAdHeight, kAdWidth, kAdHeight);
+#endif
     
     if (menuComponent_ != nullptr)
     {

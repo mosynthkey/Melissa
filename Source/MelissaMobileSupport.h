@@ -18,6 +18,7 @@ public:
     
 };
 
+#ifdef ENABLE_MOBILEAD
 class MelissaAdComponent : public juce::Component
 {
 public:
@@ -30,3 +31,4 @@ public:
 private:
     juce::UIViewComponent uiViewComponent;
 };
+#endif

@@ -376,7 +376,9 @@ private:
 #ifdef JUCE_IOS
     std::unique_ptr<juce::TextButton> importButton_;
     std::unique_ptr<juce::TextButton> debugButton_;
+#ifdef ENABLE_MOBILEAD
     std::unique_ptr<MelissaAdComponent> adComponent_;
+#endif
     std::unique_ptr<MelissaMobileMenuComponent> menuComponent_;
     std::unique_ptr<juce::ComponentAnimator> menuComponentAnimator_;
     

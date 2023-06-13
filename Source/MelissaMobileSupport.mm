@@ -35,6 +35,8 @@ juce::File MelissaMobileSupport::importFile(const juce::URL& fileUrl)
     return targetFile;
 }
 
+#ifdef ENABLE_MOBILEAD
+
 AdMobAdDelegateViewController *viewController;
 //RewardAdViewController *viewController;
 
@@ -62,3 +64,4 @@ void MelissaAdComponent::paint(Graphics& g)
     g.setColour(Colours::pink);
     g.drawRect(getLocalBounds());
 }
+#endif
