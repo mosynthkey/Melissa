@@ -13,7 +13,7 @@
 
 using namespace juce;
 
-#ifdef JUCE_IOS
+#ifdef ENABLE_MOBILEAD
 #include "MelissaAd.h"
 #endif
 
@@ -41,7 +41,7 @@ public:
         mainWindow->setAlwaysOnTop(false);
         
         
-#ifdef JUCE_IOS
+#ifdef ENABLE_MOBILEAD
     MelissaAd::initialize();
 #endif
     }

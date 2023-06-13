@@ -17,6 +17,8 @@
 //  limitations under the License.
 //
 
+#ifdef ENABLE_MOBILEAD
+
 #import <UIKit/UIKit.h>
 
 @interface AdMobAdDelegateViewController : UIViewController
@@ -26,3 +28,5 @@
 - (void)loadRewardedAd;
 - (void)show;
 @end
+
+#endif

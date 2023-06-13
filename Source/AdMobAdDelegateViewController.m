@@ -17,6 +17,8 @@
 //  limitations under the License.
 //
 
+#ifdef ENABLE_MOBILEAD
+
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import "AdMobAdDelegateViewController.h"
 
@@ -161,3 +163,5 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 }
 
 @end
+
+#endif
