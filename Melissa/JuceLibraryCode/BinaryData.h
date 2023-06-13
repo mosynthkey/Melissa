@@ -69,7 +69,7 @@ namespace BinaryData
     const int            enUS_txtSize = 11376;
 
     extern const char*   jaJP_txt;
-    const int            jaJP_txtSize = 12879;
+    const int            jaJP_txtSize = 13343;
 
     extern const char*   logo_png;
     const int            logo_pngSize = 110193;
