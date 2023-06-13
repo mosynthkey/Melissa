@@ -68,7 +68,7 @@ public:
             readIndex_ += speed_;
         }
         
-        const size_t numOfSamplesToDelete = static_cast<int>(readIndex_) - 1;
+        const int numOfSamplesToDelete = static_cast<int>(readIndex_) - 1;
         if (0 < numOfSamplesToDelete)
         {
             que_.erase(que_.begin(), que_.begin() + numOfSamplesToDelete);
