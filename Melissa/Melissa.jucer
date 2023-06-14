@@ -97,6 +97,10 @@
               file="../Source/Audio/MelissaAudioEngine.cpp"/>
         <FILE id="l6mtHh" name="MelissaAudioEngine.h" compile="0" resource="0"
               file="../Source/Audio/MelissaAudioEngine.h"/>
+        <FILE id="EHJuMf" name="MelissaBeepGenerator.cpp" compile="1" resource="0"
+              file="../Source/Audio/MelissaBeepGenerator.cpp"/>
+        <FILE id="d1JDF2" name="MelissaBeepGenerator.h" compile="0" resource="0"
+              file="../Source/Audio/MelissaBeepGenerator.h"/>
         <FILE id="DK4Xfb" name="MelissaBPMDetector.cpp" compile="1" resource="0"
               file="../Source/Audio/MelissaBPMDetector.cpp"/>
         <FILE id="cfJH2n" name="MelissaBPMDetector.h" compile="0" resource="0"

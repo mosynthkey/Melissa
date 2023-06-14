@@ -239,19 +239,7 @@ nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requested
     
     createUI();
     
-    // Some platforms require permissions to open input channels so request that here
-    if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
-        && ! RuntimePermissions::isGranted (RuntimePermissions::recordAudio))
-    {
-        RuntimePermissions::request (RuntimePermissions::recordAudio,
-                                     [&] (bool granted) { if (granted)  setAudioChannels (0, 2); });
-    }
-    else
-    {
-        // Specify the number of input and output channels that we want to open
-        setAudioChannels (0, 2, xmlDocument.get());
-    }
-    
+    setAudioChannels (0, 2, xmlDocument.get());
     Thread::addListener(this);
     startThread();
     startTimer(1000 / 10);

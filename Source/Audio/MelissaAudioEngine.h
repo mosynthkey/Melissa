@@ -8,11 +8,12 @@
 #pragma once
 
 #include <deque>
+#include <memory>
 #include <mutex>
 #include <vector>
+#include "MelissaBeepGenerator.h"
 #include "MelissaModelListener.h"
 #include "SoundTouch.h"
-#include <memory>
 
 class MelissaDataSource;
 class MelissaModel;
@@ -125,6 +126,7 @@ private:
     
     Status status_;
     
+    MelissaBeepGenerator beepGen_;
     bool enableCountIn_;
     float previousRenderedPosMSec_;
     size_t countInSampleIndex_;

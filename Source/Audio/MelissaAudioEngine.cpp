@@ -174,7 +174,7 @@ aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
-currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(true), previousRenderedPosMSec_(0.f), countInSampleIndex_(0)
+currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<MelissaEqualizer>();
@@ -204,6 +204,7 @@ void MelissaAudioEngine::setOutputSampleRate(int32_t sampleRate)
     
     outputSampleRate_ = sampleRate;
     eq_->setSampleRate(sampleRate);
+    beepGen_.setOutputSampleRate(sampleRate);
     needToReset_ = true;
 }
 
@@ -231,14 +232,15 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
     }
     mutex_.unlock();
     
-    for (int iSample = 0; iSample < bufferLength; ++iSample)
+    for (int sampleIndex = 0; sampleIndex < bufferLength; ++sampleIndex)
     {
         if (enableCountIn_ && 0 < countInSampleIndex_)
         {
-            // Play count-in
-            const float noise = rand() / static_cast<float>(RAND_MAX) * 2.f - 1.f;
-            bufferToRender[0][iSample] = noise;
-            if (1 < numOfChannels) bufferToRender[1][iSample] = noise;
+            // Pre-count metronome
+            if (countInSampleIndex_ % static_cast<int>(60.f / model_->getBpm() * outputSampleRate_) == 0) beepGen_.trigger(880);
+            
+            bufferToRender[0][sampleIndex] = beepGen_.render();
+            if (1 < numOfChannels) bufferToRender[1][sampleIndex] = bufferToRender[0][sampleIndex];
             countInSampleIndex_--;
             if (countInSampleIndex_ == 0) previousRenderedPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
         }
@@ -251,11 +253,13 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
                 const float nextPlaybackPosMSec = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
                 if (nextPlaybackPosMSec < previousRenderedPosMSec_ && enableCountIn_)
                 {
-                    countInSampleIndex_ = outputSampleRate_ * 5; // tentative
+                    const auto bpm = model_->getBpm();
+                    const auto accent = model_->getAccent();
+                    countInSampleIndex_ = static_cast<size_t>(60.f / bpm * accent * outputSampleRate_);
                 }
                 else
                 {
-                    previousRenderedPosMSec_ = timeIndicesMSec[iSample] = playingPosMSec_ = nextPlaybackPosMSec;
+                    previousRenderedPosMSec_ = timeIndicesMSec[sampleIndex] = playingPosMSec_ = nextPlaybackPosMSec;
                     timeQue_.pop_front();
                     
                     float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
@@ -281,13 +285,13 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
                     if (numOfChannels == 1)
                     {
                         // mono
-                        bufferToRender[0][iSample] = (buffer[0] + buffer[1]) * volumeBalance_;
+                        bufferToRender[0][sampleIndex] = (buffer[0] + buffer[1]) * volumeBalance_;
                     }
                     else
                     {
                         // stereo
-                        bufferToRender[0][iSample] = buffer[0] * volumeBalance_;
-                        bufferToRender[1][iSample] = buffer[1] * volumeBalance_;
+                        bufferToRender[0][sampleIndex] = buffer[0] * volumeBalance_;
+                        bufferToRender[1][sampleIndex] = buffer[1] * volumeBalance_;
                     }
 
                     processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);

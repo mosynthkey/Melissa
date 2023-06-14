@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <memory>
+#include "MelissaBeepGenerator.h"
 #include "MelissaModelListener.h"
 
 class MelissaMetronome : public MelissaModelListener
@@ -16,7 +17,7 @@ class MelissaMetronome : public MelissaModelListener
 public:
     MelissaMetronome();
     void render(float* bufferToRender[], size_t numOfChannels, const std::vector<float>& timeIndicesMSec, size_t bufferLength);
-    void setOutputSampleRate(int32_t sampleRate) { sampleRate_ = sampleRate; };
+    void setOutputSampleRate(int32_t sampleRate) { sampleRate_ = sampleRate; beepGen_.setOutputSampleRate(sampleRate); };
     
     // MelissaModelListener
     void playbackStatusChanged(PlaybackStatus status) override;
@@ -30,7 +31,7 @@ public:
 private:
     struct Metronome
     {
-        Metronome() : on_(false), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), accent_(4), prevBeatSection_(0), prevAccentBeatSection_(0), amp_(0.f), osc_(-1.f), pitch_(880) { }
+        Metronome() : on_(false), volume_(1.f), beatPositionMSec_(0.f), bpm_(120.f), accent_(4), prevBeatSection_(0), prevAccentBeatSection_(0) { }
         bool on_;
         float volume_;
         float beatPositionMSec_;
@@ -38,12 +39,9 @@ private:
         int accent_;
         int prevBeatSection_;
         int prevAccentBeatSection_;
-        
-        // for beep
-        float amp_;
-        float osc_;
-        float pitch_;
     } metronome_;
+    
+    MelissaBeepGenerator beepGen_;
     
     bool isMusicPlaying_;
     int32_t sampleRate_;
