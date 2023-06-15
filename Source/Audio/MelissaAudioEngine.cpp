@@ -247,7 +247,10 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
             bufferToRender[0][sampleIndex] = beepGen_.render();
             if (1 < numOfChannels) bufferToRender[1][sampleIndex] = bufferToRender[0][sampleIndex];
             countInSampleIndex_--;
-            if (countInSampleIndex_ == 0) previousRenderedPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
+            if (countInSampleIndex_ == 0)
+            {
+                previousRenderedPosMSec_ = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
+            }
         }
         else
         {
@@ -602,4 +605,9 @@ void MelissaAudioEngine::updateLoopParameters()
 void MelissaAudioEngine::playPartChanged(PlayPart playPart)
 {
     playPart_ = playPart;
+}
+
+void MelissaAudioEngine::preCountSwitchChanged(bool preCountSwitch)
+{
+    enableCountIn_ = preCountSwitch;
 }

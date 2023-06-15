@@ -480,6 +480,17 @@ void MainComponent::createUI()
         nextButton_->onClick = [this]() { next(); };
         componentToAdd->addAndMakeVisible(nextButton_.get());
         
+        preCountOnOffButton_ = make_unique<ToggleButton>();
+        preCountOnOffButton_->setTooltip(TRANS("precount_switch"));
+        preCountOnOffButton_->setClickingTogglesState(true);
+        preCountOnOffButton_->setLookAndFeel(&slideToggleLaf_);
+        preCountOnOffButton_->onClick = [this]()
+        {
+            const auto on = preCountOnOffButton_->getToggleState();
+            model_->setPreCountSwitch(on);
+        };
+        componentToAdd->addAndMakeVisible(preCountOnOffButton_.get());
+        
         timeLabel_ = make_unique<Label>();
         timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         timeLabel_->setJustificationType(Justification::centredLeft);
@@ -1513,6 +1524,9 @@ void MainComponent::resized_Desktop()
         constexpr int kAudioDeviceButtonWidth = 200;
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
         
+        preCountOnOffButton_->setBounds(nextButton_->getX() + 40, (kHeaderHeight - 20) / 2, 40, 20);
+        preCountOnOffButton_->toFront(false);
+        
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
     }
     
@@ -2447,6 +2461,11 @@ void MainComponent::speedChanged(int speed)
 
 void MainComponent::playPartChanged(PlayPart playPart)
 {
+}
+
+void MainComponent::preCountSwitchChanged(bool preCountSwitch)
+{
+    preCountOnOffButton_->setToggleState(preCountSwitch, dontSendNotification);
 }
 
 void MainComponent::controlMessageReceived(const String& controlMessage)

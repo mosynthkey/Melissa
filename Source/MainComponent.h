@@ -206,6 +206,8 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
+    std::unique_ptr<juce::ToggleButton> preCountOnOffButton_;
+    
     std::unique_ptr<juce::DrawableButton> exportButton_;
     
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
@@ -452,6 +454,7 @@ private:
     void pitchChanged(float semitone) override;
     void speedChanged(int speed) override;
     void playPartChanged(PlayPart playPart) override;
+    void preCountSwitchChanged(bool preCountSwitch) override;
     
     // MelissaShortcutListener
     void controlMessageReceived(const juce::String& controlMessage) override;

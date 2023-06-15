@@ -152,6 +152,7 @@ private:
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
     void playPartChanged(PlayPart playPart) override;
+    void preCountSwitchChanged(bool preCountSwitch) override;
     
     void updateLoopParameters();
 };
