@@ -174,12 +174,12 @@ void MelissaEqualizer::setQ(float q)
 }
 
 MelissaAudioEngine::MelissaAudioEngine() :
-model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
+model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
-currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0)
+currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0), forcePreCountOn_(false)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<MelissaEqualizer>();
@@ -254,19 +254,21 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
         }
         else
         {
-            const float nextPlaybackPosMSec = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
-            if (enableCountIn_ && nextPlaybackPosMSec < previousRenderedPosMSec_)
+            const float currentPlaybackPosMSec = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
+            const bool looped = static_cast<int>(currentPlaybackPosMSec)   == static_cast<int>(model_->getLoopAPosMSec()) && static_cast<int>(previousRenderedPosMSec_) == static_cast<int>(model_->getLoopBPosMSec());
+            if (enableCountIn_ && (looped || forcePreCountOn_))
             {
                 const auto bpm = model_->getBpm();
                 const auto accent = model_->getAccent();
                 countInSampleIndex_ = static_cast<size_t>(60.f / bpm * accent * outputSampleRate_);
+                forcePreCountOn_ = false;
             }
             else
             {
                 mutex_.lock();
                 if (processedBufferQue_.size() > 0)
                 {
-                    previousRenderedPosMSec_ = timeIndicesMSec[sampleIndex] = playingPosMSec_ = nextPlaybackPosMSec;
+                    previousRenderedPosMSec_ = timeIndicesMSec[sampleIndex] = playingPosMSec_ = currentPlaybackPosMSec;
                     sampleIndexStretcher_->getStretchedSampleIndices(1, timeQue_);
                     
                     float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
@@ -443,6 +445,12 @@ void MelissaAudioEngine::setStatus(Status status)
     status_ = status;
 }
 
+void MelissaAudioEngine::playbackStatusChanged(PlaybackStatus status)
+{
+    playbackStatus_ = status;
+    setupPreCountIfNeeded();
+}
+
 void MelissaAudioEngine::playbackModeChanged(PlaybackMode mode)
 {
     if (playbackMode_ == mode) return;
@@ -547,7 +555,11 @@ void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTi
 void MelissaAudioEngine::playingPosChanged(float time, float ratio)
 {
     processStartIndex_ = static_cast<size_t>((originalBufferLength_ - 1) * ratio);
-    if (processStartIndex_ < aIndex_) processStartIndex_ = aIndex_;
+    if (processStartIndex_ < aIndex_)
+    {
+        setupPreCountIfNeeded();
+        processStartIndex_ = aIndex_;
+    }
     if (bIndex_ < processStartIndex_) processStartIndex_ = bIndex_;
     needToReset_ = true;
 }
@@ -589,6 +601,16 @@ void MelissaAudioEngine::eqQChanged(size_t band, float q)
     eq_->setQ(q);
 }
 
+void MelissaAudioEngine::playPartChanged(PlayPart playPart)
+{
+    playPart_ = playPart;
+}
+
+void MelissaAudioEngine::preCountSwitchChanged(bool preCountSwitch)
+{
+    enableCountIn_ = preCountSwitch;
+}
+
 void MelissaAudioEngine::updateLoopParameters()
 {
     if (playbackMode_ == kPlaybackMode_LoopOneSong)
@@ -602,12 +624,12 @@ void MelissaAudioEngine::updateLoopParameters()
     }
 }
 
-void MelissaAudioEngine::playPartChanged(PlayPart playPart)
+void MelissaAudioEngine::setupPreCountIfNeeded()
 {
-    playPart_ = playPart;
-}
-
-void MelissaAudioEngine::preCountSwitchChanged(bool preCountSwitch)
-{
-    enableCountIn_ = preCountSwitch;
+    if (enableCountIn_ && playbackStatus_ == kPlaybackStatus_Playing)
+    {
+        forcePreCountOn_ = true;
+        processStartIndex_ = aIndex_;
+        needToReset_ = true;
+    }
 }

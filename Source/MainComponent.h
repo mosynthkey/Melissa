@@ -206,8 +206,6 @@ private:
     
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
-    std::unique_ptr<juce::ToggleButton> preCountOnOffButton_;
-    
     std::unique_ptr<juce::DrawableButton> exportButton_;
     
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
@@ -241,6 +239,8 @@ private:
     std::unique_ptr<juce::DrawableButton> aResetButton_;
     std::unique_ptr<juce::DrawableButton> bResetButton_;
     std::unique_ptr<juce::TextButton> resetButton_;
+    std::unique_ptr<juce::ToggleButton> preCountOnOffButton_;
+    std::unique_ptr<juce::TextButton> preCountSettingButton_;
     
     enum
     {

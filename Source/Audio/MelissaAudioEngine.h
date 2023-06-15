@@ -79,6 +79,7 @@ private:
     
     std::unique_ptr<soundtouch::SoundTouch> soundTouch_;
     
+    PlaybackStatus playbackStatus_;
     PlaybackMode playbackMode_;
     
     int32_t originalSampleRate_;
@@ -130,8 +131,10 @@ private:
     bool enableCountIn_;
     float previousRenderedPosMSec_;
     size_t countInSampleIndex_;
+    bool forcePreCountOn_;
     
     // MelissaModelListener
+    void playbackStatusChanged(PlaybackStatus status) override;
     void playbackModeChanged(PlaybackMode mode) override;
     void musicVolumeChanged(float volume) override;
     void pitchChanged(float semitone) override;
@@ -155,4 +158,5 @@ private:
     void preCountSwitchChanged(bool preCountSwitch) override;
     
     void updateLoopParameters();
+    void setupPreCountIfNeeded();
 };

@@ -480,17 +480,6 @@ void MainComponent::createUI()
         nextButton_->onClick = [this]() { next(); };
         componentToAdd->addAndMakeVisible(nextButton_.get());
         
-        preCountOnOffButton_ = make_unique<ToggleButton>();
-        preCountOnOffButton_->setTooltip(TRANS("precount_switch"));
-        preCountOnOffButton_->setClickingTogglesState(true);
-        preCountOnOffButton_->setLookAndFeel(&slideToggleLaf_);
-        preCountOnOffButton_->onClick = [this]()
-        {
-            const auto on = preCountOnOffButton_->getToggleState();
-            model_->setPreCountSwitch(on);
-        };
-        componentToAdd->addAndMakeVisible(preCountOnOffButton_.get());
-        
         timeLabel_ = make_unique<Label>();
         timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         timeLabel_->setJustificationType(Justification::centredLeft);
@@ -656,6 +645,24 @@ void MainComponent::createUI()
             model_->setLoopBPosRatio(1.f);
         };
         componentToAdd->addAndMakeVisible(bResetButton_.get());
+        
+        preCountOnOffButton_ = make_unique<ToggleButton>();
+        preCountOnOffButton_->setTooltip(TRANS("precount_switch"));
+        preCountOnOffButton_->setClickingTogglesState(true);
+        preCountOnOffButton_->setLookAndFeel(&slideToggleLaf_);
+        preCountOnOffButton_->onClick = [this]()
+        {
+            const auto on = preCountOnOffButton_->getToggleState();
+            model_->setPreCountSwitch(on);
+        };
+        componentToAdd->addAndMakeVisible(preCountOnOffButton_.get());
+        
+        preCountSettingButton_ = make_unique<TextButton>();
+        preCountSettingButton_->setButtonText("Pre-count");
+        preCountSettingButton_->setTooltip(TRANS("precount_setting"));
+        preCountSettingButton_->onClick = [this]() { resetLoop(); };
+        preCountSettingButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        componentToAdd->addAndMakeVisible(preCountSettingButton_.get());
 
         resetButton_ = make_unique<TextButton>();
         resetButton_->setButtonText("Reset");
@@ -1524,9 +1531,6 @@ void MainComponent::resized_Desktop()
         constexpr int kAudioDeviceButtonWidth = 200;
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
         
-        preCountOnOffButton_->setBounds(nextButton_->getX() + 40, (kHeaderHeight - 20) / 2, 40, 20);
-        preCountOnOffButton_->toFront(false);
-        
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
     }
     
@@ -1588,6 +1592,14 @@ void MainComponent::resized_Desktop()
         
         aResetButton_->setBounds(aButton_->getX() + 10, aButton_->getY() - 24 + 2, 20, 14);
         bResetButton_->setBounds(bButton_->getRight() - 20 - 10, bButton_->getY() - 24 + 2, 20, 14);
+        
+        preCountOnOffButton_->setBounds(10, 5, 40, 20);
+        
+        {
+            const int buttonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), preCountSettingButton_->getButtonText()).first;
+            preCountSettingButton_->setSize(buttonWidth, 30);
+            preCountSettingButton_->setTopLeftPosition(preCountOnOffButton_->getRight() + 4, 0);
+        }
         
         const int resetButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), resetButton_->getButtonText()).first;
         resetButton_->setSize(resetButtonWidth, 30);
