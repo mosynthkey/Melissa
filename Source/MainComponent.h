@@ -36,6 +36,7 @@
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
 #include "MelissaPracticeTableListBox.h"
+#include "MelissaPreCountSettingComponent.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
 #include "MelissaTutorialComponent.h"
@@ -186,6 +187,7 @@ private:
     MelissaDataSource* dataSource_;
     std::unique_ptr<MelissaBPMDetector> bpmDetector_;
     float analyzedBpm_;
+    float analyzedBeatPosMSec_;
     bool bpmAnalyzeFinished_;
     bool shouldInitializeBpmDetector_;
     bool shouldUpdateBpm_;

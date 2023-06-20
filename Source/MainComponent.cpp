@@ -193,6 +193,7 @@ nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requested
     
     bpmDetector_ = std::make_unique<MelissaBPMDetector>();
     analyzedBpm_ = -1.f;
+    analyzedBeatPosMSec_ = 0.f;
     bpmAnalyzeFinished_ = true;
     shouldInitializeBpmDetector_ = false;
     shouldUpdateBpm_ = false;
@@ -662,6 +663,11 @@ void MainComponent::createUI()
         preCountSettingButton_->setTooltip(TRANS("precount_setting"));
         preCountSettingButton_->onClick = [this]() { resetLoop(); };
         preCountSettingButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        preCountSettingButton_->onClick = [this]()
+        {
+            auto component = std::make_shared<MelissaPreCountSettingComponent>();
+            MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("precount_settings"));
+        };
         componentToAdd->addAndMakeVisible(preCountSettingButton_.get());
 
         resetButton_ = make_unique<TextButton>();
@@ -2180,7 +2186,7 @@ void MainComponent::run()
                     bpmDetector_->initialize(dataSource_->getSampleRate(), dataSource_->getBufferLength());
                     shouldInitializeBpmDetector_ = false;
                 }
-                bpmDetector_->process(&bpmAnalyzeFinished_, &analyzedBpm_);
+                bpmDetector_->process(&bpmAnalyzeFinished_, &analyzedBpm_, &analyzedBeatPosMSec_);
                 if (bpmAnalyzeFinished_) shouldUpdateBpm_ = true;
             }
             else
@@ -2253,6 +2259,7 @@ void MainComponent::timerCallback()
     if (shouldUpdateBpm_)
     {
         model_->setBpm((analyzedBpm_ == 0) ? kBpmMeasureFailed : analyzedBpm_);
+        model_->setBeatPositionMSec(analyzedBeatPosMSec_);
         shouldUpdateBpm_ = false;
     }
 }

@@ -17,7 +17,7 @@ class MelissaBPMDetector
 public:
     MelissaBPMDetector();
     void initialize(int sampleRate, size_t bufferLength);
-    void process(bool* processFinished, float* bpm);
+    void process(bool* processFinished, float* bpm, float* beatPosMSec);
     
 private:    
     std::unique_ptr<soundtouch::BPMDetect> bpmDetect_;

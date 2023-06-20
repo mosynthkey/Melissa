@@ -182,6 +182,8 @@
               resource="0" file="../Source/UI/MelissaPracticeTableListBox.cpp"/>
         <FILE id="xpEycd" name="MelissaPracticeTableListBox.h" compile="0"
               resource="0" file="../Source/UI/MelissaPracticeTableListBox.h"/>
+        <FILE id="XT6fst" name="MelissaPreCountSettingComponent.h" compile="0"
+              resource="0" file="../Source/UI/MelissaPreCountSettingComponent.h"/>
         <FILE id="o7R50o" name="MelissaScrollLabel.h" compile="0" resource="0"
               file="../Source/UI/MelissaScrollLabel.h"/>
         <FILE id="o9CA46" name="MelissaSectionComponent.cpp" compile="1" resource="0"
