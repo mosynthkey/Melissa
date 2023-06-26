@@ -536,11 +536,20 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     const int numOfChs    = originalReader->getChannelLayout().size();
     const auto bufferSize = originalReader->lengthInSamples;
     
+    auto monoToStereo = [&]()
+    {
+        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+        {
+            destChannels[1][sampleIndex] = destChannels[0][sampleIndex];
+        }
+    };
+    
     if (bufferSize <= startIndex) return false;
     
     if (playPart == kPlayPart_All)
     {
         originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+        if (numOfChs < 2) monoToStereo();
         return true;
     }
     else if (kPlayPart_Instruments <= playPart && playPart <= kPlayPart_Others_Solo)
@@ -550,6 +559,7 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
         if (stemAudioReader != nullptr && startIndex < stemAudioReader->lengthInSamples)
         {
             stemAudioReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+            if (numOfChs < 2) monoToStereo();
             return true;
         }
     }
@@ -593,7 +603,7 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
                 destChannels[1][sampleIndex] += tempBuffer[1][sampleIndex] * volumes[stemIndex];
             }
         }
-        
+        if (numOfChs < 2) monoToStereo();
         return true;
     }
     
