@@ -483,12 +483,12 @@ void MainComponent::createUI()
         
         timeLabel_ = make_unique<Label>();
         timeLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour());
-        timeLabel_->setJustificationType(Justification::centredLeft);
+        timeLabel_->setJustificationType(Justification::centred);
         timeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
         componentToAdd->addAndMakeVisible(timeLabel_.get());
         
         fileNameLabel_ = make_unique<Label>();
-        fileNameLabel_->setJustificationType(Justification::centredRight);
+        fileNameLabel_->setJustificationType(Justification::centred);
         fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
         componentToAdd->addAndMakeVisible(fileNameLabel_.get());
         
@@ -506,7 +506,7 @@ void MainComponent::createUI()
         {
 #ifndef JUCE_IOS
             auto component = std::make_shared<MelissaExportComponent>();
-            component->setSize(620, 400);
+            component->setSize(700, 280);
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("export"));
 #endif
         };
@@ -1528,8 +1528,8 @@ void MainComponent::resized_Desktop()
         x = nextButton_->getRight() + 10;
         
         const int labelWidth = getWidth() / 2 - (nextButton_->getRight() + 40);
-        fileNameLabel_->setBounds(getWidth() / 2 - labelWidth - 10, 0, labelWidth, kHeaderHeight);
-        timeLabel_->setBounds(getWidth() / 2 + 10, 0, labelWidth, kHeaderHeight);
+        fileNameLabel_->setBounds(getWidth() / 2 - labelWidth / 2, 0, labelWidth, kHeaderHeight / 2);
+        timeLabel_->setBounds(getWidth() / 2 - labelWidth / 2, kHeaderHeight / 2, labelWidth, kHeaderHeight / 2);
         
         constexpr int kMainVolumeWidth = 140;
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);

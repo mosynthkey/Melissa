@@ -14,6 +14,7 @@ class MelissaExportManager : public juce::Thread
 {
 public:
     void regist(std::unique_ptr<MelissaExporter> exporter);
+    bool isExporting() { return (exporters_.size() != 0) && isThreadRunning(); }
     
     // Singleton
     static MelissaExportManager* getInstance() { return &instance_; }

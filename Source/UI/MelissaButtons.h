@@ -241,7 +241,7 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour((shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(name_, 30, 0, getWidth() - 30, getHeight(), juce::Justification::centred);
+        g.drawText(name_, 30, 0, getWidth() - 30, getHeight(), juce::Justification::centred, true);
     }
     
     void setAudioDeviceName(const juce::String& name)

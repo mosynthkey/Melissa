@@ -38,6 +38,7 @@ private:
     std::unique_ptr<FileChooser> fileChooser_;
     
     void exportCurrentSong(MelissaExporter::ExportFormat format, juce::File fileToExport);
+    void exportCurrentSongPracticelist(MelissaExporter::ExportFormat format, juce::File fileToExport);
     void exportPlaylist(int practiceListIndex, MelissaExporter::ExportFormat format, juce::File fileToExport);
     
     MelissaLookAndFeel_CircleToggleButton toggleLaf_;

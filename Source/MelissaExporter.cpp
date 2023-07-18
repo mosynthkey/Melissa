@@ -60,6 +60,8 @@ void MelissaExporter::addInputFile(std::vector<FileAndVolume> fileAndVolumes_, f
 
 void MelissaExporter::exportToFile()
 {
+    if (inputs_.size() == 0) throw(TRANS("No input files"));
+    
     constexpr int kNumChannels = 2;
     constexpr int kProcessBufferLength = 4096;
     

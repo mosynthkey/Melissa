@@ -298,6 +298,11 @@ public:
         return juce::Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
     }
     
+    virtual void positionComboBoxText(ComboBox& cb, Label& labelToPosition) override
+    {
+        labelToPosition.setBounds(cb.getLocalBounds().reduced(cb.getHeight() / 2, 0));
+    }
+    
     virtual void drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
     {
         using namespace juce;
