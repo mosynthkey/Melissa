@@ -37,6 +37,7 @@
 #include "MelissaPlaylistComponent.h"
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaPreCountSettingComponent.h"
+#include "MelissaProgressBarComponent.h"
 #include "MelissaMarkerListBox.h"
 #include "MelissaSectionComponent.h"
 #include "MelissaTutorialComponent.h"
@@ -209,6 +210,7 @@ private:
     std::unique_ptr<MelissaMenuButton> menuButton_;
     
     std::unique_ptr<juce::DrawableButton> exportButton_;
+    std::unique_ptr<MelissaProgressBarComponent> exportProgressBar_;
     
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;

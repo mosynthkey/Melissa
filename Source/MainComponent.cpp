@@ -512,6 +512,9 @@ void MainComponent::createUI()
         };
         componentToAdd->addAndMakeVisible(exportButton_.get());
         
+        exportProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
+        componentToAdd->addAndMakeVisible(exportProgressBar_.get());
+        
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         mainVolumeSlider_->setTooltip(TRANS("volume_main"));
         mainVolumeSlider_->setRange(0.01f, 1.0f);
@@ -1538,6 +1541,8 @@ void MainComponent::resized_Desktop()
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
         
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
+        constexpr int kExportBarWidth = 32;
+        exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
     }
     
     popupMessage_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
