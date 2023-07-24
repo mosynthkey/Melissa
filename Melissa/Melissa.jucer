@@ -16,6 +16,12 @@
         <FILE id="iBdhPo" name="detail.svg" compile="0" resource="1" file="../Resource/Icon/detail.svg"/>
         <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="../Resource/Icon/down.svg"/>
         <FILE id="SoGtnj" name="export.svg" compile="0" resource="1" file="../Resource/Icon/export.svg"/>
+        <FILE id="YUCtfm" name="export_current.svg" compile="0" resource="1"
+              file="../Resource/Icon/export_current.svg"/>
+        <FILE id="rXt8Pg" name="export_playlist.svg" compile="0" resource="1"
+              file="../Resource/Icon/export_playlist.svg"/>
+        <FILE id="KqCram" name="export_practiceList.svg" compile="0" resource="1"
+              file="../Resource/Icon/export_practiceList.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="../Resource/Icon/loop_onesong.svg"/>
         <FILE id="VQA9um" name="loop_playlist.svg" compile="0" resource="1"

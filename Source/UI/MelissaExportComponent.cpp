@@ -12,17 +12,51 @@
 
 using namespace juce;
 
-enum ExportTarget
+enum
 {
-    kExportTarget_Current_Setting,
-    kExportTarget_Current_AllPractice,
-    kExportTarget_Playlist_AllPractice,
-    kNumExportTargets
+    kTargetGroup = 40000
+};
+
+class MelissaExportComponent::TargetSelectButton : public Button
+{
+public:
+    TargetSelectButton(ExportTarget target) : Button("Export Target Button"), target_(target)
+    {
+        const int targetIndex = static_cast<int>(target);
+        const char* svgData[] = { BinaryData::export_current_svg, BinaryData::export_practiceList_svg, BinaryData::export_playlist_svg };
+        const int svgSize[] = { BinaryData::export_current_svgSize, BinaryData::export_practiceList_svgSize, BinaryData::export_playlist_svgSize };
+        image_ = Drawable::createFromImageData(svgData[targetIndex], svgSize[targetIndex]);
+        image_->replaceColour(Colours::white, MelissaUISettings::getTextColour());
+    }
+    
+    void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            g.fillAll(MelissaUISettings::getSubColour());
+        }
+        else
+        {
+            g.fillAll(MelissaUISettings::getMainColour());
+        }
+        
+        image_->drawAt(g, 0.f, 0.f, 1.f);
+        
+        if (getToggleState())
+        {
+            g.setColour(MelissaUISettings::getAccentColour());
+            g.drawRect(0, 0, getWidth(), getHeight(), 2);
+        }
+    }
+    
+private:
+    ExportTarget target_;
+    std::unique_ptr<Drawable> image_;
 };
 
 using IdAndText = std::pair<int, String>;
 
-MelissaExportComponent::MelissaExportComponent()
+MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget_Current_Setting)
 {
     constexpr int kSeparator = -1;
     auto setComboBoxContent = [&](const std::vector<IdAndText>& idAndTexts, ComboBox* comboBox)
@@ -60,17 +94,26 @@ MelissaExportComponent::MelissaExportComponent()
     targetLabel_->setText(TRANS("export_target"), dontSendNotification);
     addAndMakeVisible(targetLabel_.get());
     
-    targetComboBox_ = std::make_unique<ComboBox>();
-    std::vector<IdAndText> targetList = {
-        { kExportTarget_Current_Setting,      TRANS("export_current") },
-        { kExportTarget_Current_AllPractice,  TRANS("export_current_practice") },
-        { kSeparator, "" },
-        { kExportTarget_Playlist_AllPractice, TRANS("export_playlist_all")},
-    };
-    setComboBoxContent(targetList, targetComboBox_.get());
-    targetComboBox_->setSelectedId(kExportTarget_Current_Setting + 1);
-    targetComboBox_->onChange = [&]() { update(); };
-    addAndMakeVisible(targetComboBox_.get());
+    for (int targetIndex = 0; targetIndex < kNumExportTargets; ++targetIndex)
+    {
+        auto t = std::make_unique<TargetSelectButton>(static_cast<ExportTarget>(targetIndex));
+        t->setRadioGroupId(kTargetGroup);
+        t->setToggleable(true);
+        t->onClick = [&, targetIndex]()
+        {
+            targetComponents_[targetIndex]->setToggleState(true, dontSendNotification);
+            selectedTarget_ = static_cast<ExportTarget>(targetIndex);
+            update();
+        };
+        addAndMakeVisible(t.get());
+        targetComponents_[targetIndex] = std::move(t);
+    }
+    targetComponents_[0]->setToggleState(true, dontSendNotification);
+    selectedTarget_ = kExportTarget_Current_Setting;
+    
+    targetExplanationLabel_ = std::make_unique<Label>();
+    targetExplanationLabel_->setJustificationType(Justification::centred);
+    addAndMakeVisible(targetExplanationLabel_.get());
     
     playlistLabel_= std::make_unique<Label>();
     playlistLabel_->setText(TRANS("playlist"), dontSendNotification);
@@ -98,16 +141,15 @@ MelissaExportComponent::MelissaExportComponent()
         fileChooser_->launchAsync(FileBrowserComponent::saveMode, [this, exportFormat] (const FileChooser& chooser) {
             if (!chooser.getResult().getFullPathName().isEmpty())
             {
-                const int target = targetComboBox_->getSelectedId() - 1;
-                if (target == kExportTarget_Current_Setting)
+                if (selectedTarget_ == kExportTarget_Current_Setting)
                 {
                     exportCurrentSong(exportFormat, chooser.getResult());
                 }
-                else if (target == kExportTarget_Current_AllPractice)
+                else if (selectedTarget_ == kExportTarget_Current_AllPractice)
                 {
                     exportCurrentSongPracticelist(exportFormat, chooser.getResult());
                 }
-                else if (target == kExportTarget_Playlist_AllPractice)
+                else if (selectedTarget_ == kExportTarget_Playlist_AllPractice)
                 {
                     if (playlistComboBox_->getSelectedId() != 0)
                     {
@@ -136,10 +178,19 @@ void MelissaExportComponent::resized()
     const int comboboxWidth = getWidth() - labelWidth - margin * 3;
     
     int y = 10;
-    
     targetLabel_->setBounds(margin, y, labelWidth, 30);
-    targetComboBox_->setBounds(targetLabel_->getRight() + margin, y, comboboxWidth, 30);
-    y = targetLabel_->getBottom() + margin;
+    constexpr int kImageWidth = 100;
+    constexpr int kImageHeight = 60;
+    constexpr int kImageMargin = 50;
+    const int buttonX0 = targetLabel_->getRight() + margin + comboboxWidth / 2 - (kImageWidth * kNumExportTargets + kImageMargin * (kNumExportTargets - 1)) / 2;
+    for (int targetIndex = 0; targetIndex < kNumExportTargets; ++targetIndex)
+    {
+        targetComponents_[targetIndex]->setBounds(buttonX0 + (kImageWidth + kImageMargin) * targetIndex, y, kImageWidth, kImageHeight);
+    }
+    y = targetComponents_[0]->getBottom() + margin;
+    
+    targetExplanationLabel_->setBounds(margin + labelWidth, y, comboboxWidth, 30);
+    y = targetExplanationLabel_->getBottom() + margin;
     
     playlistLabel_->setBounds(margin, y, labelWidth, 30);
     playlistComboBox_->setBounds(playlistLabel_->getRight() + margin, y, comboboxWidth, 30);
@@ -224,9 +275,12 @@ void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExport
 
 void MelissaExportComponent::update()
 {
-    const bool enablePlaylist = ((targetComboBox_->getSelectedId() - 1) == kExportTarget_Playlist_AllPractice);
+    const bool enablePlaylist = (selectedTarget_ == kExportTarget_Playlist_AllPractice);
     playlistLabel_->setEnabled(enablePlaylist);
     playlistComboBox_->setEnabled(enablePlaylist);
+    
+    String explanation[] = { TRANS("export_current"), TRANS("export_current_practice"), TRANS("export_playlist_all") };
+    targetExplanationLabel_->setText(explanation[static_cast<int>(selectedTarget_)], dontSendNotification);
     
     auto dataSource = MelissaDataSource::getInstance();
     

@@ -20,14 +20,25 @@ public:
     void resized() override;
     
 private:
-    std::unique_ptr<juce::Label> formatLabel_;
-    std::unique_ptr<juce::ComboBox> formatComboBox_;
+    enum ExportTarget
+    {
+        kExportTarget_Current_Setting,
+        kExportTarget_Current_AllPractice,
+        kExportTarget_Playlist_AllPractice,
+        kNumExportTargets
+    };
+    ExportTarget selectedTarget_;
     
+    class TargetSelectButton;
     std::unique_ptr<juce::Label> targetLabel_;
-    std::unique_ptr<juce::ComboBox> targetComboBox_;
+    std::unique_ptr<TargetSelectButton> targetComponents_[kNumExportTargets];
+    std::unique_ptr<juce::Label> targetExplanationLabel_;
     
     std::unique_ptr<juce::Label> playlistLabel_;
     std::unique_ptr<juce::ComboBox> playlistComboBox_;
+    
+    std::unique_ptr<juce::Label> formatLabel_;
+    std::unique_ptr<juce::ComboBox> formatComboBox_;
     
     std::unique_ptr<juce::ToggleButton> eqButton_;
     

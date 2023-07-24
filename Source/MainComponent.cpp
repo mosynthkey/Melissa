@@ -506,7 +506,7 @@ void MainComponent::createUI()
         {
 #ifndef JUCE_IOS
             auto component = std::make_shared<MelissaExportComponent>();
-            component->setSize(700, 280);
+            component->setSize(700, 350);
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("export"));
 #endif
         };
