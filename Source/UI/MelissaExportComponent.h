@@ -46,7 +46,7 @@ private:
     
     std::unique_ptr<juce::TextButton> exportButton_;
     
-    std::unique_ptr<FileChooser> fileChooser_;
+    std::unique_ptr<juce::FileChooser> fileChooser_;
     
     void exportCurrentSong(MelissaExporter::ExportFormat format, juce::File fileToExport);
     void exportCurrentSongPracticelist(MelissaExporter::ExportFormat format, juce::File fileToExport);

@@ -298,7 +298,7 @@ public:
         return juce::Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
     }
     
-    virtual void positionComboBoxText(ComboBox& cb, Label& labelToPosition) override
+    virtual void positionComboBoxText(juce::ComboBox& cb, juce::Label& labelToPosition) override
     {
         labelToPosition.setBounds(cb.getLocalBounds().reduced(cb.getHeight() / 2, 0));
     }

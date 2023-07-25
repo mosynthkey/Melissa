@@ -26,11 +26,20 @@ namespace BinaryData
     extern const char*   down_svg;
     const int            down_svgSize = 524;
 
-    extern const char*   loop_svg;
-    const int            loop_svgSize = 617;
-
     extern const char*   export_svg;
     const int            export_svgSize = 1116;
+
+    extern const char*   export_current_svg;
+    const int            export_current_svgSize = 1423;
+
+    extern const char*   export_playlist_svg;
+    const int            export_playlist_svgSize = 2548;
+
+    extern const char*   export_practiceList_svg;
+    const int            export_practiceList_svgSize = 1740;
+
+    extern const char*   loop_svg;
+    const int            loop_svgSize = 617;
 
     extern const char*   loop_onesong_svg;
     const int            loop_onesong_svgSize = 891;
@@ -87,7 +96,7 @@ namespace BinaryData
     const int            logo_pngSize = 110193;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 26;
+    const int namedResourceListSize = 29;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

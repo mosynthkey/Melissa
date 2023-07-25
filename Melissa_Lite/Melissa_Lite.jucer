@@ -15,8 +15,14 @@
         <FILE id="blXWlQ" name="clear.svg" compile="0" resource="1" file="../Resource/Icon/clear.svg"/>
         <FILE id="iBdhPo" name="detail.svg" compile="0" resource="1" file="../Resource/Icon/detail.svg"/>
         <FILE id="eHu23s" name="down.svg" compile="0" resource="1" file="../Resource/Icon/down.svg"/>
-        <FILE id="y8fFPi" name="loop.svg" compile="0" resource="1" file="../Resource/Icon/loop.svg"/>
         <FILE id="Xz9oTn" name="export.svg" compile="0" resource="1" file="../Resource/Icon/export.svg"/>
+        <FILE id="E05N82" name="export_current.svg" compile="0" resource="1"
+              file="../Resource/Icon/export_current.svg"/>
+        <FILE id="kigOHF" name="export_playlist.svg" compile="0" resource="1"
+              file="../Resource/Icon/export_playlist.svg"/>
+        <FILE id="zx4pSs" name="export_practiceList.svg" compile="0" resource="1"
+              file="../Resource/Icon/export_practiceList.svg"/>
+        <FILE id="y8fFPi" name="loop.svg" compile="0" resource="1" file="../Resource/Icon/loop.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
               file="../Resource/Icon/loop_onesong.svg"/>
         <FILE id="VQA9um" name="loop_playlist.svg" compile="0" resource="1"
@@ -91,16 +97,14 @@
     </GROUP>
     <GROUP id="{15084612-5127-E7CA-7B8B-5B4D02AAA024}" name="Source">
       <GROUP id="{D8396015-3B56-0001-03E8-FD830368B22F}" name="Audio">
-        <GROUP id="{142E0C66-4BFE-2386-3C2B-5F60DE5F1D7F}" name="soundtouch">
-          <FILE id="spzWRt" name="BPMDetect_for_Melissa.cpp" compile="1" resource="0"
-                file="../Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp"/>
-          <FILE id="LXNLj7" name="BPMDetect_for_Melissa.h" compile="0" resource="0"
-                file="../Source/Audio/soundtouch/BPMDetect_for_Melissa.h"/>
-        </GROUP>
         <FILE id="vqc52c" name="MelissaAudioEngine.cpp" compile="1" resource="0"
               file="../Source/Audio/MelissaAudioEngine.cpp"/>
         <FILE id="l6mtHh" name="MelissaAudioEngine.h" compile="0" resource="0"
               file="../Source/Audio/MelissaAudioEngine.h"/>
+        <FILE id="PqGl4V" name="MelissaBeepGenerator.cpp" compile="1" resource="0"
+              file="../Source/Audio/MelissaBeepGenerator.cpp"/>
+        <FILE id="Cme4N5" name="MelissaBeepGenerator.h" compile="0" resource="0"
+              file="../Source/Audio/MelissaBeepGenerator.h"/>
         <FILE id="DK4Xfb" name="MelissaBPMDetector.cpp" compile="1" resource="0"
               file="../Source/Audio/MelissaBPMDetector.cpp"/>
         <FILE id="cfJH2n" name="MelissaBPMDetector.h" compile="0" resource="0"
@@ -109,6 +113,12 @@
               file="../Source/Audio/MelissaMetronome.cpp"/>
         <FILE id="ID8pHb" name="MelissaMetronome.h" compile="0" resource="0"
               file="../Source/Audio/MelissaMetronome.h"/>
+        <GROUP id="{142E0C66-4BFE-2386-3C2B-5F60DE5F1D7F}" name="soundtouch">
+          <FILE id="spzWRt" name="BPMDetect_for_Melissa.cpp" compile="1" resource="0"
+                file="../Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp"/>
+          <FILE id="LXNLj7" name="BPMDetect_for_Melissa.h" compile="0" resource="0"
+                file="../Source/Audio/soundtouch/BPMDetect_for_Melissa.h"/>
+        </GROUP>
       </GROUP>
       <GROUP id="{F9FED507-2C82-58A1-F717-3A3962290515}" name="UI">
         <FILE id="QJVtXb" name="MelissaAboutComponent.h" compile="0" resource="0"
@@ -123,6 +133,10 @@
               file="../Source/UI/MelissaCommandComboBox.h"/>
         <FILE id="lUG0cz" name="MelissaDoubleClickEditLabel.h" compile="1"
               resource="0" file="../Source/UI/MelissaDoubleClickEditLabel.h"/>
+        <FILE id="h0V8yJ" name="MelissaExportComponent.cpp" compile="1" resource="0"
+              file="../Source/UI/MelissaExportComponent.cpp"/>
+        <FILE id="ryjR2t" name="MelissaExportComponent.h" compile="0" resource="0"
+              file="../Source/UI/MelissaExportComponent.h"/>
         <FILE id="vQExoN" name="MelissaFileListBox.h" compile="0" resource="0"
               file="../Source/UI/MelissaFileListBox.h"/>
         <FILE id="e3sPoO" name="MelissaIncDecButton.h" compile="0" resource="0"
@@ -233,6 +247,14 @@
             file="../Source/MelissaDefinitions.cpp"/>
       <FILE id="hgx51a" name="MelissaDefinitions.h" compile="0" resource="0"
             file="../Source/MelissaDefinitions.h"/>
+      <FILE id="XZeUyf" name="MelissaExporter.cpp" compile="1" resource="0"
+            file="../Source/MelissaExporter.cpp"/>
+      <FILE id="hwyFqs" name="MelissaExporter.h" compile="0" resource="0"
+            file="../Source/MelissaExporter.h"/>
+      <FILE id="YqaSXe" name="MelissaExportManager.cpp" compile="1" resource="0"
+            file="../Source/MelissaExportManager.cpp"/>
+      <FILE id="MiUh1h" name="MelissaExportManager.h" compile="0" resource="0"
+            file="../Source/MelissaExportManager.h"/>
       <FILE id="caTIFf" name="MelissaHost.h" compile="0" resource="0" file="../Source/MelissaHost.h"/>
       <FILE id="oZZ4eU" name="MelissaMobileSupport.h" compile="0" resource="0"
             file="../Source/MelissaMobileSupport.h"/>
