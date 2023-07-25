@@ -23,8 +23,8 @@ public:
     TargetSelectButton(ExportTarget target) : Button("Export Target Button"), target_(target)
     {
         const int targetIndex = static_cast<int>(target);
-        const char* svgData[] = { BinaryData::export_current_svg, BinaryData::export_practiceList_svg, BinaryData::export_playlist_svg };
-        const int svgSize[] = { BinaryData::export_current_svgSize, BinaryData::export_practiceList_svgSize, BinaryData::export_playlist_svgSize };
+        const char* svgData[] = { BinaryData::export_current_svg, BinaryData::export_practiceList_svg, BinaryData::export_playlist_svg, BinaryData::export_playlist_practicelist_svg };
+        const int svgSize[] = { BinaryData::export_current_svgSize, BinaryData::export_practiceList_svgSize, BinaryData::export_playlist_svgSize,  BinaryData::export_playlist_practicelist_svgSize };
         image_ = Drawable::createFromImageData(svgData[targetIndex], svgSize[targetIndex]);
         image_->replaceColour(Colours::white, MelissaUISettings::getTextColour());
     }
@@ -149,11 +149,18 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
                 {
                     exportCurrentSongPracticelist(exportFormat, chooser.getResult());
                 }
+                else if (selectedTarget_ == kExportTarget_Playlist)
+                {
+                    if (playlistComboBox_->getSelectedId() != 0)
+                    {
+                        exportPlaylist(playlistComboBox_->getSelectedId() - 1, exportFormat, chooser.getResult(), false);
+                    }
+                }
                 else if (selectedTarget_ == kExportTarget_Playlist_AllPractice)
                 {
                     if (playlistComboBox_->getSelectedId() != 0)
                     {
-                        exportPlaylist(playlistComboBox_->getSelectedId() - 1, exportFormat, chooser.getResult());
+                        exportPlaylist(playlistComboBox_->getSelectedId() - 1, exportFormat, chooser.getResult(), true);
                     }
                 }
             }
@@ -172,16 +179,17 @@ MelissaExportComponent::~MelissaExportComponent()
 
 void MelissaExportComponent::resized()
 {
-    constexpr int labelWidth = 120;
+    constexpr int labelWidth = 100;
     constexpr int buttonWidth = 80;
     constexpr int margin = 10;
     const int comboboxWidth = getWidth() - labelWidth - margin * 3;
     
     int y = 10;
-    targetLabel_->setBounds(margin, y, labelWidth, 30);
     constexpr int kImageWidth = 100;
     constexpr int kImageHeight = 60;
     constexpr int kImageMargin = 50;
+    
+    targetLabel_->setBounds(margin, y, labelWidth, 30 + kImageHeight + margin + 30 + margin);
     const int buttonX0 = targetLabel_->getRight() + margin + comboboxWidth / 2 - (kImageWidth * kNumExportTargets + kImageMargin * (kNumExportTargets - 1)) / 2;
     for (int targetIndex = 0; targetIndex < kNumExportTargets; ++targetIndex)
     {
@@ -192,9 +200,9 @@ void MelissaExportComponent::resized()
     targetExplanationLabel_->setBounds(margin + labelWidth, y, comboboxWidth, 30);
     y = targetExplanationLabel_->getBottom() + margin;
     
-    playlistLabel_->setBounds(margin, y, labelWidth, 30);
-    playlistComboBox_->setBounds(playlistLabel_->getRight() + margin, y, comboboxWidth, 30);
-    y = playlistLabel_->getBottom() + margin;
+    playlistLabel_->setBounds(margin + labelWidth + margin, y, labelWidth, 30);
+    playlistComboBox_->setBounds(playlistLabel_->getRight() + margin, y, comboboxWidth - labelWidth - margin, 30);
+    y = playlistLabel_->getBottom() + margin * 2;
     
     formatLabel_->setBounds(margin, y, labelWidth, 30);
     formatComboBox_->setBounds(formatLabel_->getRight() + margin, y, comboboxWidth, 30);
@@ -246,7 +254,7 @@ void MelissaExportComponent::exportCurrentSongPracticelist(MelissaExporter::Expo
     MelissaExportManager::getInstance()->regist(std::move(exporter));
 }
 
-void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExporter::ExportFormat format, juce::File fileToExport)
+void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExporter::ExportFormat format, juce::File fileToExport, bool exportPracticeList)
 {
     auto exporter = std::make_unique<MelissaExporter>();
     exporter->setExportSettings(format, fileToExport);
@@ -261,12 +269,22 @@ void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExport
         MelissaDataSource::Song song;
         dataSource->getSong(filePath, song);
         
-        for (auto&& prac : song.practiceList_)
+        if (exportPracticeList)
+        {
+            for (auto&& prac : song.practiceList_)
+            {
+                std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
+                fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{filePath, 1.f});
+                exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, false, 0.f, 0.f, 0.f, 3000, 1000, 1000);
+            }
+        }
+        else
         {
             std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{filePath, 1.f});
-            exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, false, 0.f, 0.f, 0.f, 3000, 1000, 1000);
+            exporter->addInputFile(fileAndVolumes, song.pitch_, song.speed_, 0.f, 1.f, false, 0.f, 0.f, 0.f, 3000, 1000, 1000);
         }
+
     }
     
     exporter->setExportSettings(format, fileToExport);
@@ -275,11 +293,11 @@ void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExport
 
 void MelissaExportComponent::update()
 {
-    const bool enablePlaylist = (selectedTarget_ == kExportTarget_Playlist_AllPractice);
+    const bool enablePlaylist = (selectedTarget_ == kExportTarget_Playlist || selectedTarget_ == kExportTarget_Playlist_AllPractice);
     playlistLabel_->setEnabled(enablePlaylist);
     playlistComboBox_->setEnabled(enablePlaylist);
     
-    String explanation[] = { TRANS("export_current"), TRANS("export_current_practice"), TRANS("export_playlist_all") };
+    String explanation[] = { TRANS("export_current"), TRANS("export_current_practice"), TRANS("export_playlist_all"), TRANS("export_playlist_practice") };
     targetExplanationLabel_->setText(explanation[static_cast<int>(selectedTarget_)], dontSendNotification);
     
     auto dataSource = MelissaDataSource::getInstance();

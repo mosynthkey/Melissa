@@ -24,6 +24,7 @@ private:
     {
         kExportTarget_Current_Setting,
         kExportTarget_Current_AllPractice,
+        kExportTarget_Playlist,
         kExportTarget_Playlist_AllPractice,
         kNumExportTargets
     };
@@ -50,7 +51,7 @@ private:
     
     void exportCurrentSong(MelissaExporter::ExportFormat format, juce::File fileToExport);
     void exportCurrentSongPracticelist(MelissaExporter::ExportFormat format, juce::File fileToExport);
-    void exportPlaylist(int practiceListIndex, MelissaExporter::ExportFormat format, juce::File fileToExport);
+    void exportPlaylist(int practiceListIndex, MelissaExporter::ExportFormat format, juce::File fileToExport, bool exportPracticeList);
     
     MelissaLookAndFeel_CircleToggleButton toggleLaf_;
     

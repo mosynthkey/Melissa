@@ -506,14 +506,14 @@ void MainComponent::createUI()
         {
 #ifndef JUCE_IOS
             auto component = std::make_shared<MelissaExportComponent>();
-            component->setSize(700, 350);
+            component->setSize(700, 360);
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("export"));
 #endif
         };
         componentToAdd->addAndMakeVisible(exportButton_.get());
         
         exportProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
-        componentToAdd->addAndMakeVisible(exportProgressBar_.get());
+        componentToAdd->addChildComponent(exportProgressBar_.get());
         
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         mainVolumeSlider_->setTooltip(TRANS("volume_main"));

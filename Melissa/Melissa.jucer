@@ -20,6 +20,8 @@
               file="../Resource/Icon/export_current.svg"/>
         <FILE id="rXt8Pg" name="export_playlist.svg" compile="0" resource="1"
               file="../Resource/Icon/export_playlist.svg"/>
+        <FILE id="ROgXGi" name="export_playlist_practicelist.svg" compile="0"
+              resource="1" file="../Resource/Icon/export_playlist_practicelist.svg"/>
         <FILE id="KqCram" name="export_practiceList.svg" compile="0" resource="1"
               file="../Resource/Icon/export_practiceList.svg"/>
         <FILE id="ItTT2O" name="loop_onesong.svg" compile="0" resource="1"
