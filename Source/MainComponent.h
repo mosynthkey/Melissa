@@ -488,6 +488,7 @@ private:
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
     void mainVolumeChanged(float mainVolume) override;
+    void exportStarted() override;
     void exportCompleted(bool result, juce::String message) override;
     
     // MelissaMarkerListener

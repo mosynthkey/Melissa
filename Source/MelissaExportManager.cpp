@@ -27,6 +27,8 @@ void MelissaExportManager::regist(std::unique_ptr<MelissaExporter> exporter)
 
 void MelissaExportManager::run()
 {
+    MelissaDataSource::getInstance()->notifyExportStarted();
+    
     std::unique_ptr<MelissaExporter> exporter;
     while (!exporters_.empty())
     {
@@ -36,7 +38,7 @@ void MelissaExportManager::run()
             exporters_.pop_back();
         }
         exporter->exportToFile();
-        
-        MelissaDataSource::getInstance()->notifyExportCompleted(true, TRANS("export_completed"));
     }
+    
+    MelissaDataSource::getInstance()->notifyExportCompleted(true, TRANS("export_completed"));
 }

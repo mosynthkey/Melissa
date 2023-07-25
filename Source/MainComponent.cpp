@@ -2620,9 +2620,19 @@ void MainComponent::mainVolumeChanged(float mainVolume)
     mainVolumeSlider_->setValue(mainVolume, dontSendNotification);
 }
 
+void MainComponent::exportStarted()
+{
+    MessageManager::callAsync([&]() {
+        exportProgressBar_->setVisible(true);
+    });
+}
+
 void MainComponent::exportCompleted(bool result, juce::String message)
 {
-    MessageManager::callAsync([&, message]() { popupMessage_->show(message); });
+    MessageManager::callAsync([&, message]() {
+        popupMessage_->show(message);
+        exportProgressBar_->setVisible(false);
+    });
 }
 
 void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)

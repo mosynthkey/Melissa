@@ -1138,6 +1138,11 @@ void MelissaDataSource::overwriteMarker(size_t index, const Song::Marker& marker
     }
 }
 
+void MelissaDataSource::notifyExportStarted()
+{
+    for (auto&& l : listeners_) l->exportStarted();
+}
+
 void MelissaDataSource::notifyExportCompleted(bool result, juce::String message)
 {
     for (auto&& l : listeners_) l->exportCompleted(result, message);

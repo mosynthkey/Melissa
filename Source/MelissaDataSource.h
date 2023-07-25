@@ -35,6 +35,7 @@ public:
     virtual void shortcutUpdated() { }
     virtual void colourChanged(const juce::Colour& mainColour, const juce::Colour& subColour, const juce::Colour& accentColour, const juce::Colour& textColour, const juce::Colour& waveformColour) { }
     virtual void fontChanged(const juce::Font& mainFont, const juce::Font& subFont, const juce::Font& miniFont) { }
+    virtual void exportStarted() {}
     virtual void exportCompleted(bool result, juce::String message) {}
 };
 
@@ -307,6 +308,7 @@ public:
     void overwriteMarker(size_t index, const Song::Marker& marker);
     
     // Export
+    void notifyExportStarted();
     void notifyExportCompleted(bool result, juce::String message);
     
     // AsyncUpdater
