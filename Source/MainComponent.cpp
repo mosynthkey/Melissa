@@ -1368,9 +1368,6 @@ void MainComponent::createMenu()
         {
             menuComponent_ = std::make_unique<MelissaMobileMenuComponent>();
             safeAreaComponent_->addAndMakeVisible(menuComponent_.get());
-            
-            fileListBox_ = std::make_unique<MelissaMobileFileListBox>();
-            menuComponent_->addAndMakeVisible(fileListBox_.get());
         }
         else
         {
@@ -1379,6 +1376,9 @@ void MainComponent::createMenu()
 
         resized();
 #else
+        bpmDetector_->calculateBeats();
+        return;
+        
         const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
         
         PopupMenu menu;
@@ -1895,8 +1895,6 @@ void MainComponent::resized_Mobile()
     {
         menuComponent_->setBounds(- safeBounds.getWidth(), 0, safeBounds.getWidth(), safeBounds.getHeight());
         menuComponentAnimator_->animateComponent(menuComponent_.get(), safeAreaComponent_->getLocalBounds(), 1.f, 250.f, true, 1, 0);
-        
-        fileListBox_->setBounds(menuComponent_->getWidth() / 2 + 10, 10, menuComponent_->getWidth() / 2 - 20, menuComponent_->getHeight() - 20);
     }
     
     importButton_->setBounds(100, 0, 50, 20);

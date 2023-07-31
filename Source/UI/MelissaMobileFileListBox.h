@@ -14,6 +14,11 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaUISettings.h"
 
+enum
+{
+    kBorderThickness = 2,
+};
+
 class MelissaMobileFileListBox : public juce::ListBox,
                                  public juce::ListBoxModel,
                                  public MelissaDataSourceListener
@@ -24,19 +29,17 @@ public:
     {
         list_.clear();
         
-        constexpr int numDummyData = 50;
+        constexpr int numDummyData = 10;
         list_.resize(numDummyData);
         
         using namespace juce;
-        for (int i = 0; i < numDummyData; ++i) list_[i] = (String("Dummy ") + String(i));
+        for (int i = 0; i < numDummyData; ++i) list_[i] = (String("File ") + String(i));
         
         juce::ListBox(componentName, this);
         setModel(this);
         
         dataSource_->addListener(this);
-        setOutlineThickness(1.f);
-        
-        setRowHeight(60);
+        setRowHeight(55 + kBorderThickness);
     }
     
     ~MelissaMobileFileListBox()
@@ -45,7 +48,7 @@ public:
     
     int getNumRows() override
     {
-        return list_.size();
+        return static_cast<int>(list_.size());
     }
     
     void listBoxItemClicked(int row, const juce::MouseEvent& e) override
@@ -65,13 +68,15 @@ public:
         const juce::String fullPath = (rowNumber < list_.size()) ?  list_[rowNumber] : "";
         //const juce::String fileName = juce::File(fullPath).getFileName();
         
-        g.setColour(juce::Colours::pink);
-        g.drawRect(0, 0, getWidth(), getHeight());
-        
         if (rowIsSelected)
         {
-            g.fillAll(MelissaUISettings::getAccentColour(0.4f));
+            g.setColour(MelissaUISettings::getAccentColour(0.6f));
         }
+        else
+        {
+            g.setColour(MelissaUISettings::getSubColour());
+        }
+        g.fillRect(0, 0, width, height - kBorderThickness);
         
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));

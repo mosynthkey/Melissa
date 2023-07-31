@@ -23,7 +23,8 @@ public:
     TargetSelectButton(ExportTarget target) : Button("Export Target Button"), target_(target)
     {
         const int targetIndex = static_cast<int>(target);
-        const char* svgData[] = { BinaryData::export_current_svg, BinaryData::export_practiceList_svg, BinaryData::export_playlist_svg, BinaryData::export_playlist_practicelist_svg };
+        const char* svgData[] = { BinaryData::export_current_svg, BinaryData::export_practiceList_svg,
+            BinaryData::export_playlist_svg, BinaryData::export_playlist_practicelist_svg };
         const int svgSize[] = { BinaryData::export_current_svgSize, BinaryData::export_practiceList_svgSize, BinaryData::export_playlist_svgSize,  BinaryData::export_playlist_practicelist_svgSize };
         image_ = Drawable::createFromImageData(svgData[targetIndex], svgSize[targetIndex]);
         image_->replaceColour(Colours::white, MelissaUISettings::getTextColour());

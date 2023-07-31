@@ -389,8 +389,6 @@ private:
     std::unique_ptr<MelissaMobileMenuComponent> menuComponent_;
     std::unique_ptr<juce::ComponentAnimator> menuComponentAnimator_;
     
-    std::unique_ptr<MelissaMobileFileListBox> fileListBox_;
-    
     enum
     {
         kSeparator_Upper,
