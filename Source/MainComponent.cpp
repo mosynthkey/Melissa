@@ -1376,8 +1376,8 @@ void MainComponent::createMenu()
 
         resized();
 #else
-        bpmDetector_->calculateBeats();
-        return;
+        //bpmDetector_->calculateBeats();
+        //return;
         
         const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
         

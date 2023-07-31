@@ -357,6 +357,33 @@
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
       </MODULEPATHS>
     </LINUX_MAKE>
+    <VS2022 targetFolder="Builds/VisualStudio2022" extraDefs="MELISSA_USE_SPLEETER"
+            extraCompilerFlags="-I../../../ThirdParty/spleet&#10;-I../../../ThirdParty/spleeterpp/include"
+            externalLibraries="tensorflow.lib&#10;spleeter_common.lib&#10;spleeter.lib"
+            smallIcon="Y3ewMD" bigIcon="Y3ewMD">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="..\..\..\ThirdParty\asio\common"
+                       libraryPath="../../../ThirdParty/spleeterpp/lib/Windows/Debug&#10;../../../ThirdParty/libtensorflow-cpu-windows-x86_64-2.8.0/lib"
+                       defines="_ITERATOR_DEBUG_LEVEL=2"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="..\..\..\ThirdParty\asio\common"
+                       libraryPath="../../../ThirdParty/spleeterpp/lib/Windows/Release&#10;../../../ThirdParty/libtensorflow-cpu-windows-x86_64-2.8.0/lib"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_cryptography" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="D:\Develop\JUCE\modules"/>
+        <MODULEPATH id="juce_opengl" path="D:\Develop\JUCE\modules"/>
+      </MODULEPATHS>
+    </VS2022>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
