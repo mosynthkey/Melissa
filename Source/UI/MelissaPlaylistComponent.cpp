@@ -12,6 +12,8 @@
 #include "MelissaOptionDialog.h"
 #include "MelissaPlaylistComponent.h"
 
+using namespace juce;
+
 enum
 {
     kMenuID_New = 1,

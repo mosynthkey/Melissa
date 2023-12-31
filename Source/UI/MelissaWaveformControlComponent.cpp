@@ -9,6 +9,8 @@
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
 
+using namespace juce;
+
 class MelissaWaveformControlComponent::WaveformView : public Component,
                                                       public MelissaModelListener,
                                                       public MelissaWaveformMouseEventListener,
@@ -20,7 +22,8 @@ public:
     numOfStrip_(0),
     clickedStripIndex_(-1), loopAStripIndex_(-1), loopBStripIndex_(-1),
     currentMouseOnStripIndex_(-1),
-    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f)
+    playingPosRatio_(-1.f), loopAPosRatio_(0.f), loopBPosRatio_(1.f),
+    isWaveformLoad_(false)
     {
         MelissaModel::getInstance()->addListener(this);
         
@@ -28,6 +31,8 @@ public:
         current_->setColour(Label::backgroundColourId, MelissaUISettings::getAccentColour());
         current_->setInterceptsMouseClicks(false, false);
         addAndMakeVisible(current_.get());
+        
+        std::fill(previewBuffer_.begin(), previewBuffer_.end(), 0.f);
     };
     
     void resized() override
@@ -43,7 +48,9 @@ public:
             const int32_t height = previewBuffer_[iStrip] * getHeight();
             const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * iStrip);
             
-            if (iStrip == static_cast<size_t>(playingPosRatio_ * numOfStrip_))
+            const auto currentStrip = (iStrip == static_cast<size_t>(playingPosRatio_ * numOfStrip_));
+            
+            if (currentStrip)
             {
                 g.setColour(colour.withAlpha(1.f));
             }
@@ -56,6 +63,12 @@ public:
                 g.setColour(colour.withAlpha(0.4f));
             }
             g.fillRect(x, getHeight() - height, waveformStripWidth_, height);
+            
+            if (currentStrip)
+            {
+                g.setColour(MelissaUISettings::getTextColour(0.2f));
+                g.fillRect(x, 0, waveformStripWidth_, getHeight() - height);
+            }
         }
     }
     
@@ -92,6 +105,46 @@ public:
         update_();
     }
     
+    void loadWaveform()
+    {
+        auto dataSource = MelissaDataSource::getInstance();
+        const size_t bufferLength = dataSource->getBufferLength();
+        
+        if (bufferLength == 0) return;
+        
+        float preview, previewMax = 0.f;
+        
+        const int64 stripSize =  bufferLength / kNumStrips;
+        
+        auto lCh = std::make_unique<float[]>(stripSize + 1);
+        auto rCh = std::make_unique<float[]>(stripSize + 1);
+        float* audioData[] = { lCh.get(), rCh.get() };
+        
+        for (int32_t iStrip = 0; iStrip < kNumStrips; ++iStrip)
+        {
+            preview = 0.f;
+            
+            const size_t startIndex = iStrip * stripSize;
+            const size_t endIndex = std::min<size_t>(startIndex + stripSize - 1, bufferLength - 1);
+            const size_t numSamplesToRead = endIndex - startIndex + 1;
+            
+            dataSource->readBuffer(MelissaDataSource::kReader_Waveform, startIndex, static_cast<int>(numSamplesToRead), kPlayPart_All, audioData);
+            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+            {
+                preview += (lCh[sampleIndex] * lCh[sampleIndex] + rCh[sampleIndex] * rCh[sampleIndex]);
+            }
+            preview /= numSamplesToRead;
+            if (preview >= 1.f) preview = 1.f;
+            if (previewMax < preview) previewMax = preview;
+            strips_[iStrip] = preview;
+        }
+        
+        // normalize
+        for (int stripIndex = 0; stripIndex < kNumStrips; ++stripIndex) strips_[stripIndex] /= previewMax;
+         
+        isWaveformLoad_ = true;
+    }
+    
     void update(bool immediately = false)
     {
         stopTimer();
@@ -114,33 +167,22 @@ public:
     
     void update_()
     {
-        auto dataSource = MelissaDataSource::getInstance();
-        const size_t bufferLength = dataSource->getBufferLength();
+        if (!isWaveformLoad_) return;
+        if (numOfStrip_ <= 0) return;
         
-        if (numOfStrip_ <= 0 || bufferLength == 0 || previewBuffer_.size() == 0) return;
-        
-        float preview, previewMax = 0.f;
-        for (int32_t iStrip = 0; iStrip < numOfStrip_; ++iStrip)
+        float maxPreviewBuffer = 0.f;
+        for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
         {
-            preview = 0.f;
-            for (int32_t iBuffer = 0; iBuffer < bufferLength / numOfStrip_; ++iBuffer)
-            {
-                const size_t bufIndex = iStrip * (bufferLength / numOfStrip_) + iBuffer;
-                if (bufIndex >= bufferLength) break;
-                const auto l = dataSource->readBuffer(0, bufIndex, kPlayPart_All);
-                const auto r = dataSource->readBuffer(1, bufIndex, kPlayPart_All);
-                preview += (l * l + r * r);
-            }
-            preview /= (bufferLength / numOfStrip_);
-            if (preview >= 1.f) preview = 1.f;
-            if (previewMax < preview) previewMax = preview;
-            previewBuffer_[iStrip] = preview;
+            const float floatIndex = previewIndex / static_cast<float>(numOfStrip_) * (kNumStrips - 1);
+            const int intIndex = static_cast<int>(floatIndex);
+            const float interpolation = floatIndex - intIndex;
+            previewBuffer_[previewIndex] = strips_[intIndex] * (1.f - interpolation) + strips_[intIndex + 1] * interpolation;
+            if (maxPreviewBuffer < previewBuffer_[previewIndex]) maxPreviewBuffer = previewBuffer_[previewIndex];
         }
         
-        // normalize
-        for (int iPreviewBuffer = 0; iPreviewBuffer < previewBuffer_.size(); ++iPreviewBuffer)
+        for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
         {
-            previewBuffer_[iPreviewBuffer] /= previewMax;
+            previewBuffer_[previewIndex] /= maxPreviewBuffer;
         }
         
         repaint();
@@ -184,10 +226,13 @@ private:
     std::shared_ptr<Label> current_;
     const int32_t waveformStripWidth_ = 3, waveformStripInterval_ = 1;
     size_t numOfStrip_;
+    static constexpr int kNumStrips = 1000;
+    float strips_[kNumStrips];
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
     std::vector<float> previewBuffer_;
+    bool isWaveformLoad_;
 };
 
 class MelissaWaveformControlComponent::Marker : public Button
@@ -197,17 +242,25 @@ public:
     
     void paintButton(Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        constexpr float headHeight = 20;
+        
         constexpr float bodyWidth = 3;
         
+#ifdef JUCE_IOS
+        constexpr float headHeight = 10;
+        constexpr float headRound = 4;
+#else
+        constexpr float headHeight = 20;
+        constexpr float headRound = 4;
+#endif
+        
         g.setColour(colour_);
-        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, headRound);
         g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight - 2, bodyWidth, getHeight() - headHeight + 2);
         
         if (isMouseOn_)
         {
             g.setColour(Colours::black.withAlpha(0.2f));
-            g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, 4);
+            g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), headHeight, headRound);
             g.fillRect((getWidth() - bodyWidth) / 2.f, headHeight, bodyWidth, getHeight() - headHeight);
         }
     }
@@ -292,7 +345,11 @@ MelissaWaveformControlComponent::~MelissaWaveformControlComponent() {}
 
 void MelissaWaveformControlComponent::resized()
 {
+#ifdef JUCE_IOS
+    waveformView_->setBounds(20, 10, getWidth() - 20 * 2, getHeight() - 28);
+#else
     waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40);
+#endif
     markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
     
     loopRangeComponent_->setBounds(waveformView_->getBounds());
@@ -319,11 +376,15 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
     {
         posTooltip_->setTopLeftPosition(x, getHeight() - posTooltip_->getHeight());
         
+        int prevLabelRight = -1;
         for (auto&& l : timeLabels_)
         {
             const auto x0 = posTooltip_->getX();
             const auto x1 = posTooltip_->getRight();
-            l->setVisible(x1 < l->getX() || l->getRight() < x0);
+            const int x = l->getX();
+            const bool show = (prevLabelRight <= x);
+            if (show) prevLabelRight = l->getRight();
+            l->setVisible(show && (x1 < l->getX() || l->getRight() < x0));
         }
         posTooltip_->setVisible(true);
     }
@@ -332,12 +393,13 @@ void MelissaWaveformControlComponent::showTimeTooltip(float posRatio)
 void MelissaWaveformControlComponent::hideTimeTooltip()
 {
     posTooltip_->setVisible(false);
-    for (auto&& l : timeLabels_) l->setVisible(true);
+    arrangeTimeLabels();
 }
 
 void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     timeSec_ = static_cast<float>(bufferLength) / sampleRate;
+    waveformView_->loadWaveform();
     waveformView_->update(true);
     
     timeLabels_.clear();
@@ -347,7 +409,11 @@ void MelissaWaveformControlComponent::songChanged(const String& filePath, size_t
         l->setJustificationType(Justification::centred);
         l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
         l->setText(text, dontSendNotification);
+#ifdef JUCE_IOS
+        l->setSize(MelissaUtility::getStringSize(l->getFont(), l->getText()).first, 18);
+#else
         l->setSize(MelissaUtility::getStringSize(l->getFont(), l->getText()).first, 20);
+#endif
         addAndMakeVisible(l.get());
         return l;
     };
@@ -404,24 +470,25 @@ void MelissaWaveformControlComponent::arrangeMarkers() const
     for (auto&& m : markers_)
     {
         const int x = waveformView_->getX() + waveformView_->getWidth() * m->getPosition();
+#ifdef JUCE_IOS
+        m->setBounds(x - 4, 0, 8, getHeight() - 18);
+#else
         m->setBounds(x - 4, 0, 8, getHeight() - 20);
+#endif
     }
 }
 
 void MelissaWaveformControlComponent::arrangeTimeLabels() const
 {
     int minuteIndex = 0;
+    int prevLabelRight = -1;
     for (auto&& l : timeLabels_)
     {
-        int x = waveformView_->getX() + waveformView_->getWidth() * (minuteIndex * 60.f / timeSec_)  - l->getWidth() / 2;
-        /*
-        if (minuteIndex == timeLabels_.size() - 1)
-        {
-            x = waveformView_->getX() + waveformView_->getWidth() - l->getWidth() / 2;
-        }
-         */
-        
+        const int x = waveformView_->getX() + waveformView_->getWidth() * (minuteIndex * 60.f / timeSec_)  - l->getWidth() / 2;
         l->setTopLeftPosition(x, getHeight() - l->getHeight());
+        const bool show = (prevLabelRight <= x);
+        l->setVisible(show);
+        if (show) prevLabelRight = l->getRight();
         ++minuteIndex;
     }
 }

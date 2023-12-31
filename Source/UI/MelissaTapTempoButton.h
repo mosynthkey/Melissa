@@ -11,25 +11,25 @@
 #include <vector>
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class MelissaTapTempoButton : public Component, public Timer
+class MelissaTapTempoButton : public juce::Component, public juce::Timer
 {
 public:
     MelissaTapTempoButton();
-    void setFont(const Font& font) { font_ = font; }
+    void setFont(const juce::Font& font) { font_ = font; }
     void correctWithPlaybackSpeed(bool shouldCorrect) { shouldCorrect_ = shouldCorrect; }
     
     // Component
-    void paint(Graphics& g) override;
-    void mouseMove(const MouseEvent &event) override;
-    void mouseExit(const MouseEvent &event) override;
-    void mouseDown(const MouseEvent& event) override;
+    void paint(juce::Graphics& g) override;
+    void mouseMove(const juce::MouseEvent &event) override;
+    void mouseExit(const juce::MouseEvent &event) override;
+    void mouseDown(const juce::MouseEvent& event) override;
     
-    // Timer
+    // juce::Timer
     void timerCallback() override;
     
 private:
     std::vector<float> measuredBpms_;
     bool isActive_, shouldCorrect_;
     std::chrono::system_clock::time_point prevTimePoint_;
-    Font font_;
+    juce::Font font_;
 };

@@ -9,6 +9,8 @@
 #include "MelissaDoubleClickEditLabel.h"
 #include "MelissaPracticeTableListBox.h"
 
+using namespace juce;
+
 class LoopRangeComponent : public Component
 {
 public:
@@ -75,7 +77,7 @@ MelissaPracticeTableListBox::~MelissaPracticeTableListBox()
 
 void MelissaPracticeTableListBox::updatePracticeList()
 {
-    dataSource_->getPracticeList(practiceList_);
+    dataSource_->getCurrentPracticeList(practiceList_);
     updateContent();
     repaint();
 }
@@ -264,7 +266,7 @@ void MelissaPracticeTableListBox::moveSelected(int direction)
     auto dataSource = MelissaDataSource::getInstance();
     direction = (direction > 0) ? 1 : -1;
     
-    const auto size = dataSource->getNumPracticeList();
+    const auto size = dataSource->getNumCurrentPracticeList();
     
     const auto dist = selectedRow_ + direction;
     if (dist < 0 || size <= dist) return;

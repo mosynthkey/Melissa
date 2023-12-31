@@ -12,10 +12,10 @@
 #include "MelissaModel.h"
 
 class MelissaCommand
-{
+{    
 public:
-    static void excuteCommand(const String& commandAsString, float value);
-    static String getCommandDescription(const String& commandAsString);
+    static void excuteCommand(const juce::String& commandAsString, float value);
+    static juce::String getCommandDescription(const juce::String& commandAsString);
     
     // Singleton
     static MelissaCommand* getInstance() { return &instance_; }
@@ -33,5 +33,5 @@ private:
     MelissaDataSource* dataSource_;
     MelissaModel* model_;
     
-    static inline std::map<String, std::function<void(float)>> commands_;
+    static inline std::map<juce::String, std::function<void(float)>> commands_;
 };

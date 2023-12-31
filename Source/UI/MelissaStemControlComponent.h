@@ -13,7 +13,7 @@
 #include "MelissaLookAndFeel.h"
 #include "MelissaStemProvider.h"
 
-class MelissaStemControlComponent : public Component,
+class MelissaStemControlComponent : public juce::Component,
                                     public MelissaModelListener,
                                     public MelissaStemProviderListener
 {
@@ -24,7 +24,7 @@ public:
 private:
     // Component
     void resized() override;
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     
     // MelissaModelListener
     void playPartChanged(PlayPart playPart) override;
@@ -46,14 +46,14 @@ private:
     };
     Mode mode_;
     
-    std::unique_ptr<ToggleButton> mixButton_;
-    std::unique_ptr<ToggleButton> soloButton_;
+    std::unique_ptr<juce::ToggleButton> mixButton_;
+    std::unique_ptr<juce::ToggleButton> soloButton_;
     
-    std::unique_ptr<ToggleButton> allButton_;
-    std::unique_ptr<ToggleButton> stemSwitchButtons_[kNumStemSoloButtons];
-    std::unique_ptr<TextButton> createStemsButton_;
+    std::unique_ptr<juce::ToggleButton> allButton_;
+    std::unique_ptr<juce::ToggleButton> stemSwitchButtons_[kNumStemSoloButtons];
+    std::unique_ptr<juce::TextButton> createStemsButton_;
     enum { kNumMixKnobs = 5, };
-    std::unique_ptr<Slider> partKnobs_[kNumMixKnobs];
+    std::unique_ptr<juce::Slider> partKnobs_[kNumMixKnobs];
     int xCenterList_[kNumMixKnobs];
     
     class ProgressBar;

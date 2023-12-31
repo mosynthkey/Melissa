@@ -10,6 +10,8 @@
 #include "MelissaModelListener.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaCommand MelissaCommand::instance_;
 
 MelissaCommand::MelissaCommand()
@@ -226,7 +228,7 @@ MelissaCommand::MelissaCommand()
         auto model = MelissaModel::getInstance();
         
         std::vector<MelissaDataSource::Song::PracticeList> list;
-        dataSource->getPracticeList(list);
+        dataSource->getCurrentPracticeList(list);
         if (list.size() <= index) return;
         
         model->setLoopPosRatio(list[index].aRatio_, list[index].bRatio_);

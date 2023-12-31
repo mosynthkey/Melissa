@@ -8,14 +8,36 @@
 #pragma once
 
 #include <deque>
+#include <memory>
 #include <mutex>
 #include <vector>
+#include "MelissaBeepGenerator.h"
 #include "MelissaModelListener.h"
 #include "SoundTouch.h"
-#include <memory>
 
 class MelissaDataSource;
 class MelissaModel;
+
+class MelissaEqualizer
+{
+public:
+    MelissaEqualizer();
+    void reset();
+    void updateCoefs();
+    void process(float* inBuffer, float* outBuffer);
+    void setSampleRate(float sampleRate);
+    void setFreq(float freq);
+    void setGain(float gain);
+    void setQ(float q);
+    
+private:
+    float a[3], b[3];
+    static constexpr size_t kNumOfZs_ = 4;
+    static constexpr size_t kNumOfChs = 2;
+    float z_[kNumOfChs][kNumOfZs_];
+    float shouldUpdateCoefs_;
+    float sampleRate_, freq_, gainDb_, q_;
+};
 
 class MelissaAudioEngine : public MelissaModelListener
 {
@@ -49,9 +71,6 @@ public:
     Status getStatus() const;
     void setStatus(Status status);
     
-    // for debug
-    std::string getStatusString() const;
-    
 private:
     MelissaModel* model_;
     MelissaDataSource* dataSource_;
@@ -60,6 +79,7 @@ private:
     
     std::unique_ptr<soundtouch::SoundTouch> soundTouch_;
     
+    PlaybackStatus playbackStatus_;
     PlaybackMode playbackMode_;
     
     int32_t originalSampleRate_;
@@ -100,15 +120,21 @@ private:
     float volumeBalance_;
     OutputMode outputMode_;
     
-    class Equalizer;
     bool eqSwitch_;
-    std::unique_ptr<Equalizer> eq_;
+    std::unique_ptr<MelissaEqualizer> eq_;
     
     PlayPart playPart_;
     
     Status status_;
     
+    MelissaBeepGenerator beepGen_;
+    bool enableCountIn_;
+    float previousRenderedPosMSec_;
+    size_t countInSampleIndex_;
+    bool forcePreCountOn_;
+    
     // MelissaModelListener
+    void playbackStatusChanged(PlaybackStatus status) override;
     void playbackModeChanged(PlaybackMode mode) override;
     void musicVolumeChanged(float volume) override;
     void pitchChanged(float semitone) override;
@@ -129,6 +155,8 @@ private:
     void eqGainChanged(size_t band, float gain) override;
     void eqQChanged(size_t band, float q) override;
     void playPartChanged(PlayPart playPart) override;
+    void preCountSwitchChanged(bool preCountSwitch) override;
     
     void updateLoopParameters();
+    void setupPreCountIfNeeded();
 };

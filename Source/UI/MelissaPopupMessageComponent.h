@@ -9,17 +9,17 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class MelissaPopupMessageComponent : public Component, public Timer
+class MelissaPopupMessageComponent : public juce::Component, public juce::Timer
 {
 public:
     MelissaPopupMessageComponent();
     ~MelissaPopupMessageComponent();
-    void show(const String& text);
+    void show(const juce::String& text);
     
 private:
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     void timerCallback() override;
-    String text_;
+    juce::String text_;
     
-    ComponentAnimator animator_;
+    juce::ComponentAnimator animator_;
 };

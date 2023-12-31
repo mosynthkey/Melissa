@@ -9,6 +9,8 @@
 #include "MelissaModel.h"
 #include "MelissaStemProvider.h"
 
+using namespace juce;
+
 MelissaModel MelissaModel::instance_;
 
 void MelissaModel::setLengthMSec(float lengthMSec)
@@ -284,6 +286,14 @@ void MelissaModel::setMainVolume(float mainVolume)
     for (auto&& l : listeners_) l->mainVolumeChanged(mainVolume_);
 }
 
+void MelissaModel::setPreCountSwitch(bool preCountSwitch)
+{
+#if defined(ENABLE_PRECOUNT)
+    preCountSwitch_ = preCountSwitch;
+    for (auto&& l : listeners_) l->preCountSwitchChanged(preCountSwitch_);
+#endif
+}
+
 void MelissaModel::addListener(MelissaModelListener* listener)
 {
     for (auto&& l : listeners_)
@@ -314,6 +324,6 @@ MelissaModel* MelissaModel::getInstance()
 MelissaModel::MelissaModel() :
 playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
 speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
-bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f)
+bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f), preCountSwitch_(false)
 {
 }

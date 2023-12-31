@@ -56,6 +56,11 @@ public:
         return (readIndex_ + length * speed_) < que_.size();
     }
     
+    float getNextSampleIndex()
+    {
+        return que_[static_cast<size_t>(readIndex_)];
+    }
+    
     void getStretchedSampleIndices(size_t length, std::deque<float>& stretchedSampleIndex)
     {
         std::lock_guard<std::mutex> lock(queMutex_);
@@ -68,7 +73,7 @@ public:
             readIndex_ += speed_;
         }
         
-        const size_t numOfSamplesToDelete = static_cast<int>(readIndex_) - 1;
+        const int numOfSamplesToDelete = static_cast<int>(readIndex_) - 1;
         if (0 < numOfSamplesToDelete)
         {
             que_.erase(que_.begin(), que_.begin() + numOfSamplesToDelete);
@@ -88,107 +93,96 @@ private:
     size_t prevQueSize_;
 };
 
-class MelissaAudioEngine::Equalizer
+
+MelissaEqualizer::MelissaEqualizer() :
+shouldUpdateCoefs_(true)
 {
-public:
-    Equalizer() :
-    shouldUpdateCoefs_(true)
+    sampleRate_ = 48000;
+    freq_ = 500;
+    q_ = 7.f;
+    gainDb_ = 0.f;
+    reset();
+}
+
+void MelissaEqualizer::reset()
+{
+    for (size_t chIndex = 0; chIndex < kNumOfChs; ++chIndex)
     {
-        sampleRate_ = 48000;
-        freq_ = 500;
-        q_ = 7.f;
-        gainDb_ = 0.f;
-        reset();
+        std::fill(z_[chIndex], z_[chIndex] + kNumOfZs_, 0.f);
     }
+}
+
+void MelissaEqualizer::updateCoefs()
+{
+    const float gain = pow(10, abs(gainDb_) / 20.f) * ((gainDb_ > 0) ? 1 : -1);
+    const float omega = 2.f * M_PI *  freq_ / sampleRate_;
+    const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
+    const float A     = pow(10.f, (gain / 40.f) );
+     
+    a[0] =  1.0f + alpha / A;
+    a[1] = -2.0f * cos(omega);
+    a[2] =  1.0f - alpha / A ;
+    b[0] =  1.0f + alpha * A ;
+    b[1] = -2.0f * cos(omega);
+    b[2] =  1.0f - alpha * A ;
     
-    void reset()
-    {
-        for (size_t chIndex = 0; chIndex < kNumOfChs; ++chIndex)
-        {
-            std::fill(z_[chIndex], z_[chIndex] + kNumOfZs_, 0.f);
-        }
-    }
+    shouldUpdateCoefs_ = false;
+}
+
+void MelissaEqualizer::process(float* inBuffer, float* outBuffer)
+{
+    if (shouldUpdateCoefs_) updateCoefs();
     
-    void updateCoefs()
+    for (size_t chIndex = 0; chIndex < 2; ++chIndex)
     {
-        const float gain = pow(10, abs(gainDb_) / 20.f) * ((gainDb_ > 0) ? 1 : -1);
-        const float omega = 2.f * M_PI *  freq_ / sampleRate_;
-        const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
-        const float A     = pow(10.f, (gain / 40.f) );
-         
-        a[0] =  1.0f + alpha / A;
-        a[1] = -2.0f * cos(omega);
-        a[2] =  1.0f - alpha / A ;
-        b[0] =  1.0f + alpha * A ;
-        b[1] = -2.0f * cos(omega);
-        b[2] =  1.0f - alpha * A ;
+        const float signalIn = inBuffer[chIndex];
+        outBuffer[chIndex] = (b[0] / a[0]) * signalIn
+                           + (b[1] / a[0]) * z_[chIndex][0]
+                           + (b[2] / a[0]) * z_[chIndex][1]
+                           - (a[1] / a[0]) * z_[chIndex][2]
+                           - (a[2] / a[0]) * z_[chIndex][3];
         
-        shouldUpdateCoefs_ = false;
+        z_[chIndex][1] = z_[chIndex][0];
+        z_[chIndex][0] = signalIn;
+        z_[chIndex][3] = z_[chIndex][2];
+        z_[chIndex][2] = outBuffer[chIndex];
     }
-    
-    void process(float* inBuffer, float* outBuffer)
-    {
-        if (shouldUpdateCoefs_) updateCoefs();
-        
-        for (size_t chIndex = 0; chIndex < 2; ++chIndex)
-        {
-            const float signalIn = inBuffer[chIndex];
-            outBuffer[chIndex] = (b[0] / a[0]) * signalIn
-                               + (b[1] / a[0]) * z_[chIndex][0]
-                               + (b[2] / a[0]) * z_[chIndex][1]
-                               - (a[1] / a[0]) * z_[chIndex][2]
-                               - (a[2] / a[0]) * z_[chIndex][3];
-            
-            z_[chIndex][1] = z_[chIndex][0];
-            z_[chIndex][0] = signalIn;
-            z_[chIndex][3] = z_[chIndex][2];
-            z_[chIndex][2] = outBuffer[chIndex];
-        }
-    }
-    
-    void setSampleRate(float sampleRate)
-    {
-        sampleRate_ = sampleRate;
-        shouldUpdateCoefs_ = true;
-    }
-    
-    void setFreq(float freq)
-    {
-        freq_ = freq;
-        shouldUpdateCoefs_ = true;
-    }
-    
-    void setGain(float gain)
-    {
-        gainDb_ = gain;
-        shouldUpdateCoefs_ = true;
-    }
-    
-    void setQ(float q)
-    {
-        q_ = q;
-        shouldUpdateCoefs_ = true;
-    }
-    
-private:
-    float a[3], b[3];
-    static constexpr size_t kNumOfZs_ = 4;
-    static constexpr size_t kNumOfChs = 2;
-    float z_[kNumOfChs][kNumOfZs_];
-    float shouldUpdateCoefs_;
-    float sampleRate_, freq_, gainDb_, q_;
-};
+}
+
+void MelissaEqualizer::setSampleRate(float sampleRate)
+{
+    sampleRate_ = sampleRate;
+    shouldUpdateCoefs_ = true;
+}
+
+void MelissaEqualizer::setFreq(float freq)
+{
+    freq_ = freq;
+    shouldUpdateCoefs_ = true;
+}
+
+void MelissaEqualizer::setGain(float gain)
+{
+    gainDb_ = gain;
+    shouldUpdateCoefs_ = true;
+}
+
+void MelissaEqualizer::setQ(float q)
+{
+    q_ = q;
+    shouldUpdateCoefs_ = true;
+}
 
 MelissaAudioEngine::MelissaAudioEngine() :
-model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
+model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
-currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All)
+currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0), forcePreCountOn_(false)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
-    eq_ = std::make_unique<Equalizer>();
+    eq_ = std::make_unique<MelissaEqualizer>();
 }
 
 MelissaAudioEngine::~MelissaAudioEngine() {}
@@ -215,6 +209,7 @@ void MelissaAudioEngine::setOutputSampleRate(int32_t sampleRate)
     
     outputSampleRate_ = sampleRate;
     eq_->setSampleRate(sampleRate);
+    beepGen_.setOutputSampleRate(sampleRate);
     needToReset_ = true;
 }
 
@@ -240,52 +235,79 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
         mutex_.unlock();
         return;
     }
-    sampleIndexStretcher_->getStretchedSampleIndices(bufferLength, timeQue_);
     mutex_.unlock();
     
-    for (int iSample = 0; iSample < bufferLength; ++iSample)
+    for (int sampleIndex = 0; sampleIndex < bufferLength; ++sampleIndex)
     {
-        mutex_.lock();
-        if (processedBufferQue_.size() > 0 && timeQue_.size() > 0)
+        if (enableCountIn_ && 0 < countInSampleIndex_)
         {
-            float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
+            // Pre-count metronome
+            if (countInSampleIndex_ % static_cast<int>(60.f / model_->getBpm() * outputSampleRate_) == 0) beepGen_.trigger(880);
             
-            if (eqSwitch_) eq_->process(buffer, buffer);
-            buffer[0] *= volume_;
-            buffer[1] *= volume_;
-            
-            if (outputMode_ == kOutputMode_LL)
+            bufferToRender[0][sampleIndex] = beepGen_.render();
+            if (1 < numOfChannels) bufferToRender[1][sampleIndex] = bufferToRender[0][sampleIndex];
+            countInSampleIndex_--;
+            if (countInSampleIndex_ == 0)
             {
-                buffer[1] = buffer[0];
+                previousRenderedPosMSec_ = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
             }
-            else if (outputMode_ == kOutputMode_RR)
+        }
+        else
+        {
+            const float currentPlaybackPosMSec = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
+            const bool looped = static_cast<int>(currentPlaybackPosMSec)   == static_cast<int>(model_->getLoopAPosMSec()) && static_cast<int>(previousRenderedPosMSec_) == static_cast<int>(model_->getLoopBPosMSec());
+            if (enableCountIn_ && (looped || forcePreCountOn_))
             {
-                buffer[0] = buffer[1];
-            }
-            else if (outputMode_ == kOutputMode_CenterCancel)
-            {
-                const auto lrDiff = buffer[0] - buffer[1];
-                buffer[0] = buffer[1] = lrDiff;
-            }
-            
-            if (numOfChannels == 1)
-            {
-                // mono
-                bufferToRender[0][iSample] = (buffer[0] + buffer[1]) * volumeBalance_;
+                const auto bpm = model_->getBpm();
+                const auto accent = model_->getAccent();
+                countInSampleIndex_ = static_cast<size_t>(60.f / bpm * accent * outputSampleRate_);
+                forcePreCountOn_ = false;
             }
             else
             {
-                // stereo
-                bufferToRender[0][iSample] = buffer[0] * volumeBalance_;
-                bufferToRender[1][iSample] = buffer[1] * volumeBalance_;
-            }
+                mutex_.lock();
+                if (processedBufferQue_.size() > 0)
+                {
+                    previousRenderedPosMSec_ = timeIndicesMSec[sampleIndex] = playingPosMSec_ = currentPlaybackPosMSec;
+                    sampleIndexStretcher_->getStretchedSampleIndices(1, timeQue_);
+                    
+                    float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
+                    
+                    if (eqSwitch_) eq_->process(buffer, buffer);
+                    buffer[0] *= volume_;
+                    buffer[1] *= volume_;
+                    
+                    if (outputMode_ == kOutputMode_LL)
+                    {
+                        buffer[1] = buffer[0];
+                    }
+                    else if (outputMode_ == kOutputMode_RR)
+                    {
+                        buffer[0] = buffer[1];
+                    }
+                    else if (outputMode_ == kOutputMode_CenterCancel)
+                    {
+                        const auto lrDiff = buffer[0] - buffer[1];
+                        buffer[0] = buffer[1] = lrDiff;
+                    }
+                    
+                    if (numOfChannels == 1)
+                    {
+                        // mono
+                        bufferToRender[0][sampleIndex] = (buffer[0] + buffer[1]) * volumeBalance_;
+                    }
+                    else
+                    {
+                        // stereo
+                        bufferToRender[0][sampleIndex] = buffer[0] * volumeBalance_;
+                        bufferToRender[1][sampleIndex] = buffer[1] * volumeBalance_;
+                    }
 
-            processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
-            
-            timeIndicesMSec[iSample] = playingPosMSec_ = static_cast<float>(timeQue_[0]) / originalSampleRate_ * 1000.f;
-            timeQue_.pop_front();
+                    processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
+                }
+                mutex_.unlock();
+            }
         }
-        mutex_.unlock();
     }
     
     model_->updatePlayingPosMSecFromDsp(playingPosMSec_);
@@ -299,6 +321,9 @@ void MelissaAudioEngine::process()
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     while (receivedSampleSize == 0)
     {
+        int numSamplesToRead = 0;
+        
+        const size_t readStartIndex = readIndex_;
         for (size_t iSample = 0; iSample < processLength_; ++iSample)
         {
             if (readIndex_ > bIndex_)
@@ -306,6 +331,7 @@ void MelissaAudioEngine::process()
                 if (loop_)
                 {
                     readIndex_ = aIndex_;
+                    break;
 #if defined(ENABLE_SPEED_TRAINING)
                     ++count_;
                     
@@ -326,12 +352,22 @@ void MelissaAudioEngine::process()
             mutex_.lock();
             sampleIndexStretcher_->putSampleIndex(readIndex_);
             mutex_.unlock();
-            bufferForSoundTouch_[iSample * 2 + 0] = shouldProcess_ ? dataSource_->readBuffer(0, readIndex_, playPart_) : 0.f;
-            bufferForSoundTouch_[iSample * 2 + 1] = shouldProcess_ ? dataSource_->readBuffer(1, readIndex_, playPart_) : 0.f;
+            ++numSamplesToRead;
             ++readIndex_;
         }
         
-        soundTouch_->putSamples(bufferForSoundTouch_, processLength_);
+        float lCh[processLength_];
+        float rCh[processLength_];
+        float* readAudio[] = { lCh, rCh };
+        if (shouldProcess_) dataSource_->readBuffer(MelissaDataSource::kReader_Playback, readStartIndex, numSamplesToRead, playPart_, readAudio);
+        
+        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+        {
+            bufferForSoundTouch_[sampleIndex * 2 + 0] = lCh[sampleIndex];
+            bufferForSoundTouch_[sampleIndex * 2 + 1] = rCh[sampleIndex];
+        }
+        
+        soundTouch_->putSamples(bufferForSoundTouch_, numSamplesToRead);
         receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
     }
     
@@ -409,30 +445,10 @@ void MelissaAudioEngine::setStatus(Status status)
     status_ = status;
 }
 
-std::string MelissaAudioEngine::getStatusString() const
+void MelissaAudioEngine::playbackStatusChanged(PlaybackStatus status)
 {
-    std::stringstream ss;
-    
-    constexpr size_t numOfBlocks = 60;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(readIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";;
-    ss << "r" << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < numOfBlocks; ++iBlock) ss << "#";
-    ss << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(aIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";
-    ss << "A" << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(bIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";;
-    ss << "B";
-    
-    ss << std::endl;
-    
-    for (size_t iBlock = 0; iBlock < static_cast<float>(processStartIndex_) / originalBufferLength_ * numOfBlocks; ++iBlock) ss << " ";;
-    ss << "S";
-    
-    return ss.str();
+    playbackStatus_ = status;
+    setupPreCountIfNeeded();
 }
 
 void MelissaAudioEngine::playbackModeChanged(PlaybackMode mode)
@@ -539,7 +555,11 @@ void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTi
 void MelissaAudioEngine::playingPosChanged(float time, float ratio)
 {
     processStartIndex_ = static_cast<size_t>((originalBufferLength_ - 1) * ratio);
-    if (processStartIndex_ < aIndex_) processStartIndex_ = aIndex_;
+    if (processStartIndex_ < aIndex_)
+    {
+        setupPreCountIfNeeded();
+        processStartIndex_ = aIndex_;
+    }
     if (bIndex_ < processStartIndex_) processStartIndex_ = bIndex_;
     needToReset_ = true;
 }
@@ -581,6 +601,18 @@ void MelissaAudioEngine::eqQChanged(size_t band, float q)
     eq_->setQ(q);
 }
 
+void MelissaAudioEngine::playPartChanged(PlayPart playPart)
+{
+    playPart_ = playPart;
+}
+
+void MelissaAudioEngine::preCountSwitchChanged(bool preCountSwitch)
+{
+#if defined(ENABLE_PRECOUNT)
+    enableCountIn_ = preCountSwitch;
+#endif
+}
+
 void MelissaAudioEngine::updateLoopParameters()
 {
     if (playbackMode_ == kPlaybackMode_LoopOneSong)
@@ -594,7 +626,14 @@ void MelissaAudioEngine::updateLoopParameters()
     }
 }
 
-void MelissaAudioEngine::playPartChanged(PlayPart playPart)
+void MelissaAudioEngine::setupPreCountIfNeeded()
 {
-    playPart_ = playPart;
+    if (enableCountIn_ && playbackStatus_ == kPlaybackStatus_Playing)
+    {
+#if defined(ENABLE_PRECOUNT)
+        forcePreCountOn_ = true;
+#endif
+        processStartIndex_ = aIndex_;
+        needToReset_ = true;
+    }
 }

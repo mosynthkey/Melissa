@@ -40,15 +40,15 @@ public:
     virtual void stemProviderEstimatedTimeReported(float estimatedTime) {}
 };
 
-class MelissaStemProvider : public Thread
-{
+class MelissaStemProvider : public juce::Thread
+{    
 public:
-    bool requestStems(const File& file);
-    void getStemFiles(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles);
+    bool requestStems(const juce::File& file);
+    void getStemFiles(const juce::File& fileToOpen, juce::File& originalFile, std::map<std::string, juce::File>& stemFiles);
     
     void failedToReadPreparedStems();
     
-    void prepareForLoadStems(const File& fileToOpen, File& originalFile, std::map<std::string, File>& stemFiles);
+    void prepareForLoadStems(const juce::File& fileToOpen, juce::File& originalFile, std::map<std::string, juce::File>& stemFiles);
     void deleteStems();
     
     StemProviderStatus getStemProviderStatus() const { return status_; }
@@ -80,5 +80,5 @@ private:
     StemProviderStatus status_;
     StemProviderResult result_;
     
-    File songFile_;
+    juce::File songFile_;
 };

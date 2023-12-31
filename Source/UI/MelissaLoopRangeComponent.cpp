@@ -7,6 +7,8 @@
 
 #include "MelissaLoopRangeComponent.h"
 
+using namespace juce;
+
 namespace
 {
 constexpr int kEdgeWidth = 4;

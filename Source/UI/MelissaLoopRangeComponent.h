@@ -14,7 +14,7 @@
 #include "MelissaUISettings.h"
 #include "MelissaWaveformMouseEventComponent.h"
 
-class MelissaLoopRangeComponent : public Component,
+class MelissaLoopRangeComponent : public juce::Component,
                                   public MelissaModelListener,
                                   public MelissaWaveformMouseEventListener
 {
@@ -23,7 +23,7 @@ public:
     
 private:
     // Component
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     
     // MelissaModelListener
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
@@ -34,8 +34,8 @@ private:
     void mouseMove(float xRatio) override;
     void mouseDrag(float xRatio) override;
     
-    Rectangle<float> getLoopStartEdgeRect() const;
-    Rectangle<float> getLoopEndEdgeRect() const;
+    juce::Rectangle<float> getLoopStartEdgeRect() const;
+    juce::Rectangle<float> getLoopEndEdgeRect() const;
     
     MelissaModel* model_;
     float aRatio_, bRatio_;

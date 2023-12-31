@@ -11,12 +11,12 @@
 #include "MelissaModel.h"
 #include "MelissaModelListener.h"
 
-class MelissaSpeedTrainingProgressComponent : public Component, public MelissaModelListener, public Timer
+class MelissaSpeedTrainingProgressComponent : public juce::Component, public MelissaModelListener, public juce::Timer
 {
 public:
     MelissaSpeedTrainingProgressComponent();
     
-    void setFont(const Font& font) { font_ = font; }
+    void setFont(const juce::Font& font) { font_ = font; }
     
     // Component
     void paint(Graphics& g) override;
@@ -25,11 +25,11 @@ public:
     void speedIncStartChanged(int speedIncStart) override;
     void speedIncGoalChanged(int speedIncGoal) override;
     
-    // Timer
+    // juce::Timer
     void timerCallback() override;
     
 private:
     MelissaModel* model_;
-    Font font_;
+    juce::Font font_;
     float prevPlayingPosRatio_;
 };

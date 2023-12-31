@@ -53,7 +53,11 @@ public:
         
         if (sign == 0)
         {
+#ifdef JUCE_IOS
+            return "0";
+#else
             return "Original";
+#endif
         }
         else if (sign > 0)
         {
@@ -65,26 +69,26 @@ public:
         }
     }
     
-    static StringArray splitString(const String& string)
+    static juce::StringArray splitString(const juce::String& string)
     {
-        StringArray array;
+        juce::StringArray array;
         array.addTokens(string, "\n", "\"");
         return array;
     }
     
-    static std::pair<int, int> getStringSize(const Font& font, const String& string)
+    static std::pair<int, int> getStringSize(const juce::Font& font, const juce::String& string)
     {
         int maxWidth = 0;
         const auto stringArray = MelissaUtility::splitString(string);
         for (int i = 0; i < stringArray.size(); ++i)
         {
             const auto width = font.getStringWidth(stringArray[i]);
-            maxWidth = jmax(maxWidth, width);
+            maxWidth = fmax(maxWidth, width);
         }
         return std::make_pair(maxWidth + 10, stringArray.size() * font.getHeight());
     };
     
-    static void fillRoundRectangle(Graphics& g, int x0, int y0, int w, int h, int r0, int r1, int r2, int r3)
+    static void fillRoundRectangle(juce::Graphics& g, int x0, int y0, int w, int h, int r0, int r1, int r2, int r3)
     {
         const int x1 = x0 + r0;
         const int x2 = (x0 + w) - r1;
@@ -95,7 +99,7 @@ public:
         const int y3 = y0 + h - r2;
         const int y4 = y0 + h - r3;
         
-        Path path;
+        juce::Path path;
         path.startNewSubPath(x1, y0);
         path.lineTo(x2, y0);
         path.addArc(x2 - r1, y2 - r1, r1 * 2, r1 * 2, 0, M_PI / 2);

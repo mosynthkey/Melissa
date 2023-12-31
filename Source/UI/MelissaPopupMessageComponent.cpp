@@ -11,6 +11,8 @@
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaPopupMessageComponent::MelissaPopupMessageComponent()
 {
 }

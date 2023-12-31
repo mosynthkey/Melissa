@@ -10,14 +10,14 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaLookAndFeel.h"
 
-class MelissaSectionComponent : public Component
+class MelissaSectionComponent : public juce::Component
 {
 public:
-    MelissaSectionComponent(const String& title = "");
+    MelissaSectionComponent(const juce::String& title = "");
     
     // Compoent
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     
 private:
-    String title_;
+    juce::String title_;
 };

@@ -23,7 +23,7 @@ public:
     virtual void mouseExit(float xRatio) {}
 };
 
-class MelissaWaveformMouseEventComponent : public Component
+class MelissaWaveformMouseEventComponent : public juce::Component
 {
 public:
     MelissaWaveformMouseEventComponent() {}
@@ -32,12 +32,12 @@ public:
     void removeListener(MelissaWaveformMouseEventListener* listener);
     
     // Component
-    void mouseDown(const MouseEvent& event) override;
-    void mouseUp(const MouseEvent& event) override;
-    void mouseMove(const MouseEvent& event) override;
-    void mouseDrag(const MouseEvent& event) override;
-    void mouseEnter(const MouseEvent& event) override;
-    void mouseExit(const MouseEvent& event) override;
+    void mouseDown(const juce::MouseEvent& event) override;
+    void mouseUp(const juce::MouseEvent& event) override;
+    void mouseMove(const juce::MouseEvent& event) override;
+    void mouseDrag(const juce::MouseEvent& event) override;
+    void mouseEnter(const juce::MouseEvent& event) override;
+    void mouseExit(const juce::MouseEvent& event) override;
     
 private:
     std::vector<MelissaWaveformMouseEventListener*> listeners_;

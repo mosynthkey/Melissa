@@ -16,11 +16,11 @@ class MelissaShortcutListener
 {
 public:
     virtual ~MelissaShortcutListener() {};
-    virtual void controlMessageReceived(const String& controlMessage) = 0;
+    virtual void controlMessageReceived(const juce::String& controlMessage) = 0;
 };
 
-class MelissaShortcutManager : public Timer
-{
+class MelissaShortcutManager : public juce::Timer
+{    
 public:
     // Singleton
     static MelissaShortcutManager* getInstance() { return &instance_; }
@@ -30,8 +30,8 @@ public:
     MelissaShortcutManager& operator=(MelissaShortcutManager&&) = delete;
     
     void setEnable(bool enable) { enable_ = enable; }
-    bool processKeyboardMessage(const String& keyboardDescription);
-    bool processMIDIMessage(const MidiMessage& message);
+    bool processKeyboardMessage(const juce::String& keyboardDescription);
+    bool processMIDIMessage(const juce::MidiMessage& message);
     
     void addListener(MelissaShortcutListener* listener);
     void removeListener(MelissaShortcutListener* listener);
@@ -44,7 +44,7 @@ private:
     bool enable_;
 
     void timerCallback() override;
-    bool processControlMessage(const String& controlMessage, float value);
+    bool processControlMessage(const juce::String& controlMessage, float value);
     
     MelissaCommand* command_;
     

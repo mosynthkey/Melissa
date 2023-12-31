@@ -10,6 +10,8 @@
 #include "MelissaOptionDialog.h"
 #include "MelissaUpdateChecker.h"
 
+using namespace juce;
+
 MelissaUpdateChecker::UpdateStatus MelissaUpdateChecker::status_ = kUpdateStatus_NotChecked;
 
 #ifdef MELISSA_FULL_VERSION

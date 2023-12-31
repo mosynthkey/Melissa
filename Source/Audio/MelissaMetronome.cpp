@@ -42,10 +42,9 @@ void MelissaMetronome::render(float* bufferToRender[], size_t numOfChannels, con
             timeMSec_ += timeMSecNumerator;
         }
         
-        metronome_.osc_ += 2.f / (sampleRate_ / metronome_.pitch_);
-        if (metronome_.osc_ > 1.f) metronome_.osc_ = -1.f;
+        float beep = beepGen_.render();
         
-        const auto metronomeOsc = metronome_.osc_ * metronome_.amp_ * metronome_.volume_ * (metronome_.on_ ? 1.f : 0.f) * volumeBalance_;
+        const auto metronomeOsc = beep * metronome_.volume_ * (metronome_.on_ ? 1.f : 0.f) * volumeBalance_;
 
         if (numOfChannels == 1)
         {
@@ -60,24 +59,13 @@ void MelissaMetronome::render(float* bufferToRender[], size_t numOfChannels, con
         const int beatSection = (timeMSec_ - metronome_.beatPositionMSec_) / ((60.f / metronome_.bpm_) * 1000.f);
         if (metronome_.accent_ != 0 && (beatSection / metronome_.accent_ != metronome_.prevBeatSection_ / metronome_.accent_))
         {
-            metronome_.amp_ = 1.f;
-            metronome_.pitch_ = 880 * 2;
+            beepGen_.trigger(880 * 2);
         }
         else if (beatSection != metronome_.prevBeatSection_)
         {
-            metronome_.amp_ = 1.f;
-            metronome_.pitch_ = 880;
+            beepGen_.trigger(880);
         }
         metronome_.prevBeatSection_ = beatSection;
-        
-        if (metronome_.amp_ > 0.f)
-        {
-            metronome_.amp_ -= 1.f / static_cast<float>(sampleRate_) * 20.f;
-        }
-        else if (metronome_.amp_ < 0.f)
-        {
-            metronome_.amp_ = 0.f;
-        }
     }
 }
 

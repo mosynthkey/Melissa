@@ -10,6 +10,8 @@
 #include "MelissaDataSource.h"
 #include "MelissaUISettings.h"
 
+using namespace juce;
+
 enum CommandCategory
 {
     kCommandCategory_Transport,

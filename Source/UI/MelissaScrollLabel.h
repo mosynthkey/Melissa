@@ -11,14 +11,14 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaUISettings.h"
 
-class MelissaScrollLabel : public Component, public Timer
+class MelissaScrollLabel : public juce::Component, public juce::Timer
 {
 public:
-    MelissaScrollLabel(const Font& font) : font_(font), text_(""), textWidth_(0), position_(0)
+    MelissaScrollLabel(const juce::Font& font) : font_(font), text_(""), textWidth_(0), position_(0)
     {
     }
     
-    void mouseDown(const MouseEvent& event) override
+    void mouseDown(const juce::MouseEvent& event) override
     {
         if (getWidth() <= textWidth_)
         {
@@ -28,11 +28,11 @@ public:
         }
     }
     
-    void paint(Graphics& g) override
+    void paint(juce::Graphics& g) override
     {
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(font_);
-        g.drawText(text_, position_, 0, textWidth_, getHeight(), Justification::left);
+        g.drawText(text_, position_, 0, textWidth_, getHeight(), juce::Justification::left);
     }
     
     void resized() override
@@ -40,7 +40,7 @@ public:
         setText(text_);
     }
     
-    void setText(const String& text)
+    void setText(const juce::String& text)
     {
         stopTimer();
         
@@ -76,8 +76,8 @@ public:
     }
     
 private:
-    Font font_;
-    String text_;
+    juce::Font font_;
+    juce::String text_;
     int textWidth_;
     int position_;
 };

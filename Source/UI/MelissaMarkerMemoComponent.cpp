@@ -11,10 +11,14 @@
 #include "MelissaUISettings.h"
 #include "MelissaUtility.h"
 
+using namespace juce;
+
 MelissaMarkerMemoComponent::MelissaMarkerMemoComponent()
 {
     dataSource_ = MelissaDataSource::getInstance();
     dataSource_->addListener(this);
+    
+    font_ = dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main);
 }
 
 void MelissaMarkerMemoComponent::paint(Graphics& g)
@@ -78,7 +82,12 @@ void MelissaMarkerMemoComponent::paint(Graphics& g)
     }
 
     const auto h = getHeight();
+#ifdef JUCE_IOS
+    constexpr auto lineHeight = 2;
+#else
     constexpr auto lineHeight = 4;
+#endif
+    
     for (auto&& info : markerLabelInfo_)
     {
         g.setFont(font_);

@@ -13,7 +13,7 @@
 #include "MelissaFileListBox.h"
 #include "MelissaLookAndFeel.h"
 
-class MelissaPlaylistComponent : public Component,
+class MelissaPlaylistComponent : public juce::Component,
                                  public MelissaDataSourceListener
 {
 public:
@@ -38,17 +38,17 @@ public:
 private:
     MelissaDataSource* dataSource_;
     MelissaDataSource::FilePathList list_;
-    std::unique_ptr<FileChooser> fileChooser_;
-    std::unique_ptr<ComboBox> playlistComboBox_;
+    std::unique_ptr<juce::FileChooser> fileChooser_;
+    std::unique_ptr<juce::ComboBox> playlistComboBox_;
     
-    std::unique_ptr<DrawableButton> createButton_;
-    std::unique_ptr<DrawableButton> renameButton_;
-    std::unique_ptr<DrawableButton> removeButton_;
+    std::unique_ptr<juce::DrawableButton> createButton_;
+    std::unique_ptr<juce::DrawableButton> renameButton_;
+    std::unique_ptr<juce::DrawableButton> removeButton_;
     
-    std::unique_ptr<DrawableButton> upButton_;
-    std::unique_ptr<DrawableButton> downButton_;
-    std::unique_ptr<DrawableButton> addFileButton_;
-    std::unique_ptr<DrawableButton> addPlayingButton_;
+    std::unique_ptr<juce::DrawableButton> upButton_;
+    std::unique_ptr<juce::DrawableButton> downButton_;
+    std::unique_ptr<juce::DrawableButton> addFileButton_;
+    std::unique_ptr<juce::DrawableButton> addPlayingButton_;
     
     std::unique_ptr<MelissaFileListBox> listBox_;
     MelissaLookAndFeel_FileBrowser laf_;
@@ -64,6 +64,6 @@ private:
         kIcon_PlaylistRemove,
         kNumOfIcons
     };
-    std::unique_ptr<Drawable> iconImages_[kNumOfIcons];
-    std::unique_ptr<Drawable> iconHighlightedImages_[kNumOfIcons];
+    std::unique_ptr<juce::Drawable> iconImages_[kNumOfIcons];
+    std::unique_ptr<juce::Drawable> iconHighlightedImages_[kNumOfIcons];
 };

@@ -14,11 +14,13 @@
 #include "MelissaTapTempoButton.h"
 #include "MelissaUtility.h"
 
-class MelissaBPMSettingComponent : public Component, public MelissaModelListener
+class MelissaBPMSettingComponent : public juce::Component, public MelissaModelListener
 {
 public:
     MelissaBPMSettingComponent() : wasMetronomeOn_(false)
     {
+        using namespace juce;
+        
         model_ = MelissaModel::getInstance();
         model_->addListener(this);
         
@@ -95,14 +97,14 @@ public:
     
     void bpmChanged(float bpm) override
     {
-        bpmEditor_->setText(String(bpm), dontSendNotification);
+        bpmEditor_->setText(juce::String(bpm), juce::dontSendNotification);
     }
     
 private:
     MelissaModel* model_;
-    std::vector<std::unique_ptr<Label>> labels_;
-    std::unique_ptr<TextEditor> bpmEditor_;
-    std::unique_ptr<ToggleButton> speedCheckBox_;
+    std::vector<std::unique_ptr<juce::Label>> labels_;
+    std::unique_ptr<juce::TextEditor> bpmEditor_;
+    std::unique_ptr<juce::ToggleButton> speedCheckBox_;
     std::unique_ptr<MelissaTapTempoButton> tapTempoButton_;
     MelissaLookAndFeel_CircleToggleButton circleToggleLaf_;
     

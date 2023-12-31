@@ -11,6 +11,8 @@
 #include "MelissaShortcutComponent.h"
 #include "MelissaUISettings.h"
 
+using namespace juce;
+
 class MelissaShortcutComponent::ShortcutListBox : public MelissaDataSourceListener,
                                                   public TableListBox,
                                                   public TableListBoxModel

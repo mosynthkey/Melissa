@@ -9,6 +9,8 @@
 #include "MelissaDoubleClickEditLabel.h"
 #include "MelissaMarkerListBox.h"
 
+using namespace juce;
+
 class MarkerColourLabel : public Component
 {
 public:

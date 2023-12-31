@@ -25,7 +25,7 @@ void MelissaBPMDetector::initialize(int sampleRate, size_t bufferLength)
     processStartIndex_ = 0;
 }
 
-void MelissaBPMDetector::process(bool* processFinished, float* bpm)
+void MelissaBPMDetector::process(bool* processFinished, float* bpm, float* beatPosMSec)
 {
     *processFinished = false;
     
@@ -33,25 +33,42 @@ void MelissaBPMDetector::process(bool* processFinished, float* bpm)
     constexpr size_t processBufferLength = processLength * 2 /* Stereo */;
     float buffer[processBufferLength];
     
-    for (size_t bufferIndex = 0; bufferIndex < processBufferLength; bufferIndex += 2)
+    float lCh[processLength], rCh[processLength];
+    float* audioData[] = { lCh, rCh };
+    const size_t startReadIndex = processStartIndex_;
+    const size_t endReadIndex = std::min(startReadIndex + processLength - 1, bufferLength_ - 1);
+    const size_t numReadSample = endReadIndex - startReadIndex + 1;
+    dataSource_->readBuffer(MelissaDataSource::kReader_BPM, startReadIndex, static_cast<int>(numReadSample), kPlayPart_All, audioData);
+    
+    for (int sampleIndex = 0; sampleIndex < numReadSample; ++sampleIndex)
     {
-        if (bufferLength_ * 2 <= processStartIndex_ + bufferIndex)
-        {
-            *processFinished = true;
-            break;
-        }
-        buffer[bufferIndex + 0] = dataSource_->readBuffer(0, processStartIndex_ + bufferIndex, kPlayPart_All);
-        buffer[bufferIndex + 1] = dataSource_->readBuffer(1, processStartIndex_ + bufferIndex + 1, kPlayPart_All);
+        buffer[sampleIndex * 2 + 0] = lCh[sampleIndex];
+        buffer[sampleIndex * 2 + 1] = rCh[sampleIndex];
     }
-    processStartIndex_ += processBufferLength;
     bpmDetect_->inputSamples(buffer, processLength);
     
+    processStartIndex_ += processBufferLength;
+    if (bufferLength_ <= processStartIndex_) *processFinished = true;
     if (!(*processFinished)) return;
     
     const auto beatsLength = bpmDetect_->getBeats(nullptr, nullptr, 0);
-    std::vector<float> beatPosition, strength;
-    beatPosition.resize(beatsLength);
-    strength.resize(beatsLength);
+    auto beatPositions = std::make_unique<float[]>(beatsLength);
+    auto strengths = std::make_unique<float[]>(beatsLength);
+    bpmDetect_->getBeats(beatPositions.get(), strengths.get(), beatsLength);
+    
+    float maxStrong = 0.f;
+    int strongBeatPosIndex = 0;
+    for (int index = 0; index < beatsLength; ++index)
+    {
+        if (maxStrong < strengths[index])
+        {
+            strongBeatPosIndex = index;
+            maxStrong = strengths[index];
+        }
+    }
+    
+    printf("%f - %f\n", beatPositions[strongBeatPosIndex], strengths[strongBeatPosIndex]);
     
     *bpm = std::round(bpmDetect_->getBpm());
+    *beatPosMSec = beatPositions[strongBeatPosIndex] * 1000;
 }

@@ -110,6 +110,9 @@ public:
     void setMainVolume(float mainVolume);
     float getMainVolume() const { return mainVolume_; }
     
+    // Pre Count
+    void setPreCountSwitch(bool preCountSwitch);
+    bool getPreCountSwitch() const { return preCountSwitch_; }
     
     // Listener
     void addListener(MelissaModelListener* listener);
@@ -148,7 +151,7 @@ private:
     float playingPosRatio_;
     float bpm_, beatPositionMSec_;
     int accent_;
-    String filePath_;
+    juce::String filePath_;
     OutputMode outputMode_;
     bool eqSwitch_;
     float eqFreq_;
@@ -157,6 +160,7 @@ private:
     PlayPart playPart_;
     float customPartVolume_[kNumCustomPartVolumes];
     float mainVolume_;
+    bool preCountSwitch_;
     
     // Singleton
     static MelissaModel instance_;

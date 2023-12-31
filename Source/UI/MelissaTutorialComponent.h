@@ -10,13 +10,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaHost.h"
 
-class MelissaTutorialComponent : public Component
+class MelissaTutorialComponent : public juce::Component
 {
 public:
     struct Page
     {
         Component* targetComponent_;
-        String explanation;
+        juce::String explanation;
     };
     
     MelissaTutorialComponent(MelissaHost* host);
@@ -24,16 +24,16 @@ public:
     void update();
     
     // Component
-    void paint(Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     void resized() override;
     
 private:
     MelissaHost* host_;
-    std::unique_ptr<TextButton> skipButton_;
-    std::unique_ptr<TextButton> nextButton_;
-    std::unique_ptr<Label> explanationLabel_;
+    std::unique_ptr<juce::TextButton> skipButton_;
+    std::unique_ptr<juce::TextButton> nextButton_;
+    std::unique_ptr<juce::Label> explanationLabel_;
     
-    Rectangle<int> targetRectangle_;
+    juce::Rectangle<int> targetRectangle_;
     
     size_t currentPage_;
     std::vector<Page> pages_;

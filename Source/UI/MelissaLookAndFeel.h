@@ -15,7 +15,7 @@
 
 static constexpr float lineThickness = 1.4;
 
-class MelissaLookAndFeel : public LookAndFeel_V4
+class MelissaLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
     MelissaLookAndFeel()
@@ -27,7 +27,9 @@ public:
     
     virtual void updateColour()
     {
-        setColour(Label::textColourId, MelissaUISettings::getTextColour());
+        using namespace juce;
+        
+        setColour(juce::Label::textColourId, MelissaUISettings::getTextColour());
         setColour(ComboBox::textColourId, MelissaUISettings::getTextColour());
         setColour(ListBox::backgroundColourId, Colours::transparentWhite);
         setColour(ListBox::textColourId, MelissaUISettings::getTextColour());
@@ -44,21 +46,21 @@ public:
         setColour(ToggleButton::tickColourId, MelissaUISettings::getTextColour());
     }
     
-    virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawButtonBackground(juce::Graphics& g, juce::Button& b, const juce::Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        g.setColour(Colour(MelissaUISettings::getSubColour()));
+        g.setColour(juce::Colour(MelissaUISettings::getSubColour()));
         g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
     }
     
-    virtual void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawButtonText(juce::Graphics& g, juce::TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
         g.setColour(MelissaUISettings::getTextColour(highlighted ? 1.f : 0.8f));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), juce::Justification::centred);
     }
     
-    virtual void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawToggleButton(juce::Graphics& g, juce::ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(MelissaUISettings::getMainColour());
         
@@ -81,12 +83,14 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour(textAlpha));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
-        g.drawText(tb.getButtonText(), 4, 0, tb.getWidth() - 4, tb.getHeight(), Justification::centredLeft);
+        g.drawText(tb.getButtonText(), 4, 0, tb.getWidth() - 4, tb.getHeight(), juce::Justification::centredLeft);
     }
     
-    virtual void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
+    virtual void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const juce::Slider::SliderStyle style, juce::Slider &s) override
     {
-        if (style == Slider::LinearHorizontal)
+        using namespace juce;
+        
+        if (style == juce::Slider::LinearHorizontal)
         {
             const auto& c = s.getLocalBounds();
             const float xOffset = lineThickness / 2;
@@ -107,7 +111,7 @@ public:
                 const int y0 = rect.getY() + 1;
                 const int y1 = rect.getY() + 1 + rect.getHeight();
                 
-                //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
+                //g.setGradientFill(ColourGradient(Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.4f), x0, (y1 + y0) / 2, juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, 0.6f), x2 - x0, (y1 + y0) / 2, false));
                 g.setColour(MelissaUISettings::getAccentColour(s.isMouseOver() ? 1.f : 0.6f));
                 
                 Path path;
@@ -131,16 +135,18 @@ public:
         }
     }
     
-    virtual void drawLinearSliderThumb (Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle, Slider &) override
+    virtual void drawLinearSliderThumb (juce::Graphics &, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const juce::Slider::SliderStyle, juce::Slider &) override
     {
         
     }
     
-    virtual void drawRotarySlider(Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override
+    virtual void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider& slider) override
     {
+        using namespace juce;
+        
         const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
         constexpr float thickness = 4.f;
-        const auto colour = Colour(MelissaUISettings::getAccentColour());
+        const auto colour = juce::Colour(MelissaUISettings::getAccentColour());
         
         bool centerBase = slider.getRange().getStart() < 0;
         
@@ -188,13 +194,15 @@ public:
         }
     }
     
-    virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override
+    virtual void drawPopupMenuBackground (juce::Graphics& g, int width, int height) override
     {
         g.fillAll(MelissaUISettings::getMainColour());
     }
     
-    virtual void drawPopupMenuItem(Graphics& g, const Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const String& text, const String &shortcutKeyText, const Drawable *icon, const Colour *textColour) override
+    virtual void drawPopupMenuItem(juce::Graphics& g, const juce::Rectangle<int>& area, bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu, const juce::String& text, const juce::String &shortcutKeyText, const juce::Drawable *icon, const juce::Colour *textColour) override
     {
+        using namespace juce;
+        
         g.setColour(MelissaUISettings::getMainColour());
         g.fillRect(area);
         
@@ -240,7 +248,7 @@ public:
         }
     }
     
-    virtual void drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent &) override
+    virtual void drawMenuBarBackground (juce::Graphics& g, int width, int height, bool isMouseOverBar, juce::MenuBarComponent &) override
     {
         if (isMouseOverBar)
         {
@@ -248,47 +256,57 @@ public:
         }
         else
         {
-            g.fillAll(Colour(MelissaUISettings::getMainColour(0.8f)));
+            g.fillAll(juce::Colour(MelissaUISettings::getMainColour(0.8f)));
         }
     }
     
-    virtual Font getTextButtonFont(TextButton& tb, int buttonHeight) override
+    virtual juce::Font getTextButtonFont(juce::TextButton& tb, int buttonHeight) override
     {
-        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
+        return juce::Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     }
     
-    virtual void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
+    virtual void fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
         const auto& c = te.getLocalBounds();
         g.setColour(MelissaUISettings::getSubColour());
         g.fillRoundedRectangle(0, 0, c.getWidth(), c.getHeight(), c.getHeight() / 2);
     }
     
-    virtual void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    virtual void drawTextEditorOutline(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
 
     }
      
-    virtual void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
+    virtual void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& cb) override
     {
+        const bool enabled = cb.isEnabled();
         const auto b = cb.getLocalBounds();
+        
         g.setColour(MelissaUISettings::getSubColour());
         g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
         
-        g.setColour(MelissaUISettings::getTextColour(0.5f));
+        g.setColour(MelissaUISettings::getTextColour(enabled ? 0.5f : 0.1f));
+        
         constexpr int triHeight = 6;
         constexpr int triWidth = 12;
         g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
         g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
     }
     
-    virtual Font getComboBoxFont(ComboBox &) override
+    virtual juce::Font getComboBoxFont(juce::ComboBox &) override
     {
-        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        return juce::Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
     }
     
-    virtual void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
+    virtual void positionComboBoxText(juce::ComboBox& cb, juce::Label& labelToPosition) override
     {
+        labelToPosition.setBounds(cb.getLocalBounds().reduced(cb.getHeight() / 2, 0));
+    }
+    
+    virtual void drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
+    {
+        using namespace juce;
+        
         const bool highlight = isMouseOver || isMouseDown;
         
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlight ? 0.6f : 0.4f));
@@ -303,7 +321,7 @@ public:
         }
     }
     
-    virtual void drawTableHeaderBackground(Graphics& g, TableHeaderComponent& c) override
+    virtual void drawTableHeaderBackground(juce::Graphics& g, juce::TableHeaderComponent& c) override
     {
         g.setColour(MelissaUISettings::getMainColour());
         g.fillAll();
@@ -311,26 +329,27 @@ public:
         g.fillRect(10, c.getHeight() - 2, c.getWidth() - 20, 1);
     }
     
-    virtual void drawTableHeaderColumn(Graphics& g, TableHeaderComponent&, const String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
+    virtual void drawTableHeaderColumn(juce::Graphics& g, juce::TableHeaderComponent&, const juce::String& columnName, int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags) override
     {
         g.setColour(MelissaUISettings::getTextColour());
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(columnName, 10, 0, width - 1, height, Justification::left);
+        g.drawText(columnName, 10, 0, width - 1, height, juce::Justification::left);
     }
     
-    virtual Font getPopupMenuFont() override
+    virtual juce::Font getPopupMenuFont() override
     {
-        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
+        return juce::Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     }
     
-    
-    virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override
+    virtual juce::Font getMenuBarFont(juce::MenuBarComponent&, int itemIndex, const juce::String& itemText) override
     {
-        return Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
+        return juce::Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
     }
     
-    virtual Rectangle<int> getTooltipBounds(const String& tipText, juce::Point<int> screenPos, Rectangle<int> parentArea) override
+    virtual juce::Rectangle<int> getTooltipBounds(const juce::String& tipText, juce::Point<int> screenPos, juce::Rectangle<int> parentArea) override
     {
+        using namespace juce;
+        
         int w, h;
         std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)), tipText);
         w += 10;
@@ -341,8 +360,10 @@ public:
                                w, h).constrainedWithin(parentArea);
     }
     
-    virtual void drawTooltip(Graphics& g, const String& text, int width, int height) override
+    virtual void drawTooltip(juce::Graphics& g, const juce::String& text, int width, int height) override
     {
+        using namespace juce;
+        
         Rectangle<int> bounds(width, height);
         
         g.setColour(MelissaUISettings::getSubColour());
@@ -358,15 +379,15 @@ public:
     }
     
 private:
-    std::unique_ptr<Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
+    std::unique_ptr<juce::Drawable> goUpDirectoryIcon_, goUpDirectoryHighlightedIcon_;
 };
 
-class MelissaLookAndFeel_Tab : public LookAndFeel_V4
+class MelissaLookAndFeel_Tab : public juce::LookAndFeel_V4
 {
 public:
     virtual ~MelissaLookAndFeel_Tab() {};
     
-    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void drawToggleButton(juce::Graphics& g, juce::ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(MelissaUISettings::getMainColour());
         
@@ -392,7 +413,7 @@ public:
         
         g.setColour(MelissaUISettings::getTextColour(textAlpha));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), juce::Justification::centred);
     }
 };
 
@@ -410,23 +431,25 @@ public:
     {
         MelissaLookAndFeel::updateColour();
         
-        setColour(Label::textColourId, MelissaUISettings::getTextColour());
-        setColour(DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getAccentColour(0.4f));
-        setColour(DirectoryContentsDisplayComponent::textColourId, MelissaUISettings::getTextColour());
-        setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, MelissaUISettings::getTextColour());
-        setColour(ComboBox::textColourId, MelissaUISettings::getTextColour());
+        setColour(juce::Label::textColourId, MelissaUISettings::getTextColour());
+        setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, MelissaUISettings::getAccentColour(0.4f));
+        setColour(juce::DirectoryContentsDisplayComponent::textColourId, MelissaUISettings::getTextColour());
+        setColour(juce::DirectoryContentsDisplayComponent::highlightedTextColourId, MelissaUISettings::getTextColour());
+        setColour(juce::ComboBox::textColourId, MelissaUISettings::getTextColour());
         
-        setColour(FileBrowserComponent::currentPathBoxTextColourId, MelissaUISettings::getTextColour());
-        setColour(FileBrowserComponent::filenameBoxTextColourId, MelissaUISettings::getTextColour());
+        setColour(juce::FileBrowserComponent::currentPathBoxTextColourId, MelissaUISettings::getTextColour());
+        setColour(juce::FileBrowserComponent::filenameBoxTextColourId, MelissaUISettings::getTextColour());
     }
     
-    virtual void drawFileBrowserRow(Graphics& g, int width, int height,
-                            const File&, const String& filename, Image* icon,
-                            const String& fileSizeDescription,
-                            const String& fileTimeDescription,
+    virtual void drawFileBrowserRow(juce::Graphics& g, int width, int height,
+                                    const juce::File&, const juce::String& filename, juce::Image* icon,
+                            const juce::String& fileSizeDescription,
+                            const juce::String& fileTimeDescription,
                             bool isDirectory, bool isItemSelected,
-                            int /*itemIndex*/, DirectoryContentsDisplayComponent& dcc) override
+                                    int /*itemIndex*/, juce::DirectoryContentsDisplayComponent& dcc) override
     {
+        using namespace juce;
+        
         auto fileListComp = dynamic_cast<Component*> (&dcc);
 
         if (isItemSelected)
@@ -464,8 +487,10 @@ public:
 
     }
     
-    virtual Button* createFileBrowserGoUpButton() override
+    virtual juce::Button* createFileBrowserGoUpButton() override
     {
+        using namespace juce;
+        
         auto goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
 
         Path arrowPath;
@@ -484,7 +509,7 @@ public:
         return goUpButton;
     }
     
-    virtual void layoutFileBrowserComponent(FileBrowserComponent &browserComp, DirectoryContentsDisplayComponent *fileListComponent, FilePreviewComponent *previewComp, ComboBox *currentPathBox, TextEditor *filenameBox, Button *goUpButton) override
+    virtual void layoutFileBrowserComponent(juce::FileBrowserComponent &browserComp, juce::DirectoryContentsDisplayComponent *fileListComponent, juce::FilePreviewComponent *previewComp, juce::ComboBox *currentPathBox, juce::TextEditor *filenameBox, juce::Button *goUpButton) override
     {
         const auto w = browserComp.getWidth();
         const auto h = browserComp.getHeight();
@@ -497,36 +522,37 @@ public:
         //filenameBox->setBounds(0, h - controlHeight, w, controlHeight);
         
         const int listHeight = h - (controlHeight + margin);
-        if (auto listAsComp = dynamic_cast<Component*>(fileListComponent))
+        if (auto listAsComp = dynamic_cast<juce::Component*>(fileListComponent))
         {
             listAsComp->setBounds(0, currentPathBox->getBottom() + margin, w, listHeight);
         }
     }
     
-    virtual void drawComboBox(Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& cb) override
+    virtual void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& cb) override
     {
+        const bool enabled = cb.isEnabled();
         const auto b = cb.getLocalBounds();
         g.setColour(MelissaUISettings::getMainColour());
         g.fillRoundedRectangle(b.toFloat(), b.getHeight() / 2);
         
-        g.setColour(MelissaUISettings::getTextColour(0.5f));
+        g.setColour(MelissaUISettings::getTextColour(enabled ? 0.5f : 0.1f));
         constexpr int triHeight = 6;
         constexpr int triWidth = 12;
         g.drawLine(width - 10 - triWidth, (height - triHeight) / 2, width - 10 - triWidth / 2, (height + triHeight) / 2, lineThickness);
         g.drawLine(width - 10 - triWidth / 2, (height + triHeight) / 2, width - 10, (height - triHeight) / 2, lineThickness);
     }
     
-    virtual void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
+    virtual void fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
         // no background
     }
     
-    virtual void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    virtual void drawTextEditorOutline(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
         // no background
     }
     
-    virtual void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    virtual void drawButtonBackground(juce::Graphics& g, juce::Button& b, const juce::Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         g.setColour(MelissaUISettings::getMainColour());
         g.fillRoundedRectangle(0.f, 0.f, b.getWidth(), b.getHeight(), 6);
@@ -538,20 +564,20 @@ class MelissaLookAndFeel_Memo : public MelissaLookAndFeel
 public:
     virtual ~MelissaLookAndFeel_Memo() {};
     
-    void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
+    void fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
         g.fillAll(MelissaUISettings::getMainColour());
     }
     
-    void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    void drawTextEditorOutline(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
     }
     
-    void drawScrollbar(Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
+    void drawScrollbar(juce::Graphics& g, juce::ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override
     {
         const bool highlight = isMouseOver || isMouseDown;
         
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlight ? 0.6f : 0.4f));
+        g.setColour(juce::Colour::fromFloatRGBA(1.f, 1.f, 1.f, highlight ? 0.6f : 0.4f));
         
         if (isScrollbarVertical)
         {
@@ -564,14 +590,14 @@ public:
     }
 };
 
-class MelissaLookAndFeel_SlideToggleButton : public LookAndFeel_V4
+class MelissaLookAndFeel_SlideToggleButton : public juce::LookAndFeel_V4
 {
-     void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void drawToggleButton(juce::Graphics& g, juce::ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         const bool on = tb.getToggleState();
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
-        const auto colour = Colour(MelissaUISettings::getAccentColour());
+        const auto colour = juce::Colour(MelissaUISettings::getAccentColour());
         
         auto outsideRect = tb.getLocalBounds().reduced(lineThickness, lineThickness).toFloat();
         g.setColour(colour);
@@ -588,16 +614,18 @@ class MelissaLookAndFeel_SlideToggleButton : public LookAndFeel_V4
     }
 };
 
-class MelissaLookAndFeel_CircleToggleButton : public LookAndFeel_V4
+class MelissaLookAndFeel_CircleToggleButton : public juce::LookAndFeel_V4
 {
 public:
-    void setFont(Font font)
+    void setFont(juce::Font font)
     {
         font_ = font;
     }
     
-    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void drawToggleButton(juce::Graphics& g, juce::ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+        using namespace juce;
+        
         const bool on = tb.getToggleState();
         const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
         
@@ -626,16 +654,18 @@ public:
     }
     
 private:
-    Font font_;
+    juce::Font font_;
 };
 
-class MelissaLookAndFeel_SelectorToggleButton : public LookAndFeel_V4
+class MelissaLookAndFeel_SelectorToggleButton : public juce::LookAndFeel_V4
 {
 public:
     virtual ~MelissaLookAndFeel_SelectorToggleButton() {};
     
-    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void drawToggleButton(juce::Graphics& g, juce::ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+        using namespace juce;
+        
         float alpha = 0.2f;
         if (tb.getToggleState())
         {
@@ -672,13 +702,15 @@ public:
     }
 };
 
-class MelissaLookAndFeel_StemToggleButton : public LookAndFeel_V4
+class MelissaLookAndFeel_StemToggleButton : public juce::LookAndFeel_V4
 {
 public:
     virtual ~MelissaLookAndFeel_StemToggleButton() {};
     
-    void drawToggleButton(Graphics& g, ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void drawToggleButton(juce::Graphics& g, juce::ToggleButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+        using namespace juce;
+        
         const int height = tb.getHeight();
         const auto localBounds = tb.getLocalBounds().toFloat();
         const bool highlightedOrDown = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
@@ -706,13 +738,15 @@ public:
     }
 };
 
-class MelissaLookAndFeel_CrossFader : public LookAndFeel_V4
+class MelissaLookAndFeel_CrossFader : public juce::LookAndFeel_V4
 {
 public:
     virtual ~MelissaLookAndFeel_CrossFader() { }
     
-    void drawLinearSlider(Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const Slider::SliderStyle style, Slider &s) override
+    void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const juce::Slider::SliderStyle style, juce::Slider &s) override
     {
+        using namespace juce;
+        
         if (style != Slider::LinearHorizontal) return;
         
         const auto& c = s.getLocalBounds();
@@ -729,7 +763,7 @@ public:
     }
 };
 
-class MelissaLookAndFeel_SimpleTextButton : public LookAndFeel_V4
+class MelissaLookAndFeel_SimpleTextButton : public juce::LookAndFeel_V4
 {
 public:
     MelissaLookAndFeel_SimpleTextButton()
@@ -739,31 +773,32 @@ public:
     
     virtual ~MelissaLookAndFeel_SimpleTextButton() { }
     
-    void drawButtonBackground(Graphics& g, Button& b, const Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override {}
+    void drawButtonBackground(juce::Graphics& g, juce::Button& b, const juce::Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override {}
     
-    void drawButtonText(Graphics& g, TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    void drawButtonText(juce::Graphics& g, juce::TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+        using namespace juce;
         g.setColour(MelissaUISettings::getTextColour(shouldDrawButtonAsHighlighted ? 0.8f : 0.4f));
         g.setFont(font_);
         g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
     }
 
-    void setFont(Font font) { font_ = font; }
-    Font getFont() const { return font_; }
+    void setFont(juce::Font font) { font_ = font; }
+    juce::Font getFont() const { return font_; }
     
 private:
-    Font font_;
+    juce::Font font_;
 };
 
 class MelissaLookAndFeel_SimpleTextEditor : public MelissaLookAndFeel
 {
 public:
-    void fillTextEditorBackground(Graphics& g, int width, int height, TextEditor& te) override
+    void fillTextEditorBackground(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
         // no background
     }
 
-    void drawTextEditorOutline(Graphics& g, int width, int height, TextEditor& te) override
+    void drawTextEditorOutline(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
     }
 };

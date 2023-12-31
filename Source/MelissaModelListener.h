@@ -33,6 +33,7 @@ enum PlayPart
     kPlayPart_Drums_Solo,
     kPlayPart_Others_Solo,
     kPlayPart_Custom,
+    kNumPlayParts
 };
 
 enum CustomPartVolume
@@ -96,5 +97,6 @@ public:
     virtual void playPartChanged(PlayPart playPart) {}
     virtual void customPartVolumeChanged(CustomPartVolume part, float volume) {}
     virtual void mainVolumeChanged(float mainVolume) {}
+    virtual void preCountSwitchChanged(bool preCountSwitch) {}
 };
 
