@@ -8,10 +8,10 @@
 
 ## Downloads
 ### macOS
-- [Version 3.1.0](https://github.com/mosynthkey/Melissa/releases/download/v3.1.0/Melissa_3_1_0.dmg)
+- [Version 3.2.0](https://github.com/mosynthkey/Melissa/releases/download/v3.2.0/Melissa_3_2_0.dmg)
 
 ### Windows
-- [Version 3.1.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.1.0/Melissa_3.1.0_64.zip)
+- [Version 3.2.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v3.2.0/Melissa_3.2.0_64.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
@@ -45,4 +45,4 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 
 ## License
-[LGPL-2.1 (c) 2023 Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2024 Masaki Ono](LICENSE)
