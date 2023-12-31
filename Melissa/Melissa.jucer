@@ -4,7 +4,7 @@
               headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Source&#10;../../../Source/Audio&#10;../../../Source/Audio/soundtouch&#10;../../../Source/UI"
               version="3.1.0" companyName="Melissa Audio" companyCopyright="Copyright(c) 2023 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.melissa-audio.melissa"
-              compilerFlagSchemes="" defines="_USE_MATH_DEFINES&#10;MELISSA_FULL_VERSION"
+              compilerFlagSchemes="" defines="_USE_MATH_DEFINES&#10;MELISSA_FULL_VERSION&#10;JUCE_SILENCE_XCODE_15_LINKER_WARNING"
               displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
@@ -283,7 +283,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" useHeaderMap="1" smallIcon="Y3ewMD"
-               bigIcon="Y3ewMD" extraLinkerFlags="-L../../../ThirdParty/spleeterpp/lib&#10;-L../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib"
+               bigIcon="Y3ewMD" extraLinkerFlags="-L../../../ThirdParty/spleeterpp/lib&#10;-L../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib&#10;-Wl,-ld_classic"
                extraCompilerFlags="-I../../../ThirdParty/spleeterpp/include&#10;-I../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include"
                externalLibraries="spleeter&#10;spleeter_common&#10;tensorflow&#10;tensorflow_framework"
                embeddedFrameworks="../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib&#10;../../../ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib"
