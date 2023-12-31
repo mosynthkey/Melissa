@@ -9,6 +9,7 @@
 #include "MelissaExportComponent.h"
 #include "MelissaExportManager.h"
 #include "MelissaModalDialog.h"
+#include "MelissaStemProvider.h"
 
 using namespace juce;
 
@@ -226,7 +227,16 @@ void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat for
     File file(dataSource->getCurrentSongFilePath());
     
     std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
-    fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{file, 1.f});
+    
+    if (MelissaStemProvider::getInstance()->getStemProviderStatus() == kStemProviderStatus_Available)
+    {
+        
+    }
+    else
+    {
+        fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{file, 1.f});
+    }
+    
     exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
     exporter->setExportSettings(format, fileToExport);
     MelissaExportManager::getInstance()->regist(std::move(exporter));
@@ -248,7 +258,7 @@ void MelissaExportComponent::exportCurrentSongPracticelist(MelissaExporter::Expo
     {
         std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
         fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{filePath, 1.f});
-        exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, eqSwitch, model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 3000, 1000, 1000);
+        exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, eqSwitch, model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 1000, 500, 500);
     }
     
     exporter->setExportSettings(format, fileToExport);
@@ -276,14 +286,14 @@ void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExport
             {
                 std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
                 fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{filePath, 1.f});
-                exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, false, 0.f, 0.f, 0.f, 3000, 1000, 1000);
+                exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, false, 0.f, 0.f, 0.f, 1000, 500, 500);
             }
         }
         else
         {
             std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{filePath, 1.f});
-            exporter->addInputFile(fileAndVolumes, song.pitch_, song.speed_, 0.f, 1.f, false, 0.f, 0.f, 0.f, 3000, 1000, 1000);
+            exporter->addInputFile(fileAndVolumes, song.pitch_, song.speed_, 0.f, 1.f, false, 0.f, 0.f, 0.f, 1000, 500, 500);
         }
 
     }
