@@ -85,8 +85,8 @@ public:
         constexpr int lineWidth = 3;
         g.fillRect(isFullVersion ? 150 : 190, 9, lineWidth, 32);
         g.fillRect(isFullVersion ? 340 : 380, 9, lineWidth, 32);
-        g.fillRect(getWidth() - 370, 9, lineWidth, 32);
-        g.fillRect((getWidth() - lineWidth) / 2, 9, lineWidth, 32);
+        g.fillRect(getWidth() - 470, 9, lineWidth, 32);
+        //g.fillRect((getWidth() - lineWidth) / 2, 9, lineWidth, 32);
         
         if (!isDark) g.fillRect(0, getHeight() - lineWidth, getWidth(), lineWidth);
         
@@ -489,7 +489,7 @@ void MainComponent::createUI()
         
         fileNameLabel_ = make_unique<Label>();
         fileNameLabel_->setJustificationType(Justification::centred);
-        fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
+        fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Large));
         componentToAdd->addAndMakeVisible(fileNameLabel_.get());
         
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
@@ -651,6 +651,7 @@ void MainComponent::createUI()
         componentToAdd->addAndMakeVisible(bResetButton_.get());
         
         preCountOnOffButton_ = make_unique<ToggleButton>();
+#if defined(ENABLE_PRECOUNT)
         preCountOnOffButton_->setTooltip(TRANS("precount_switch"));
         preCountOnOffButton_->setClickingTogglesState(true);
         preCountOnOffButton_->setLookAndFeel(&slideToggleLaf_);
@@ -660,8 +661,10 @@ void MainComponent::createUI()
             model_->setPreCountSwitch(on);
         };
         componentToAdd->addAndMakeVisible(preCountOnOffButton_.get());
+#endif
         
         preCountSettingButton_ = make_unique<TextButton>();
+#if defined(ENABLE_PRECOUNT)
         preCountSettingButton_->setButtonText("Pre-count");
         preCountSettingButton_->setTooltip(TRANS("precount_setting"));
         preCountSettingButton_->onClick = [this]() { resetLoop(); };
@@ -672,6 +675,7 @@ void MainComponent::createUI()
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("precount_settings"));
         };
         componentToAdd->addAndMakeVisible(preCountSettingButton_.get());
+#endif
 
         resetButton_ = make_unique<TextButton>();
         resetButton_->setButtonText("Reset");
@@ -1537,7 +1541,7 @@ void MainComponent::resized_Desktop()
         constexpr int kMainVolumeWidth = 140;
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
         
-        constexpr int kAudioDeviceButtonWidth = 200;
+        constexpr int kAudioDeviceButtonWidth = 300;
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
         
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
@@ -1549,7 +1553,7 @@ void MainComponent::resized_Desktop()
     
     constexpr int kOffset = 20;
     waveformComponent_->setBounds(30, headerComponent_->getBottom() + 40, getWidth() - 30 * 2, 160);
-    markerMemoComponent_->setBounds(waveformComponent_->getX() - kOffset, waveformComponent_->getY() - 36, waveformComponent_->getWidth() - kOffset * 2, 30);
+    markerMemoComponent_->setBounds(waveformComponent_->getX() + kOffset, waveformComponent_->getY() - 36, waveformComponent_->getWidth() - kOffset * 2, 30);
     
     controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
     
@@ -2487,7 +2491,9 @@ void MainComponent::playPartChanged(PlayPart playPart)
 
 void MainComponent::preCountSwitchChanged(bool preCountSwitch)
 {
+#if defined(ENABLE_PRECOUNT)
     preCountOnOffButton_->setToggleState(preCountSwitch, dontSendNotification);
+#endif
 }
 
 void MainComponent::controlMessageReceived(const String& controlMessage)

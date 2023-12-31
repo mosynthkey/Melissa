@@ -608,7 +608,9 @@ void MelissaAudioEngine::playPartChanged(PlayPart playPart)
 
 void MelissaAudioEngine::preCountSwitchChanged(bool preCountSwitch)
 {
+#if defined(ENABLE_PRECOUNT)
     enableCountIn_ = preCountSwitch;
+#endif
 }
 
 void MelissaAudioEngine::updateLoopParameters()
@@ -628,7 +630,9 @@ void MelissaAudioEngine::setupPreCountIfNeeded()
 {
     if (enableCountIn_ && playbackStatus_ == kPlaybackStatus_Playing)
     {
+#if defined(ENABLE_PRECOUNT)
         forcePreCountOn_ = true;
+#endif
         processStartIndex_ = aIndex_;
         needToReset_ = true;
     }

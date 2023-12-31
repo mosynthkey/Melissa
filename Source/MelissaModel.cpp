@@ -288,8 +288,10 @@ void MelissaModel::setMainVolume(float mainVolume)
 
 void MelissaModel::setPreCountSwitch(bool preCountSwitch)
 {
+#if defined(ENABLE_PRECOUNT)
     preCountSwitch_ = preCountSwitch;
     for (auto&& l : listeners_) l->preCountSwitchChanged(preCountSwitch_);
+#endif
 }
 
 void MelissaModel::addListener(MelissaModelListener* listener)
