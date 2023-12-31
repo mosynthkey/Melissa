@@ -117,21 +117,25 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
     targetExplanationLabel_->setJustificationType(Justification::centred);
     addAndMakeVisible(targetExplanationLabel_.get());
     
+#if defined(ENABLE_PLAYLIST_EXPORT)
     playlistLabel_= std::make_unique<Label>();
     playlistLabel_->setText(TRANS("playlist"), dontSendNotification);
     addAndMakeVisible(playlistLabel_.get());
     
     playlistComboBox_ = std::make_unique<ComboBox>();
     addAndMakeVisible(playlistComboBox_.get());
+#endif
     
     eqButton_ = std::make_unique<ToggleButton>();
     eqButton_->setButtonText(TRANS("export_include_eq"));
     eqButton_->setLookAndFeel(&toggleLaf_);
     addAndMakeVisible(eqButton_.get());
     
+#if defined(ENABLE_PLAYLIST_EXPORT)
     explanationLabel_= std::make_unique<Label>();
     explanationLabel_->setText(TRANS("export_explanation"), dontSendNotification);
     addAndMakeVisible(explanationLabel_.get());
+#endif
     
     exportButton_ = std::make_unique<TextButton>();
     exportButton_->setButtonText(TRANS("save"));
@@ -151,6 +155,7 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
                 {
                     exportCurrentSongPracticelist(exportFormat, chooser.getResult());
                 }
+#if defined(ENABLE_PLAYLIST_EXPORT)
                 else if (selectedTarget_ == kExportTarget_Playlist)
                 {
                     if (playlistComboBox_->getSelectedId() != 0)
@@ -165,6 +170,7 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
                         exportPlaylist(playlistComboBox_->getSelectedId() - 1, exportFormat, chooser.getResult(), true);
                     }
                 }
+#endif
             }
             MelissaModalDialog::close();
         });
@@ -202,9 +208,11 @@ void MelissaExportComponent::resized()
     targetExplanationLabel_->setBounds(margin + labelWidth, y, comboboxWidth, 30);
     y = targetExplanationLabel_->getBottom() + margin;
     
+#if defined(ENABLE_PLAYLIST_EXPORT)
     playlistLabel_->setBounds(margin + labelWidth + margin, y, labelWidth, 30);
     playlistComboBox_->setBounds(playlistLabel_->getRight() + margin, y, comboboxWidth - labelWidth - margin, 30);
     y = playlistLabel_->getBottom() + margin * 2;
+#endif
     
     formatLabel_->setBounds(margin, y, labelWidth, 30);
     formatComboBox_->setBounds(formatLabel_->getRight() + margin, y, comboboxWidth, 30);
@@ -213,10 +221,50 @@ void MelissaExportComponent::resized()
     eqButton_->setBounds(margin, y, getWidth() - margin * 2, 30);
     
     y = eqButton_->getBottom() + margin;
+#if defined(ENABLE_PLAYLIST_EXPORT)
     explanationLabel_->setBounds(margin, y, getWidth() - margin * 2, 60);
     
     y = explanationLabel_->getBottom() + margin;
+#endif
     exportButton_->setBounds(getWidth() - buttonWidth - margin, y, buttonWidth, 30);
+}
+
+void prepareFileAndVolumesFromCurrentSettings(std::vector<MelissaExporter::FileAndVolume>& fileAndVolumes)
+{
+    auto dataSource = MelissaDataSource::getInstance();
+    auto model = MelissaModel::getInstance();
+    auto provider = MelissaStemProvider::getInstance();
+    
+    File file(dataSource->getCurrentSongFilePath());
+    
+    if (provider->getStemProviderStatus() == kStemProviderStatus_Available)
+    {
+        std::map<std::string, File> stemFiles;
+        provider->getStemFiles(file, file, stemFiles);
+        
+        if (model->getPlayPart() == kPlayPart_Custom)
+        {
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["accompaniment"],  1.f});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["vocals"], 1.f + model->getCustomPartVolume(kCustomPartVolume_Vocal)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["piano"],  model->getCustomPartVolume(kCustomPartVolume_Piano)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["bass"],   model->getCustomPartVolume(kCustomPartVolume_Bass)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["drums"],  model->getCustomPartVolume(kCustomPartVolume_Drums)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["other"],  model->getCustomPartVolume(kCustomPartVolume_Others)});
+        }
+        else
+        {
+            const auto playPart = model->getPlayPart();
+            File files[] = {
+                file, stemFiles["accompaniment"], stemFiles["vocals"], stemFiles["piano"],
+                stemFiles["bass"], stemFiles["drums"], stemFiles["other"]
+            };
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{files[playPart],  1.f});
+        }
+    }
+    else
+    {
+        fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{file, 1.f});
+    }
 }
 
 void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat format, juce::File fileToExport)
@@ -224,19 +272,9 @@ void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat for
     auto exporter = std::make_unique<MelissaExporter>();
     auto dataSource = MelissaDataSource::getInstance();
     auto model = MelissaModel::getInstance();
-    File file(dataSource->getCurrentSongFilePath());
     
     std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
-    
-    if (MelissaStemProvider::getInstance()->getStemProviderStatus() == kStemProviderStatus_Available)
-    {
-        
-    }
-    else
-    {
-        fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{file, 1.f});
-    }
-    
+    prepareFileAndVolumesFromCurrentSettings(fileAndVolumes);
     exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
     exporter->setExportSettings(format, fileToExport);
     MelissaExportManager::getInstance()->regist(std::move(exporter));
@@ -257,7 +295,7 @@ void MelissaExportComponent::exportCurrentSongPracticelist(MelissaExporter::Expo
     for (auto&& prac : song.practiceList_)
     {
         std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
-        fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{filePath, 1.f});
+        prepareFileAndVolumesFromCurrentSettings(fileAndVolumes);
         exporter->addInputFile(fileAndVolumes, song.pitch_, prac.speed_, prac.aRatio_, prac.bRatio_, eqSwitch, model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 1000, 500, 500);
     }
     
@@ -304,15 +342,22 @@ void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExport
 
 void MelissaExportComponent::update()
 {
+#if defined(ENABLE_PLAYLIST_EXPORT)
     const bool enablePlaylist = (selectedTarget_ == kExportTarget_Playlist || selectedTarget_ == kExportTarget_Playlist_AllPractice);
     playlistLabel_->setEnabled(enablePlaylist);
     playlistComboBox_->setEnabled(enablePlaylist);
+#endif
     
-    String explanation[] = { TRANS("export_current"), TRANS("export_current_practice"), TRANS("export_playlist_all"), TRANS("export_playlist_practice") };
+    String explanation[] = { 
+        TRANS("export_current"), TRANS("export_current_practice"),
+#if defined(ENABLE_PLAYLIST_EXPORT)
+        TRANS("export_playlist_all"), TRANS("export_playlist_practice")
+#endif
+    };
     targetExplanationLabel_->setText(explanation[static_cast<int>(selectedTarget_)], dontSendNotification);
     
+#if defined(ENABLE_PLAYLIST_EXPORT)
     auto dataSource = MelissaDataSource::getInstance();
-    
     const int selectedId = playlistComboBox_->getSelectedId();
     playlistComboBox_->clear();
     const auto numPlaylists = dataSource->getNumOfPlaylists();
@@ -332,4 +377,5 @@ void MelissaExportComponent::update()
     {
         playlistComboBox_->setSelectedId(selectedId);
     }
+#endif
 }

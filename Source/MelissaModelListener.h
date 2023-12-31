@@ -33,6 +33,7 @@ enum PlayPart
     kPlayPart_Drums_Solo,
     kPlayPart_Others_Solo,
     kPlayPart_Custom,
+    kNumPlayParts
 };
 
 enum CustomPartVolume
