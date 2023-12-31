@@ -126,10 +126,10 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
     addAndMakeVisible(playlistComboBox_.get());
 #endif
     
-    eqButton_ = std::make_unique<ToggleButton>();
-    eqButton_->setButtonText(TRANS("export_include_eq"));
-    eqButton_->setLookAndFeel(&toggleLaf_);
-    addAndMakeVisible(eqButton_.get());
+    // eqButton_ = std::make_unique<ToggleButton>();
+    // eqButton_->setButtonText(TRANS("export_include_eq"));
+    // eqButton_->setLookAndFeel(&toggleLaf_);
+    // addAndMakeVisible(eqButton_.get());
     
 #if defined(ENABLE_PLAYLIST_EXPORT)
     explanationLabel_= std::make_unique<Label>();
@@ -182,7 +182,7 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
 
 MelissaExportComponent::~MelissaExportComponent()
 {
-    eqButton_->setLookAndFeel(nullptr);
+    // eqButton_->setLookAndFeel(nullptr);
 }
 
 void MelissaExportComponent::resized()
@@ -216,14 +216,12 @@ void MelissaExportComponent::resized()
     
     formatLabel_->setBounds(margin, y, labelWidth, 30);
     formatComboBox_->setBounds(formatLabel_->getRight() + margin, y, comboboxWidth, 30);
+    y = formatLabel_->getBottom() + margin * 2;
     
-    y = formatLabel_->getBottom() + margin;
-    eqButton_->setBounds(margin, y, getWidth() - margin * 2, 30);
-    
-    y = eqButton_->getBottom() + margin;
+    // eqButton_->setBounds(margin, y, getWidth() - margin * 2, 30);
+    // y = eqButton_->getBottom() + margin;
 #if defined(ENABLE_PLAYLIST_EXPORT)
     explanationLabel_->setBounds(margin, y, getWidth() - margin * 2, 60);
-    
     y = explanationLabel_->getBottom() + margin;
 #endif
     exportButton_->setBounds(getWidth() - buttonWidth - margin, y, buttonWidth, 30);
@@ -270,7 +268,6 @@ void prepareFileAndVolumesFromCurrentSettings(std::vector<MelissaExporter::FileA
 void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat format, juce::File fileToExport)
 {
     auto exporter = std::make_unique<MelissaExporter>();
-    auto dataSource = MelissaDataSource::getInstance();
     auto model = MelissaModel::getInstance();
     
     std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
@@ -290,7 +287,7 @@ void MelissaExportComponent::exportCurrentSongPracticelist(MelissaExporter::Expo
     
     MelissaDataSource::Song song;
     dataSource->getSong(filePath, song);
-    const bool eqSwitch = eqButton_->getToggleState() && model->getEqSwitch();
+    const bool eqSwitch = model->getEqSwitch();// eqButton_->getToggleState() && model->getEqSwitch();
     
     for (auto&& prac : song.practiceList_)
     {

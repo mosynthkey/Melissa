@@ -91,7 +91,7 @@ static const double TWOPI = (2 * M_PI);
 
 // Enable following define to create bpm analysis file:
 
-#define _CREATE_BPM_DEBUG_FILE
+// #define _CREATE_BPM_DEBUG_FILE
 
 #ifdef _CREATE_BPM_DEBUG_FILE
 

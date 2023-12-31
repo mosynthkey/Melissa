@@ -45,7 +45,7 @@ private:
     std::unique_ptr<juce::Label> formatLabel_;
     std::unique_ptr<juce::ComboBox> formatComboBox_;
     
-    std::unique_ptr<juce::ToggleButton> eqButton_;
+    // std::unique_ptr<juce::ToggleButton> eqButton_;
     
 #if defined(ENABLE_PLAYLIST_EXPORT)
     std::unique_ptr<juce::Label> explanationLabel_;

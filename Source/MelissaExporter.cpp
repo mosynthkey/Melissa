@@ -72,6 +72,11 @@ void MelissaExporter::exportToFile()
     OggVorbisAudioFormat oggFormat;
     std::unique_ptr<AudioFormatWriter> writer;
     
+    if (filePathToExport_.existsAsFile())
+    {
+        filePathToExport_.deleteFile();
+    }
+    
     switch (format_)
     {
         case kExportFormat_wav48000_24:
