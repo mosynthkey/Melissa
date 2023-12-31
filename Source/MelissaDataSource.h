@@ -74,6 +74,8 @@ public:
     struct Previous
     {
         juce::String filePath_;
+        
+        float mainVolume_;
         float pitch_;
         
         float aRatio_;
@@ -117,7 +119,7 @@ public:
         UIState uiState_;
         
         Previous() :
-        filePath_(""), pitch_(0.f),
+        filePath_(""), mainVolume_(1.f), pitch_(0.f),
         aRatio_(0.f), bRatio_(1.f),
         outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
         /* metronomeSw_(false), */ bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),

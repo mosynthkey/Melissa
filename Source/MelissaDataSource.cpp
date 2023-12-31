@@ -102,6 +102,7 @@ void MelissaDataSource::loadSettingsFile(const File& file)
     {
         auto p = settings["previous"].getDynamicObject();
         if (p->hasProperty("file"))   previous_.filePath_    = p->getProperty("file");
+        if (p->hasProperty("main_volume")) previous_.mainVolume_ = p->getProperty("main_volume");
         if (p->hasProperty("pitch"))  previous_.pitch_       = p->getProperty("pitch");
         
         if (p->hasProperty("a"))      previous_.aRatio_      = p->getProperty("a");
@@ -296,6 +297,7 @@ void MelissaDataSource::saveSettingsFile()
     
     auto previous = new DynamicObject();
     previous->setProperty("file",   currentSongFilePath_);
+    previous->setProperty("main_volume", model_->getMainVolume());
     previous->setProperty("pitch",  model_->getPitch());
     previous->setProperty("a",      model_->getLoopAPosRatio());
     previous->setProperty("b",      model_->getLoopBPosRatio());
@@ -707,6 +709,7 @@ void MelissaDataSource::restorePreviousState()
 #endif
     
     loadFileAsync(file, [&]() {
+        model_->setMainVolume(previous_.mainVolume_);
         model_->setPitch(previous_.pitch_);
         model_->setLoopPosRatio(previous_.aRatio_, previous_.bRatio_);
         model_->setOutputMode(previous_.outputMode_);
