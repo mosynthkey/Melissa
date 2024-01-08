@@ -222,6 +222,8 @@ private:
     std::unique_ptr<juce::PopupMenu> extraAppleMenuItems_;
     std::unique_ptr<juce::MenuBarComponent> menuBar_;
     
+    std::unique_ptr<juce::Viewport> waveformViewport_;
+    std::unique_ptr<juce::Component> waveformHolderComponent_;
     std::unique_ptr<MelissaWaveformControlComponent> waveformComponent_;
     std::unique_ptr<MelissaMarkerMemoComponent> markerMemoComponent_;
     std::unique_ptr<juce::Label> controlComponent_;
@@ -421,10 +423,6 @@ private:
     std::unique_ptr<MelissaControlButton> controlButtons_[kNumControlButtons];
 #endif
     std::unique_ptr<juce::Label> safeAreaComponent_;
-    
-#ifdef JUCE_IOS
-    std::unique_ptr<TextButton> importButton_;
-#endif
     
     MelissaLookAndFeel laf_;
     MelissaLookAndFeel_FileBrowser browserLaf_;

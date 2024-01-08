@@ -531,13 +531,21 @@ void MainComponent::createUI()
     {
         Component* componentToAdd = isDesktop ? this : reinterpret_cast<Component*>(safeAreaComponent_.get());
         
+        waveformHolderComponent_ = make_unique<Component>();
+        //componentToAdd->addAndMakeVisible(waveformHolderComponent_.get());
+        
         waveformComponent_ = make_unique<MelissaWaveformControlComponent>();
-        componentToAdd->addAndMakeVisible(waveformComponent_.get());
+        waveformHolderComponent_->addAndMakeVisible(waveformComponent_.get());
         
         markerMemoComponent_ = make_unique<MelissaMarkerMemoComponent>();
         markerMemoComponent_->setMarkerListener(this);
         markerMemoComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
-        componentToAdd->addAndMakeVisible(markerMemoComponent_.get());
+        waveformHolderComponent_->addAndMakeVisible(markerMemoComponent_.get());
+        
+        waveformViewport_ = make_unique<Viewport>();
+        waveformViewport_->setScrollBarThickness(kScrollbarThichness);
+        componentToAdd->addAndMakeVisible(waveformViewport_.get());
+        waveformViewport_->setViewedComponent(waveformHolderComponent_.get(), false);
         
         popupMessage_ = std::make_unique<MelissaPopupMessageComponent>();
         componentToAdd->addChildComponent(popupMessage_.get());
@@ -1553,10 +1561,13 @@ void MainComponent::resized_Desktop()
     popupMessage_->setBounds(0, 10  + kHeaderHeight, getWidth(), 30);
     
     constexpr int kOffset = 20;
-    waveformComponent_->setBounds(30, headerComponent_->getBottom() + 40, getWidth() - 30 * 2, 160);
-    markerMemoComponent_->setBounds(waveformComponent_->getX() + kOffset, waveformComponent_->getY() - 36, waveformComponent_->getWidth() - kOffset * 2, 30);
+    waveformHolderComponent_->setSize(getWidth() * 2 - 30 * 2, 160 + 36);
+    waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
+    markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
     
-    controlComponent_->setBounds(0, waveformComponent_->getBottom() + 10, getWidth(), 230);
+    waveformViewport_->setBounds(30, headerComponent_->getBottom() + 4, getWidth() - 30 * 2, 160 + 36 + kScrollbarThichness);
+    
+    controlComponent_->setBounds(0, waveformViewport_->getBottom() + 10, getWidth(), 230);
     
     int y = controlComponent_->getY() + 10;
     
