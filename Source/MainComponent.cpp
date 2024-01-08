@@ -1819,9 +1819,17 @@ void MainComponent::resized_Mobile()
     
     // Waveform
     {
+        /*
+         constexpr int kOffset = 20;
+         waveformHolderComponent_->setSize(getWidth() * 2 - 30 * 2, 160 + 36);
+         waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
+         markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);*/
         constexpr int kWaveformOffset = 0;
-        waveformComponent_->setBounds(kXOffset, 50, width - kXOffset, 90);
-        markerMemoComponent_->setBounds(waveformComponent_->getX() - kWaveformOffset, waveformComponent_->getY() - 18, waveformComponent_->getWidth() + kWaveformOffset, 16);
+        waveformHolderComponent_->setSize(width, 90 + 18);
+        waveformComponent_->setBounds(0, 18, width, 90);
+        markerMemoComponent_->setBounds(0, 0, width, 16);
+        waveformViewport_->setBounds(kXOffset, 50 - 18, width, 50 + 90);
+        
         separators_[kSeparator_Upper]->setBounds(kXOffset, 140, width - kXOffset, 2);
         separators_[kSeparator_Lower]->setBounds(kXOffset, 192, width - kXOffset, 2);
     }
