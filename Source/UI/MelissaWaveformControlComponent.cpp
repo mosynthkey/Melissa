@@ -460,9 +460,10 @@ void MelissaWaveformControlComponent::markerUpdated()
 
 void MelissaWaveformControlComponent::mouseDown(float xRatio, bool isLeft)
 {
+    /*
     if (isLeft) return;
-    
     MelissaDataSource::getInstance()->addDefaultMarker(xRatio);
+     */
 }
 
 void MelissaWaveformControlComponent::arrangeMarkers() const
