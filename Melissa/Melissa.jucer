@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="xaCj7J" name="Melissa" projectType="guiapp" cppLanguageStandard="17"
-              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Source&#10;../../../Source/Audio&#10;../../../Source/Audio/soundtouch&#10;../../../Source/UI"
+              headerPath="../../../Submodule/soundtouch/include&#10;../../../Submodule/soundtouch/source/SoundTouch&#10;../../../Submodule/eigen&#10;../../../Submodule/json/single_include&#10;../../../Submodule/signalsmith-stretch&#10;../../../Submodule/signalsmith-stretch/dsp&#10;../../../Source&#10;../../../Source/Audio&#10;../../../Source/Audio/soundtouch&#10;../../../Source/UI"
               version="3.2.0" companyName="Melissa Audio" companyCopyright="Copyright(c) 2024 Masaki Ono"
               companyWebsite="https://github.com/mosynthkey/Melissa" bundleIdentifier="com.melissa-audio.melissa"
-              compilerFlagSchemes="" defines="_USE_MATH_DEFINES&#10;MELISSA_FULL_VERSION&#10;JUCE_SILENCE_XCODE_15_LINKER_WARNING"
+              compilerFlagSchemes="" defines="_USE_MATH_DEFINES&#10;MELISSA_FULL_VERSION&#10;JUCE_SILENCE_XCODE_15_LINKER_WARNING&#10;ENABLE_PRECOUNT"
               displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="M4NJn2" name="Melissa">
     <GROUP id="{EE97E7CC-C142-3129-F308-4160DE7B86CA}" name="Resource">
