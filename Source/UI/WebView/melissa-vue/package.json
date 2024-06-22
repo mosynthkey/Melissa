@@ -9,6 +9,8 @@
   "dependencies": {
     "@mdi/font": "6.2.95",
     "roboto-fontface": "*",
+    "unplugin-vue-router": "^0.10.0",
+    "vite-plugin-vue-layouts": "^0.11.0",
     "vue": "^3.4.21",
     "vuetify": "^3.5.8"
   },
