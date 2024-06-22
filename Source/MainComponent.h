@@ -44,6 +44,9 @@
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
+ 
+// Web view
+#include "WebViewBackendComponent.h"
 
 #ifdef JUCE_IOS
 #include "MelissaMobileSupport.h"
@@ -354,6 +357,8 @@ private:
     std::array<std::unique_ptr<MelissaSectionComponent>, kNumOfSections> sectionComponents_;
     
     std::unique_ptr<MelissaTutorialComponent> tutorialComponent_;
+    
+    std::unique_ptr<WebViewBackendComponent> webViewBackendComponent_;
     
     enum
     {

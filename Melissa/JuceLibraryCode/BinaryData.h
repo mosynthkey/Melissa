@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   webviewdummy_zip;
+    const int            webviewdummy_zipSize = 277;
+
     extern const char*   add_svg;
     const int            add_svgSize = 917;
 
@@ -87,7 +90,7 @@ namespace BinaryData
     const int            logo_pngSize = 110193;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 26;
+    const int namedResourceListSize = 27;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

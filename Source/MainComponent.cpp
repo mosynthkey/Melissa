@@ -1359,6 +1359,9 @@ void MainComponent::createUI()
     }
 #endif
     
+    webViewBackendComponent_ = std::make_unique<WebViewBackendComponent>();
+    addAndMakeVisible(webViewBackendComponent_.get());
+    
     updateSpeedModeTab(kSpeedModeTab_Basic);
     updateListMemoTab(kListMemoTab_Practice);
     updateFileChooserTab(kFileChooserTab_Browse);
@@ -1515,6 +1518,9 @@ void MainComponent::showFileChooser()
 
 void MainComponent::resized_Desktop()
 {
+    webViewBackendComponent_->setBounds(getBounds());
+    return;
+    
     constexpr int kHeaderHeight = 50;
     headerComponent_->setBounds(0, 0, getWidth(), kHeaderHeight);
     
