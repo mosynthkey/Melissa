@@ -2,7 +2,7 @@
   "name": "melissa-vue",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },
@@ -12,7 +12,8 @@
     "unplugin-vue-router": "^0.10.0",
     "vite-plugin-vue-layouts": "^0.11.0",
     "vue": "^3.4.21",
-    "vuetify": "^3.5.8"
+    "vuetify": "^3.5.8",
+    "juce-framework-frontend": "file:../../../../../JUCE/modules/juce_gui_extra/native/javascript"
   },
   "devDependencies": {
     "@babel/types": "^7.24.0",

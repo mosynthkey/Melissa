@@ -2,6 +2,7 @@
 
 #include <juce_gui_extra/juce_gui_extra.h>
 #include "SinglePageBrowser.h"
+#include "MelissaModel.h"
 
 //==============================================================================
 class WebViewBackendComponent
@@ -33,7 +34,7 @@ private:
         .withUserDataFolder(juce::File::getSpecialLocation(juce::File::SpecialLocationType::tempDirectory)))
         .withNativeIntegrationEnabled()
         .withNativeFunction("sayHello",
-            [safe_this = juce::Component::SafePointer(this)]
+                            [safe_this = juce::Component::SafePointer(this), this]
             (const juce::Array<juce::var>& args, std::function<void(juce::var)> complete)
             -> void
             {
@@ -46,6 +47,8 @@ private:
                 }
             
                 std::cout << "Hello, Webview Melissa!" << std::endl;
+                MelissaModel::getInstance()->togglePlaybackStatus();
+                webComponent.emitEventIfBrowserIsVisible("helloFromC++", "test");
                 return;
             })
         .withResourceProvider([this](const auto& url)

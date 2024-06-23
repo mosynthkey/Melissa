@@ -7,6 +7,9 @@
 // Plugins
 import { registerPlugins } from '@/plugins'
 
+// @ts-ignore
+import * as Juce from "juce-framework-frontend";
+
 // Components
 import App from './App.vue'
 

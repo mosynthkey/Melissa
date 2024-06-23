@@ -1810,6 +1810,10 @@ void MainComponent::resized_Mobile()
         return bounds;
     }();
     
+    webViewBackendComponent_->setBounds(safeBounds);
+    return;
+    
+    
     safeAreaComponent_->toBack();
     safeAreaComponent_->setBounds(safeBounds);
     const int width = safeAreaComponent_->getWidth();
