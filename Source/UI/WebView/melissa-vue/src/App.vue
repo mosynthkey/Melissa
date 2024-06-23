@@ -7,11 +7,36 @@
             <v-app-bar-title>Melissa</v-app-bar-title>
         </v-app-bar>
         <v-main>
-            <v-btn variant="tonal" @click="sayHello">
-                Say Hello
+
+            <v-btn elevation="2" icon></v-btn>
+
+            <v-btn variant="tonal" @click="excuteCommand('StartStop', 1)">
+                Play / Stop
             </v-btn>
-            <v-btn v-if="showButton" variant="tonal">
-                Button
+            <v-btn variant="tonal" @click="excuteCommand('Back', 1)">
+                Back
+            </v-btn>
+            <v-btn variant="tonal" @click="excuteCommand('Pitch_Minus', 1)">
+                Pitch -1
+            </v-btn>
+            <v-btn variant="tonal" @click="excuteCommand('Pitch_Plus', 1)">
+                Pitch +1
+            </v-btn>
+
+            <v-btn variant="tonal" @click="excuteCommand('Pitch_Reset', 1)">
+                Pitch Reset
+            </v-btn>
+
+            <v-btn variant="tonal" @click="excuteCommand('SetSpeed_Minus5', 1)">
+                Speed -1
+            </v-btn>
+
+            <v-btn variant="tonal" @click="excuteCommand('SetSpeed_Plus5', 1)">
+                Speed +1
+            </v-btn>
+
+            <v-btn variant="tonal" @click="excuteCommand('ResetSpeed', 1)">
+                Speed Reset
             </v-btn>
         </v-main>
         <v-bottom-navigation>
@@ -35,16 +60,11 @@
 import { ref } from 'vue';
 // @ts-ignore
 import * as Juce from "juce-framework-frontend";
-const sayHello = Juce.getNativeFunction("sayHello");
 
-const showButton = ref(true);
-
-const toggleButton = () => {
-    showButton.value = !showButton.value;
-};
+const excuteCommand = Juce.getNativeFunction("excuteCommand");
 
 // @ts-ignore
-const removalToken = window.__JUCE__.backend.addEventListener("helloFromC++", (objectFromBackend) => {
-    toggleButton();
+const removalToken = window.__JUCE__.backend.addEventListener("MessageFromMelissaModel", (objectFromBackend) => {
+    console.log(objectFromBackend);
 });
 </script>

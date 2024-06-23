@@ -80,15 +80,13 @@ WebViewBackendComponent::WebViewBackendComponent()
 #else
     webComponent.goToURL(juce::WebBrowserComponent::getResourceProviderRoot());
 #endif
+    
+    MelissaModel::getInstance()->addListener(this);
 }
 
 WebViewBackendComponent::~WebViewBackendComponent()
 {
-}
-
-void WebViewBackendComponent::emitCustomSoundChangedEvent(const juce::var& soundName)
-{
-    webComponent.emitEventIfBrowserIsVisible("onCustomSoundChanged", soundName);
+    MelissaModel::getInstance()->removeListener(this);
 }
 
 //==============================================================================
@@ -134,3 +132,136 @@ std::optional<juce::WebBrowserComponent::Resource> WebViewBackendComponent::getR
 
     return std::nullopt;
 }
+
+void WebViewBackendComponent::playbackStatusChanged(PlaybackStatus status)
+{
+    Array<juce::var> message = { juce::String("playbackStatusChanged"), static_cast<int>(status) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::playbackModeChanged(PlaybackMode mode)
+{
+    Array<juce::var> message = { juce::String("playbackModeChanged"), static_cast<int>(mode) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::musicVolumeChanged(float volume)
+{
+    Array<juce::var> message = { juce::String("musicVolumeChanged"), volume };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::pitchChanged(float semitone)
+{
+    Array<juce::var> message = { juce::String("pitchChanged"), semitone };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::speedChanged(int speed)
+{
+    Array<juce::var> message = { juce::String("speedChanged"), speed };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
+{
+    Array<juce::var> message = { juce::String("loopPosChanged"), aTimeMSec, aRatio, bTimeMSec, bRatio };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::playingPosChanged(float time, float ratio)
+{
+    Array<juce::var> message = { juce::String("playingPosChanged"), time, ratio };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::metronomeSwitchChanged(bool on)
+{
+    Array<juce::var> message = { juce::String("metronomeSwitchChanged"), static_cast<int>(on) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::bpmChanged(float bpm)
+{
+    Array<juce::var> message = { juce::String("bpmChanged"), bpm };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::beatPositionChanged(float beatPositionMSec)
+{
+    Array<juce::var> message = { juce::String("beatPositionChanged"), beatPositionMSec };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::accentChanged(int accent)
+{
+    Array<juce::var> message = { juce::String("accentChanged"), accent };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::metronomeVolumeChanged(float volume)
+{
+    Array<juce::var> message = { juce::String("metronomeVolumeChanged"), volume };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::musicMetronomeBalanceChanged(float balance)
+{
+    Array<juce::var> message = { juce::String("musicMetronomeBalanceChanged"), balance };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::outputModeChanged(OutputMode outputMode)
+{
+    Array<juce::var> message = { juce::String("outputModeChanged"), static_cast<int>(outputMode) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::eqSwitchChanged(bool on)
+{
+    Array<juce::var> message = { juce::String("eqSwitchChanged"), static_cast<int>(on) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::eqFreqChanged(size_t band, float freq)
+{
+    Array<juce::var> message = { juce::String("eqFreqChanged"), static_cast<int>(band), freq };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::eqGainChanged(size_t band, float gain)
+{
+    Array<juce::var> message = { juce::String("eqGainChanged"), static_cast<int>(band), gain };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::eqQChanged(size_t band, float q)
+{
+    Array<juce::var> message = { juce::String("eqQChanged"), static_cast<int>(band), q };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::playPartChanged(PlayPart playPart)
+{
+    Array<juce::var> message = { juce::String("playPartChanged"), static_cast<int>(playPart) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::customPartVolumeChanged(CustomPartVolume part, float volume)
+{
+    Array<juce::var> message = { juce::String("customPartVolumeChanged"), part, volume };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::mainVolumeChanged(float mainVolume)
+{
+    Array<juce::var> message = { juce::String("mainVolumeChanged"), mainVolume };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
+void WebViewBackendComponent::preCountSwitchChanged(bool preCountSwitch)
+{
+    Array<juce::var> message = { juce::String("preCountSwitchChanged"), static_cast<int>(preCountSwitch) };
+    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+}
+
