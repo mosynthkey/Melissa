@@ -1,10 +1,14 @@
 <template>
-    <div ref="waveformContainer" class="waveform-view" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave"
-        @click="handleClick">
-        <canvas ref="waveformCanvas" :width="canvasWidth" height="100"></canvas>
+    <div ref="waveformContainer" class="waveform-view">
+        <canvas ref="waveformCanvas" :width="canvasWidth" height="100" @mousemove="handleMouseMove"
+            @mouseleave="handleMouseLeave" @click="handleClick"></canvas>
         <canvas ref="timelineCanvas" :width="canvasWidth" height="20"></canvas>
         <div v-if="hoverPosition >= 0" :style="tooltipStyle" class="tooltip">
             {{ getPositionAsString(hoverPosition / numStrips) }}
+        </div>
+        <div v-if="loopStartRatio >= 0 && loopEndRatio > loopStartRatio" :style="selectionStyle" class="selection">
+            <div class="handle start-handle" @mousedown="startDrag('start', $event)"></div>
+            <div class="handle end-handle" @mousedown="startDrag('end', $event)"></div>
         </div>
     </div>
 </template>
@@ -31,6 +35,10 @@ const canvasWidth = ref(0);
 const hoverPosition = ref(-1);
 
 const songLengthMs = ref(0);
+
+const loopStartRatio = ref(0.2); // 初期値
+const loopEndRatio = ref(0.8); // 初期値
+const dragging = ref<null | 'start' | 'end'>(null);
 
 const loadWaveform = () => {
     requestWaveform().then((waveformAsJson: string) => {
@@ -104,7 +112,7 @@ const drawTimeline = () => {
     const minuteWidth = width / (songLengthMs.value / 60000);
 
     context.fillStyle = 'white';
-    context.font = '10px Roboto';
+    context.font = '10px Arial';
     context.textAlign = 'center';
 
     for (let i = 1; i <= totalMinutes; i++) {
@@ -168,10 +176,26 @@ const getPositionAsString = (position: number): string => {
 };
 
 const handleMouseMove = (event: MouseEvent) => {
+    event.preventDefault(); // ドラッグ中のデフォルト動作を防ぐ
     if (!waveformContainer.value) return;
     const rect = waveformContainer.value.getBoundingClientRect();
     const x = event.clientX - rect.left - 20; // 左のパディングを考慮
     hoverPosition.value = Math.floor((x / canvasWidth.value) * numStrips.value);
+
+    if (dragging.value) {
+        const ratio = x / canvasWidth.value;
+
+        if (dragging.value === 'start') {
+            const startRatio = Math.min(Math.max(ratio, 0), loopEndRatio.value - 0.01);
+            // loopStartRatio.value = startRatio;
+            excuteCommand('SetLoopStartValue', startRatio);
+        } else if (dragging.value === 'end') {
+            const endRatio = Math.max(Math.min(ratio, 1), loopStartRatio.value + 0.01);
+            //loopEndRatio.value = endRatio;
+            excuteCommand('SetLoopEndValue', endRatio);
+        }
+    }
+
     drawWaveform();
 };
 
@@ -181,6 +205,7 @@ const handleMouseLeave = () => {
 };
 
 const handleClick = (event: MouseEvent) => {
+    if (dragging.value) return; // ドラッグ中は再生位置を変更しない
     if (!waveformContainer.value) return;
     const rect = waveformContainer.value.getBoundingClientRect();
     const x = event.clientX - rect.left - 20; // 左のパディングを考慮
@@ -188,9 +213,36 @@ const handleClick = (event: MouseEvent) => {
     excuteCommand("PlaybackPositionValue", position);
 };
 
+const startDrag = (handle: 'start' | 'end', event: MouseEvent) => {
+    event.preventDefault(); // ドラッグ開始時のデフォルト動作を防ぐ
+    dragging.value = handle;
+};
+
+const handleMouseUp = (event: MouseEvent) => {
+    if (dragging.value) {
+        dragging.value = null;
+        event.preventDefault(); // ドラッグ終了時のデフォルト動作を防ぐ
+    }
+};
+
 let playbackUpdateInterval: number;
 let resizeObserver: ResizeObserver;
-let dataSourceToken = ref(null);
+let notificationToken = ref(null);
+
+const selectionStyle = computed(() => {
+    const startX = loopStartRatio.value * canvasWidth.value;
+    const endX = loopEndRatio.value * canvasWidth.value;
+    return {
+        position: 'absolute',
+        left: `${startX + 20}px`, // 左のパディングを考慮
+        width: `${endX - startX}px`,
+        top: '0',
+        height: '100px',
+        backgroundColor: 'rgba(0, 123, 255, 0.3)',
+        border: '1px solid rgba(0, 123, 255, 0.7)',
+        pointerEvents: 'none',
+    };
+});
 
 onMounted(() => {
     updateContainerWidth();
@@ -204,14 +256,19 @@ onMounted(() => {
 
     window.addEventListener('resize', updateContainerWidth);
 
-    dataSourceToken = window.__JUCE__.backend.addEventListener("MessageFromMelissaDataSource", (objectFromBackend) => {
-        console.log('messageFromMelissaDataSource');
-        console.log(objectFromBackend);
+    notificationToken = window.__JUCE__.backend.addEventListener("MelissaNotification", (objectFromBackend: any) => {
+        const message = objectFromBackend[0];
+        if (message == 'loopPosChanged') {
+            loopStartRatio.value = objectFromBackend[2];
+            loopEndRatio.value = objectFromBackend[4];
+        }
     });
 
     getCurrentValue("getLengthMSec").then((length: number) => {
         songLengthMs.value = length;
     });
+
+    window.addEventListener('mouseup', handleMouseUp);
 });
 
 onUnmounted(() => {
@@ -221,7 +278,8 @@ onUnmounted(() => {
     }
     window.removeEventListener('resize', updateContainerWidth);
 
-    window.__JUCE__.backend.removeEventListener(dataSourceToken);
+    window.__JUCE__.backend.removeEventListener(notificationToken);
+    window.removeEventListener('mouseup', handleMouseUp);
 });
 
 // @ts-ignore
@@ -236,7 +294,7 @@ onUnmounted(() => {
     /* Increased height to accommodate timeline */
     cursor: pointer;
     padding: 0 20px;
-    /* 左右に20pxのパ��ィングを設定 */
+    /* Increased height to accommodate timeline */
     box-sizing: border-box;
     /* パディングを要素の幅に含める */
 }
@@ -255,5 +313,32 @@ canvas {
     padding: 2px 5px;
     border-radius: 3px;
     pointer-events: none;
+}
+
+.selection {
+    position: absolute;
+    top: 0;
+    height: 100px;
+    background-color: rgba(0, 123, 255, 0.3);
+    border: 1px solid rgba(0, 123, 255, 0.7);
+    pointer-events: none;
+}
+
+.handle {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 100%;
+    background-color: rgba(0, 123, 255, 0.7);
+    cursor: ew-resize;
+    pointer-events: auto;
+}
+
+.start-handle {
+    left: 0;
+}
+
+.end-handle {
+    right: 0;
 }
 </style>

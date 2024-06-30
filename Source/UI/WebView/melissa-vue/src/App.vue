@@ -7,7 +7,9 @@
             <v-app-bar-title>Melissa</v-app-bar-title>
         </v-app-bar>
         <v-main>
-            <WaveformView />
+            <div class="waveform-container">
+                <WaveformView />
+            </div>
 
             <div class="button-container">
                 <v-btn variant="tonal" @click="excuteCommand('StartStop', 1)">
@@ -34,9 +36,6 @@
                 <v-btn variant="tonal" @click="excuteCommand('ResetSpeed', 1)">
                     Speed Reset
                 </v-btn>
-                <v-btn variant="tonal" @click="test()">
-                    Waveform
-                </v-btn>
             </div>
         </v-main>
     </v-app>
@@ -49,28 +48,17 @@ import WaveformView from './components/WaveformView.vue';
 import * as Juce from "juce-framework-frontend";
 
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
-const requestWaveform = Juce.getNativeFunction("requestWaveform");
-
-// @ts-ignore
-const messageFromMelissaModel = window.__JUCE__.backend.addEventListener("MessageFromMelissaModel", (objectFromBackend) => {
-});
-
-// @ts-ignore
-const messageFromMelissaDataSource = window.__JUCE__.backend.addEventListener("MessageFromMelissaDataSource", (objectFromBackend) => {
-    console.log(objectFromBackend);
-});
-
-const test = () => {
-    requestWaveform().then((waveform: number[]) => {
-        console.log(waveform);
-    });
-};
 
 </script>
 
 <style scoped>
+.waveform-container {
+    margin-top: 20px;
+    /* ヘッダーと波形の間に20pxの隙間を作る */
+}
+
 .button-container {
-    margin-top: 30px;
+    margin-top: 20px;
     /* ボタンと波形の間に隙間を作る */
 }
 </style>
