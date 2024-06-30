@@ -9,53 +9,36 @@
         <v-main>
             <WaveformView />
 
-            <v-btn variant="tonal" @click="excuteCommand('StartStop', 1)">
-                Play / Stop
-            </v-btn>
-            <v-btn variant="tonal" @click="excuteCommand('Back', 1)">
-                Back
-            </v-btn>
-            <v-btn variant="tonal" @click="excuteCommand('Pitch_Minus', 1)">
-                Pitch -1
-            </v-btn>
-            <v-btn variant="tonal" @click="excuteCommand('Pitch_Plus', 1)">
-                Pitch +1
-            </v-btn>
-
-            <v-btn variant="tonal" @click="excuteCommand('Pitch_Reset', 1)">
-                Pitch Reset
-            </v-btn>
-
-            <v-btn variant="tonal" @click="excuteCommand('SetSpeed_Minus5', 1)">
-                Speed -1
-            </v-btn>
-
-            <v-btn variant="tonal" @click="excuteCommand('SetSpeed_Plus5', 1)">
-                Speed +1
-            </v-btn>
-
-            <v-btn variant="tonal" @click="excuteCommand('ResetSpeed', 1)">
-                Speed Reset
-            </v-btn>
-
-            <v-btn variant="tonal" @click="test()">
-                Waveform
-            </v-btn>
+            <div class="button-container">
+                <v-btn variant="tonal" @click="excuteCommand('StartStop', 1)">
+                    Play / Stop
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('Back', 1)">
+                    Back
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('Pitch_Minus', 1)">
+                    Pitch -1
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('Pitch_Plus', 1)">
+                    Pitch +1
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('Pitch_Reset', 1)">
+                    Pitch Reset
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('SetSpeed_Minus5', 1)">
+                    Speed -1
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('SetSpeed_Plus5', 1)">
+                    Speed +1
+                </v-btn>
+                <v-btn variant="tonal" @click="excuteCommand('ResetSpeed', 1)">
+                    Speed Reset
+                </v-btn>
+                <v-btn variant="tonal" @click="test()">
+                    Waveform
+                </v-btn>
+            </div>
         </v-main>
-        <v-bottom-navigation>
-            <v-btn value="recent">
-                <v-icon>mdi-history</v-icon>
-                <span>Recent</span>
-            </v-btn>
-            <v-btn value="favorites">
-                <v-icon>mdi-heart</v-icon>
-                <span>Favorites</span>
-            </v-btn>
-            <v-btn value="nearby">
-                <v-icon>mdi-map-marker</v-icon>
-                <span>Nearby</span>
-            </v-btn>
-        </v-bottom-navigation>
     </v-app>
 </template>
 
@@ -84,3 +67,10 @@ const test = () => {
 };
 
 </script>
+
+<style scoped>
+.button-container {
+    margin-top: 30px;
+    /* ボタンと波形の間に隙間を作る */
+}
+</style>

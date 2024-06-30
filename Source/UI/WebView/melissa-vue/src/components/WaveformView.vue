@@ -2,8 +2,10 @@
     <div ref="waveformContainer" class="waveform-view" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave"
         @click="handleClick">
         <canvas ref="waveformCanvas" :width="canvasWidth" height="100"></canvas>
-        <div v-if="hoverPosition >= 0" :style="tooltipStyle" class="tooltip">{{ getPositionAsString(hoverPosition /
-            numStrips) }}</div>
+        <canvas ref="timelineCanvas" :width="canvasWidth" height="20"></canvas>
+        <div v-if="hoverPosition >= 0" :style="tooltipStyle" class="tooltip">
+            {{ getPositionAsString(hoverPosition / numStrips) }}
+        </div>
     </div>
 </template>
 
@@ -14,6 +16,7 @@ import * as Juce from "juce-framework-frontend";
 
 const waveformContainer = ref<HTMLDivElement | null>(null);
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
+const timelineCanvas = ref<HTMLCanvasElement | null>(null);
 
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
 const requestWaveform = Juce.getNativeFunction("requestWaveform");
@@ -83,6 +86,36 @@ const drawWaveform = () => {
 
         context.fillRect(x, height - h, stripWidth, h);
     });
+
+    // After drawing the waveform, call drawTimeline
+    drawTimeline();
+};
+
+const drawTimeline = () => {
+    if (!timelineCanvas.value || songLengthMs.value === 0) return;
+
+    const context = timelineCanvas.value.getContext('2d');
+    if (!context) return;
+
+    const { width, height } = timelineCanvas.value;
+    context.clearRect(0, 0, width, height);
+
+    const totalMinutes = Math.floor(songLengthMs.value / 60000);
+    const minuteWidth = width / (songLengthMs.value / 60000);
+
+    context.fillStyle = 'white';
+    context.font = '10px Roboto';
+    context.textAlign = 'center';
+
+    for (let i = 1; i <= totalMinutes; i++) {
+        const x = (i * 60000 / songLengthMs.value) * width;
+
+        // 文字がキャンバスの端にかかる場合は描画しない
+        if (x < 10 || x > width - 10) continue;
+
+        context.fillRect(x, 0, 1, 5);
+        context.fillText(`${i}:00`, x, 15);
+    }
 };
 
 const updateContainerWidth = () => {
@@ -199,10 +232,11 @@ onUnmounted(() => {
 .waveform-view {
     position: relative;
     width: 100%;
-    height: 100px;
+    height: 120px;
+    /* Increased height to accommodate timeline */
     cursor: pointer;
     padding: 0 20px;
-    /* 左右に20pxのパディングを設定 */
+    /* 左右に20pxのパ��ィングを設定 */
     box-sizing: border-box;
     /* パディングを要素の幅に含める */
 }
