@@ -6,7 +6,7 @@
 #include "MelissaModel.h"
 
 //==============================================================================
-class WebViewBackendComponent : public juce::Component, public MelissaModelListener
+class WebViewBackendComponent : public juce::Component, public MelissaModelListener, public MelissaDataSourceListener
 {
 public:
     //==============================================================================
@@ -27,30 +27,12 @@ private:
     juce::MemoryInputStream misWebViewBundle;
     std::unique_ptr<juce::ZipFile> zipWebViewBundle;
 
-    SinglePageBrowser webComponent{ 
+    SinglePageBrowser webComponent{
         juce::WebBrowserComponent::Options{}
         .withBackend(juce::WebBrowserComponent::Options::Backend::webview2)
         .withWinWebView2Options(juce::WebBrowserComponent::Options::WinWebView2{}
         .withUserDataFolder(juce::File::getSpecialLocation(juce::File::SpecialLocationType::tempDirectory)))
         .withNativeIntegrationEnabled()
-        .withNativeFunction("sayHello",
-                            [safe_this = juce::Component::SafePointer(this), this]
-            (const juce::Array<juce::var>& args, std::function<void(juce::var)> complete)
-            -> void
-            {
-                juce::ignoreUnused(args);
-                
-                if (safe_this.getComponent() == nullptr)
-                {
-                    complete(juce::var(""));
-                    return;
-                }
-            
-                std::cout << "Hello, Webview Melissa!" << std::endl;
-                MelissaModel::getInstance()->togglePlaybackStatus();
-                webComponent.emitEventIfBrowserIsVisible("helloFromC++", "test");
-                return;
-            })
         .withNativeFunction("excuteCommand",
                             [safe_this = juce::Component::SafePointer(this), this]
             (const juce::Array<juce::var>& args, std::function<void(juce::var)> complete)
@@ -68,6 +50,97 @@ private:
                 complete(juce::var(""));
                 return;
             })
+        .withNativeFunction("requestWaveform",
+                            [safe_this = juce::Component::SafePointer(this), this]
+            (const juce::Array<juce::var>& args, std::function<void(juce::var)> complete)
+            -> void
+            {
+                if (safe_this.getComponent() == nullptr) 
+                {
+                    complete(juce::var(""));
+                    return;
+                }
+            
+            constexpr int kNumStrips = 1000;
+            float strips[kNumStrips];
+            
+            auto dataSource = MelissaDataSource::getInstance();
+            const size_t bufferLength = dataSource->getBufferLength();
+        
+            if (bufferLength == 0) 
+            {
+                complete(juce::var(""));
+                return;
+            }
+        
+            float preview, previewMax = 0.f;
+        
+            const size_t stripSize =  bufferLength / kNumStrips;
+        
+            auto lCh = std::make_unique<float[]>(stripSize + 1);
+            auto rCh = std::make_unique<float[]>(stripSize + 1);
+            float* audioData[] = { lCh.get(), rCh.get() };
+        
+            for (int32_t stripIndex = 0; stripIndex < kNumStrips; ++stripIndex)
+            {
+                preview = 0.f;
+                
+                const size_t startIndex = stripIndex * stripSize;
+                const size_t endIndex = std::min<size_t>(startIndex + stripSize - 1, bufferLength - 1);
+                const size_t numSamplesToRead = endIndex - startIndex + 1;
+                
+                dataSource->readBuffer(MelissaDataSource::kReader_Waveform, startIndex, static_cast<int>(numSamplesToRead), kPlayPart_All, audioData);
+                for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+                {
+                    preview += (lCh[sampleIndex] * lCh[sampleIndex] + rCh[sampleIndex] * rCh[sampleIndex]);
+                }
+                preview /= numSamplesToRead;
+                if (preview >= 1.f) preview = 1.f;
+                if (previewMax < preview) previewMax = preview;
+                strips[stripIndex] = preview;
+            }
+        
+            // normalize
+            for (int stripIndex = 0; stripIndex < kNumStrips; ++stripIndex)
+            {
+                strips[stripIndex] = strips[stripIndex] / previewMax;
+            }
+            
+            juce::var wavefromAsVar;
+            for (auto&& data : strips) wavefromAsVar.append(data);
+            
+            complete(juce::JSON::toString(wavefromAsVar));
+            return;
+            })
+        .withNativeFunction("getCurrentValue",
+                            [safe_this = juce::Component::SafePointer(this), this]
+            (const juce::Array<juce::var>& args, std::function<void(juce::var)> complete)
+            -> void
+            {
+                if (safe_this.getComponent() == nullptr)
+                {
+                    complete(juce::var(""));
+                    return;
+                }
+                
+                const auto requestAsString = args[0].toString();
+                float result = 0.f;
+                
+                auto model = MelissaModel::getInstance();
+                //auto dataSource = MelissaDataSource::getInstance();
+                if (requestAsString == "getPlayingPosRatio")
+                {
+                    result = model->getPlayingPosRatio();
+                }
+                else if (requestAsString == "getLengthMSec")
+                {
+                    result = model->getLengthMSec();
+                }
+                
+                complete(juce::var(result));
+                return;
+            })
+        
         .withResourceProvider([this](const auto& url)
         {
             return getResource(url);
@@ -98,6 +171,19 @@ private:
     void customPartVolumeChanged(CustomPartVolume part, float volume) override;
     void mainVolumeChanged(float mainVolume) override;
     void preCountSwitchChanged(bool preCountSwitch) override;
+    
+    // MelissaDataSourceListener
+    void songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate) override;
+    void historyUpdated() override;
+    void playlistUpdated(size_t index) override;
+    void practiceListUpdated() override;
+    void markerUpdated() override;
+    void fileLoadStatusChanged(FileLoadStatus status, const juce::String& filePath) override;
+    void shortcutUpdated() override;
+    void colourChanged(const juce::Colour& mainColour, const juce::Colour& subColour, const juce::Colour& accentColour, const juce::Colour& textColour, const juce::Colour& waveformColour) override;
+    void fontChanged(const juce::Font& mainFont, const juce::Font& subFont, const juce::Font& miniFont) override;
+    void exportStarted() override;
+    void exportCompleted(bool result, juce::String message) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WebViewBackendComponent)
 };

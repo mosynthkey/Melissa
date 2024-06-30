@@ -1519,6 +1519,7 @@ void MainComponent::showFileChooser()
 void MainComponent::resized_Desktop()
 {
     webViewBackendComponent_->setBounds(getBounds());
+    //webViewBackendComponent_->setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
     return;
     
     constexpr int kHeaderHeight = 50;
@@ -1811,6 +1812,23 @@ void MainComponent::resized_Mobile()
     }();
     
     webViewBackendComponent_->setBounds(safeBounds);
+    
+#ifdef ENABLE_MOBILEAD
+    {
+        const int width = safeAreaComponent_->getWidth();
+        constexpr int kAdWidth = 320;
+        constexpr int kAdHeight = 50;
+        
+        adComponent_->toFront(true);
+        adComponent_->setBounds((safeAreaComponent_->getWidth() - kAdWidth) / 2, safeAreaComponent_->getBottom() - kAdHeight, kAdWidth, kAdHeight);
+        
+        webViewBackendComponent_->setBounds(safeBounds.getX(), safeBounds.getY(), safeBounds.getWidth(), safeBounds.getHeight() - kAdHeight);
+    }
+#else
+    webViewBackendComponent_->setBounds(safeBounds);
+#endif
+    
+    
     return;
     
     

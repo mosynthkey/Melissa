@@ -7,8 +7,7 @@
             <v-app-bar-title>Melissa</v-app-bar-title>
         </v-app-bar>
         <v-main>
-
-            <v-btn elevation="2" icon></v-btn>
+            <WaveformView />
 
             <v-btn variant="tonal" @click="excuteCommand('StartStop', 1)">
                 Play / Stop
@@ -38,6 +37,10 @@
             <v-btn variant="tonal" @click="excuteCommand('ResetSpeed', 1)">
                 Speed Reset
             </v-btn>
+
+            <v-btn variant="tonal" @click="test()">
+                Waveform
+            </v-btn>
         </v-main>
         <v-bottom-navigation>
             <v-btn value="recent">
@@ -58,13 +61,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import WaveformView from './components/WaveformView.vue';
 // @ts-ignore
 import * as Juce from "juce-framework-frontend";
 
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
+const requestWaveform = Juce.getNativeFunction("requestWaveform");
 
 // @ts-ignore
-const removalToken = window.__JUCE__.backend.addEventListener("MessageFromMelissaModel", (objectFromBackend) => {
+const messageFromMelissaModel = window.__JUCE__.backend.addEventListener("MessageFromMelissaModel", (objectFromBackend) => {
+});
+
+// @ts-ignore
+const messageFromMelissaDataSource = window.__JUCE__.backend.addEventListener("MessageFromMelissaDataSource", (objectFromBackend) => {
     console.log(objectFromBackend);
 });
+
+const test = () => {
+    requestWaveform().then((waveform: number[]) => {
+        console.log(waveform);
+    });
+};
+
 </script>
