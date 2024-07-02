@@ -7,8 +7,10 @@
             {{ getPositionAsString(hoverPosition / numStrips) }}
         </div>
         <div v-if="loopStartRatio >= 0 && loopEndRatio > loopStartRatio" :style="selectionStyle" class="selection">
-            <div class="handle start-handle" @mousedown="startDrag('start', $event)"></div>
-            <div class="handle end-handle" @mousedown="startDrag('end', $event)"></div>
+            <div class="handle start-handle" @mousedown="startDrag('start', $event)"
+                @touchstart="startDrag('start', $event)"></div>
+            <div class="handle end-handle" @mousedown="startDrag('end', $event)" @touchstart="startDrag('end', $event)">
+            </div>
         </div>
     </div>
 </template>
@@ -180,23 +182,7 @@ const handleMouseMove = (event: MouseEvent) => {
     if (!waveformContainer.value) return;
     const rect = waveformContainer.value.getBoundingClientRect();
     const x = event.clientX - rect.left - 20; // 左のパディングを考慮
-    hoverPosition.value = Math.floor((x / canvasWidth.value) * numStrips.value);
-
-    if (dragging.value) {
-        const ratio = x / canvasWidth.value;
-
-        if (dragging.value === 'start') {
-            const startRatio = Math.min(Math.max(ratio, 0), loopEndRatio.value - 0.01);
-            // loopStartRatio.value = startRatio;
-            excuteCommand('SetLoopStartValue', startRatio);
-        } else if (dragging.value === 'end') {
-            const endRatio = Math.max(Math.min(ratio, 1), loopStartRatio.value + 0.01);
-            //loopEndRatio.value = endRatio;
-            excuteCommand('SetLoopEndValue', endRatio);
-        }
-    }
-
-    drawWaveform();
+    handleMove(x);
 };
 
 const handleMouseLeave = () => {
@@ -213,9 +199,47 @@ const handleClick = (event: MouseEvent) => {
     excuteCommand("PlaybackPositionValue", position);
 };
 
-const startDrag = (handle: 'start' | 'end', event: MouseEvent) => {
+const startDrag = (handle: 'start' | 'end', event: MouseEvent | TouchEvent) => {
     event.preventDefault(); // ドラッグ開始時のデフォルト動作を防ぐ
     dragging.value = handle;
+    if (event.type === 'touchstart') {
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('touchend', handleTouchEnd);
+    }
+};
+
+const handleTouchMove = (event: TouchEvent) => {
+    event.preventDefault();
+    if (!waveformContainer.value) return;
+    const touch = event.touches[0];
+    const rect = waveformContainer.value.getBoundingClientRect();
+    const x = touch.clientX - rect.left - 20;
+    handleMove(x);
+};
+
+const handleMove = (x: number) => {
+    hoverPosition.value = Math.floor((x / canvasWidth.value) * numStrips.value);
+
+    if (dragging.value) {
+        const ratio = x / canvasWidth.value;
+
+        if (dragging.value === 'start') {
+            const startRatio = Math.min(Math.max(ratio, 0), loopEndRatio.value - 0.01);
+            excuteCommand('SetLoopStartValue', startRatio);
+        } else if (dragging.value === 'end') {
+            const endRatio = Math.max(Math.min(ratio, 1), loopStartRatio.value + 0.01);
+            excuteCommand('SetLoopEndValue', endRatio);
+        }
+    }
+
+    drawWaveform();
+};
+
+const handleTouchEnd = (event: TouchEvent) => {
+    event.preventDefault();
+    dragging.value = null;
+    window.removeEventListener('touchmove', handleTouchMove);
+    window.removeEventListener('touchend', handleTouchEnd);
 };
 
 const handleMouseUp = (event: MouseEvent) => {
@@ -269,6 +293,7 @@ onMounted(() => {
     });
 
     window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchend', handleTouchEnd);
 });
 
 onUnmounted(() => {
@@ -280,6 +305,7 @@ onUnmounted(() => {
 
     window.__JUCE__.backend.removeEventListener(notificationToken);
     window.removeEventListener('mouseup', handleMouseUp);
+    window.removeEventListener('touchend', handleTouchEnd);
 });
 
 // @ts-ignore
@@ -327,7 +353,7 @@ canvas {
 .handle {
     position: absolute;
     top: 0;
-    width: 10px;
+    width: 20px;
     height: 100%;
     background-color: rgba(0, 123, 255, 0.7);
     cursor: ew-resize;
