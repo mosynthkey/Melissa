@@ -137,175 +137,175 @@ std::optional<juce::WebBrowserComponent::Resource> WebViewBackendComponent::getR
 void WebViewBackendComponent::playbackStatusChanged(PlaybackStatus status)
 {
     juce::Array<juce::var> message = { juce::String("playbackStatusChanged"), static_cast<int>(status) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::playbackModeChanged(PlaybackMode mode)
 {
     juce::Array<juce::var> message = { juce::String("playbackModeChanged"), static_cast<int>(mode) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::musicVolumeChanged(float volume)
 {
     juce::Array<juce::var> message = { juce::String("musicVolumeChanged"), volume };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::pitchChanged(float semitone)
 {
     juce::Array<juce::var> message = { juce::String("pitchChanged"), semitone };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::speedChanged(int speed)
 {
     juce::Array<juce::var> message = { juce::String("speedChanged"), speed };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
     juce::Array<juce::var> message = { juce::String("loopPosChanged"), aTimeMSec, aRatio, bTimeMSec, bRatio };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::playingPosChanged(float time, float ratio)
 {
     juce::Array<juce::var> message = { juce::String("playingPosChanged"), time, ratio };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::metronomeSwitchChanged(bool on)
 {
     juce::Array<juce::var> message = { juce::String("metronomeSwitchChanged"), static_cast<int>(on) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::bpmChanged(float bpm)
 {
     juce::Array<juce::var> message = { juce::String("bpmChanged"), bpm };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::beatPositionChanged(float beatPositionMSec)
 {
     juce::Array<juce::var> message = { juce::String("beatPositionChanged"), beatPositionMSec };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::accentChanged(int accent)
 {
     juce::Array<juce::var> message = { juce::String("accentChanged"), accent };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::metronomeVolumeChanged(float volume)
 {
     juce::Array<juce::var> message = { juce::String("metronomeVolumeChanged"), volume };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::musicMetronomeBalanceChanged(float balance)
 {
     juce::Array<juce::var> message = { juce::String("musicMetronomeBalanceChanged"), balance };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::outputModeChanged(OutputMode outputMode)
 {
     juce::Array<juce::var> message = { juce::String("outputModeChanged"), static_cast<int>(outputMode) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::eqSwitchChanged(bool on)
 {
     juce::Array<juce::var> message = { juce::String("eqSwitchChanged"), static_cast<int>(on) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::eqFreqChanged(size_t band, float freq)
 {
     juce::Array<juce::var> message = { juce::String("eqFreqChanged"), static_cast<int>(band), freq };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::eqGainChanged(size_t band, float gain)
 {
     juce::Array<juce::var> message = { juce::String("eqGainChanged"), static_cast<int>(band), gain };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::eqQChanged(size_t band, float q)
 {
     juce::Array<juce::var> message = { juce::String("eqQChanged"), static_cast<int>(band), q };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::playPartChanged(PlayPart playPart)
 {
     juce::Array<juce::var> message = { juce::String("playPartChanged"), static_cast<int>(playPart) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::customPartVolumeChanged(CustomPartVolume part, float volume)
 {
     juce::Array<juce::var> message = { juce::String("customPartVolumeChanged"), part, volume };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::mainVolumeChanged(float mainVolume)
 {
     juce::Array<juce::var> message = { juce::String("mainVolumeChanged"), mainVolume };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::preCountSwitchChanged(bool preCountSwitch)
 {
     juce::Array<juce::var> message = { juce::String("preCountSwitchChanged"), static_cast<int>(preCountSwitch) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaModel", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate)
 {
     juce::Array<juce::var> message = { juce::String("songChanged"), filePath, static_cast<int>(bufferLength), static_cast<int>(sampleRate) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::historyUpdated()
 {
     juce::Array<juce::var> message = { juce::String("historyUpdated") };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::playlistUpdated(size_t index)
 {
     juce::Array<juce::var> message = { juce::String("preCountSwitchChanged"), static_cast<int>(index) };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::practiceListUpdated()
 {
     juce::Array<juce::var> message = { juce::String("practiceListUpdated") };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::markerUpdated()
 {
     juce::Array<juce::var> message = { juce::String("markerUpdated") };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::fileLoadStatusChanged(FileLoadStatus status, const juce::String& filePath)
 {
     juce::Array<juce::var> message = { juce::String("fileLoadStatusChanged"), static_cast<int>(status), filePath };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::shortcutUpdated()
 {
     juce::Array<juce::var> message = { juce::String("shortcutUpdated") };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::colourChanged(const juce::Colour& mainColour, const juce::Colour& subColour, const juce::Colour& accentColour, const juce::Colour& textColour, const juce::Colour& waveformColour)
@@ -319,12 +319,12 @@ void WebViewBackendComponent::fontChanged(const juce::Font& mainFont, const juce
 void WebViewBackendComponent::exportStarted()
 {
     juce::Array<juce::var> message = { juce::String("exportStarted") };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
 void WebViewBackendComponent::exportCompleted(bool result, juce::String exportMessage)
 {
     juce::Array<juce::var> message = { juce::String("exportCompleted"), result, exportMessage };
-    webComponent.emitEventIfBrowserIsVisible("MessageFromMelissaDataSource", message);
+    webComponent.emitEventIfBrowserIsVisible("MelissaNotification", message);
 }
 
