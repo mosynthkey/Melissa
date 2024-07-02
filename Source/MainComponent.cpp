@@ -1518,9 +1518,9 @@ void MainComponent::showFileChooser()
 
 void MainComponent::resized_Desktop()
 {
-    webViewBackendComponent_->setBounds(getBounds());
-    //webViewBackendComponent_->setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
-    return;
+    //webViewBackendComponent_->setBounds(getBounds());
+    webViewBackendComponent_->setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
+    //return;
     
     constexpr int kHeaderHeight = 50;
     headerComponent_->setBounds(0, 0, getWidth(), kHeaderHeight);

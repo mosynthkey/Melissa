@@ -13,9 +13,9 @@ class MelissaMobileSupport
 {
 public:
     MelissaMobileSupport() {}
-    
-    static juce::File importFile(const juce::URL& fileUrl);
-    
+
+    static juce::File importFile(const juce::URL &fileUrl);
+    static juce::Array<juce::File> getFileList();
 };
 
 #ifdef ENABLE_MOBILEAD

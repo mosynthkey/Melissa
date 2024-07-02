@@ -268,6 +268,19 @@ const selectionStyle = computed(() => {
     };
 });
 
+const resetWaveform = () => {
+    waveformData.value = [];
+    playbackPosition.value = 0;
+    hoverPosition.value = -1;
+    loopStartRatio.value = 0;
+    loopEndRatio.value = 1;
+    songLengthMs.value = 0;
+    loadWaveform();
+    getCurrentValue("getLengthMSec").then((length: number) => {
+        songLengthMs.value = length;
+    });
+};
+
 onMounted(() => {
     updateContainerWidth();
     loadWaveform();
@@ -285,6 +298,9 @@ onMounted(() => {
         if (message == 'loopPosChanged') {
             loopStartRatio.value = objectFromBackend[2];
             loopEndRatio.value = objectFromBackend[4];
+        }
+        else if (message == 'songChanged') {
+            resetWaveform();
         }
     });
 

@@ -35,6 +35,12 @@ juce::File MelissaMobileSupport::importFile(const juce::URL& fileUrl)
     return targetFile;
 }
 
+juce::Array<File> MelissaMobileSupport::getFileList()
+{
+    const auto documentDir = File::getSpecialLocation(File::userDocumentsDirectory);
+    return documentDir.findChildFiles(File::findFiles, false);
+}
+
 #ifdef ENABLE_MOBILEAD
 
 AdMobAdDelegateViewController *viewController;
