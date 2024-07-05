@@ -186,6 +186,30 @@ private:
                 
                                     complete(juce::var(""));
                                 })
+            .withNativeFunction("showFileChooserAndImport",
+                                [safe_this = juce::Component::SafePointer(this), this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                    -> void
+                                {
+                                    if (safe_this.getComponent() == nullptr || args.size() == 0)
+                                    {
+                                        complete(juce::var(""));
+                                        return;
+                                    }
+
+                fileChooser_ = std::make_unique<juce::FileChooser>("Open", juce::File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
+                fileChooser_->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&, this] (const juce::FileChooser& chooser) {
+                                        auto fileUrl = chooser.getURLResult();
+
+                                        if (fileUrl.isLocalFile())
+                                        {
+                                            // Copy this file to sandbox
+                                            MelissaDataSource::getInstance()->loadFileAsync(MelissaMobileSupport::importFile(fileUrl).getFullPathName());
+                                        }
+                                    });
+                
+                                    complete(juce::var(""));
+                                    return;
+                                })
             .withResourceProvider([this](const auto &url)
                                   { return getResource(url); },
                                   juce::URL{SinglePageBrowser::localDevServerAddress}.getOrigin())};
@@ -226,6 +250,8 @@ private:
     void fontChanged(const juce::Font &mainFont, const juce::Font &subFont, const juce::Font &miniFont) override;
     void exportStarted() override;
     void exportCompleted(bool result, juce::String message) override;
+    
+    std::unique_ptr<juce::FileChooser> fileChooser_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WebViewBackendComponent)
 };

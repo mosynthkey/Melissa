@@ -43,22 +43,41 @@
                     Set loop end
                 </v-btn>
                 <v-btn variant="tonal" @click="showFileList">
-                    ファイルリスト表示
+                    FileList
+                </v-btn>
+                <v-btn variant="tonal" @click="showFileChooserAndImport">
+                    Import
                 </v-btn>
             </div>
         </v-main>
 
         <!-- ファイルリストポップアップ -->
-        <v-dialog v-model="fileListDialog" max-width="500px">
+        <v-dialog v-model="fileListDialog" fullscreen>
             <v-card>
-                <v-card-title>ファイルリスト</v-card-title>
-                <v-card-text>
-                    <v-list>
-                        <v-list-item v-for="(file, index) in fileList" :key="index" @click="openFile(file)">
-                            <v-list-item-title>{{ getFileName(file) }}</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-card-text>
+                <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="fileListDialog = false">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>ファイルリスト</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn icon dark @click="showFileChooserAndImport">
+                        <v-icon>mdi-file-import</v-icon>
+                    </v-btn>
+                    <v-btn icon dark>
+                        <v-icon>mdi-refresh</v-icon>
+                    </v-btn>
+                    <v-btn icon dark>
+                        <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </v-toolbar>
+                <v-list>
+                    <v-list-item v-for="(file, index) in fileList" :key="index" @click="openFile(file)">
+                        <template v-slot:prepend>
+                            <v-icon>mdi-file-music</v-icon>
+                        </template>
+                        <v-list-item-title>{{ getFileName(file) }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
             </v-card>
         </v-dialog>
 
@@ -83,6 +102,7 @@ import * as Juce from "juce-framework-frontend";
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
 const getFileList = Juce.getNativeFunction("getFileList");
 const loadFile = Juce.getNativeFunction("loadFile");
+const showFileChooserAndImport = Juce.getNativeFunction("showFileChooserAndImport");
 
 const fileListDialog = ref(false);
 const fileList = ref<string[]>([]);
