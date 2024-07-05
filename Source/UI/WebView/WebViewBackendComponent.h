@@ -154,10 +154,9 @@ private:
                                     juce::var fileListAsVar;
                                     for (auto &&file : fileList)
                                         fileListAsVar.append(file.getFullPathName());
-                                    
-                auto listAsJSON = juce::JSON::toString(fileListAsVar);
-                                
-                        
+
+                                    auto listAsJSON = juce::JSON::toString(fileListAsVar);
+
                                     complete(juce::JSON::toString(fileListAsVar));
                                 })
             .withNativeFunction("loadFile",
@@ -196,17 +195,17 @@ private:
                                         return;
                                     }
 
-                fileChooser_ = std::make_unique<juce::FileChooser>("Open", juce::File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
-                fileChooser_->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&, this] (const juce::FileChooser& chooser) {
+                                    fileChooser_ = std::make_unique<juce::FileChooser>("Open", juce::File::getCurrentWorkingDirectory(), MelissaDataSource::getCompatibleFileExtensions(), true);
+                                    fileChooser_->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [&, this](const juce::FileChooser &chooser)
+                                                              {
                                         auto fileUrl = chooser.getURLResult();
 
                                         if (fileUrl.isLocalFile())
                                         {
                                             // Copy this file to sandbox
                                             MelissaDataSource::getInstance()->loadFileAsync(MelissaMobileSupport::importFile(fileUrl).getFullPathName());
-                                        }
-                                    });
-                
+                                        } });
+
                                     complete(juce::var(""));
                                     return;
                                 })
