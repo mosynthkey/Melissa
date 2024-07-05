@@ -25,12 +25,15 @@
             <v-btn icon @click="showFileList">
                 <v-icon>mdi-playlist-music</v-icon>
             </v-btn>
-            <v-app-bar-title class="text-truncate" :class="{ 'small-font': currentSongName.length > 20 }">{{
-                currentSongName
-            }}</v-app-bar-title>
-            <v-spacer></v-spacer>
+            <v-app-bar-title 
+                class="song-title text-truncate" 
+                :class="{ 'small-font': currentSongName.length > 20 }"
+                @click="showFileList"
+            >
+                {{ currentSongName }}
+            </v-app-bar-title>
             <v-btn-toggle v-model="activeView" mandatory>
-                <v-btn icon value="home">
+                <v-btn icon value="home" class="home-button">
                     <v-icon>mdi-home</v-icon>
                 </v-btn>
                 <v-btn icon value="practice">
@@ -81,10 +84,18 @@
                 </div>
             </v-container>
 
-            <v-container v-else-if="activeView === 'practice'" class="practice-container">
-                <div class="d-flex">
-                    <div class="practice-table-container">
+            <v-container v-else-if="activeView === 'practice'" class="practice-container pa-0"
+                :style="listContainerStyle">
+                <div class="d-flex h-100">
+                    <div class="practice-table-container flex-grow-1">
                         <table class="practice-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Loop range</th>
+                                    <th>Pitch</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr v-for="item in practiceItems" :key="item.name" @click="selectItem(item)"
                                     :class="{ 'selected-row': isSelected(item) }">
@@ -103,8 +114,7 @@
                             :disabled="!selectedPracticeItem">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn icon class="mb-2" color="primary" @click="deletePracticeItem"
-                            :disabled="!selectedPracticeItem">
+                        <v-btn icon color="primary" @click="deletePracticeItem" :disabled="!selectedPracticeItem">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </div>
@@ -112,7 +122,7 @@
             </v-container>
 
             <v-container v-else-if="activeView === 'markers'" class="markers-container pa-0"
-                :style="markersContainerStyle">
+                :style="listContainerStyle">
                 <div class="d-flex h-100">
                     <div class="markers-table-container flex-grow-1">
                         <table class="markers-table">
@@ -169,7 +179,7 @@
                     <v-btn icon dark @click="fileListDialog = false">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>フイルリスト</v-toolbar-title>
+                    <v-toolbar-title>ファイルリスト</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon dark @click="showFileChooserAndImport">
                         <v-icon>mdi-file-import</v-icon>
@@ -259,7 +269,7 @@ const fetchFileList = async () => {
         const result = await getFileList();
         fileList.value = JSON.parse(result);
     } catch (error) {
-        console.error('ファイルリストの取得に失敗しました:', error);
+        console.error('ファイ���リストの得に失敗しました:', error);
     }
 };
 
@@ -422,7 +432,7 @@ const deleteMarker = () => {
     }
 };
 
-const markersContainerStyle = computed(() => {
+const listContainerStyle = computed(() => {
     return {
         height: `calc(100vh - 64px - ${waveformHeight.value}px)`
     };
@@ -454,13 +464,23 @@ body {
 }
 
 .v-app-bar-title {
-    max-width: 60%;
+    flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
 }
 
-.v-app-bar>.v-btn:last-child {
+.v-app-bar > .v-btn:last-child {
     margin-right: -12px;
     /* アイコンを右端に寄せる */
 }
@@ -494,33 +514,48 @@ body {
     /* アイコン0.5個分くらいのスペース */
 }
 
-.practice-container {
-    height: 100%;
+.practice-container,
+.markers-container {
     display: flex;
     flex-direction: column;
+    padding: 0;
 }
 
-.practice-table-container {
+.practice-table-container,
+.markers-table-container {
     flex-grow: 1;
     overflow-y: auto;
-    height: 150px;
-    /* 固定の高さ */
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
 
-.practice-table {
+.practice-table,
+.markers-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.practice-table tr {
-    cursor: pointer;
+.practice-table thead,
+.markers-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #f5f5f5;
+    /* カスタムの薄いグレー */
 }
 
-.practice-table td {
+.practice-table th,
+.practice-table td,
+.markers-table th,
+.markers-table td {
     padding: 8px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    text-align: left;
+}
+
+.practice-table tr,
+.markers-table tr {
+    cursor: pointer;
 }
 
 .selected-row {
@@ -532,42 +567,7 @@ body {
     /* アイコンを右端に寄せる */
 }
 
-.markers-container {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-}
-
-.markers-table-container {
-    flex-grow: 1;
-    overflow-y: auto;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 4px;
-}
-
-.markers-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.markers-table thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.markers-table th,
-.markers-table td {
-    padding: 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-    text-align: left;
-}
-
-.markers-table tr {
-    cursor: pointer;
-}
-
-.selected-row {
-    background-color: rgba(0, 0, 0, 0.12);
+.home-button {
+    border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 </style>
