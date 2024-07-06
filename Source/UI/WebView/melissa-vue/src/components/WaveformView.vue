@@ -11,7 +11,11 @@
                 </div>
             </div>
         </div>
-        <canvas ref="timelineCanvas" :width="canvasWidth" :height="timelineHeight"></canvas>
+        <div class="timeline-container">
+            <div v-for="label in timeLabels" :key="label.time" :style="label.style" class="time-label">
+                {{ label.text }}
+            </div>
+        </div>
         <div v-if="hoverPosition >= 0" :style="tooltipStyle" class="tooltip">
             {{ getPositionAsString(hoverPosition / numStrips) }}
         </div>
@@ -39,14 +43,15 @@ const containerWidth = ref(0);
 const canvasWidth = ref(0);
 const hoverPosition = ref(-1);
 
-const songLengthMs = ref(0);
-
 const loopStartRatio = ref(0.2); // 初期値
 const loopEndRatio = ref(0.8); // 初期値
 const dragging = ref<null | 'start' | 'end'>(null);
 
 const waveformHeight = ref(60); // 波形の高さを60pxに設定
 const timelineHeight = ref(20); // タイムラインの高さを30pxに設定
+
+const timeLabels = ref<{ time: number; text: string; style: any }[]>([]);
+const songLengthMs = ref(0);
 
 const loadWaveform = () => {
     requestWaveform().then((waveformAsJson: string) => {
@@ -137,7 +142,7 @@ const drawTimeline = () => {
 const updateContainerWidth = () => {
     if (waveformContainer.value) {
         containerWidth.value = waveformContainer.value.offsetWidth;
-        canvasWidth.value = containerWidth.value - 40; // マージンを考慮
+        canvasWidth.value = containerWidth.value - 40; // マージンを考
         drawWaveform();
     }
 };
@@ -284,20 +289,60 @@ const resetWaveform = () => {
     loadWaveform();
     getCurrentValue("getLengthMSec").then((length: number) => {
         songLengthMs.value = length;
+        updateTimeLabels();
     });
+};
+
+const updateTimeLabels = () => {
+    const labels: { time: number; text: string; style: any }[] = [];
+    const totalMinutes = Math.floor(songLengthMs.value / 60000);
+    const containerWidth = canvasWidth.value;
+
+    for (let i = 0; i <= totalMinutes; i++) {
+        const x = (i * 60000 / songLengthMs.value) * containerWidth;
+        labels.push({
+            time: i * 60,
+            text: `${i}:00`,
+            style: {
+                position: 'absolute',
+                left: `${x}px`,
+                transform: 'translateX(-50%)',
+            }
+        });
+    }
+
+    // 重なりを避けるために間引く
+    const visibleLabels = [];
+    let prevLabelRight = -Infinity;
+
+    for (let i = 0; i < labels.length; i++) {
+        const label = labels[i];
+        const labelLeft = parseFloat(label.style.left);
+        if (labelLeft - prevLabelRight > 40) {
+            visibleLabels.push(label);
+            prevLabelRight = labelLeft + 20; // ラベルの幅を考慮
+        }
+    }
+
+    timeLabels.value = visibleLabels;
 };
 
 onMounted(() => {
     updateContainerWidth();
     loadWaveform();
+    getCurrentValue("getLengthMSec").then((length: number) => {
+        songLengthMs.value = length;
+        updateTimeLabels(); // ここで呼び出し
+    });
     playbackUpdateInterval = setInterval(updatePlaybackPosition, 500);
 
-    resizeObserver = new ResizeObserver(updateContainerWidth);
+    resizeObserver = new ResizeObserver(() => {
+        updateContainerWidth();
+        updateTimeLabels(); // ここで呼び出し
+    });
     if (waveformContainer.value) {
         resizeObserver.observe(waveformContainer.value);
     }
-
-    window.addEventListener('resize', updateContainerWidth);
 
     notificationToken = window.__JUCE__.backend.addEventListener("MelissaNotification", (objectFromBackend: any) => {
         const message = objectFromBackend[0];
@@ -309,13 +354,6 @@ onMounted(() => {
             resetWaveform();
         }
     });
-
-    getCurrentValue("getLengthMSec").then((length: number) => {
-        songLengthMs.value = length;
-    });
-
-    window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('touchend', handleTouchEnd);
 });
 
 onUnmounted(() => {
@@ -349,6 +387,22 @@ onUnmounted(() => {
     position: relative;
     height: 60px;
     /* 波形の高さ */
+}
+
+.timeline-container {
+    position: relative;
+    height: 30px;
+    /* タイムラインの高さ */
+}
+
+.time-label {
+    position: absolute;
+    font-size: 12px;
+    color: white;
+    bottom: 5px;
+    /* 下端から少し上に配置 */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    /* 読みやすさのために影をつける */
 }
 
 canvas {
