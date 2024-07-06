@@ -117,9 +117,9 @@
                     </div>
                 </div>
             </v-container>
-
-            <MarkerView v-else-if="activeView === 'markers'" ref="markerViewRef" :songLengthMs="songLengthMs"
-                :style="markerViewStyle" />
+            <v-container v-else-if="activeView === 'markers'" class="practice-container pa-0" :style="markerViewStyle">
+                <MarkerView ref="markerViewRef" :songLengthMs="songLengthMs" />
+            </v-container>
 
             <v-container v-else-if="activeView === 'debug'" class="debug-container">
                 <v-card class="debug-area" variant="outlined">

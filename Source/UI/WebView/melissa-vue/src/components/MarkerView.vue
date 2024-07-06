@@ -114,7 +114,7 @@ onMounted(async () => {
 });
 
 const selectMarker = (marker) => {
-    selectedMarker.value = marker === selectedMarker.value ? null : marker;
+    selectedMarker.value = marker;
 
     // マーカーの位置に再生位置をジャンプさせる
     excuteCommand("PlaybackPositionValue", marker.position);
