@@ -10,6 +10,9 @@
                     @touchstart="startDrag('end', $event)">
                 </div>
             </div>
+            <div v-for="marker in markers" :key="marker.position" :style="getMarkerStyle(marker)" class="marker">
+                <div class="marker-head" @click.stop="setPlayPositionToMarker(marker)"></div>
+            </div>
         </div>
         <div class="timeline-container">
             <div v-for="label in timeLabels" :key="label.time" :style="label.style" class="time-label">
@@ -29,7 +32,6 @@ import * as Juce from "juce-framework-frontend";
 
 const waveformContainer = ref<HTMLDivElement | null>(null);
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
-const timelineCanvas = ref<HTMLCanvasElement | null>(null);
 
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
 const requestWaveform = Juce.getNativeFunction("requestWaveform");
@@ -142,7 +144,7 @@ const drawTimeline = () => {
 const updateContainerWidth = () => {
     if (waveformContainer.value) {
         containerWidth.value = waveformContainer.value.offsetWidth;
-        canvasWidth.value = containerWidth.value - 40; // マージンを考
+        canvasWidth.value = containerWidth.value - 40; // マージンを考慮
         drawWaveform();
     }
 };
@@ -327,18 +329,62 @@ const updateTimeLabels = () => {
     timeLabels.value = visibleLabels;
 };
 
+const markers = ref<{ position: number; color: string }[]>([]);
+
+const formatColor = (colorString: string): string => {
+    // "0xffrrggbb" 形式の文字列から RGB 値を抽出
+    const colorValue = parseInt(colorString.slice(2), 16);
+    const r = (colorValue >> 16) & 0xFF;
+    const g = (colorValue >> 8) & 0xFF;
+    const b = colorValue & 0xFF;
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+};
+
+const updateMarkers = (markersData: string) => {
+    try {
+        const parsedMarkers = JSON.parse(markersData);
+        markers.value = parsedMarkers.map((marker: any) => ({
+            position: marker.position,
+            color: formatColor(marker.colour)
+        }));
+    } catch (error) {
+        console.error('マーカーデータの解析に失敗しました:', error);
+    }
+};
+
+const getMarkerStyle = (marker: { position: number; color: string }) => {
+    const x = marker.position * canvasWidth.value;
+    return {
+        position: 'absolute',
+        left: `${x}px`,
+        top: '-16px', // 波形の上にはみ出すように調整
+        width: '3px', // マーカーを3pxに太く
+        height: 'calc(100% + 16px)', // 高さを増やして波形の上にはみ出すように
+        backgroundColor: marker.color,
+    };
+};
+
+const setPlayPositionToMarker = (marker: { position: number; color: string }) => {
+    excuteCommand("PlaybackPositionValue", marker.position);
+};
+
 onMounted(() => {
     updateContainerWidth();
     loadWaveform();
     getCurrentValue("getLengthMSec").then((length: number) => {
         songLengthMs.value = length;
-        updateTimeLabels(); // ここで呼び出し
+        updateTimeLabels();
+    });
+    getCurrentValue("getMarkers").then((markersData) => {
+        updateMarkers(markersData);
+    }).catch((error) => {
+        console.error('マーカーデータの取得に失敗しました:', error);
     });
     playbackUpdateInterval = setInterval(updatePlaybackPosition, 500);
 
     resizeObserver = new ResizeObserver(() => {
         updateContainerWidth();
-        updateTimeLabels(); // ここで呼び出し
+        updateTimeLabels();
     });
     if (waveformContainer.value) {
         resizeObserver.observe(waveformContainer.value);
@@ -352,6 +398,9 @@ onMounted(() => {
         }
         else if (message == 'songChanged') {
             resetWaveform();
+        }
+        else if (message === 'markerUpdated') {
+            updateMarkers(objectFromBackend[1]);
         }
     });
 });
@@ -403,6 +452,27 @@ onUnmounted(() => {
     /* 下端から少し上に配置 */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     /* 読みやすさのために影をつける */
+}
+
+.marker {
+    position: absolute;
+    width: 3px;
+    /* マーカーを3pxに太く */
+    background-color: red;
+    /* デフォルトの色 */
+    pointer-events: none;
+}
+
+.marker-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 18px;
+    border-radius: 6px;
+    background-color: inherit;
+    cursor: pointer;
 }
 
 canvas {

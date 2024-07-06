@@ -41,17 +41,18 @@ import { ref, onMounted } from 'vue';
 import * as Juce from "juce-framework-frontend";
 
 const props = defineProps<{
-    songLengthMs: number,
     style?: object
 }>();
 
 const markers = ref([]);
 const selectedMarker = ref(null);
+const songLengthMs = ref(0);
 
 const getCurrentValue = Juce.getNativeFunction("getCurrentValue");
 const addDefaultMarker = Juce.getNativeFunction("addDefaultMarker");
 const removeMarker = Juce.getNativeFunction("removeMarker");
 const overwriteMarker = Juce.getNativeFunction("overwriteMarker");
+const excuteCommand = Juce.getNativeFunction("excuteCommand");
 
 const formatColor = (colorString: string): string => {
     // "0xffrrggbb" 形式の文字列から RGB 値を抽出
@@ -74,7 +75,8 @@ const updateMarkers = (markersData: string) => {
         markers.value = parsedMarkers.map((marker: any, index: number) => ({
             id: index + 1,
             color: formatColor(marker.colour),
-            time: formatTime(marker.position * props.songLengthMs / 1000),
+            time: formatTime(marker.position * songLengthMs.value / 1000),
+            position: marker.position,
             memo: marker.memo
         }));
     } catch (error) {
@@ -82,7 +84,17 @@ const updateMarkers = (markersData: string) => {
     }
 };
 
-onMounted(() => {
+const updateSongLength = async () => {
+    try {
+        const length = await getCurrentValue("getLengthMSec");
+        songLengthMs.value = parseInt(length);
+    } catch (error) {
+        console.error('曲の長さの取得に失敗しました:', error);
+    }
+};
+
+onMounted(async () => {
+    await updateSongLength();
     getCurrentValue("getMarkers")
         .then((markersData) => {
             updateMarkers(markersData);
@@ -95,12 +107,17 @@ onMounted(() => {
         const message = objectFromBackend[0];
         if (message === 'markerUpdated') {
             updateMarkers(objectFromBackend[1]);
+        } else if (message === 'songChanged') {
+            updateSongLength();
         }
     });
 });
 
 const selectMarker = (marker) => {
     selectedMarker.value = marker === selectedMarker.value ? null : marker;
+
+    // マーカーの位置に再生位置をジャンプさせる
+    excuteCommand("PlaybackPositionValue", marker.position);
 };
 
 const isMarkerSelected = (marker) => {
@@ -132,7 +149,7 @@ const editMarker = () => {
         if (index !== -1) {
             // ここでマーカー編集ダイアログを表示し、ユーザーに新しい値を入力させます
             // 以下は例として、固定値を使用しています
-            const newPosition = selectedMarker.value.time / (props.songLengthMs / 1000);
+            const newPosition = selectedMarker.value.time / (songLengthMs.value / 1000);
             const newMemo = "編集されたメモ";
             const newColor = "0xFF0000FF"; // 赤色 ("0xffrrggbb"形式)
 
