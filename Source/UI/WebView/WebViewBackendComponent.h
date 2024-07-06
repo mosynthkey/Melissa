@@ -248,9 +248,9 @@ private:
                                         MelissaDataSource::Song::Marker marker;
                                         marker.position_ = position;
                                         marker.memo_ = memo;
-                                        marker.colourR_ = colour.getFloatRed();
-                                        marker.colourG_ = colour.getFloatGreen();
-                                        marker.colourB_ = colour.getFloatBlue();
+                                        marker.colourR_ = colour.getRed();
+                                        marker.colourG_ = colour.getGreen();
+                                        marker.colourB_ = colour.getBlue();
 
                                         MelissaDataSource::getInstance()->overwriteMarker(index, marker);
                                     }

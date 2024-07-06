@@ -33,10 +33,24 @@
             </div>
         </div>
     </div>
+    <v-dialog v-model="editDialogOpen" max-width="400px" :style="dialogStyle">
+        <v-card>
+            <v-card-title class="pb-2">マーカーの編集</v-card-title>
+            <v-card-text class="pt-0 pb-2">
+                <v-text-field v-model="editedMarker.memo" label="メモ" @focus="onInputFocus" @blur="onInputBlur"
+                    dense></v-text-field>
+            </v-card-text>
+            <v-card-actions class="pt-0">
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeEditDialog">キャンセル</v-btn>
+                <v-btn color="blue darken-1" text @click="saveEditedMarker">保存</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 // @ts-ignore
 import * as Juce from "juce-framework-frontend";
 
@@ -61,6 +75,12 @@ const formatColor = (colorString: string): string => {
     const g = (colorValue >> 8) & 0xFF;
     const b = colorValue & 0xFF;
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+};
+
+const reverseFormatColor = (hexColor: string): string => {
+    // '#rrggbb' 形式の文字列から '0xffrrggbb' 形式に変換
+    const rgb = hexColor.slice(1); // '#' を削除
+    return `ff${rgb}`;
 };
 
 const formatTime = (seconds: number) => {
@@ -143,17 +163,52 @@ const deleteMarker = () => {
     }
 };
 
+const editDialogOpen = ref(false);
+const editedMarker = ref({ memo: '' });
+const keyboardOpen = ref(false);
+
+const onInputFocus = () => {
+    keyboardOpen.value = true;
+};
+
+const onInputBlur = () => {
+    keyboardOpen.value = false;
+};
+
+const dialogStyle = computed(() => {
+    if (keyboardOpen.value) {
+        return {
+            top: '5%',
+            transition: 'top 0.3s',
+        };
+    }
+    return {};
+});
+
 const editMarker = () => {
+    if (selectedMarker.value) {
+        editedMarker.value = {
+            memo: selectedMarker.value.memo
+        };
+        editDialogOpen.value = true;
+    }
+};
+
+const closeEditDialog = () => {
+    editDialogOpen.value = false;
+};
+
+const saveEditedMarker = () => {
     if (selectedMarker.value) {
         const index = markers.value.findIndex(m => m === selectedMarker.value);
         if (index !== -1) {
-            // ここでマーカー編集ダイアログを表示し、ユーザーに新しい値を入力させます
-            // 以下は例として、固定値を使用しています
-            const newPosition = selectedMarker.value.time / (songLengthMs.value / 1000);
-            const newMemo = "編集されたメモ";
-            const newColor = "0xFF0000FF"; // 赤色 ("0xffrrggbb"形式)
+            const newPosition = selectedMarker.value.position;
+            const newMemo = editedMarker.value.memo;
+            const currentColor = reverseFormatColor(selectedMarker.value.color);
+            console.log(`${selectedMarker.value.color} -> ${currentColor}`)
 
-            overwriteMarker(index, newPosition, newMemo, newColor);
+            overwriteMarker(index, newPosition, newMemo, currentColor);
+            editDialogOpen.value = false;
         }
     }
 };
@@ -211,5 +266,23 @@ defineExpose({ updateMarkers });
 
 .v-icon {
     font-size: 20px;
+}
+
+.v-dialog {
+    transition: top 0.3s;
+}
+
+.v-card-title {
+    font-size: 1.25rem;
+    padding-bottom: 8px !important;
+}
+
+.v-card-text {
+    padding-top: 0 !important;
+    padding-bottom: 8px !important;
+}
+
+.v-card-actions {
+    padding-top: 0 !important;
 }
 </style>
