@@ -32,7 +32,6 @@ import * as Juce from "juce-framework-frontend";
 
 const waveformContainer = ref<HTMLDivElement | null>(null);
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
-
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
 const requestWaveform = Juce.getNativeFunction("requestWaveform");
 const getCurrentValue = Juce.getNativeFunction("getCurrentValue");
@@ -109,37 +108,8 @@ const drawWaveform = () => {
 
         context.fillRect(x, height - h, stripWidth, h);
     });
-
-    // After drawing the waveform, call drawTimeline
-    drawTimeline();
 };
 
-const drawTimeline = () => {
-    if (!timelineCanvas.value || songLengthMs.value === 0) return;
-
-    const context = timelineCanvas.value.getContext('2d');
-    if (!context) return;
-
-    const { width, height } = timelineCanvas.value;
-    context.clearRect(0, 0, width, height);
-
-    const totalMinutes = Math.floor(songLengthMs.value / 60000);
-    const minuteWidth = width / (songLengthMs.value / 60000);
-
-    context.fillStyle = 'white';
-    context.font = '14px Arial'; // フォントサイズを大きくする
-    context.textAlign = 'center';
-
-    for (let i = 1; i <= totalMinutes; i++) {
-        const x = (i * 60000 / songLengthMs.value) * width;
-
-        // 文字がキャンバスの端にかかる場合は描画しない
-        if (x < 10 || x > width - 10) continue;
-
-        context.fillRect(x, 0, 1, 4);
-        context.fillText(`${i}:00`, x, 20); // y座標を調整
-    }
-};
 
 const updateContainerWidth = () => {
     if (waveformContainer.value) {
