@@ -125,20 +125,26 @@ private:
                                     }
 
                                     const auto requestAsString = args[0].toString();
-                                    float result = 0.f;
 
                                     auto model = MelissaModel::getInstance();
                                     // auto dataSource = MelissaDataSource::getInstance();
                                     if (requestAsString == "getPlayingPosRatio")
                                     {
-                                        result = model->getPlayingPosRatio();
+                                        complete(model->getPlayingPosRatio());
+                                        return;
                                     }
                                     else if (requestAsString == "getLengthMSec")
                                     {
-                                        result = model->getLengthMSec();
+                                        complete(model->getLengthMSec());
+                                        return;
+                                    }
+                                    else if (requestAsString == "getMarkers")
+                                    {
+                                        complete(createCurrntMarkerAsJsonString());
+                                        return;
                                     }
 
-                                    complete(juce::var(result));
+                                    complete("");
                                     return;
                                 })
             .withNativeFunction("getFileList",
@@ -170,9 +176,9 @@ private:
                                     }
 
                                     juce::String filePath = args[0].toString();
-                                    
+
                                     juce::String userDirAsString = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getFullPathName();
-                
+
                                     if (filePath.startsWith(userDirAsString))
                                     {
                                         MelissaDataSource::getInstance()->loadFileAsync(filePath);
@@ -182,7 +188,7 @@ private:
                                         auto filePathInSandBox = MelissaMobileSupport::importFile(filePath);
                                         MelissaDataSource::getInstance()->loadFileAsync(filePathInSandBox);
                                     }
-                
+
                                     complete(juce::var(""));
                                 })
             .withNativeFunction("showFileChooserAndImport",
@@ -209,9 +215,52 @@ private:
                                     complete(juce::var(""));
                                     return;
                                 })
+            .withNativeFunction("addDefaultMarker",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 0)
+                                    {
+                                        float position = static_cast<float>(args[0]);
+                                        MelissaDataSource::getInstance()->addDefaultMarker(position);
+                                    }
+                                    complete(juce::var(""));
+                                })
+            .withNativeFunction("removeMarker",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 0)
+                                    {
+                                        const int index = static_cast<int>(args[0]);
+                                        MelissaDataSource::getInstance()->removeMarker(index);
+                                    }
+                                    complete(juce::var(""));
+                                })
+            .withNativeFunction("overwriteMarker",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 3)
+                                    {
+                                        const int index = static_cast<int>(args[0]);
+                                        float position = static_cast<float>(args[1]);
+                                        juce::String memo = args[2].toString();
+                                        juce::Colour colour(args[3].toString().getHexValue32());
+
+                                        MelissaDataSource::Song::Marker marker;
+                                        marker.position_ = position;
+                                        marker.memo_ = memo;
+                                        marker.colourR_ = colour.getFloatRed();
+                                        marker.colourG_ = colour.getFloatGreen();
+                                        marker.colourB_ = colour.getFloatBlue();
+
+                                        MelissaDataSource::getInstance()->overwriteMarker(index, marker);
+                                    }
+                                    complete(juce::var(""));
+                                })
             .withResourceProvider([this](const auto &url)
                                   { return getResource(url); },
                                   juce::URL{SinglePageBrowser::localDevServerAddress}.getOrigin())};
+
+    juce::String createCurrntMarkerAsJsonString();
 
     // MelissaModelListener
     void playbackStatusChanged(PlaybackStatus status) override;
@@ -249,7 +298,7 @@ private:
     void fontChanged(const juce::Font &mainFont, const juce::Font &subFont, const juce::Font &miniFont) override;
     void exportStarted() override;
     void exportCompleted(bool result, juce::String message) override;
-    
+
     std::unique_ptr<juce::FileChooser> fileChooser_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WebViewBackendComponent)

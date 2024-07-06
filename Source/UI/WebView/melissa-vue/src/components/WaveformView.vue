@@ -1,16 +1,19 @@
 <template>
     <div ref="waveformContainer" class="waveform-view">
-        <canvas ref="waveformCanvas" :width="canvasWidth" height="100" @mousemove="handleMouseMove"
-            @mouseleave="handleMouseLeave" @click="handleClick"></canvas>
-        <canvas ref="timelineCanvas" :width="canvasWidth" height="20"></canvas>
+        <div class="waveform-container">
+            <canvas ref="waveformCanvas" :width="canvasWidth" :height="waveformHeight" @mousemove="handleMouseMove"
+                @mouseleave="handleMouseLeave" @click="handleClick"></canvas>
+            <div v-if="loopStartRatio >= 0 && loopEndRatio > loopStartRatio" :style="selectionStyle" class="selection">
+                <div class="handle start-handle" @mousedown="startDrag('start', $event)"
+                    @touchstart="startDrag('start', $event)"></div>
+                <div class="handle end-handle" @mousedown="startDrag('end', $event)"
+                    @touchstart="startDrag('end', $event)">
+                </div>
+            </div>
+        </div>
+        <canvas ref="timelineCanvas" :width="canvasWidth" :height="timelineHeight"></canvas>
         <div v-if="hoverPosition >= 0" :style="tooltipStyle" class="tooltip">
             {{ getPositionAsString(hoverPosition / numStrips) }}
-        </div>
-        <div v-if="loopStartRatio >= 0 && loopEndRatio > loopStartRatio" :style="selectionStyle" class="selection">
-            <div class="handle start-handle" @mousedown="startDrag('start', $event)"
-                @touchstart="startDrag('start', $event)"></div>
-            <div class="handle end-handle" @mousedown="startDrag('end', $event)" @touchstart="startDrag('end', $event)">
-            </div>
         </div>
     </div>
 </template>
@@ -41,6 +44,9 @@ const songLengthMs = ref(0);
 const loopStartRatio = ref(0.2); // 初期値
 const loopEndRatio = ref(0.8); // 初期値
 const dragging = ref<null | 'start' | 'end'>(null);
+
+const waveformHeight = ref(60); // 波形の高さを60pxに設定
+const timelineHeight = ref(20); // タイムラインの高さを30pxに設定
 
 const loadWaveform = () => {
     requestWaveform().then((waveformAsJson: string) => {
@@ -114,7 +120,7 @@ const drawTimeline = () => {
     const minuteWidth = width / (songLengthMs.value / 60000);
 
     context.fillStyle = 'white';
-    context.font = '10px Arial';
+    context.font = '14px Arial'; // フォントサイズを大きくする
     context.textAlign = 'center';
 
     for (let i = 1; i <= totalMinutes; i++) {
@@ -123,8 +129,8 @@ const drawTimeline = () => {
         // 文字がキャンバスの端にかかる場合は描画しない
         if (x < 10 || x > width - 10) continue;
 
-        context.fillRect(x, 0, 1, 5);
-        context.fillText(`${i}:00`, x, 15);
+        context.fillRect(x, 0, 1, 4);
+        context.fillText(`${i}:00`, x, 20); // y座標を調整
     }
 };
 
@@ -258,10 +264,10 @@ const selectionStyle = computed(() => {
     const endX = loopEndRatio.value * canvasWidth.value;
     return {
         position: 'absolute',
-        left: `${startX + 20}px`, // 左のパディングを考慮
+        left: `${startX}px`,
         width: `${endX - startX}px`,
         top: '0',
-        height: '100px',
+        height: '100%',
         backgroundColor: 'rgba(0, 123, 255, 0.3)',
         border: '1px solid rgba(0, 123, 255, 0.7)',
         pointerEvents: 'none',
@@ -332,35 +338,28 @@ onUnmounted(() => {
 .waveform-view {
     position: relative;
     width: 100%;
-    height: 120px;
-    /* Increased height to accommodate timeline */
+    height: 90px;
+    /* 波形(60px) + タイムライン(30px) */
     cursor: pointer;
     padding: 0 20px;
-    /* Increased height to accommodate timeline */
     box-sizing: border-box;
-    /* パディングを要素の幅に含める */
+}
+
+.waveform-container {
+    position: relative;
+    height: 60px;
+    /* 波形の高さ */
 }
 
 canvas {
     display: block;
-    /* インライン要素による余白を削除 */
     margin: 0 auto;
-    /* 水平方向に中央揃え */
-}
-
-.tooltip {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 2px 5px;
-    border-radius: 3px;
-    pointer-events: none;
 }
 
 .selection {
     position: absolute;
     top: 0;
-    height: 100px;
+    height: 100%;
     background-color: rgba(0, 123, 255, 0.3);
     border: 1px solid rgba(0, 123, 255, 0.7);
     pointer-events: none;
@@ -369,7 +368,7 @@ canvas {
 .handle {
     position: absolute;
     top: 0;
-    width: 20px;
+    width: 10px;
     height: 100%;
     background-color: rgba(0, 123, 255, 0.7);
     cursor: ew-resize;
@@ -382,5 +381,14 @@ canvas {
 
 .end-handle {
     right: 0;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    pointer-events: none;
 }
 </style>

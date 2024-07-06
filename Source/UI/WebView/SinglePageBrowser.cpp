@@ -1,12 +1,13 @@
 #include <JuceHeader.h>
 #include "SinglePageBrowser.h"
+#include "MelissaDataSource.h"
 
 //==============================================================================
 #if JUCE_ANDROID
 // The localhost is available on this address to the emulator
 const juce::String SinglePageBrowser::localDevServerAddress = "http://10.0.2.2:3000/";
 #else
-const juce::String SinglePageBrowser::localDevServerAddress = "http://192.168.11.2:3000/";//"http://localhost:3000/";
+const juce::String SinglePageBrowser::localDevServerAddress = "http://192.168.11.2:3000/"; //"http://localhost:3000/";
 #endif
 
 const juce::String SinglePageBrowser::fallbackPageHtml = R"(
@@ -52,8 +53,12 @@ const juce::String SinglePageBrowser::fallbackPageHtml = R"(
 )";
 
 //==============================================================================
-bool SinglePageBrowser::pageAboutToLoad (const juce::String& newURL)
+bool SinglePageBrowser::pageAboutToLoad(const juce::String &newURL)
 {
     return newURL == localDevServerAddress || newURL == getResourceProviderRoot();
 }
 
+void SinglePageBrowser::pageFinishedLoading(const juce::String &url)
+{
+    MelissaDataSource::getInstance()->restorePreviousState();
+}

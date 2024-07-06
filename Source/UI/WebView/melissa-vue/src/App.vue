@@ -49,7 +49,7 @@
         </v-app-bar>
         <v-main>
             <div class="waveform-container">
-                <WaveformView ref="waveformRef" />
+                <WaveformView ref="waveformRef" :songLengthMs="songLengthMs" />
             </div>
 
             <v-container v-if="activeView === 'home'">
@@ -98,7 +98,7 @@
                                     :class="{ 'selected-row': isSelected(item) }">
                                     <td>{{ item.name }}</td>
                                     <td>{{ item.loopRange }}</td>
-                                    <td>{{ item.pitch }}</td>
+                                    <td>{{ item.speed }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -118,41 +118,8 @@
                 </div>
             </v-container>
 
-            <v-container v-else-if="activeView === 'markers'" class="markers-container pa-0"
-                :style="listContainerStyle">
-                <div class="d-flex h-100">
-                    <div class="markers-table-container flex-grow-1">
-                        <table class="markers-table">
-                            <thead>
-                                <tr>
-                                    <th>色</th>
-                                    <th>時間</th>
-                                    <th>名前</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="marker in markers" :key="marker.id" @click="selectMarker(marker)"
-                                    :class="{ 'selected-row': isMarkerSelected(marker) }">
-                                    <td><v-icon :color="marker.color">mdi-bookmark</v-icon></td>
-                                    <td>{{ marker.time }}</td>
-                                    <td>{{ marker.name }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="ml-4 d-flex flex-column">
-                        <v-btn icon class="mb-2" color="primary" @click="addMarker">
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                        <v-btn icon class="mb-2" color="primary" @click="editMarker" :disabled="!selectedMarker">
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                        <v-btn icon color="primary" @click="deleteMarker" :disabled="!selectedMarker">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </div>
-                </div>
-            </v-container>
+            <MarkerView v-else-if="activeView === 'markers'" ref="markerViewRef" :songLengthMs="songLengthMs"
+                :style="markerViewStyle" />
 
             <v-container v-else-if="activeView === 'debug'" class="debug-container">
                 <v-card class="debug-area" variant="outlined">
@@ -252,6 +219,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 import WaveformView from './components/WaveformView.vue';
+import MarkerView from './components/MarkerView.vue';
 // @ts-ignore
 import * as Juce from "juce-framework-frontend";
 
@@ -270,6 +238,7 @@ const activeView = ref('home');
 const debugLogs = ref<string[]>([]);
 const waveformRef = ref(null);
 const waveformHeight = ref(0);
+const songLengthMs = ref(0);
 
 const addDebugLog = (log: string) => {
     debugLogs.value.unshift(`${new Date().toISOString()}: ${log}`);
@@ -321,7 +290,8 @@ onMounted(async () => {
         const message = objectFromBackend[0];
         if (message === 'songChanged') {
             isLoading.value = false;
-            // ここで現在の曲名を更新する処理を追加する必要があります
+            currentSongName.value = objectFromBackend[1].split('/').pop() || objectFromBackend[1];
+            songLengthMs.value = objectFromBackend[2] / objectFromBackend[3] * 1000; // bufferLength / sampleRate * 1000
         } else if (message === 'playbackStatusChanged') {
             isPlaying.value = objectFromBackend[1] === 0;
         }
@@ -346,9 +316,9 @@ const practiceHeaders = [
 ];
 
 const practiceItems = ref([
-    { name: '練習項目1', loopRange: '0:00-0:30', pitch: 0 },
-    { name: '練習項目2', loopRange: '0:30-1:00', pitch: -1 },
-    { name: '練習項目3', loopRange: '1:00-1:30', pitch: 2 },
+    { name: '練習項目1', loopRange: '0:00-0:30', speed: 0 },
+    { name: '練習項目2', loopRange: '0:30-1:00', speed: -1 },
+    { name: '練習項目3', loopRange: '1:00-1:30', speed: 2 },
 ]);
 
 const selectedPracticeItem = ref(null);
@@ -365,7 +335,7 @@ const addPracticeItem = () => {
     practiceItems.value.push({
         name: `新しい練習項目${practiceItems.value.length + 1}`,
         loopRange: '0:00-0:00',
-        pitch: 0,
+        speed: 0,
     });
 };
 
@@ -409,53 +379,25 @@ onMounted(() => {
     addTestLog();
 });
 
-const markers = ref([
-    { id: 1, color: 'red', time: '0:30', name: 'サビ開始' },
-    { id: 2, color: 'blue', time: '1:45', name: 'ブリッジ' },
-    { id: 3, color: 'green', time: '2:30', name: '2番開始' },
-]);
 
-const selectedMarker = ref(null);
-
-const selectMarker = (marker) => {
-    selectedMarker.value = marker === selectedMarker.value ? null : marker;
-};
-
-const isMarkerSelected = (marker) => {
-    return marker === selectedMarker.value;
-};
-
-const addMarker = () => {
-    const newId = Math.max(0, ...markers.value.map(m => m.id)) + 1;
-    markers.value.push({
-        id: newId,
-        color: 'gray',
-        time: '0:00',
-        name: `新しいマーカー${newId}`,
-    });
-};
-
-const editMarker = () => {
-    if (selectedMarker.value) {
-        console.log('編集するマーカー:', selectedMarker.value);
-        // ここにマーカー編集のロジックを追加
-    }
-};
-
-const deleteMarker = () => {
-    if (selectedMarker.value) {
-        const index = markers.value.findIndex(m => m === selectedMarker.value);
-        if (index !== -1) {
-            markers.value.splice(index, 1);
-            selectedMarker.value = null;
-        }
-    }
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
 const listContainerStyle = computed(() => {
     const bottomNavHeight = isPortrait.value ? 56 : 0; // ボトムナビゲーションの高さ（通常は56px）
     return {
         height: `calc(100vh - 64px - ${waveformHeight.value}px - ${bottomNavHeight}px)`
+    };
+});
+
+const markerViewStyle = computed(() => {
+    const bottomNavHeight = isPortrait.value ? 56 : 0; // ボトムナビゲーションの高さ（通常は56px）
+    return {
+        height: `calc(100vh - 64px - ${waveformHeight.value}px - ${bottomNavHeight}px)`,
+        overflow: 'auto'
     };
 });
 
@@ -494,6 +436,7 @@ body {
 <style scoped>
 .waveform-container {
     margin-top: 20px;
+    margin-bottom: 20px;
     /* ヘッダーと波形の間に20pxの隙間を作る */
 }
 
@@ -555,46 +498,45 @@ body {
     /* アイコン0.5個分くらいのスペース */
 }
 
-.practice-container,
-.markers-container {
+.practice-container {
     display: flex;
     flex-direction: column;
     padding: 0;
 }
 
-.practice-table-container,
-.markers-table-container {
+.practice-table-container {
     flex-grow: 1;
     overflow-y: auto;
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
 
-.practice-table,
-.markers-table {
+.practice-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.practice-table thead,
-.markers-table thead {
+.practice-table thead {
     position: sticky;
     top: 0;
     z-index: 1;
 }
 
 .practice-table th,
-.practice-table td,
-.markers-table th,
-.markers-table td {
+.practice-table td {
     padding: 8px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     text-align: left;
 }
 
-.practice-table tr,
-.markers-table tr {
+.practice-table tr {
     cursor: pointer;
+}
+
+.markers-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
 }
 
 .selected-row {

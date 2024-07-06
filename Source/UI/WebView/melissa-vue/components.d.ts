@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    MarkerView: typeof import('./src/components/MarkerView.vue')['default']
     WaveformView: typeof import('./src/components/WaveformView.vue')['default']
   }
 }

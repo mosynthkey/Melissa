@@ -14,6 +14,8 @@ public:
     // Prevent page loads from navigating away from our single page web app
     bool pageAboutToLoad (const juce::String& newURL) override;
 
+    void pageFinishedLoading(const juce::String &url) override;
+
     //==============================================================================
     static const juce::String localDevServerAddress;
     static const juce::String fallbackPageHtml;
