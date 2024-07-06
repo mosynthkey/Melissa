@@ -25,14 +25,11 @@
             <v-btn icon @click="showFileList">
                 <v-icon>mdi-playlist-music</v-icon>
             </v-btn>
-            <v-app-bar-title 
-                class="song-title text-truncate" 
-                :class="{ 'small-font': currentSongName.length > 20 }"
-                @click="showFileList"
-            >
+            <v-app-bar-title class="song-title text-truncate" :class="{ 'small-font': currentSongName.length > 20 }"
+                @click="showFileList">
                 {{ currentSongName }}
             </v-app-bar-title>
-            <v-btn-toggle v-model="activeView" mandatory>
+            <v-btn-toggle v-model="activeView" mandatory v-if="!isPortrait">
                 <v-btn icon value="home" class="home-button">
                     <v-icon>mdi-home</v-icon>
                 </v-btn>
@@ -226,6 +223,29 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <v-bottom-navigation v-if="isPortrait" v-model="activeView">
+            <v-btn value="home">
+                <v-icon>mdi-home</v-icon>
+                ホーム
+            </v-btn>
+            <v-btn value="practice">
+                <v-icon>mdi-playlist-check</v-icon>
+                練習
+            </v-btn>
+            <v-btn value="markers">
+                <v-icon>mdi-bookmark-multiple</v-icon>
+                マーカー
+            </v-btn>
+            <v-btn value="mixer">
+                <v-icon>mdi-tune-vertical</v-icon>
+                ミキサー
+            </v-btn>
+            <v-btn value="debug">
+                <v-icon>mdi-bug</v-icon>
+                デバッグ
+            </v-btn>
+        </v-bottom-navigation>
     </v-app>
 </template>
 
@@ -269,7 +289,7 @@ const fetchFileList = async () => {
         const result = await getFileList();
         fileList.value = JSON.parse(result);
     } catch (error) {
-        console.error('ファイ���リストの得に失敗しました:', error);
+        console.error('ファイルリストの取得に失敗しました:', error);
     }
 };
 
@@ -433,9 +453,30 @@ const deleteMarker = () => {
 };
 
 const listContainerStyle = computed(() => {
+    const bottomNavHeight = isPortrait.value ? 56 : 0; // ボトムナビゲーションの高さ（通常は56px）
     return {
-        height: `calc(100vh - 64px - ${waveformHeight.value}px)`
+        height: `calc(100vh - 64px - ${waveformHeight.value}px - ${bottomNavHeight}px)`
     };
+});
+
+const isPortrait = ref(window.innerHeight > window.innerWidth);
+
+const updateOrientation = () => {
+    isPortrait.value = window.innerHeight > window.innerWidth;
+};
+
+onMounted(() => {
+    updateOrientation();
+    window.addEventListener('resize', updateOrientation);
+    nextTick(() => {
+        if (waveformRef.value) {
+            waveformHeight.value = waveformRef.value.$el.offsetHeight;
+        }
+    });
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', updateOrientation);
 });
 
 </script>
@@ -480,7 +521,7 @@ body {
     user-select: none;
 }
 
-.v-app-bar > .v-btn:last-child {
+.v-app-bar>.v-btn:last-child {
     margin-right: -12px;
     /* アイコンを右端に寄せる */
 }
@@ -540,8 +581,6 @@ body {
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: #f5f5f5;
-    /* カスタムの薄いグレー */
 }
 
 .practice-table th,
@@ -569,5 +608,12 @@ body {
 
 .home-button {
     border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+.v-bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 </style>
