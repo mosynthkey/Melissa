@@ -133,6 +133,21 @@ private:
                                         complete(model->getPlayingPosRatio());
                                         return;
                                     }
+                                    else if (requestAsString == "getLoopAPosRatio")
+                                    {
+                                        complete(model->getLoopAPosRatio());
+                                        return;
+                                    }
+                                    else if (requestAsString == "getLoopBPosRatio")
+                                    {
+                                        complete(model->getLoopBPosRatio());
+                                        return;
+                                    }
+                                    else if (requestAsString == "getSpeed")
+                                    {
+                                        complete(model->getSpeed());
+                                        return;
+                                    }
                                     else if (requestAsString == "getLengthMSec")
                                     {
                                         complete(model->getLengthMSec());
@@ -253,6 +268,70 @@ private:
                                         marker.colourB_ = colour.getBlue();
 
                                         MelissaDataSource::getInstance()->overwriteMarker(index, marker);
+                                    }
+                                    complete(juce::var(""));
+                                })
+            .withNativeFunction("getCurrentPracticeList",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    std::vector<MelissaDataSource::Song::PracticeList> practiceList;
+                                    MelissaDataSource::getInstance()->getCurrentPracticeList(practiceList);
+                                    juce::var practiceListAsVar;
+                                    for (const auto &item : practiceList)
+                                    {
+                                        juce::DynamicObject::Ptr itemObj = new juce::DynamicObject();
+                                        itemObj->setProperty("name", item.name_);
+                                        itemObj->setProperty("startRatio", item.aRatio_);
+                                        itemObj->setProperty("endRatio", item.bRatio_);
+                                        itemObj->setProperty("speed", item.speed_);
+                                        practiceListAsVar.append(itemObj.get());
+                                    }
+                                    complete(juce::JSON::toString(practiceListAsVar));
+                                })
+            .withNativeFunction("addPracticeList",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 0)
+                                    {
+                                        juce::String name = args[0].toString();
+                                        MelissaDataSource::getInstance()->addPracticeList(name);
+                                    }
+                                    complete(juce::var(""));
+                                })
+            .withNativeFunction("removePracticeList",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 0)
+                                    {
+                                        int index = static_cast<int>(args[0]);
+                                        MelissaDataSource::getInstance()->removePracticeList(index);
+                                    }
+                                    complete(juce::var(""));
+                                })
+            .withNativeFunction("overwritePracticeList",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 4)
+                                    {
+                                        const int index = static_cast<int>(args[0]);
+                                        MelissaDataSource::Song::PracticeList practiceList;
+                                        practiceList.name_ = args[1].toString();
+                                        practiceList.aRatio_ = static_cast<float>(args[2]);
+                                        practiceList.bRatio_ = static_cast<float>(args[3]);
+                                        practiceList.speed_ = static_cast<int>(args[4]);
+                                        MelissaDataSource::getInstance()->overwritePracticeList(index, practiceList);
+                                    
+                                    }
+                                    complete(juce::var(""));
+                                })
+            .withNativeFunction("swapPracticeList",
+                                [this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                {
+                                    if (args.size() > 1)
+                                    {
+                                        int indexA = static_cast<int>(args[0]);
+                                        int indexB = static_cast<int>(args[1]);
+                                        MelissaDataSource::getInstance()->swapPracticeList(indexA, indexB);
                                     }
                                     complete(juce::var(""));
                                 })

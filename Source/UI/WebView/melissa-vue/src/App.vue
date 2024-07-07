@@ -159,7 +159,7 @@
             </v-card>
         </v-dialog>
 
-        <v-bottom-navigation v-if="isPortrait" v-model="activeView">
+        <v-bottom-navigation v-if="isPortrait" v-model="activeView" mandatory>
             <v-btn value="home">
                 <v-icon>mdi-home</v-icon>
                 ホーム
