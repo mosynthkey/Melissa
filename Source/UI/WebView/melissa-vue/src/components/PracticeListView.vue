@@ -4,19 +4,19 @@
             <table class="practice-table">
                 <thead>
                     <tr>
-                        <th>名前</th>
-                        <th>開始位置</th>
-                        <th>終了位置</th>
-                        <th>再生速度</th>
+                        <th class="name-column">名前</th>
+                        <th class="range-column">ループ範囲</th>
+                        <th class="speed-column">再生速度</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in practiceItems" :key="index" @click="selectItem(item)"
                         :class="{ 'selected-row': isSelected(item) }">
-                        <td>{{ item.name }}</td>
-                        <td>{{ formatTime(item.startRatio) }}</td>
-                        <td>{{ formatTime(item.endRatio) }}</td>
-                        <td>{{ item.speed }}%</td>
+                        <td class="name-column">{{ item.name }}</td>
+                        <td class="range-column">
+                            <LoopRangeComponent :startRatio="item.startRatio" :endRatio="item.endRatio" :height="12" />
+                        </td>
+                        <td class="speed-column">{{ item.speed }}%</td>
                     </tr>
                 </tbody>
             </table>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed, defineComponent, watch, h, onBeforeUnmount } from 'vue';
 // @ts-ignore
 import * as Juce from "juce-framework-frontend";
 
@@ -70,6 +70,7 @@ const removePracticeList = Juce.getNativeFunction("removePracticeList");
 const overwritePracticeList = Juce.getNativeFunction("overwritePracticeList");
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
 const getCurrentValue = Juce.getNativeFunction("getCurrentValue");
+const setLoopPosition = Juce.getNativeFunction("setLoopPosition");
 
 const updatePracticeItems = async () => {
     try {
@@ -89,18 +90,25 @@ const updateSongLength = async () => {
     }
 };
 
+const handleMelissaNotification = (objectFromBackend: any) => {
+    const message = objectFromBackend[0];
+    if (message === 'practiceListUpdated') {
+        updatePracticeItems();
+    } else if (message === 'songChanged') {
+        updateSongLength();
+        updatePracticeItems(); // 曲が変わったときに練習リストも更新
+    }
+};
+
 onMounted(async () => {
     await updatePracticeItems();
     await updateSongLength();
 
-    window.__JUCE__.backend.addEventListener("MelissaNotification", (objectFromBackend: any) => {
-        const message = objectFromBackend[0];
-        if (message === 'practiceListUpdated') {
-            updatePracticeItems();
-        } else if (message === 'songChanged') {
-            updateSongLength();
-        }
-    });
+    window.__JUCE__.backend.addEventListener("MelissaNotification", handleMelissaNotification);
+});
+
+onUnmounted(() => {
+    window.__JUCE__.backend.removeEventListener("MelissaNotification", handleMelissaNotification);
 });
 
 const formatTime = (ratio: number) => {
@@ -112,8 +120,7 @@ const formatTime = (ratio: number) => {
 
 const selectItem = (item) => {
     selectedPracticeItem.value = item;
-    excuteCommand('SetLoopStartValue', item.startRatio);
-    excuteCommand('SetLoopEndValue', item.endRatio);
+    setLoopPosition(item.startRatio, item.endRatio);
     excuteCommand('SetSpeedValue', (item.speed - 20) / (200.0 - 20.0));
 };
 
@@ -159,6 +166,102 @@ const deletePracticeItem = async () => {
         }
     }
 };
+
+// LoopRangeComponent の定義
+const LoopRangeComponent = defineComponent({
+    props: {
+        startRatio: {
+            type: Number,
+            required: true
+        },
+        endRatio: {
+            type: Number,
+            required: true
+        },
+        height: {
+            type: Number,
+            default: 12 // デフォルトの高さを12に設定
+        }
+    },
+    setup(props) {
+        const canvasRef = ref(null);
+
+        const drawLoopRange = () => {
+            const canvas = canvasRef.value;
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+            const radius = props.height / 2; // 角丸の半径
+
+            // 背景をクリア
+            ctx.clearRect(0, 0, width, height);
+
+            // 全体の背景を描画
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(width - radius, 0);
+            ctx.quadraticCurveTo(width, 0, width, radius);
+            ctx.lineTo(width, height - radius);
+            ctx.quadraticCurveTo(width, height, width - radius, height);
+            ctx.lineTo(radius, height);
+            ctx.quadraticCurveTo(0, height, 0, height - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // ループ範囲を描画
+            const startX = props.startRatio * width;
+            const endX = props.endRatio * width;
+            ctx.fillStyle = 'rgba(255, 107, 107, 0.7)';
+            ctx.beginPath();
+            ctx.moveTo(startX + radius, 0);
+            ctx.lineTo(endX - radius, 0);
+            ctx.quadraticCurveTo(endX, 0, endX, radius);
+            ctx.lineTo(endX, height - radius);
+            ctx.quadraticCurveTo(endX, height, endX - radius, height);
+            ctx.lineTo(startX + radius, height);
+            ctx.quadraticCurveTo(startX, height, startX, height - radius);
+            ctx.lineTo(startX, radius);
+            ctx.quadraticCurveTo(startX, 0, startX + radius, 0);
+            ctx.closePath();
+            ctx.fill();
+        };
+
+        const resizeCanvas = () => {
+            const canvas = canvasRef.value;
+            if (!canvas) return;
+            canvas.width = canvas.clientWidth;
+            canvas.height = props.height;
+            drawLoopRange();
+        };
+
+        onMounted(() => {
+            console.log('LoopRangeComponent mounted');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        });
+
+        onBeforeUnmount(() => {
+            window.removeEventListener('resize', resizeCanvas);
+        });
+
+        watch([() => props.startRatio, () => props.endRatio, () => props.height], () => {
+            console.log('LoopRangeComponent props changed', props.startRatio, props.endRatio, props.height);
+            resizeCanvas();
+        });
+
+        return { canvasRef };
+    },
+    render() {
+        return h('div', { class: 'loop-range-container' }, [
+            h('canvas', { ref: 'canvasRef', style: { width: '100%', height: `${this.height}px` } })
+        ]);
+    }
+});
 </script>
 
 <style scoped>
@@ -172,6 +275,8 @@ const deletePracticeItem = async () => {
 .practice-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    /* テーブルの幅を固定 */
 }
 
 .practice-table thead {
@@ -185,6 +290,13 @@ const deletePracticeItem = async () => {
     padding: 8px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+    /* 内容がはみ出さないようにする */
+    text-overflow: ellipsis;
+    /* 内容がはみ出た場合に省略記号を表示 */
+    white-space: nowrap;
+    /* 内容を折り返さない */
 }
 
 .practice-table tr {
@@ -193,5 +305,38 @@ const deletePracticeItem = async () => {
 
 .selected-row {
     background-color: rgba(0, 0, 0, 0.12);
+}
+
+.loop-range-container {
+    width: 100%;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 中央揃え */
+}
+
+.practice-table td {
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.selected-row {
+    background-color: rgba(255, 107, 107, 0.2);
+}
+
+.name-column {
+    width: 30%;
+    /* 名前列の幅を30%に設定 */
+}
+
+.range-column {
+    width: 50%;
+    /* ループ範囲列の幅を50%に設定 */
+}
+
+.speed-column {
+    width: 20%;
+    /* 再生速度列の幅を20%に設定 */
 }
 </style>

@@ -335,6 +335,20 @@ private:
                                     }
                                     complete(juce::var(""));
                                 })
+            .withNativeFunction("setLoopPosition",
+                                [safe_this = juce::Component::SafePointer(this), this](const juce::Array<juce::var> &args, std::function<void(juce::var)> complete)
+                                    -> void
+                                {
+                                    if (safe_this.getComponent() == nullptr)
+                                    {
+                                        complete(juce::var(""));
+                                        return;
+                                    }
+                
+                                    MelissaModel::getInstance()->setLoopPosRatio(static_cast<float>(args[0]), static_cast<float>(args[1]));
+                                    complete(juce::var(""));
+                                    return;
+                                })
             .withResourceProvider([this](const auto &url)
                                   { return getResource(url); },
                                   juce::URL{SinglePageBrowser::localDevServerAddress}.getOrigin())};
