@@ -292,14 +292,8 @@ const loadFileAndCloseDialog = (file: string) => {
     }
 };
 
-// デバッグログを追加するテスト用の関数
-const addTestLog = () => {
-    addDebugLog(`テストログ ${Date.now()}`);
-};
-
 // コンポーネントがマウントされたときにテストログを追加
 onMounted(() => {
-    addTestLog();
 });
 
 
@@ -358,9 +352,8 @@ body {
 
 <style scoped>
 .waveform-container {
-    margin-top: 20px;
+    margin-top: 50px;
     margin-bottom: 20px;
-    /* ヘッダーと波形の間に20pxの隙間を作る */
 }
 
 .button-container {

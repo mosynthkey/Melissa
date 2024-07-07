@@ -10,8 +10,14 @@
                     @touchstart="startDrag('end', $event)">
                 </div>
             </div>
-            <div v-for="marker in markers" :key="marker.position" :style="getMarkerStyle(marker)" class="marker">
-                <div class="marker-head" @click.stop="setPlayPositionToMarker(marker)"></div>
+            <div v-for="(marker, index) in markers" :key="marker.position" :style="getMarkerStyle(marker)"
+                class="marker">
+                <div class="marker-head" @click.stop="setPlayPositionToMarker(marker)"
+                    @touchstart.stop="setPlayPositionToMarker(marker)"></div>
+                <div v-if="marker.memo" class="marker-memo" @click.stop="toggleMemoExpand(index)"
+                    @touchstart.stop="toggleMemoExpand(index)">
+                    {{ getDisplayMemo(marker.memo, index) }}
+                </div>
             </div>
         </div>
         <div class="timeline-container">
@@ -19,7 +25,7 @@
                 {{ label.text }}
             </div>
         </div>
-        <div v-if="hoverPosition >= 0" :style="tooltipStyle" class="tooltip">
+        <div v-if="hoverPosition >= 0 && !tooltipHidden" :style="tooltipStyle" class="tooltip">
             {{ getPositionAsString(hoverPosition / numStrips) }}
         </div>
     </div>
@@ -32,6 +38,7 @@ import * as Juce from "juce-framework-frontend";
 
 const waveformContainer = ref<HTMLDivElement | null>(null);
 const waveformCanvas = ref<HTMLCanvasElement | null>(null);
+
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
 const requestWaveform = Juce.getNativeFunction("requestWaveform");
 const getCurrentValue = Juce.getNativeFunction("getCurrentValue");
@@ -130,13 +137,16 @@ const numStrips = computed(() => {
     return Math.floor(canvasWidth.value / (stripWidth + stripInterval));
 });
 
+const tooltipHidden = ref(true);
+let tooltipTimeout: number | null = null;
+
 const tooltipStyle = computed(() => {
     if (!waveformContainer.value || hoverPosition.value < 0) return {};
     const x = (hoverPosition.value / numStrips.value) * canvasWidth.value;
     return {
         position: 'absolute',
         left: `${x + 20}px`, // 左のパディングを考慮
-        top: '100%', // 波形の下に配置
+        top: '70%', // 波形の上に配置（80%から60%に変更）
         transform: 'translateX(-50%)', // 水平方向の中央揃え
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         color: 'white',
@@ -166,6 +176,7 @@ const handleMouseMove = (event: MouseEvent) => {
     const rect = waveformContainer.value.getBoundingClientRect();
     const x = event.clientX - rect.left - 20; // 左のパディングを考慮
     handleMove(x);
+    showTooltip();
 };
 
 const handleMouseLeave = () => {
@@ -180,6 +191,21 @@ const handleClick = (event: MouseEvent) => {
     const x = event.clientX - rect.left - 20; // 左のパディングを考慮
     const position = x / canvasWidth.value;
     excuteCommand("PlaybackPositionValue", position);
+    showTooltip();
+};
+
+const showTooltip = () => {
+    tooltipHidden.value = false;
+    resetTooltipTimeout();
+};
+
+const resetTooltipTimeout = () => {
+    if (tooltipTimeout) {
+        clearTimeout(tooltipTimeout);
+    }
+    tooltipTimeout = setTimeout(() => {
+        tooltipHidden.value = true;
+    }, 2000); // 2秒後にツールチップを非表示にする
 };
 
 const startDrag = (handle: 'start' | 'end', event: MouseEvent | TouchEvent) => {
@@ -299,7 +325,8 @@ const updateTimeLabels = () => {
     timeLabels.value = visibleLabels;
 };
 
-const markers = ref<{ position: number; color: string }[]>([]);
+const markers = ref<{ position: number; color: string; memo: string }[]>([]);
+const expandedMemos = ref<Set<number>>(new Set());
 
 const formatColor = (colorString: string): string => {
     // "0xffrrggbb" 形式の文字列から RGB 値を抽出
@@ -315,26 +342,42 @@ const updateMarkers = (markersData: string) => {
         const parsedMarkers = JSON.parse(markersData);
         markers.value = parsedMarkers.map((marker: any) => ({
             position: marker.position,
-            color: formatColor(marker.colour)
+            color: formatColor(marker.colour),
+            memo: marker.memo || '' // メモ��追加
         }));
     } catch (error) {
         console.error('マーカーデータの解析に失敗しました:', error);
     }
 };
 
-const getMarkerStyle = (marker: { position: number; color: string }) => {
+const getMarkerStyle = (marker: { position: number; color: string; memo: string }) => {
     const x = marker.position * canvasWidth.value;
     return {
         position: 'absolute',
         left: `${x}px`,
         top: '-16px', // 波形の上にはみ出すように調整
         width: '3px', // マーカーを3pxに太く
-        height: 'calc(100% + 16px)', // 高さを増やして波形の上にはみ出すように
+        height: 'calc(100% + 16px)', // 高さを増やして波形の上にはみ出すうに
         backgroundColor: marker.color,
     };
 };
 
-const setPlayPositionToMarker = (marker: { position: number; color: string }) => {
+const getDisplayMemo = (memo: string, index: number) => {
+    if (expandedMemos.value.has(index) || memo.length <= 20) {
+        return memo;
+    }
+    return memo.slice(0, 20) + '...';
+};
+
+const toggleMemoExpand = (index: number) => {
+    if (expandedMemos.value.has(index)) {
+        expandedMemos.value.delete(index);
+    } else {
+        expandedMemos.value.add(index);
+    }
+};
+
+const setPlayPositionToMarker = (marker: { position: number; color: string; memo: string }) => {
     excuteCommand("PlaybackPositionValue", marker.position);
 };
 
@@ -385,6 +428,9 @@ onUnmounted(() => {
     window.__JUCE__.backend.removeEventListener(notificationToken);
     window.removeEventListener('mouseup', handleMouseUp);
     window.removeEventListener('touchend', handleTouchEnd);
+    if (tooltipTimeout) {
+        clearTimeout(tooltipTimeout);
+    }
 });
 
 // @ts-ignore
@@ -443,6 +489,32 @@ onUnmounted(() => {
     border-radius: 6px;
     background-color: inherit;
     cursor: pointer;
+}
+
+.marker-memo {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: auto;
+    cursor: pointer;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    /* テキスト選択を防止 */
+    -webkit-user-select: none;
+    /* iOS Safari 用 */
+}
+
+.marker-memo:hover {
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 canvas {
