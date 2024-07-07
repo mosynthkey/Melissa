@@ -5,17 +5,17 @@
                 <table class="markers-table">
                     <thead>
                         <tr>
-                            <th>色</th>
-                            <th>時間</th>
-                            <th>メモ</th>
+                            <th class="color-column">色</th>
+                            <th class="time-column">時間</th>
+                            <th class="memo-column">メモ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="marker in markers" :key="marker.id" @click="selectMarker(marker)"
                             :class="{ 'selected-row': isMarkerSelected(marker) }">
-                            <td><v-icon :color="marker.color">mdi-bookmark</v-icon></td>
-                            <td>{{ marker.time }}</td>
-                            <td>{{ marker.memo }}</td>
+                            <td class="color-column"><v-icon :color="marker.color">mdi-bookmark</v-icon></td>
+                            <td class="time-column">{{ marker.time }}</td>
+                            <td class="memo-column">{{ marker.memo }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -284,5 +284,17 @@ defineExpose({ updateMarkers });
 
 .v-card-actions {
     padding-top: 0 !important;
+}
+
+.color-column {
+    width: 10%;
+}
+
+.time-column {
+    width: 30%;
+}
+
+.memo-column {
+    width: 60%;
 }
 </style>
