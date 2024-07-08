@@ -105,34 +105,7 @@
         </v-main>
 
         <!-- ファイルリストポップアップ -->
-        <v-dialog v-model="fileListDialog" fullscreen>
-            <v-card>
-                <v-toolbar dark color="primary">
-                    <v-btn icon dark @click="fileListDialog = false">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>ファイルリスト</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon dark @click="showFileChooserAndImport">
-                        <v-icon>mdi-file-import</v-icon>
-                    </v-btn>
-                    <v-btn icon dark>
-                        <v-icon>mdi-refresh</v-icon>
-                    </v-btn>
-                    <v-btn icon dark>
-                        <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                </v-toolbar>
-                <v-list>
-                    <v-list-item v-for="(file, index) in fileList" :key="index" @click="loadFileAndCloseDialog(file)">
-                        <template v-slot:prepend>
-                            <v-icon>mdi-file-music</v-icon>
-                        </template>
-                        <v-list-item-title>{{ getFileName(file) }}</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-card>
-        </v-dialog>
+        <FileView ref="fileViewRef" @file-loaded="onFileLoaded" />
 
         <!-- ローディング面 -->
         <v-dialog v-model="isLoading" persistent max-width="300px">
@@ -189,16 +162,12 @@ import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 import WaveformView from './components/WaveformView.vue';
 import MarkerView from './components/MarkerView.vue';
 import PracticeListView from './components/PracticeListView.vue';
+import FileView from './components/FileView.vue';
 // @ts-ignore
 import * as Juce from "juce-framework-frontend";
 
 const excuteCommand = Juce.getNativeFunction("excuteCommand");
-const getFileList = Juce.getNativeFunction("getFileList");
-const loadFile = Juce.getNativeFunction("loadFile");
-const showFileChooserAndImport = Juce.getNativeFunction("showFileChooserAndImport");
 
-const fileListDialog = ref(false);
-const fileList = ref<string[]>([]);
 const isLoading = ref(false);
 const currentSongName = ref('曲が選択されてません');
 const isPlaying = ref(false);
@@ -208,6 +177,7 @@ const debugLogs = ref<string[]>([]);
 const waveformRef = ref(null);
 const waveformHeight = ref(0);
 const songLengthMs = ref(0);
+const fileViewRef = ref(null);
 
 const addDebugLog = (log: string) => {
     debugLogs.value.unshift(`${new Date().toISOString()}: ${log}`);
@@ -222,23 +192,16 @@ const togglePlayPause = () => {
     excuteCommand('StartStop', 1);
 };
 
-const fetchFileList = async () => {
-    try {
-        const result = await getFileList();
-        fileList.value = JSON.parse(result);
-    } catch (error) {
-        console.error('ファイルリストの取得に失敗しました:', error);
-    }
-};
-
 const showFileList = () => {
-    fileListDialog.value = true;
+    fileViewRef.value.showFileList();
 };
 
-const getFileName = (filePath: string) => {
-    return filePath.split('/').pop() || filePath;
+const onFileLoaded = (fileName: string) => {
+    isLoading.value = true;
+    currentSongName.value = fileName;
+    // ここで必要な処理を追加（例：波形の更新など）
+    isLoading.value = false;
 };
-
 
 const showSettings = () => {
     // 設定画面を表示する処理をここに実装
@@ -252,20 +215,6 @@ const showAbout = () => {
 let notificationToken: any = null;
 
 onMounted(async () => {
-    await fetchFileList();
-
-    notificationToken = window.__JUCE__.backend.addEventListener("MelissaNotification", (objectFromBackend: any) => {
-        addDebugLog(JSON.stringify(objectFromBackend));
-        const message = objectFromBackend[0];
-        if (message === 'songChanged') {
-            isLoading.value = false;
-            currentSongName.value = objectFromBackend[1].split('/').pop() || objectFromBackend[1];
-            songLengthMs.value = objectFromBackend[2] / objectFromBackend[3] * 1000; // bufferLength / sampleRate * 1000
-        } else if (message === 'playbackStatusChanged') {
-            isPlaying.value = objectFromBackend[1] === 0;
-        }
-    });
-
     await nextTick();
     if (waveformRef.value) {
         waveformHeight.value = waveformRef.value.$el.offsetHeight;
@@ -353,14 +302,13 @@ body {
 <style scoped>
 .waveform-container {
     margin-top: 50px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .button-container {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 16px;
 }
 
 .v-app-bar-title {
@@ -418,11 +366,6 @@ body {
     display: flex;
     flex-direction: column;
     padding: 0;
-}
-
-.v-btn-toggle {
-    margin-right: 0px;
-    /* アイコンを右端に寄せる */
 }
 
 .home-button {

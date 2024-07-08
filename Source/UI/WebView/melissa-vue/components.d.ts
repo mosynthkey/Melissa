@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    FileView: typeof import('./src/components/FileView.vue')['default']
     MarkerView: typeof import('./src/components/MarkerView.vue')['default']
     PracticeListView: typeof import('./src/components/PracticeListView.vue')['default']
     WaveformView: typeof import('./src/components/WaveformView.vue')['default']
