@@ -8,3 +8,6 @@
 [submodule "Submodule/eigen"]
 	path = Submodule/eigen
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "Submodule/JUCE"]
+	path = Submodule/JUCE
+	url = git@github.com:juce-framework/JUCE.git

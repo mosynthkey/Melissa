@@ -5,7 +5,6 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
-#include "AppConfig.h"
 #include "MelissaDataSource.h"
 #include "MelissaDefinitions.h"
 #include "MelissaStemProvider.h"
