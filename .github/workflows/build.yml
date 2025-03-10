@@ -35,5 +35,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Melissa-macOS
-          path: build/Melissa_artefacts/Release/Melissa.app
+          path: build/Melissa_artefacts/Melissa.app
           
