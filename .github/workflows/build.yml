@@ -1,0 +1,38 @@
+name: Build Melissa
+
+on:
+  push:
+    branches: [ main, master, develop, cicd ]
+  pull_request:
+    branches: [ main, master, develop, cicd ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup TensorFlow libraries
+        run: |
+          mkdir -p ThirdParty
+          curl -L https://github.com/mosynthkey/libtensorflow-cpu-darwin-universal-binary/releases/download/v2.8.0/libtensorflow-cpu-darwin-universal-binary-2.8.0.zip -o tensorflow.zip
+          unzip tensorflow.zip -d ThirdParty/
+      
+      - name: Install dependencies
+        run: |
+          brew install cmake
+          
+      - name: Create build directory
+        run: cmake -B build
+          
+      - name: Build
+        run: cmake --build build --config Release
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Melissa-macOS
+          path: build/Melissa_artefacts/Release/Melissa.app
+          

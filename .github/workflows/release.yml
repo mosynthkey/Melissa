@@ -1,0 +1,41 @@
+name: Release Melissa
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Melissa ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          
+  build-macos:
+    needs: create-release
+    runs-on: macos-latest
+    steps:
+      # ビルドステップは上記と同様
+      
+      - name: Create DMG
+        run: |
+          # macOSアプリケーションをDMGにパッケージ化するコマンド
+          # 例: npm install -g appdmg && appdmg config.json Melissa.dmg
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./Melissa.dmg
+          asset_name: Melissa-${{ github.ref_name }}-macOS.dmg
+          asset_content_type: application/octet-stream 
