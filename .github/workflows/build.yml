@@ -18,7 +18,8 @@ jobs:
         run: |
           mkdir -p ThirdParty
           curl -L https://github.com/mosynthkey/libtensorflow-cpu-darwin-universal-binary/releases/download/v2.8.0/libtensorflow-cpu-darwin-universal-binary-2.8.0.zip -o tensorflow.zip
-          unzip tensorflow.zip -d ThirdParty/
+          unzip -o tensorflow.zip -d ThirdParty/ || true
+          ls -R ThirdParty/
       
       - name: Install dependencies
         run: |
