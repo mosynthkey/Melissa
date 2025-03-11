@@ -11,3 +11,6 @@
 [submodule "Submodule/JUCE"]
 	path = Submodule/JUCE
 	url = git@github.com:juce-framework/JUCE.git
+[submodule "Submodule/demucs.cpp"]
+	path = Submodule/demucs.cpp
+	url = git@github.com:sevagh/demucs.cpp.git
