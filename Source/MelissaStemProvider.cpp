@@ -35,11 +35,12 @@ MelissaStemProvider::~MelissaStemProvider()
     
 }
 
-bool MelissaStemProvider::requestStems(const File& file)
+bool MelissaStemProvider::requestStems(const File& file, SeparatorType type)
 {
     if (status_ == kStemProviderStatus_Processing || isThreadRunning()) return false;
     
     songFile_ = file;
+    separatorType_ = type;
     startThread();
     
     return true;

@@ -168,13 +168,17 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
         }
         else
         {
-            const std::vector<String> options = { TRANS("ok"), TRANS("cancel") };
-            auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("before_creating_stems"), options, [&](size_t yesno) {
-                if (yesno == 1 /* no */ ) return;
-                
-                MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()));
+            const std::vector<String> separatorOptions = { TRANS("separator_spleeter"), TRANS("separator_demucs") };
+            auto separatorDialog = std::make_shared<MelissaOptionDialog>(TRANS("choose_separator"), separatorOptions, [&](size_t selectedOption) {
+                const std::vector<String> confirmOptions = { TRANS("ok"), TRANS("cancel") };
+                auto confirmDialog = std::make_shared<MelissaOptionDialog>(TRANS("before_creating_stems"), confirmOptions, [&, selectedOption](size_t yesno) {
+                    if (yesno == 1 /* no */ ) return;
+                    SeparatorType separatorType = (selectedOption == 0) ? kSeparatorType_Spleeter : kSeparatorType_Demucs;
+                    MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()), separatorType);
+                });
+                MelissaModalDialog::show(confirmDialog, TRANS("separation_of_music"));
             });
-            MelissaModalDialog::show(dialog, TRANS("separation_of_music"));
+            MelissaModalDialog::show(separatorDialog, TRANS("separation_of_music"));
         }
     };
     addAndMakeVisible(createStemsButton_.get());

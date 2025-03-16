@@ -260,3 +260,6 @@ countries: us
 "category_settings" = "Audio/MIDI Settings"
 "category_iap" = "Pro Mode"
 "category_about" = "About Melissa"
+"choose_separator" = "Choose separation method"
+"separator_spleeter" = "Spleeter (faster)"
+"separator_demucs" = "Demucs (better quality)"

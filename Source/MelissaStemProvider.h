@@ -30,6 +30,13 @@ enum StemProviderResult
     kNumStemProviderResults
 };
 
+enum SeparatorType
+{
+    kSeparatorType_Spleeter,
+    kSeparatorType_Demucs,
+    kNumSeparatorTypes
+};
+
 class MelissaStemProviderListener
 {
 public:
@@ -43,7 +50,7 @@ public:
 class MelissaStemProvider : public juce::Thread
 {    
 public:
-    bool requestStems(const juce::File& file);
+    bool requestStems(const juce::File& file, SeparatorType type = kSeparatorType_Spleeter);
     void getStemFiles(const juce::File& fileToOpen, juce::File& originalFile, std::map<std::string, juce::File>& stemFiles);
     
     void failedToReadPreparedStems();
@@ -79,6 +86,7 @@ private:
     
     StemProviderStatus status_;
     StemProviderResult result_;
+    SeparatorType separatorType_;
     
     juce::File songFile_;
 };

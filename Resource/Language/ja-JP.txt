@@ -260,3 +260,6 @@ countries: ja
 "category_settings" = "オーディオ/MIDI 設定"
 "category_iap" = "Pro Mode"
 "category_about" = "Melissaについて"
+"choose_separator" = "分離方法を選択してください"
+"separator_spleeter" = "Spleeter (高速)"
+"separator_demucs" = "Demucs (高品質)"
