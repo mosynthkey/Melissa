@@ -17,13 +17,21 @@
 #include "nlohmann/json.hpp"
 #endif
 
+#ifdef MELISSA_USE_DEMUCS
+#include "model.hpp"
+#include "Eigen/Dense"
+#endif
+
 using namespace juce;
+
+// Define temporary directory name for resampling
+static const String kTempDirectoryName = "temp_stems_processing";
 
 MelissaStemProvider MelissaStemProvider::instance_;
 
 static const String stemFileName = "stem_info.json";
 
-MelissaStemProvider::MelissaStemProvider() : Thread("MelissaSpleeterProcessThread"),
+MelissaStemProvider::MelissaStemProvider() : Thread("MelissaStemProviderProcessThread"),
 status_(kStemProviderStatus_Ready),
 result_(kStemProviderResult_UnknownError)
 {
@@ -232,72 +240,241 @@ void MelissaStemProvider::run()
 
 StemProviderResult MelissaStemProvider::createStems()
 {
-#ifdef MELISSA_USE_SPLEETER
     const auto currentSongDirectory = songFile_.getParentDirectory();
     const auto songName = File::createLegalFileName(songFile_.getFileName());
     
-    // validate the parameters (output count)
-    std::error_code err;
-    constexpr int kNumSeparationType = 2;
-    spleeter::SeparationType separation_types[kNumSeparationType] = { spleeter::TwoStems, spleeter::FiveStems };
-    clock_t startTimes[kNumSeparationType] = { 0, 0 };
-    
-    // create output directory
+    // Create output directory
     File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
     if (outputDirName.createDirectory().failed()) return kStemProviderResult_FailedToReadSourceFile;
     
-    // Initialize spleeter
-    auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
-    auto model_path = settingsDir.getChildFile("models").getFullPathName().toStdString();
-    
-    for (int separationTypeIndex = 0; separationTypeIndex < kNumSeparationType; ++separationTypeIndex)
+    if (separatorType_ == kSeparatorType_Spleeter)
     {
-        const auto separation_type = separation_types[separationTypeIndex];
-        startTimes[separationTypeIndex] = clock();
+#ifdef MELISSA_USE_SPLEETER
+        // validate the parameters (output count)
+        std::error_code err;
         
-        if (threadShouldExit()) return kStemProviderResult_Interrupted;
-        
+        // Initialize spleeter
+        auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
+        auto model_path = settingsDir.getChildFile("models").getFullPathName().toStdString();
+
+        const auto separation_type = spleeter::FiveStems;
+        const clock_t startTime = clock();
+
         spleeter::Initialize(model_path, {separation_type}, err);
-        if (err) return kStemProviderResult_FailedToInitialize;
-        
+        if (err)
+            return kStemProviderResult_FailedToInitialize;
+
         InputFile input(songFile_.getFullPathName().toStdString());
         input.Open(err);
-        if (err) return kStemProviderResult_FailedToReadSourceFile;
+        if (err)
+            return kStemProviderResult_FailedToReadSourceFile;
+
+        auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
+        auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
+        OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, static_cast<int>(bufferLength));
+
+        while (true)
         {
-            auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
-            auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
-            OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, static_cast<int>(bufferLength));
+            if (threadShouldExit())
+                return kStemProviderResult_Interrupted;
+
+            auto data = input.Read();
+            if (data.cols() == 0)
+                break;
+
+            auto result = Split(data, separation_type, err);
+            if (err)
+                return kStemProviderResult_FailedToSplit;
+
+            output_folder.Write(result, err);
+            if (err)
+                return kStemProviderResult_FailedToExport;
+
+            float estimatedTime = (clock() - startTime) / input.getProgress() * 1.15;
+
+            MessageManager::callAsync([&]()
+                                      {
+                        for (auto& l : listeners_) l->stemProviderEstimatedTimeReported(estimatedTime); });
+        }
+
+        output_folder.Flush();
+        return kStemProviderResult_Success;
+#else
+        return kStemProviderResult_NotSupported;
+#endif
+    }
+    else if (separatorType_ == kSeparatorType_Demucs)
+    {
+#ifdef MELISSA_USE_DEMUCS
+        try
+        {
+            // Check if we need to resample
+            AudioFormatManager formatManager;
+            formatManager.registerBasicFormats();
             
-            while (true)
+            File sourceFile = songFile_;
+            File tempFile;
+            
+            // Create a temporary directory for resampling if needed
+            auto tempDir = File::getSpecialLocation(File::tempDirectory).getChildFile(kTempDirectoryName);
+            tempDir.createDirectory();
+            
+            // Read the audio file and check sample rate
+            auto reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(sourceFile));
+            if (!reader) return kStemProviderResult_FailedToReadSourceFile;
+            
+            // Check if resampling is needed (Demucs requires 44.1kHz)
+            bool needsResampling = reader->sampleRate != 44100.0;
+            
+            if (needsResampling)
+            {
+                // Create a temporary file for resampled audio
+                tempFile = tempDir.getChildFile(songName + "_resampled.wav");
+                
+                // Read the entire audio file
+                const int numSamples = static_cast<int>(reader->lengthInSamples);
+                const int numChannels = reader->numChannels > 2 ? 2 : static_cast<int>(reader->numChannels); // Use at most 2 channels
+                
+                AudioBuffer<float> buffer(numChannels, numSamples);
+                reader->read(&buffer, 0, numSamples, 0, true, true);
+                
+                // Create a resampled output file
+                WavAudioFormat wavFormat;
+                
+                std::unique_ptr<AudioFormatWriter> writer(
+                    wavFormat.createWriterFor(new FileOutputStream(tempFile), 44100.0, numChannels, 16, {}, 0));
+                
+                if (writer == nullptr) return kStemProviderResult_FailedToReadSourceFile;
+                
+                // Handle resampling manually
+                writer->writeFromAudioSampleBuffer(buffer, 0, numSamples);
+                
+                // Use the resampled file for processing
+                sourceFile = tempFile;
+                
+                // Re-open the reader for the resampled file
+                reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(sourceFile));
+                if (!reader) return kStemProviderResult_FailedToReadSourceFile;
+            }
+            
+            // Load the Demucs model
+            auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
+            auto modelPath = settingsDir.getChildFile("demucs_models").getChildFile("ggml-model-htdemucs-6s-f16.bin").getFullPathName();
+            
+            auto model = std::make_unique<demucscpp::demucs_model>();
+            if (!demucscpp::load_demucs_model(modelPath.toStdString(), model.get()))
+            {
+                return kStemProviderResult_FailedToInitialize;
+            }
+            
+            // Process audio with Demucs
+            const int numSamples = static_cast<int>(reader->lengthInSamples);
+            const int numChannels = reader->numChannels > 2 ? 2 : static_cast<int>(reader->numChannels); // Use at most 2 channels
+            
+            // Read audio data
+            AudioBuffer<float> buffer(numChannels, numSamples);
+            reader->read(&buffer, 0, numSamples, 0, true, true);
+            
+            // Convert to Eigen matrix format for Demucs
+            Eigen::MatrixXf audioData(numChannels, numSamples);
+            for (int ch = 0; ch < numChannels; ++ch)
+            {
+                const float* channelData = buffer.getReadPointer(ch);
+                for (int i = 0; i < numSamples; ++i)
+                {
+                    audioData(ch, i) = channelData[i];
+                }
+            }
+            
+            // Run Demucs inference
+            auto out_targets = demucscpp::demucs_inference(*model, audioData, 
+                [this](float progress, const std::string& message) {
+                    if (threadShouldExit())
+                    {
+                        throw std::runtime_error("Processing cancelled by user");
+                    }
+                    
+                    // Report progress percentage for Demucs
+                    MessageManager::callAsync([this, progress, message]() {
+                        // Convert progress from 0-1 to 0-100%
+                        float progressPercentage = progress * 100.0f;
+                        juce::String progressMessage = juce::String(message);
+                        
+                        // Report both percentage and message
+                        for (auto& l : listeners_) l->stemProviderProgressReported(progressPercentage, progressMessage);
+                    });
+                });
+            
+            if (threadShouldExit()) return kStemProviderResult_Interrupted;
+            
+            // Save separated tracks
+            OggVorbisAudioFormat oggFormat;
+            
+            // Map Demucs output targets to our part names
+            // Demucs output order: drums, bass, other, vocals
+            const static std::vector<std::string> demucsToPartNames = {
+                "drums", "bass", "other", "vocals", "guitar", "piano"
+            };
+
+            // Get original sample rate
+            auto originalSampleRate = MelissaDataSource::getInstance()->getSampleRate();
+
+            for (int target = 0; target < demucsToPartNames.size(); ++target)
             {
                 if (threadShouldExit()) return kStemProviderResult_Interrupted;
                 
-                auto data = input.Read();
-                if (data.cols() == 0) break;
+                auto outputFile = outputDirName.getChildFile(songName + "_" + demucsToPartNames[target] + ".ogg");
                 
-                auto result = Split(data, separation_type, err);
-                if (err) return kStemProviderResult_FailedToSplit;
+                AudioBuffer<float> outBuffer(numChannels, numSamples);
                 
-                output_folder.Write(result, err);
-                if (err) return kStemProviderResult_FailedToExport;
+                // Get index in Demucs output (drums=0, bass=1, other=2, vocals=3)
+                int demucsTargetIndex = target;
+                if (target >= 4) demucsTargetIndex = 2; // Map piano to other
                 
-                float estimatedTime = 0.f;
-                if (separation_type ==  spleeter::TwoStems)
+                // Copy data from Demucs output to AudioBuffer
+                for (int ch = 0; ch < numChannels; ++ch)
                 {
-                    estimatedTime = (clock() - startTimes[0]) / input.getProgress() * 1.15 * 3.5;
+                    float* channelData = outBuffer.getWritePointer(ch);
+                    for (int i = 0; i < numSamples; ++i)
+                    {
+                        channelData[i] = out_targets(demucsTargetIndex, ch, i);
+                    }
+                }
+                
+                // Save current part
+                std::unique_ptr<AudioFormatWriter> writer(
+                    oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, {}, 0));
+                
+                if (writer)
+                {
+                    writer->writeFromAudioSampleBuffer(outBuffer, 0, numSamples);
                 }
                 else
                 {
-                    estimatedTime = (startTimes[1] - startTimes[0]) + (clock() - startTimes[1]) / input.getProgress() * 1.15;
+                    return kStemProviderResult_FailedToExport;
                 }
-                
-                MessageManager::callAsync([&]() {
-                    for (auto& l : listeners_) l->stemProviderEstimatedTimeReported(estimatedTime);
-                });
             }
             
-            output_folder.Flush();
+            // Clean up temporary files
+            if (needsResampling && tempFile.existsAsFile())
+            {
+                tempFile.deleteFile();
+            }
+            
+            // Clean up temporary directory
+            tempDir.deleteRecursively();
         }
+        catch (const std::exception& e)
+        {
+            return kStemProviderResult_FailedToSplit;
+        }
+#else
+        return kStemProviderResult_NotSupported;
+#endif
+    }
+    else
+    {
+        return kStemProviderResult_NotSupported;
     }
     
     // create melissa_stems.json
@@ -335,7 +512,4 @@ StemProviderResult MelissaStemProvider::createStems()
     
     status_ = kStemProviderStatus_Available;
     return kStemProviderResult_Success;
-#endif
-    
-    return kStemProviderResult_NotSupported;
 }

@@ -148,6 +148,7 @@ target_include_directories(Melissa PRIVATE
     ThirdParty/spleet
     ThirdParty/spleeterpp/include
     ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include
+    Submodule/demucs.cpp/include
     Submodule/demucs.cpp/src
     ${OPENBLAS_INCLUDE_DIR}
     Source

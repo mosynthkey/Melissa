@@ -43,7 +43,8 @@ enum { kGroup_SoloMix = 10000 };
 class MelissaStemControlComponent::ProgressBar : public Component, public Timer
 {
 public:
-    ProgressBar() : progress_(0), estimatedTime_(0), startTime_(0), count_(0)
+    ProgressBar() : progress_(0), estimatedTime_(0), startTime_(0), count_(0), 
+                   progressPercentage_(0), progressMessage_("")
     {
         startTimerHz(kFps);
     }
@@ -53,7 +54,13 @@ public:
         const auto isDark = MelissaUISettings::isDarkMode;
         
         float progress = 0.f;
-        if (estimatedTime_ != 0)
+        
+        // Use progress percentage if available, otherwise use estimated time
+        if (progressPercentage_ > 0)
+        {
+            progress = progressPercentage_ / 100.0f;
+        }
+        else if (estimatedTime_ != 0)
         {
             progress = (clock() - startTime_) / estimatedTime_;
             if (progress > 1.f) progress = 1.f;
@@ -95,20 +102,34 @@ public:
         estimatedTime_ = estimatedTime;
     }
     
+    void setProgress(float progressPercentage, const juce::String& message)
+    {
+        progressPercentage_ = progressPercentage;
+        progressMessage_ = message;
+    }
+    
     void startProgress()
     {
         startTime_ = clock();
         estimatedTime_ = 0;
+        progressPercentage_ = 0;
+        progressMessage_ = "";
     }
     
     void reset()
     {
         progress_ = 0.f;
+        progressPercentage_ = 0;
+        progressMessage_ = "";
         repaint();
     }
     
+    juce::String getMessage() const { return progressMessage_; }
+    
 private:
     float progress_, estimatedTime_;
+    float progressPercentage_;
+    juce::String progressMessage_;
     clock_t startTime_;
     int count_;
     static const inline int kFps = 20;
@@ -158,7 +179,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
         {
             const std::vector<String> options = { TRANS("ok"), TRANS("cancel") };
             auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("cancel_creating_stems"), options, [&](size_t yesno) {
-                if (yesno == 1 /* no */ ) return;
+                if (yesno == 1 /* cancel */ ) return;
                 
                 MelissaStemProvider::getInstance()->signalThreadShouldExit();
                 createStemsButton_->setButtonText(TRANS("cancel_separating"));
@@ -168,15 +189,11 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
         }
         else
         {
-            const std::vector<String> separatorOptions = { TRANS("separator_spleeter"), TRANS("separator_demucs") };
+            const std::vector<String> separatorOptions = { TRANS("separator_spleeter"), TRANS("separator_demucs"), TRANS("cancel") };
             auto separatorDialog = std::make_shared<MelissaOptionDialog>(TRANS("choose_separator"), separatorOptions, [&](size_t selectedOption) {
-                const std::vector<String> confirmOptions = { TRANS("ok"), TRANS("cancel") };
-                auto confirmDialog = std::make_shared<MelissaOptionDialog>(TRANS("before_creating_stems"), confirmOptions, [&, selectedOption](size_t yesno) {
-                    if (yesno == 1 /* no */ ) return;
-                    SeparatorType separatorType = (selectedOption == 0) ? kSeparatorType_Spleeter : kSeparatorType_Demucs;
-                    MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()), separatorType);
-                });
-                MelissaModalDialog::show(confirmDialog, TRANS("separation_of_music"));
+                if (selectedOption == 2 /* cancel */ ) return;
+                SeparatorType separatorType = (selectedOption == 0) ? kSeparatorType_Spleeter : kSeparatorType_Demucs;
+                MelissaStemProvider::getInstance()->requestStems(File(MelissaDataSource::getInstance()->getCurrentSongFilePath()), separatorType);
             });
             MelissaModalDialog::show(separatorDialog, TRANS("separation_of_music"));
         }
@@ -301,6 +318,11 @@ void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult 
 void MelissaStemControlComponent::stemProviderEstimatedTimeReported(float estimatedTime)
 {
     progressBar_->setEstimatedTime(estimatedTime);
+}
+
+void MelissaStemControlComponent::stemProviderProgressReported(float progressPercentage, const juce::String& message)
+{
+    progressBar_->setProgress(progressPercentage, message);
 }
 
 void MelissaStemControlComponent::updateAndArrangeControls()

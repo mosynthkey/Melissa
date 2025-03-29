@@ -45,6 +45,7 @@ public:
     virtual void stemProviderStatusChanged(StemProviderStatus status) {}
     virtual void stemProviderResultReported(StemProviderResult result) {}
     virtual void stemProviderEstimatedTimeReported(float estimatedTime) {}
+    virtual void stemProviderProgressReported(float progressPercentage, const juce::String& message) {}
 };
 
 class MelissaStemProvider : public juce::Thread
@@ -72,7 +73,7 @@ public:
     MelissaStemProvider(MelissaStemProvider&&) = delete;
     MelissaStemProvider& operator=(MelissaStemProvider&&) = delete;
     
-    static inline const std::string partNames_[] = { "accompaniment", "vocals", "piano", "bass", "drums", "other" };
+    static inline const std::string partNames_[] = { "guitar", "vocals", "piano", "bass", "drums", "other" };
     
 private:
     // Singleton

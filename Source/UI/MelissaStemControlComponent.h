@@ -34,6 +34,7 @@ private:
     void stemProviderStatusChanged(StemProviderStatus status) override;
     void stemProviderResultReported(StemProviderResult result) override;
     void stemProviderEstimatedTimeReported(float estimatedTime) override;
+    void stemProviderProgressReported(float progressPercentage, const juce::String& message) override;
     
     void updatePosition();
     void updateAndArrangeControls();
