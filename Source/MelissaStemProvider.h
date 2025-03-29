@@ -12,14 +12,16 @@
 enum StemProviderStatus
 {
     kStemProviderStatus_Ready,
-    kStemProviderStatus_Available,
+    kStemProviderStatus_Available_Full,
+    kStemProviderStatus_Available_NoGuitar,
     kStemProviderStatus_NotAvailable,
     kStemProviderStatus_Processing,
 };
 
 enum StemProviderResult
 {
-    kStemProviderResult_Success,
+    kStemProviderResult_Success_Full,
+    kStemProviderResult_Success_NoGuitar,
     kStemProviderResult_FailedToReadSourceFile,
     kStemProviderResult_FailedToInitialize,
     kStemProviderResult_FailedToSplit,

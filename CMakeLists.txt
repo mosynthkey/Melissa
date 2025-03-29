@@ -56,12 +56,14 @@ target_sources(Melissa PRIVATE
     Source/MainComponent.cpp
     Source/MelissaCommand.cpp
     Source/MelissaDataSource.cpp
+    Source/MelissaDataSource.h
     Source/MelissaDefinitions.cpp
     Source/MelissaExporter.cpp
     Source/MelissaExportManager.cpp
     Source/MelissaModel.cpp
     Source/MelissaShortcutManager.cpp
     Source/MelissaStemProvider.cpp
+    Source/MelissaStemProvider.h
     Source/MelissaUpdateChecker.cpp
     Source/Audio/MelissaAudioEngine.cpp
     Source/Audio/MelissaBeepGenerator.cpp
@@ -162,8 +164,7 @@ target_compile_definitions(Melissa PRIVATE
     MELISSA_FULL_VERSION
     JUCE_SILENCE_XCODE_15_LINKER_WARNING
     ENABLE_PRECOUNT
-    MELISSA_USE_SPLEETER
-    MELISSA_USE_DEMUCS
+    MELISSA_USE_STEM_SEPARATION
 )
 
 target_link_libraries(Melissa PRIVATE

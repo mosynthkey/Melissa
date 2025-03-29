@@ -8,16 +8,13 @@
 #include "MelissaStemProvider.h"
 #include "MelissaDataSource.h"
 
-#ifdef MELISSA_USE_SPLEETER
+#ifdef MELISSA_USE_STEM_SEPARATION
 #include "spleeter/spleeter.h"
 #include "input_file.h"
 #include "output_folder.h"
 #include "utils.h"
 #include "split.h"
 #include "nlohmann/json.hpp"
-#endif
-
-#ifdef MELISSA_USE_DEMUCS
 #include "model.hpp"
 #include "Eigen/Dense"
 #endif
@@ -60,7 +57,7 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
     if (!fileToOpen.existsAsFile()) return;
     originalFile = fileToOpen;
     
-#ifdef MELISSA_USE_SPLEETER
+#ifdef MELISSA_USE_STEM_SEPARATION
     // Result 1. fileToOpen has stems
     // Result 2. fileToOpen doesn't have stems
     // Result 3. fileToOpen is a stem
@@ -87,12 +84,19 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
                 return;
             }
             
-            for (auto& partName : partNames_)
+            auto checkStemAvailability = [&](const std::string& partName, File& stemFile)
             {
                 auto& partInfo = j[partName];
-                File stemFile = stemDir.getChildFile(partInfo["file_name"].get<std::string>());
+                stemFile = stemDir.getChildFile(partInfo["file_name"].get<std::string>());
                 const auto md5 = partInfo["md5"].get<std::string>();
-                if (!stemFile.existsAsFile() || MD5(stemFile).toHexString().toStdString() != md5)
+                return (!stemFile.existsAsFile() || MD5(stemFile).toHexString().toStdString() != md5);
+            };
+            
+            for (auto& partName : partNames_)
+            {
+                File stemFile;
+                if (partName == "guitar") continue; // guitar is only available with demucs separation, check later
+                if (checkStemAvailability(partName, stemFile))
                 {
                     stemFiles.clear();
                     // Result 2
@@ -101,7 +105,16 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
                 stemFiles[partName] = stemFile;
             }
             
-            status_ = kStemProviderStatus_Available;
+            File guitarStemFile;
+            if (checkStemAvailability("guitar", guitarStemFile))
+            {
+                stemFiles["guitar"] = guitarStemFile;
+                status_ = kStemProviderStatus_Available_Full;
+            }
+            else
+            {
+                status_ = kStemProviderStatus_Available_NoGuitar;
+            }
             return;
         }
         catch (std::exception& e)
@@ -150,7 +163,11 @@ void MelissaStemProvider::prepareForLoadStems(const File& fileToOpen, File& orig
     getStemFiles(fileToOpen, originalFile, stemFiles);
     if (stemFiles.size() == kNumStemFiles)
     {
-        status_ = kStemProviderStatus_Available;
+        status_ = kStemProviderStatus_Available_Full;
+    }
+    else if (stemFiles.size() == (kNumStemFiles - 1))
+    {
+        status_ = kStemProviderStatus_Available_NoGuitar;
     }
     else
     {
@@ -211,9 +228,13 @@ void MelissaStemProvider::run()
         for (auto& l : listeners_) l->stemProviderResultReported(result_);
     });
     
-    if (result_ == kStemProviderResult_Success)
+    if (result_ == kStemProviderResult_Success_Full)
     {
-        status_ = kStemProviderStatus_Available;
+        status_ = kStemProviderStatus_Available_Full;
+    }
+    else if (result_ == kStemProviderResult_Success_NoGuitar)
+    {
+        status_ = kStemProviderStatus_Available_NoGuitar;
     }
     else if (result_ == kStemProviderResult_Interrupted)
     {
@@ -228,7 +249,7 @@ void MelissaStemProvider::run()
         for (auto& l : listeners_) l->stemProviderStatusChanged(status_);
     });
 
-    if (result_ == kStemProviderResult_Success)
+    if (result_ == kStemProviderResult_Success_Full || result_ == kStemProviderResult_Success_NoGuitar)
     {
         MessageManager::callAsync([&]() {
             // reload file to load stems
@@ -240,6 +261,10 @@ void MelissaStemProvider::run()
 
 StemProviderResult MelissaStemProvider::createStems()
 {
+#ifndef MELISSA_USE_STEM_SEPARATION
+    return kStemProviderResult_NotSupported;
+#endif
+    
     const auto currentSongDirectory = songFile_.getParentDirectory();
     const auto songName = File::createLegalFileName(songFile_.getFileName());
     
@@ -249,7 +274,6 @@ StemProviderResult MelissaStemProvider::createStems()
     
     if (separatorType_ == kSeparatorType_Spleeter)
     {
-#ifdef MELISSA_USE_SPLEETER
         // validate the parameters (output count)
         std::error_code err;
         
@@ -298,14 +322,9 @@ StemProviderResult MelissaStemProvider::createStems()
         }
 
         output_folder.Flush();
-        return kStemProviderResult_Success;
-#else
-        return kStemProviderResult_NotSupported;
-#endif
     }
     else if (separatorType_ == kSeparatorType_Demucs)
     {
-#ifdef MELISSA_USE_DEMUCS
         try
         {
             // Check if we need to resample
@@ -468,9 +487,6 @@ StemProviderResult MelissaStemProvider::createStems()
         {
             return kStemProviderResult_FailedToSplit;
         }
-#else
-        return kStemProviderResult_NotSupported;
-#endif
     }
     else
     {
@@ -489,6 +505,9 @@ StemProviderResult MelissaStemProvider::createStems()
             stemSettings[part]["file_name"] = stemFileName.toStdString();
             
             File stemFile(outputDirName.getChildFile(stemFileName));
+            
+            if (!stemFile.existsAsFile() && part == "guitar") continue;
+            
             if (stemFile.existsAsFile())
             {
                 stemSettings[part]["md5"] = MD5(stemFile).toHexString().toStdString();
@@ -510,6 +529,6 @@ StemProviderResult MelissaStemProvider::createStems()
         return kStemProviderResult_FailedToExport;
     }
     
-    status_ = kStemProviderStatus_Available;
-    return kStemProviderResult_Success;
+    status_ = (separatorType_ == kSeparatorType_Demucs) ? kStemProviderStatus_Available_Full : kStemProviderStatus_Available_NoGuitar;
+    return (separatorType_ == kSeparatorType_Demucs) ? kStemProviderResult_Success_Full : kStemProviderResult_Success_NoGuitar;
 }

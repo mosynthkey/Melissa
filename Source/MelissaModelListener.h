@@ -26,12 +26,6 @@ enum PlaybackMode
 enum PlayPart
 {
     kPlayPart_All,
-    kPlayPart_Instruments,
-    kPlayPart_Vocal_Solo,
-    kPlayPart_Piano_Solo,
-    kPlayPart_Bass_Solo,
-    kPlayPart_Drums_Solo,
-    kPlayPart_Others_Solo,
     kPlayPart_Custom,
     kNumPlayParts
 };
@@ -40,6 +34,7 @@ enum CustomPartVolume
 {
     kCustomPartVolume_Vocal,
     kCustomPartVolume_Piano,
+    kCustomPartVolume_Guitar,
     kCustomPartVolume_Bass,
     kCustomPartVolume_Drums,
     kCustomPartVolume_Others,

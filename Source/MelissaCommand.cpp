@@ -335,30 +335,6 @@ MelissaCommand::MelissaCommand()
     {
         model_->setPlayPart(kPlayPart_All);
     };
-    commands_["Part_Inst"] = [&](float value)
-    {
-        model_->setPlayPart(kPlayPart_Instruments);
-    };
-    commands_["Part_Vocal"] = [&](float value)
-    {
-        model_->setPlayPart(kPlayPart_Vocal_Solo);
-    };
-    commands_["Part_Piano"] = [&](float value)
-    {
-        model_->setPlayPart(kPlayPart_Piano_Solo);
-    };
-    commands_["Part_Bass"] = [&](float value)
-    {
-        model_->setPlayPart(kPlayPart_Bass_Solo);
-    };
-    commands_["Part_Drums"] = [&](float value)
-    {
-        model_->setPlayPart(kPlayPart_Drums_Solo);
-    };
-    commands_["Part_Others"] = [&](float value)
-    {
-        model_->setPlayPart(kPlayPart_Others_Solo);
-    };
     commands_["Part_Vocal_Volume"] = [&](float value)
     {
         model_->setCustomPartVolume(kCustomPartVolume_Vocal, value * 2 - 1.f);

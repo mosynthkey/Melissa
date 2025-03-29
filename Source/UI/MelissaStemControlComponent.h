@@ -53,7 +53,7 @@ private:
     std::unique_ptr<juce::ToggleButton> allButton_;
     std::unique_ptr<juce::ToggleButton> stemSwitchButtons_[kNumStemSoloButtons];
     std::unique_ptr<juce::TextButton> createStemsButton_;
-    enum { kNumMixKnobs = 5, };
+    enum { kNumMixKnobs = 6, };
     std::unique_ptr<juce::Slider> partKnobs_[kNumMixKnobs];
     int xCenterList_[kNumMixKnobs];
     

@@ -36,13 +36,13 @@ extern const int speedPresets[kNumOfSpeedPresets];
 
 enum StemFile : int
 {
-    kStemFile_Instruments = 0,
     kStemFile_Vocals,
     kStemFile_Piano,
+    kStemFile_Guitar,
     kStemFile_Bass,
     kStemFile_Drums,
     kStemFile_Others,
     kNumStemFiles
 };
 
-enum { kNumStemSoloButtons = kStemFile_Others - kStemFile_Instruments + 1 };
+enum { kNumStemSoloButtons = kStemFile_Others - kStemFile_Vocals + 1 };

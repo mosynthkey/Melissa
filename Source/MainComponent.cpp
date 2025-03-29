@@ -21,7 +21,7 @@
 
 using namespace juce;
 
-#ifdef MELISSA_USE_SPLEETER
+#ifdef MELISSA_USE_STEM_SEPARATION
 static constexpr bool isFullVersion = true;
 #else
 static constexpr bool isFullVersion = false;
@@ -1574,7 +1574,7 @@ void MainComponent::resized_Desktop()
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
     const int totalSectionWidth = getWidth() - sectionMarginX * 4;
-#ifdef MELISSA_USE_SPLEETER
+#ifdef MELISSA_USE_STEM_SEPARATION
     const int songWidth  = totalSectionWidth * 0.35;
     const int loopWidth  = totalSectionWidth * 0.25;
     const int speedWidth = totalSectionWidth * 0.4;

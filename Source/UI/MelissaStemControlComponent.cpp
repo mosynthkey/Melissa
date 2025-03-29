@@ -223,7 +223,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
     {
         stemSwitchButtons_[buttonIndex] = createAndAddTextButton(stemNames[buttonIndex]);
         stemSwitchButtons_[buttonIndex]->setVisible(false);
-        stemSwitchButtons_[buttonIndex]->onClick = [&, buttonIndex, model]() { model->setPlayPart(static_cast<PlayPart>(buttonIndex + kPlayPart_Instruments)); };
+        //stemSwitchButtons_[buttonIndex]->onClick = [&, buttonIndex, model]() { model->setPlayPart(static_cast<PlayPart>(buttonIndex + kPlayPart_Vocals)); };
     }
     
     // Mix Knobs
@@ -272,12 +272,13 @@ void MelissaStemControlComponent::paint(Graphics& g)
     
     const int labelWidth = 50;
     
-    if (status_ != kStemProviderStatus_Available)
+    const bool isStemAvailable = (status_ == kStemProviderStatus_Available_Full || status_ == kStemProviderStatus_Available_NoGuitar);
+    if (!isStemAvailable)
     {
         g.setColour(MelissaUISettings::getSubColour());
         g.fillRoundedRectangle(kControlX, 30, getWidth() - kControlX, 30, 15);
     }
-    else if (status_ == kStemProviderStatus_Available && mode_ == kMode_Mix)
+    else if (isStemAvailable && mode_ == kMode_Mix)
     {
         g.setFont(dataSource->getFont(MelissaDataSource::Global::kFontSize_Small));
         const int knobMargin = (getWidth() - kControlX) / kNumMixKnobs;
@@ -344,7 +345,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
         createStemsButton_->setEnabled(true);
     }
     
-    const bool isAvailable = (status_ == kStemProviderStatus_Available);
+    const bool isAvailable = (status_ == kStemProviderStatus_Available_Full || status_ == kStemProviderStatus_Available_NoGuitar);
     createStemsButton_->setVisible(!isAvailable);
     progressBar_->setVisible(status_ == kStemProviderStatus_Processing);
     
@@ -398,7 +399,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
 
 void MelissaStemControlComponent::toggleStems(PlayPart playPart)
 {
-    if (status_ == kStemProviderStatus_Available)
+    if (status_ == kStemProviderStatus_Available_Full || status_ == kStemProviderStatus_Available_NoGuitar)
     {
         mixButton_->setToggleState(playPart == kPlayPart_Custom, dontSendNotification);
         soloButton_->setToggleState(playPart != kPlayPart_Custom, dontSendNotification);
@@ -409,12 +410,14 @@ void MelissaStemControlComponent::toggleStems(PlayPart playPart)
         }
         else
         {
+            /*
             mode_ = kMode_Solo;
             allButton_->setToggleState(playPart == kPlayPart_All, dontSendNotification);
             for (int buttonIndex = 0; buttonIndex < kNumStemSoloButtons; ++buttonIndex)
             {
-                stemSwitchButtons_[buttonIndex]->setToggleState(playPart == (kPlayPart_Instruments + buttonIndex), dontSendNotification);
+                stemSwitchButtons_[buttonIndex]->setToggleState(playPart == (kPlayPart_Vocals + buttonIndex), dontSendNotification);
             }
+             */
         }
     }
     else

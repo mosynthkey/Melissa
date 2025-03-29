@@ -266,7 +266,8 @@ void MelissaModel::setEqQ(size_t band, float eqQ)
 
 void MelissaModel::setPlayPart(PlayPart playPart)
 {
-    const bool isAvailable = MelissaStemProvider::getInstance()->getStemProviderStatus() == kStemProviderStatus_Available;
+    const auto stemStatus = MelissaStemProvider::getInstance()->getStemProviderStatus();
+    const bool isAvailable = (stemStatus == kStemProviderStatus_Available_Full || stemStatus == kStemProviderStatus_Available_NoGuitar);
     if (!isAvailable) playPart = kPlayPart_All;
     playPart_ = std::clamp<PlayPart>(playPart, kPlayPart_All, kPlayPart_Custom);
     for (auto&& l : listeners_) l->playPartChanged(playPart_);

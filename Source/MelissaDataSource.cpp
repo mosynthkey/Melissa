@@ -553,17 +553,6 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
         if (numOfChs < 2) monoToStereo();
         return true;
     }
-    else if (kPlayPart_Instruments <= playPart && playPart <= kPlayPart_Others_Solo)
-    {
-        const int partIndex = playPart - kPlayPart_Instruments;
-        auto stemAudioReader = stemAudioReaders_[partIndex].get();
-        if (stemAudioReader != nullptr && startIndex < stemAudioReader->lengthInSamples)
-        {
-            stemAudioReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
-            if (numOfChs < 2) monoToStereo();
-            return true;
-        }
-    }
     else if (playPart == kPlayPart_Custom)
     {
         constexpr int kMaxNmSamplesToRead = 4096 * 2;
@@ -573,15 +562,16 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
         {
              if (stemAudioReaders_[stemIndex] == nullptr || stemAudioReaders_[stemIndex]->lengthInSamples <= startIndex)
             {
+                if (stemIndex == kStemFile_Guitar) continue;
                 assert(false);
                 return false ;
             }
         }
         
         const float volumes[kNumStemFiles] = {
-            1.f,
-            1.f + model_->getCustomPartVolume(kCustomPartVolume_Vocal),
+            model_->getCustomPartVolume(kCustomPartVolume_Vocal),
             model_->getCustomPartVolume(kCustomPartVolume_Piano),
+            model_->getCustomPartVolume(kCustomPartVolume_Guitar),
             model_->getCustomPartVolume(kCustomPartVolume_Bass),
             model_->getCustomPartVolume(kCustomPartVolume_Drums),
             model_->getCustomPartVolume(kCustomPartVolume_Others),
@@ -597,6 +587,7 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
         
         for (int stemIndex = 0; stemIndex < kNumStemFiles; ++stemIndex)
         {
+            if (stemAudioReaders_[stemIndex] == nullptr) continue;
             stemAudioReaders_[stemIndex]->read(tempBuffers, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
             for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
             {

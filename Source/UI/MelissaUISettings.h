@@ -36,7 +36,7 @@ public:
     
     static juce::Colour getAccentColour(float alpha = 1.f)
     {
-#ifdef MELISSA_USE_SPLEETER
+#ifdef MELISSA_USE_STEM_SEPARATION
         return isDarkMode ? juce::Colour(0xFF80BFFF).withAlpha(alpha) : juce::Colour(0xFF7DB2FF).withAlpha(alpha);
 #else
         return isDarkMode ? juce::Colour(0xFF80B3FF).withAlpha(alpha) : juce::Colour(0xFF80B3FF).withAlpha(alpha);
