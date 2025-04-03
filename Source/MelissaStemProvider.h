@@ -75,7 +75,7 @@ public:
     MelissaStemProvider(MelissaStemProvider&&) = delete;
     MelissaStemProvider& operator=(MelissaStemProvider&&) = delete;
     
-    static inline const std::string partNames_[] = { "guitar", "vocals", "piano", "bass", "drums", "other" };
+    static inline const std::string partNames_[] = { "vocals", "piano", "guitar", "bass", "drums", "other" };
     
 private:
     // Singleton

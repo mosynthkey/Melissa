@@ -89,14 +89,14 @@ void MelissaStemProvider::getStemFiles(const File& fileToOpen, File& originalFil
                 auto& partInfo = j[partName];
                 stemFile = stemDir.getChildFile(partInfo["file_name"].get<std::string>());
                 const auto md5 = partInfo["md5"].get<std::string>();
-                return (!stemFile.existsAsFile() || MD5(stemFile).toHexString().toStdString() != md5);
+                return (stemFile.existsAsFile() && MD5(stemFile).toHexString().toStdString() == md5);
             };
             
             for (auto& partName : partNames_)
             {
                 File stemFile;
                 if (partName == "guitar") continue; // guitar is only available with demucs separation, check later
-                if (checkStemAvailability(partName, stemFile))
+                if (!checkStemAvailability(partName, stemFile))
                 {
                     stemFiles.clear();
                     // Result 2
@@ -431,36 +431,32 @@ StemProviderResult MelissaStemProvider::createStems()
             
             // Map Demucs output targets to our part names
             // Demucs output order: drums, bass, other, vocals
-            const static std::vector<std::string> demucsToPartNames = {
+            constexpr int kNumParts = 6;
+            const static std::string partNames[kNumParts] = {
                 "drums", "bass", "other", "vocals", "guitar", "piano"
             };
 
             // Get original sample rate
             auto originalSampleRate = MelissaDataSource::getInstance()->getSampleRate();
 
-            for (int target = 0; target < demucsToPartNames.size(); ++target)
+            for (size_t partIndex = 0; partIndex < kNumParts; ++partIndex)
             {
                 if (threadShouldExit()) return kStemProviderResult_Interrupted;
                 
-                auto outputFile = outputDirName.getChildFile(songName + "_" + demucsToPartNames[target] + ".ogg");
-                
                 AudioBuffer<float> outBuffer(numChannels, numSamples);
-                
-                // Get index in Demucs output (drums=0, bass=1, other=2, vocals=3)
-                int demucsTargetIndex = target;
-                if (target >= 4) demucsTargetIndex = 2; // Map piano to other
                 
                 // Copy data from Demucs output to AudioBuffer
                 for (int ch = 0; ch < numChannels; ++ch)
                 {
                     float* channelData = outBuffer.getWritePointer(ch);
-                    for (int i = 0; i < numSamples; ++i)
+                    for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
                     {
-                        channelData[i] = out_targets(demucsTargetIndex, ch, i);
+                        channelData[sampleIndex] = out_targets(partIndex, ch, sampleIndex);
                     }
                 }
                 
                 // Save current part
+                auto outputFile = outputDirName.getChildFile(songName + "_" + partNames[partIndex] + ".ogg");
                 std::unique_ptr<AudioFormatWriter> writer(
                     oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, {}, 0));
                 

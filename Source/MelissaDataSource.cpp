@@ -551,22 +551,29 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     {
         originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
         if (numOfChs < 2) monoToStereo();
-        return true;
+    }
+    else if (playPart == kPlayPart_Instruments)
+    {
+        // todo
+    }
+    else if (kPlayPart_Vocal_Solo <= playPart && playPart <= kPlayPart_Others_Solo)
+    {
+        const int partIndex = playPart - kPlayPart_Vocal_Solo;
+        auto stemAudioReader = stemAudioReaders_[partIndex].get();
+        if (stemAudioReader != nullptr && startIndex < stemAudioReader->lengthInSamples)
+        {
+            stemAudioReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+            if (numOfChs < 2) monoToStereo();
+            return true;
+        }
     }
     else if (playPart == kPlayPart_Custom)
     {
+        originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+        if (numOfChs < 2) monoToStereo();
+        
         constexpr int kMaxNmSamplesToRead = 4096 * 2;
         if (kMaxNmSamplesToRead <= numSamplesToRead) return false;
-        
-        for (int stemIndex = 0; stemIndex < kNumStemFiles; ++stemIndex)
-        {
-             if (stemAudioReaders_[stemIndex] == nullptr || stemAudioReaders_[stemIndex]->lengthInSamples <= startIndex)
-            {
-                if (stemIndex == kStemFile_Guitar) continue;
-                assert(false);
-                return false ;
-            }
-        }
         
         const float volumes[kNumStemFiles] = {
             model_->getCustomPartVolume(kCustomPartVolume_Vocal),
@@ -579,11 +586,6 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
         
         static float tempBuffer[2 /* Stereo */][kMaxNmSamplesToRead];
         float* tempBuffers[] = { tempBuffer[0], tempBuffer[1] };
-        
-        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
-        {
-            destChannels[0][sampleIndex] = destChannels[1][sampleIndex] = 0.f;
-        }
         
         for (int stemIndex = 0; stemIndex < kNumStemFiles; ++stemIndex)
         {
@@ -606,6 +608,11 @@ void MelissaDataSource::disposeBuffer()
 {
     for (auto&& reader : originalAudioReaders_) reader = nullptr;
     for (auto&& stemReader : stemAudioReaders_) stemReader = nullptr;
+}
+
+bool MelissaDataSource::isStemAvailable(PlayPart playPart) const
+{
+    return (stemAudioReaders_[static_cast<size_t>(playPart)] != nullptr);
 }
 
 void MelissaDataSource::setDefaultShortcut(const String& eventName)
@@ -1178,19 +1185,10 @@ void MelissaDataSource::handleAsyncUpdate()
     }
     
     // stem files
-    if (stemFiles_.size() == kNumStemFiles)
+    for (int stemFileIndex = 0; stemFileIndex < kNumStemFiles; ++stemFileIndex)
     {
-        for (int stemFileIndex = 0; stemFileIndex < kNumStemFiles; ++stemFileIndex)
-        {
-            const auto stemName = MelissaStemProvider::partNames_[stemFileIndex];
-            stemAudioReaders_[stemFileIndex].reset(formatManager.createReaderFor(stemFiles_[stemName]));
-            if (stemAudioReaders_[stemFileIndex] == nullptr)
-            {
-                stemFiles_.clear();
-                MelissaStemProvider::getInstance()->failedToReadPreparedStems();
-                break;
-            }
-        }
+        const auto stemName = MelissaStemProvider::partNames_[stemFileIndex];
+        stemAudioReaders_[stemFileIndex].reset(formatManager.createReaderFor(stemFiles_[stemName]));
     }
     
     currentSongFilePath_ = fileToload_.getFullPathName();

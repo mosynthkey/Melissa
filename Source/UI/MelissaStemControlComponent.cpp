@@ -22,7 +22,7 @@ enum
 
 namespace
 {
-static const String stemNames[] = { "Inst.", "Vocal", "Piano", "Bass", "Drums", "Others" };
+static const String stemNames[] = { "Inst.", "Vocal", "Piano", "Guitar", "Bass", "Drums", "Others" };
 static const String errorMessages[] =
 {
     "", // kStemProviderResult_Success,
@@ -223,7 +223,9 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
     {
         stemSwitchButtons_[buttonIndex] = createAndAddTextButton(stemNames[buttonIndex]);
         stemSwitchButtons_[buttonIndex]->setVisible(false);
-        //stemSwitchButtons_[buttonIndex]->onClick = [&, buttonIndex, model]() { model->setPlayPart(static_cast<PlayPart>(buttonIndex + kPlayPart_Vocals)); };
+        stemSwitchButtons_[buttonIndex]->onClick = [&, buttonIndex, model]() {
+            model->setPlayPart(static_cast<PlayPart>(buttonIndex + kPlayPart_Instruments));
+        };
     }
     
     // Mix Knobs
@@ -285,6 +287,8 @@ void MelissaStemControlComponent::paint(Graphics& g)
         int cx = kControlX + knobMargin / 2;
         for (int partIndex = 0; partIndex < kNumMixKnobs; ++partIndex)
         {
+            const auto stemAvailable = MelissaDataSource::getInstance()->isStemAvailable(static_cast<PlayPart>(partIndex));
+            g.setColour(MelissaUISettings::getTextColour().withAlpha(stemAvailable ? 1.f : 0.2f));
             g.drawText(stemNames[partIndex + 1], cx - labelWidth / 2, 5, labelWidth, 20, Justification::centred);
             cx += knobMargin;
         }
@@ -366,19 +370,33 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     createStemsButton_->setBounds(kControlX, 30, createButtonOrStatusWidth, 30);
     
     // Solo Buttons
-    const int kSoloButtonWidth = (getWidth() - kControlX - kXMargin * 3) / 4;
+    const int kSoloButtonWidth = (getWidth() - kControlX - kXMargin * 3 - 10) / 4;
     
-    int x = kControlX;
-    allButton_->setBounds(x, 10, kSoloButtonWidth, kButtonHeight);
-    for (int stemTypeIndex = 0; stemTypeIndex < kNumStemSoloButtons; ++stemTypeIndex)
+    int x = 10;
+    for (int buttonIndex = 0; buttonIndex < (kNumStemSoloButtons + 1); ++buttonIndex)
     {
-        const int column = stemTypeIndex % 3;
-        const int row = stemTypeIndex / 3;
+        const int column = buttonIndex % 4;
+        const int row = buttonIndex / 4;
         
-        const int x = allButton_->getRight() + kXMargin + column * (kSoloButtonWidth + kXMargin);
-        const int y = allButton_->getY() + (kYMargin + kButtonHeight) * row;
+        const int buttonX = kControlX + kXMargin + column * (kSoloButtonWidth + kXMargin);
+        const int buttonY = x + (kYMargin + kButtonHeight) * row;
         
-        stemSwitchButtons_[stemTypeIndex]->setBounds(x, y, kSoloButtonWidth, kButtonHeight);
+        if (buttonIndex == 0)
+        {
+            allButton_->setBounds(buttonX, buttonY, kSoloButtonWidth, kButtonHeight);
+        }
+        else
+        {
+            const int stemTypeIndex = buttonIndex - 1;
+            stemSwitchButtons_[stemTypeIndex]->setBounds(buttonX, buttonY, kSoloButtonWidth, kButtonHeight);
+            
+            if (1 /* vocals */ <= stemTypeIndex)
+            {
+                const auto stemAvailalbe = MelissaDataSource::getInstance()->isStemAvailable(static_cast<PlayPart>(stemTypeIndex - 1));
+                stemSwitchButtons_[stemTypeIndex]->setEnabled(stemAvailalbe);
+                stemSwitchButtons_[stemTypeIndex]->setAlpha(stemAvailalbe ? 1 : 0.2f);
+            }
+        }
     }
     
     constexpr int kProgressBarMargin = 10;
@@ -391,6 +409,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     for (int partIndex = 0; partIndex < kNumMixKnobs; ++partIndex)
     {
         partKnobs_[partIndex]->setBounds(x - knobSize / 2, 24, knobSize, knobSize);
+        partKnobs_[partIndex]->setEnabled(MelissaDataSource::getInstance()->isStemAvailable(static_cast<PlayPart>(partIndex)));
         x += knobMargin;
     }
     
@@ -410,14 +429,12 @@ void MelissaStemControlComponent::toggleStems(PlayPart playPart)
         }
         else
         {
-            /*
             mode_ = kMode_Solo;
             allButton_->setToggleState(playPart == kPlayPart_All, dontSendNotification);
             for (int buttonIndex = 0; buttonIndex < kNumStemSoloButtons; ++buttonIndex)
             {
-                stemSwitchButtons_[buttonIndex]->setToggleState(playPart == (kPlayPart_Vocals + buttonIndex), dontSendNotification);
+                stemSwitchButtons_[buttonIndex]->setToggleState(playPart == (kPlayPart_Instruments + buttonIndex), dontSendNotification);
             }
-             */
         }
     }
     else

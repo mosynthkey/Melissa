@@ -19,7 +19,7 @@ static constexpr int kEqFreqMax = 20000;
 static constexpr int kEqGainMin = -24;
 static constexpr int kEqGainMax = 24;
     
-static constexpr float kEqQMin = 0.1;
+static constexpr float kEqQMin = 0.1f;
 static constexpr float kEqQMax = 2;
 
 static constexpr int kBpmMin = 45;
@@ -45,4 +45,4 @@ enum StemFile : int
     kNumStemFiles
 };
 
-enum { kNumStemSoloButtons = kStemFile_Others - kStemFile_Vocals + 1 };
+enum { kNumStemSoloButtons = kNumStemFiles + 1 };

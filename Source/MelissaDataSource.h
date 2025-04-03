@@ -250,10 +250,10 @@ public:
         kNumReaders
     };
     bool readBuffer(Reader reader, size_t startIndex, int numSamplesToRead, PlayPart playPart, float* const* destChannels);
-    
     double getSampleRate() const { return sampleRate_; }
     size_t getBufferLength() const { return (originalAudioReaders_[kReader_Playback] == nullptr ? 0 : originalAudioReaders_[kReader_Playback]->lengthInSamples); }
     void disposeBuffer();
+    bool isStemAvailable(PlayPart playPart) const;
     
     // Shortcut
     void setDefaultShortcut(const juce::String& eventName);
@@ -326,7 +326,7 @@ public:
 private:
     // Singleton
     MelissaDataSource();
-    ~MelissaDataSource();
+    ~MelissaDataSource() override;
     static MelissaDataSource instance_;
     
     // History

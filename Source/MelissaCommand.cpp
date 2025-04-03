@@ -343,6 +343,10 @@ MelissaCommand::MelissaCommand()
     {
         model_->setCustomPartVolume(kCustomPartVolume_Piano, value * 2 - 1.f);
     };
+    commands_["Part_Guitar_Volume"] = [&](float value)
+    {
+        model_->setCustomPartVolume(kCustomPartVolume_Guitar, value * 2 - 1.f);
+    };
     commands_["Part_Bass_Volume"] = [&](float value)
     {
         model_->setCustomPartVolume(kCustomPartVolume_Bass, value * 2 - 1.f);
