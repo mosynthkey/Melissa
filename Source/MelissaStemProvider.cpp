@@ -406,8 +406,13 @@ StemProviderResult MelissaStemProvider::createStems()
             }
             
             // Run Demucs inference
-            auto out_targets = demucscpp::demucs_inference(*model, audioData, 
-                [this](float progress, const std::string& message) {
+            
+            Eigen::Tensor3dXf out_targets;
+            try
+            {
+                out_targets = demucscpp::demucs_inference(*model, audioData, 
+                    [this](float progress, const std::string& message) 
+                {
                     if (threadShouldExit())
                     {
                         throw std::runtime_error("Processing cancelled by user");
@@ -423,6 +428,11 @@ StemProviderResult MelissaStemProvider::createStems()
                         for (auto& l : listeners_) l->stemProviderProgressReported(progressPercentage, progressMessage);
                     });
                 });
+            }
+            catch(const std::exception& e)
+            {
+                return kStemProviderResult_Interrupted;
+            }
             
             if (threadShouldExit()) return kStemProviderResult_Interrupted;
             

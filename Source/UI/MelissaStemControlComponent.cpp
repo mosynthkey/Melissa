@@ -399,6 +399,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
         }
     }
     
+    x = allButton_->getX();
     constexpr int kProgressBarMargin = 10;
     progressBar_->setBounds(x + kProgressBarMargin, createStemsButton_->getBottom() - 6, createButtonOrStatusWidth - kProgressBarMargin * 2, 2);
     

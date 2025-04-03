@@ -253,8 +253,8 @@ void prepareFileAndVolumesFromCurrentSettings(std::vector<MelissaExporter::FileA
         {
             const auto playPart = model->getPlayPart();
             File files[] = {
-                file, stemFiles["vocals"], stemFiles["piano"],
-                stemFiles["bass"], stemFiles["guitar"], stemFiles["drums"], stemFiles["other"]
+                file, stemFiles["vocals"], stemFiles["piano"], stemFiles["guitar"],
+                stemFiles["bass"], stemFiles["drums"], stemFiles["other"]
             };
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{files[playPart],  1.f});
         }

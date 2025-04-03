@@ -533,7 +533,8 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
 {
     auto originalReader = originalAudioReaders_[reader].get();
     if (originalReader == nullptr) return false;
-    
+
+    constexpr int kMaxNmSamplesToRead = 4096 * 2;
     const int numOfChs    = originalReader->getChannelLayout().size();
     const auto bufferSize = originalReader->lengthInSamples;
     
@@ -554,7 +555,25 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     }
     else if (playPart == kPlayPart_Instruments)
     {
-        // todo
+        // read original audio
+        originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+
+        // read vocal stem
+        if (stemAudioReaders_[kCustomPartVolume_Vocal] != nullptr)  
+        {
+            static float vocalBuffer[2 /* Stereo */][kMaxNmSamplesToRead];
+            float *vocalBuffers[] = {vocalBuffer[0], vocalBuffer[1]};
+
+            stemAudioReaders_[kCustomPartVolume_Vocal]->read(vocalBuffers, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+
+            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+            {
+                destChannels[0][sampleIndex] -= vocalBuffers[0][sampleIndex];
+                destChannels[1][sampleIndex] -= vocalBuffers[1][sampleIndex];
+            }
+        }
+
+        if (numOfChs < 2) monoToStereo();
     }
     else if (kPlayPart_Vocal_Solo <= playPart && playPart <= kPlayPart_Others_Solo)
     {
@@ -572,7 +591,6 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
         originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
         if (numOfChs < 2) monoToStereo();
         
-        constexpr int kMaxNmSamplesToRead = 4096 * 2;
         if (kMaxNmSamplesToRead <= numSamplesToRead) return false;
         
         const float volumes[kNumStemFiles] = {
