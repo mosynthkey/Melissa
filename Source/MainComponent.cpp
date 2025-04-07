@@ -155,6 +155,193 @@ private:
     Colour colour_;
 };
 
+class MenuOverlayComponent::MenuComponent : public Component
+{
+public:
+    MenuComponent() : updateAvailable_(false), updateButtonVisible_(false)
+    {
+        addMenuButton(TRANS("open_file"), [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_FileOpen);
+        });
+        
+        addMenuButton(TRANS("manual"), [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Manual);
+        });
+        
+        addMenuButton(TRANS("shortcut_settings"), [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Shortcut);
+        });
+        
+        addMenuButton(TRANS("preferences"), [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Preferences);
+        });
+        
+        addMenuButton(TRANS("about_melissa"), [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_About);
+        });
+        
+        versionLabel_ = std::make_unique<Label>();
+        versionLabel_->setText("Melissa ver " + JUCEApplication::getInstance()->getApplicationVersion(), dontSendNotification);
+        versionLabel_->setFont(Font(16.f));
+        versionLabel_->setColour(Label::textColourId, Colours::white);
+        versionLabel_->setJustificationType(Justification::centredLeft);
+        addAndMakeVisible(versionLabel_.get());
+        
+        updateButton_ = std::make_unique<TextButton>(TRANS("check_for_updates"));
+        updateButton_->onClick = [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_VersionCheck);
+        };
+        updateButton_->setColour(TextButton::buttonColourId, MelissaUISettings::getAccentColour());
+        updateButton_->setColour(TextButton::textColourOffId, Colours::white);
+        addAndMakeVisible(updateButton_.get());
+        
+        updateLabel_ = std::make_unique<Label>();
+        updateLabel_->setText(TRANS("new_version_available"), dontSendNotification);
+        updateLabel_->setFont(Font(14.f));
+        updateLabel_->setColour(Label::textColourId, MelissaUISettings::getAccentColour());
+        updateLabel_->setJustificationType(Justification::centredLeft);
+        updateLabel_->setVisible(false);
+        addAndMakeVisible(updateLabel_.get());
+    }
+    
+    ~MenuComponent() override {}
+    
+    void paint(Graphics& g) override
+    {
+        g.fillAll(MelissaUISettings::getSubColour());
+    }
+    
+    void resized() override
+    {
+        const int buttonHeight = 40;
+        const int buttonMargin = 10;
+        const int menuWidth = getWidth() - 20;
+        
+        int y = 20;
+        
+        for (auto& button : menuButtons_)
+        {
+            button->setBounds(10, y, menuWidth, buttonHeight);
+            y += buttonHeight + buttonMargin;
+        }
+        
+        y += 20;
+        
+        versionLabel_->setBounds(10, y, menuWidth, 20);
+        y += 30;
+        
+        if (updateButtonVisible_)
+        {
+            updateButton_->setBounds(10, y, menuWidth, buttonHeight);
+            y += buttonHeight + 10;
+            
+            if (updateAvailable_)
+            {
+                updateLabel_->setBounds(10, y, menuWidth, 20);
+            }
+        }
+    }
+    
+    void showUpdateAvailable(bool available)
+    {
+        updateAvailable_ = available;
+        updateLabel_->setVisible(available);
+        resized();
+    }
+    
+    void showUpdateButton(bool show)
+    {
+        updateButtonVisible_ = show;
+        updateButton_->setVisible(show);
+        resized();
+    }
+    
+    std::function<void(int)> onMenuItemSelected;
+    
+private:
+    void addMenuButton(const String& text, std::function<void()> onClick)
+    {
+        auto button = std::make_unique<TextButton>(text);
+        button->onClick = onClick;
+        button->setColour(TextButton::buttonColourId, MelissaUISettings::getSubColour().brighter(0.1f));
+        button->setColour(TextButton::textColourOffId, Colours::white);
+        addAndMakeVisible(button.get());
+        menuButtons_.push_back(std::move(button));
+    }
+    
+    std::vector<std::unique_ptr<TextButton>> menuButtons_;
+    std::unique_ptr<Label> versionLabel_;
+    std::unique_ptr<TextButton> updateButton_;
+    std::unique_ptr<Label> updateLabel_;
+    bool updateAvailable_;
+    bool updateButtonVisible_;
+};
+
+MenuOverlayComponent::MenuOverlayComponent() : menuVisible_(false), menuPosX_(-300)
+{
+    setVisible(false);
+    
+    menuComponent_ = std::make_unique<MenuComponent>();
+    menuComponent_->onMenuItemSelected = [this](int menuId) {
+        if (onMenuItemSelected != nullptr) onMenuItemSelected(menuId);
+        showMenu(false);
+    };
+    addAndMakeVisible(menuComponent_.get());
+    
+    startTimerHz(60);
+}
+
+MenuOverlayComponent::~MenuOverlayComponent()
+{
+    stopTimer();
+}
+
+void MenuOverlayComponent::paint(Graphics& g)
+{
+    g.fillAll(Colours::black.withAlpha(0.5f));
+}
+
+void MenuOverlayComponent::resized()
+{
+    menuArea_ = getLocalBounds().withWidth(300);
+    menuComponent_->setBounds((int)menuPosX_, 0, menuArea_.getWidth(), getHeight());
+}
+
+void MenuOverlayComponent::mouseDown(const MouseEvent& e)
+{
+    if (!menuArea_.contains(e.getPosition()))
+    {
+        showMenu(false);
+    }
+}
+
+void MenuOverlayComponent::showMenu(bool show)
+{
+    menuVisible_ = show;
+    setVisible(show);
+    
+    if (!show && onMenuClosed != nullptr)
+    {
+        onMenuClosed();
+    }
+}
+
+void MenuOverlayComponent::timerCallback()
+{
+    const float targetX = menuVisible_ ? 0 : -menuArea_.getWidth();
+    const float speed = 0.3f;
+    
+    menuPosX_ = menuPosX_ * (1.f - speed) + targetX * speed;
+    
+    if (!menuVisible_ && std::abs(menuPosX_ - targetX) < 1.f)
+    {
+        menuPosX_ = targetX;
+        setVisible(false);
+    }
+    
+    menuComponent_->setBounds((int)menuPosX_, 0, menuArea_.getWidth(), getHeight());
+}
+
 MainComponent::MainComponent(const String& commandLine) : Thread("MelissaProcessThread"), mainVolume_(1.f),
 #ifdef JUCE_IOS
 showAllControlIcons_(false), currentControlPage_(kControlPage_List),
@@ -1367,126 +1554,20 @@ void MainComponent::createUI()
     waveformComponent_->setMarkerListener(this);
     
     if (!isFullVersion) stemControlComponent_->setVisible(false);
+    
+    menuOverlay_ = std::make_unique<MenuOverlayComponent>();
+    menuOverlay_->onMenuItemSelected = [this](int menuItemID) {
+        this->menuItemSelected(menuItemID, 0);
+    };
+    addChildComponent(menuOverlay_.get());
 }
 
 void MainComponent::createMenu()
 {
     menuButton_ = std::make_unique<MelissaMenuButton>();
     menuButton_->setBudgeVisibility(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
-    menuButton_->onClick = [&]()
-    {
-#ifdef JUCE_IOS
-        
-        if (menuComponent_ == nullptr)
-        {
-            menuComponent_ = std::make_unique<MelissaMobileMenuComponent>();
-            safeAreaComponent_->addAndMakeVisible(menuComponent_.get());
-        }
-        else
-        {
-            menuComponent_ = nullptr;
-        }
-
-        resized();
-#else
-        //bpmDetector_->calculateBeats();
-        //return;
-        
-        const bool updateExists = (MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
-        
-        PopupMenu menu;
-        menu.setLookAndFeel(&laf_);
-        menu.addItem(kMenuID_About, TRANS("about_melissa"));
-        menu.addItem(kMenuID_Manual, TRANS("open_manual"));
-        menu.addItem(kMenuID_VersionCheck, updateExists ? TRANS("update_exists") : TRANS("check_update"));
-        menu.addSeparator();
-        menu.addItem(kMenuID_Preferences, TRANS("audio_midi_settings"));
-        menu.addItem(kMenuID_Shortcut, TRANS("shortcut_settings"));
-        
-        PopupMenu uiThemeMenu;
-        const auto uiTheme = dataSource_->getUITheme();
-        uiThemeMenu.addItem(kMenuID_UITheme_Dark, TRANS("ui_theme_dark"), true, uiTheme == "System_Dark");
-        uiThemeMenu.addItem(kMenuID_UITheme_Light, TRANS("ui_theme_light"), true, uiTheme == "System_Light");
-        menu.addSubMenu(TRANS("ui_theme"), uiThemeMenu);
-        
-        menu.addSeparator();
-        menu.addItem(kMenuID_TwitterShare, TRANS("twitter_share"));
-        
-#if defined(ENABLE_TUTORIAL)
-        menu.addItem(kMenuID_Tutorial, TRANS("tutorial"));
-#endif
-        
-        menu.addSeparator();
-        PopupMenu advancedMenu;
-        advancedMenu.addItem(kMenuID_RevealSettingsFile, TRANS("reveal_settings_file"));
-        menu.addSubMenu(TRANS("advanced_settings"), advancedMenu);
-        
-        menu.showMenuAsync(PopupMenu::Options(), [&](int result) {
-            model_->setPlaybackStatus(kPlaybackStatus_Stop);
-            if (result == kMenuID_About)
-            {
-                showAboutDialog();
-            }
-            else if (result == kMenuID_Manual)
-            {
-                URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
-            }
-            else if (result == kMenuID_VersionCheck)
-            {
-                showUpdateDialog(true);
-            }
-            else if (result == kMenuID_Preferences)
-            {
-                showAudioMidiSettingsDialog();
-            }
-            else if (result == kMenuID_Shortcut)
-            {
-                showShortcutDialog();
-            }
-            else if (result == kMenuID_UITheme_Auto || result == kMenuID_UITheme_Dark || result == kMenuID_UITheme_Light)
-            {
-                const std::vector<String> options = { TRANS("ok") };
-                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, result](size_t index) {
-                    String uiTheme;
-                    if (result == kMenuID_UITheme_Auto)
-                    {
-                        uiTheme = "System_Auto";
-                    }
-                    else if (result == kMenuID_UITheme_Dark)
-                    {
-                        uiTheme = "System_Dark";
-                    }
-                    else
-                    {
-                        uiTheme = "System_Light";
-                    }
-                    dataSource_->setUITheme(uiTheme);
-                    File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
-                    JUCEApplicationBase::quit();
-                });
-                MelissaModalDialog::show(dialog, TRANS("ui_theme"));
-            }
-            else if (result == kMenuID_Tutorial)
-            {
-                showTutorial();
-            }
-            else if (result == kMenuID_TwitterShare)
-            {
-                if (isLangJapanese_)
-                {
-                    URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
-                }
-                else
-                {
-                    URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
-                }
-            }
-            else if (result == kMenuID_RevealSettingsFile)
-            {
-                settingsFile_.revealToUser();
-            }
-        });
-#endif
+    menuButton_->onClick = [&]() {
+        menuOverlay_->showMenu(true);
     };
     
 #ifdef JUCE_IOS
@@ -1994,11 +2075,19 @@ void MainComponent::paint(Graphics& g)
 
 void MainComponent::resized()
 {
-#if JUCE_IOS
-    resized_Mobile();
-#else
-    resized_Desktop();
-#endif
+    if (isDesktop)
+    {
+        resized_Desktop();
+    }
+    else
+    {
+        resized_Mobile();
+    }
+    
+    if (menuOverlay_ != nullptr)
+    {
+        menuOverlay_->setBounds(0, 0, getWidth(), getHeight());
+    }
     
 #ifdef JUCE_IOS
     importButton_->setBounds(10, headerComponent_->getBottom() + 10, 100, 30);
@@ -2013,30 +2102,6 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
     {
         auto currentAudioDevice = deviceManager.getCurrentAudioDevice();
         if (currentAudioDevice != nullptr) audioDeviceButton_->setAudioDeviceName(currentAudioDevice->getName());
-    }
-}
-
-bool MainComponent::isInterestedInFileDrag(const StringArray& files)
-{
-    return true;
-}
-
-void MainComponent::filesDropped(const StringArray& files, int x, int y)
-{
-    if (files.size() == 1)
-    {
-        dataSource_->loadFileAsync(files[0]);
-    }
-    else
-    {
-        MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"),  "new playlist", [&, files](const String& playlistName) {
-            if (!playlistName.isEmpty())
-            {
-                const auto index = dataSource_->createPlaylist(playlistName);
-                for (auto file : files) dataSource_->addToPlaylist(index, file);
-                playlistComponent_->select(static_cast<int>(index));
-            }
-        }), TRANS("new_playlist"));
     }
 }
 
@@ -2685,5 +2750,29 @@ void MainComponent::markerClicked(size_t markerIndex, bool isShiftKeyDown)
         }
         model_->setPlayingPosRatio(markers[markerIndex].position_);
         markerTable_->selectRow(static_cast<int>(markerIndex));
+    }
+}
+
+bool MainComponent::isInterestedInFileDrag(const StringArray& files)
+{
+    return true;
+}
+
+void MainComponent::filesDropped(const StringArray& files, int x, int y)
+{
+    if (files.size() == 1)
+    {
+        dataSource_->loadFileAsync(files[0]);
+    }
+    else
+    {
+        MelissaModalDialog::show(std::make_shared<MelissaInputDialog>(TRANS("detect_multifiles_drop"), "new playlist", [&, files](const String& playlistName) {
+            if (!playlistName.isEmpty())
+            {
+                const auto index = dataSource_->createPlaylist(playlistName);
+                for (auto file : files) dataSource_->addToPlaylist(index, file);
+                playlistComponent_->select(static_cast<int>(index));
+            }
+        }), TRANS("new_playlist"));
     }
 }

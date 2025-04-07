@@ -87,6 +87,34 @@ enum ControlPage
     kNumControlPages
 };
 
+class MenuOverlayComponent : public juce::Component, public juce::Timer
+{
+public:
+    MenuOverlayComponent();
+    ~MenuOverlayComponent() override;
+
+    void paint(juce::Graphics &g) override;
+    void resized() override;
+    void mouseDown(const juce::MouseEvent &e) override;
+    void timerCallback() override;
+
+    void showMenu(bool show);
+    bool isMenuVisible() const { return isVisible() && menuVisible_; }
+
+    std::function<void()> onMenuClosed;
+    std::function<void(int)> onMenuItemSelected;
+
+private:
+    juce::Rectangle<int> menuArea_;
+    bool menuVisible_;
+    float menuPosX_;
+
+    class MenuComponent;
+    std::unique_ptr<MenuComponent> menuComponent_;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuOverlayComponent)
+};
+
 class MainComponent   : public juce::AudioAppComponent,
                         public juce::ChangeListener,
                         public juce::FileDragAndDropTarget,
@@ -247,6 +275,8 @@ private:
     std::unique_ptr<juce::TextButton> resetButton_;
     std::unique_ptr<juce::ToggleButton> preCountOnOffButton_;
     std::unique_ptr<juce::TextButton> preCountSettingButton_;
+
+    std::unique_ptr<MenuOverlayComponent> menuOverlay_;
     
     enum
     {
