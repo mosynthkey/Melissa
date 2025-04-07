@@ -802,3 +802,31 @@ public:
     {
     }
 };
+
+class MelissaLookAndFeel_MenuButton : public juce::LookAndFeel_V4
+{
+public:
+    MelissaLookAndFeel_MenuButton()
+    {
+    }
+    
+    virtual ~MelissaLookAndFeel_MenuButton() { }
+    
+    void drawButtonBackground(juce::Graphics& g, juce::Button& b, const juce::Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+        {
+            g.setColour(MelissaUISettings::getSubColour().brighter(0.1f));
+            g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
+        }
+    }
+    
+    void drawButtonText(juce::Graphics& g, juce::TextButton& tb, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        using namespace juce;
+        const bool highlighted = (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown);
+        g.setColour(MelissaUISettings::getTextColour(highlighted ? 1.f : 0.8f));
+        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
+        g.drawText(tb.getButtonText(), 10, 0, tb.getWidth() - 20, tb.getHeight(), Justification::left);
+    }
+};

@@ -160,9 +160,7 @@ class MenuOverlayComponent::MenuComponent : public Component
 public:
     MenuComponent() : updateAvailable_(false), updateButtonVisible_(false)
     {
-        addMenuButton(TRANS("open_file"), [this]() {
-            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_FileOpen);
-        });
+        circleToggleLaf_.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
         
         addMenuButton(TRANS("manual"), [this]() {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Manual);
@@ -180,6 +178,14 @@ public:
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_About);
         });
         
+        addMenuButton(TRANS("reveal_settings_file"), [this]() {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_RevealSettingsFile);
+        });
+        
+        addMenuLabel(TRANS("ui_theme"));
+        
+        addThemeToggleButtons();
+        
         versionLabel_ = std::make_unique<Label>();
         versionLabel_->setText("Melissa ver " + JUCEApplication::getInstance()->getApplicationVersion(), dontSendNotification);
         versionLabel_->setFont(Font(16.f));
@@ -191,8 +197,8 @@ public:
         updateButton_->onClick = [this]() {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_VersionCheck);
         };
+        updateButton_->setLookAndFeel(&menuButtonLaf_);
         updateButton_->setColour(TextButton::buttonColourId, MelissaUISettings::getAccentColour());
-        updateButton_->setColour(TextButton::textColourOffId, Colours::white);
         addAndMakeVisible(updateButton_.get());
         
         updateLabel_ = std::make_unique<Label>();
@@ -204,7 +210,23 @@ public:
         addAndMakeVisible(updateLabel_.get());
     }
     
-    ~MenuComponent() override {}
+    ~MenuComponent() override 
+    {
+        for (auto& item : menuItems_)
+        {
+            if (!item.isLabel)
+            {
+                if (auto* button = dynamic_cast<TextButton*>(item.component.get()))
+                {
+                    button->setLookAndFeel(nullptr);
+                }
+            }
+        }
+        
+        if (updateButton_ != nullptr) updateButton_->setLookAndFeel(nullptr);
+        if (lightButton_ != nullptr) lightButton_->setLookAndFeel(nullptr);
+        if (darkButton_ != nullptr) darkButton_->setLookAndFeel(nullptr);
+    }
     
     void paint(Graphics& g) override
     {
@@ -214,31 +236,43 @@ public:
     void resized() override
     {
         const int buttonHeight = 40;
+        const int labelHeight = 30;
         const int buttonMargin = 10;
         const int menuWidth = getWidth() - 20;
+        const int submenuIndent = 20;
         
         int y = 20;
         
-        for (auto& button : menuButtons_)
+        for (auto& item : menuItems_)
         {
-            button->setBounds(10, y, menuWidth, buttonHeight);
-            y += buttonHeight + buttonMargin;
+            if (item.isLabel)
+            {
+                item.component->setBounds(10, y, menuWidth, labelHeight);
+                y += labelHeight;
+            }
+            else if (item.isSubmenu)
+            {
+                item.component->setBounds(10 + submenuIndent, y, menuWidth - submenuIndent, buttonHeight);
+                y += buttonHeight + buttonMargin;
+            }
+            else
+            {
+                item.component->setBounds(10, y, menuWidth, buttonHeight);
+                y += buttonHeight + buttonMargin;
+            }
         }
         
-        y += 20;
+        const int footerHeight = 20;
+        versionLabel_->setBounds(10, getHeight() - footerHeight - 10, menuWidth, footerHeight);
         
-        versionLabel_->setBounds(10, y, menuWidth, 20);
-        y += 30;
+        if (updateAvailable_)
+        {
+            updateLabel_->setBounds(10, getHeight() - footerHeight * 2 - 15, menuWidth, footerHeight);
+        }
         
         if (updateButtonVisible_)
         {
-            updateButton_->setBounds(10, y, menuWidth, buttonHeight);
-            y += buttonHeight + 10;
-            
-            if (updateAvailable_)
-            {
-                updateLabel_->setBounds(10, y, menuWidth, 20);
-            }
+            updateButton_->setBounds(10, getHeight() - buttonHeight - (updateAvailable_ ? footerHeight * 2 + 20 : footerHeight + 15), menuWidth, buttonHeight);
         }
     }
     
@@ -259,22 +293,111 @@ public:
     std::function<void(int)> onMenuItemSelected;
     
 private:
+    struct MenuItem
+    {
+        std::unique_ptr<Component> component;
+        bool isLabel;
+        bool isSubmenu;
+    };
+    
     void addMenuButton(const String& text, std::function<void()> onClick)
     {
         auto button = std::make_unique<TextButton>(text);
         button->onClick = onClick;
-        button->setColour(TextButton::buttonColourId, MelissaUISettings::getSubColour().brighter(0.1f));
-        button->setColour(TextButton::textColourOffId, Colours::white);
+        button->setLookAndFeel(&menuButtonLaf_);
         addAndMakeVisible(button.get());
-        menuButtons_.push_back(std::move(button));
+        
+        MenuItem item;
+        item.component = std::move(button);
+        item.isLabel = false;
+        item.isSubmenu = false;
+        menuItems_.push_back(std::move(item));
     }
     
-    std::vector<std::unique_ptr<TextButton>> menuButtons_;
+    void addMenuLabel(const String& text)
+    {
+        auto label = std::make_unique<Label>();
+        label->setText(text, dontSendNotification);
+        label->setFont(Font(16.f).boldened());
+        label->setColour(Label::textColourId, Colours::white);
+        label->setJustificationType(Justification::left);
+        addAndMakeVisible(label.get());
+        
+        MenuItem item;
+        item.component = std::move(label);
+        item.isLabel = true;
+        item.isSubmenu = false;
+        menuItems_.push_back(std::move(item));
+    }
+    
+    void addSubmenuButton(const String& text, std::function<void()> onClick)
+    {
+        auto button = std::make_unique<TextButton>(text);
+        button->onClick = onClick;
+        button->setLookAndFeel(&menuButtonLaf_);
+        addAndMakeVisible(button.get());
+        
+        MenuItem item;
+        item.component = std::move(button);
+        item.isLabel = false;
+        item.isSubmenu = true;
+        menuItems_.push_back(std::move(item));
+    }
+    
+    void addThemeToggleButtons()
+    {
+        auto themeRow = std::make_unique<Component>();
+        
+        const bool isDarkMode = MelissaUISettings::isDarkMode;
+        
+        lightButton_ = std::make_unique<ToggleButton>(TRANS("ui_theme_light"));
+        lightButton_->setToggleState(!isDarkMode, dontSendNotification);
+        lightButton_->onClick = [this]() {
+            if (lightButton_->getToggleState()) {
+                darkButton_->setToggleState(false, dontSendNotification);
+                if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_UITheme_Light);
+            } else {
+                lightButton_->setToggleState(true, dontSendNotification);
+            }
+        };
+        lightButton_->setBounds(10, 0, 80, 30);
+        lightButton_->setLookAndFeel(&circleToggleLaf_);
+        themeRow->addAndMakeVisible(lightButton_.get());
+        
+        darkButton_ = std::make_unique<ToggleButton>(TRANS("ui_theme_dark"));
+        darkButton_->setToggleState(isDarkMode, dontSendNotification);
+        darkButton_->onClick = [this]() {
+            if (darkButton_->getToggleState()) {
+                lightButton_->setToggleState(false, dontSendNotification);
+                if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_UITheme_Dark);
+            } else {
+                darkButton_->setToggleState(true, dontSendNotification);
+            }
+        };
+        darkButton_->setBounds(100, 0, 80, 30);
+        darkButton_->setLookAndFeel(&circleToggleLaf_);
+        themeRow->addAndMakeVisible(darkButton_.get());
+        
+        themeRow->setSize(getWidth(), 40);
+        addAndMakeVisible(themeRow.get());
+        
+        MenuItem item;
+        item.component = std::move(themeRow);
+        item.isLabel = false;
+        item.isSubmenu = false;
+        menuItems_.push_back(std::move(item));
+    }
+    
+    std::vector<MenuItem> menuItems_;
     std::unique_ptr<Label> versionLabel_;
     std::unique_ptr<TextButton> updateButton_;
     std::unique_ptr<Label> updateLabel_;
+    std::unique_ptr<ToggleButton> lightButton_;
+    std::unique_ptr<ToggleButton> darkButton_;
     bool updateAvailable_;
     bool updateButtonVisible_;
+    MelissaLookAndFeel_MenuButton menuButtonLaf_;
+    MelissaLookAndFeel_CircleToggleButton circleToggleLaf_;
 };
 
 MenuOverlayComponent::MenuOverlayComponent() : menuVisible_(false), menuPosX_(-300)
@@ -2248,6 +2371,43 @@ PopupMenu MainComponent::getMenuForIndex(int topLevelMenuIndex, const String& me
 void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 {
     if (menuItemID == kMenuID_FileOpen) showFileChooser();
+    else if (menuItemID == kMenuID_About) showAboutDialog();
+    else if (menuItemID == kMenuID_Manual) URL("https://github.com/mosynthkey/Melissa/wiki").launchInDefaultBrowser();
+    else if (menuItemID == kMenuID_VersionCheck) showUpdateDialog(true);
+    else if (menuItemID == kMenuID_Preferences) showAudioMidiSettingsDialog();
+    else if (menuItemID == kMenuID_Shortcut) showShortcutDialog();
+    else if (menuItemID == kMenuID_UITheme_Dark || menuItemID == kMenuID_UITheme_Light)
+    {
+        const std::vector<String> options = { TRANS("ok") };
+        auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("restart_to_apply"), options, [&, menuItemID](size_t index) {
+            String uiTheme;
+            if (menuItemID == kMenuID_UITheme_Dark)
+            {
+                uiTheme = "System_Dark";
+            }
+            else
+            {
+                uiTheme = "System_Light";
+            }
+            dataSource_->setUITheme(uiTheme);
+            File::getSpecialLocation(File::currentExecutableFile).startAsProcess("--relaunch");
+            JUCEApplicationBase::quit();
+        });
+        MelissaModalDialog::show(dialog, TRANS("ui_theme"));
+    }
+    else if (menuItemID == kMenuID_Tutorial) showTutorial();
+    else if (menuItemID == kMenuID_TwitterShare)
+    {
+        if (isLangJapanese_)
+        {
+            URL("https://twitter.com/intent/tweet?&text=Melissa+-+%E6%A5%BD%E5%99%A8%E7%B7%B4%E7%BF%92%2F%E8%80%B3%E3%82%B3%E3%83%94%E7%94%A8%E3%81%AE%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%83%83%E3%82%AF%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC+%28macOS+%2F+Windows+%E5%AF%BE%E5%BF%9C%29&url=https%3A%2F%2Fmosynthkey.github.io%2FMelissa%2F&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+        }
+        else
+        {
+            URL("https://twitter.com/intent/tweet?text=Melissa%20-%20A%20music%20player%20for%20musical%20instrument%20practice%0Afor%20macOS%20and%20Windows%20https%3A%2F%2Fgithub.com%2Fmosynthkey%2FMelissa&hashtags=MelissaMusicPlayer").launchInDefaultBrowser();
+        }
+    }
+    else if (menuItemID == kMenuID_RevealSettingsFile) settingsFile_.revealToUser();
 }
 
 void MainComponent::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
