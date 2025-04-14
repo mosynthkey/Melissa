@@ -31,7 +31,7 @@ public:
     
     static juce::Colour getSubColour(float alpha = 1.f)
     {
-        return isDarkMode ? juce::Colour(0xFF24262D).withAlpha(alpha) : juce::Colour(0xFFE6E8EC).withAlpha(alpha);
+        return isDarkMode ? juce::Colour(0xFF282E39).withAlpha(alpha) : juce::Colour(0xFFE6E8EC).withAlpha(alpha);
     }
     
     static juce::Colour getAccentColour(float alpha = 1.f)
