@@ -341,8 +341,8 @@ void MelissaExportComponent::update()
 {
 #if defined(ENABLE_PLAYLIST_EXPORT)
     const bool enablePlaylist = (selectedTarget_ == kExportTarget_Playlist || selectedTarget_ == kExportTarget_Playlist_AllPractice);
-    playlistLabel_->setEnabled(enablePlaylist);
-    playlistComboBox_->setEnabled(enablePlaylist);
+    playlistLabel_->setVisible(enablePlaylist);
+    playlistComboBox_->setVisible(enablePlaylist);
 #endif
     
     String explanation[] = { 

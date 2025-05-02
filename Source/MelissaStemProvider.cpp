@@ -181,10 +181,11 @@ void MelissaStemProvider::prepareForLoadStems(const File& fileToOpen, File& orig
 
 void MelissaStemProvider::deleteStems()
 {
-    if (!songFile_.existsAsFile()) return;
+    auto songFile = juce::File(MelissaDataSource::getInstance()->getCurrentSongFilePath());
+    if (!songFile.existsAsFile()) return;
     
-    const auto currentSongDirectory = songFile_.getParentDirectory();
-    const auto songName = File::createLegalFileName(songFile_.getFileName());
+    const auto currentSongDirectory = songFile.getParentDirectory();
+    const auto songName = File::createLegalFileName(songFile.getFileName());
     
     File outputDirName(currentSongDirectory.getChildFile(songName + "_stems"));
     

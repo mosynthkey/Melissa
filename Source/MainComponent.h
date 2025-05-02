@@ -7,44 +7,44 @@
 
 #pragma once
 
-#include <array>
-#include <numeric>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaAudioEngine.h"
 #include "MelissaBPMDetector.h"
+#include "MelissaBrowserComponent.h"
 #include "MelissaButtons.h"
 #include "MelissaDataSource.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
 #include "MelissaIncDecButton.h"
 #include "MelissaLookAndFeel.h"
-#include "MelissaScrollLabel.h"
-#include "MelissaSeparatorComponent.h"
-#include "MelissaShortcutManager.h"
-#include "MelissaStemProvider.h"
-#include "MelissaPopupMessageComponent.h"
-#include "MelissaStemControlComponent.h"
-#include "UI/MelissaBrowserComponent.h"
-
-#if defined(ENABLE_SPEED_TRAINING)
-#include "MelissaSpeedTrainingProgressComponent.h"
-#endif
-
+#include "MelissaMarkerListBox.h"
 #include "MelissaMarkerListener.h"
 #include "MelissaMarkerMemoComponent.h"
 #include "MelissaMetronome.h"
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
+#include "MelissaPopupMessageComponent.h"
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaPreCountSettingComponent.h"
 #include "MelissaProgressBarComponent.h"
-#include "MelissaMarkerListBox.h"
+#include "MelissaScrollLabel.h"
 #include "MelissaSectionComponent.h"
+#include "MelissaSeparatorComponent.h"
+#include "MelissaShortcutManager.h"
+#include "MelissaStemControlComponent.h"
+#include "MelissaStemProvider.h"
+#include "MelissaStemSeparationSelectComponent.h"
 #include "MelissaTutorialComponent.h"
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
+#include <array>
+#include <numeric>
+
+#if defined(ENABLE_SPEED_TRAINING)
+#include "MelissaSpeedTrainingProgressComponent.h"
+#endif
 
 #ifdef JUCE_IOS
 #include "MelissaMobileSupport.h"
@@ -248,6 +248,7 @@ private:
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
+    std::unique_ptr<juce::TextButton> songDetailButton_;
 
     std::unique_ptr<MelissaPopupMessageComponent> popupMessage_;
 

@@ -330,8 +330,6 @@ void MelissaAudioEngine::process()
             {
                 if (loop_)
                 {
-                    readIndex_ = aIndex_;
-                    break;
 #if defined(ENABLE_SPEED_TRAINING)
                     ++count_;
                     
@@ -343,6 +341,8 @@ void MelissaAudioEngine::process()
                         soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
                     }
 #endif
+                    readIndex_ = aIndex_;
+                    break;
                 }
                 else
                 {
@@ -448,7 +448,7 @@ void MelissaAudioEngine::setStatus(Status status)
 void MelissaAudioEngine::setTrimMode(bool shouldTrim)
 {
     shouldTrim_ = shouldTrim;
-    if (shouldTrim_) doTrim();
+    //if (shouldTrim_) doTrim();
 }
 
 void MelissaAudioEngine::playbackStatusChanged(PlaybackStatus status)

@@ -12,6 +12,7 @@
 #include "MelissaDefinitions.h"
 #include "MelissaLookAndFeel.h"
 #include "MelissaStemProvider.h"
+#include "MelissaStemSeparationSelectComponent.h"
 
 class MelissaStemControlComponent : public juce::Component,
                                     public MelissaModelListener,
@@ -53,6 +54,8 @@ private:
     std::unique_ptr<juce::ToggleButton> allButton_;
     std::unique_ptr<juce::ToggleButton> stemSwitchButtons_[kNumStemSoloButtons];
     std::unique_ptr<juce::TextButton> createStemsButton_;
+    std::unique_ptr<MelissaStemSeparationSelectComponent> stemSeparationSelectComponent_;
+    
     enum { kNumMixKnobs = 6, };
     std::unique_ptr<juce::Slider> partKnobs_[kNumMixKnobs];
     int xCenterList_[kNumMixKnobs];

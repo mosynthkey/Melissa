@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(Melissa VERSION 3.2.0)
+project(Melissa VERSION 3.5.0)
 
 include(FetchContent)
 
@@ -52,6 +52,11 @@ juce_add_gui_app(Melissa
 juce_generate_juce_header(Melissa)
 
 target_sources(Melissa PRIVATE
+    Source/Audio/MelissaAudioEngine.cpp
+    Source/Audio/MelissaBeepGenerator.cpp
+    Source/Audio/MelissaBPMDetector.cpp
+    Source/Audio/MelissaMetronome.cpp
+    Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp
     Source/Main.cpp
     Source/MainComponent.cpp
     Source/MelissaCommand.cpp
@@ -65,34 +70,11 @@ target_sources(Melissa PRIVATE
     Source/MelissaStemProvider.cpp
     Source/MelissaStemProvider.h
     Source/MelissaUpdateChecker.cpp
-    Source/Audio/MelissaAudioEngine.cpp
-    Source/Audio/MelissaBeepGenerator.cpp
-    Source/Audio/MelissaBPMDetector.cpp
-    Source/Audio/MelissaMetronome.cpp
-    Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp
-    Submodule/soundtouch/source/SoundTouch/AAFilter.cpp
-    Submodule/soundtouch/source/SoundTouch/cpu_detect_x86.cpp
-    Submodule/soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp
-    Submodule/soundtouch/source/SoundTouch/FIRFilter.cpp
-    Submodule/soundtouch/source/SoundTouch/InterpolateCubic.cpp
-    Submodule/soundtouch/source/SoundTouch/InterpolateLinear.cpp
-    Submodule/soundtouch/source/SoundTouch/InterpolateShannon.cpp
-    Submodule/soundtouch/source/SoundTouch/mmx_optimized.cpp
-    Submodule/soundtouch/source/SoundTouch/PeakFinder.cpp
-    Submodule/soundtouch/source/SoundTouch/RateTransposer.cpp
-    Submodule/soundtouch/source/SoundTouch/SoundTouch.cpp
-    Submodule/soundtouch/source/SoundTouch/sse_optimized.cpp
-    Submodule/soundtouch/source/SoundTouch/TDStretch.cpp
-    ThirdParty/spleet/input_file.cpp
-    ThirdParty/spleet/io.cpp
-    ThirdParty/spleet/output_folder.cpp
-    ThirdParty/spleet/split.cpp
-    ThirdParty/spleet/utils.cpp
     Source/UI/MelissaAboutComponent.h
     Source/UI/MelissaBPMSettingComponent.h
-    Source/UI/MelissaButtons.h
     Source/UI/MelissaBrowserComponent.cpp
     Source/UI/MelissaBrowserComponent.h
+    Source/UI/MelissaButtons.h
     Source/UI/MelissaCommandComboBox.cpp
     Source/UI/MelissaCommandComboBox.h
     Source/UI/MelissaDoubleClickEditLabel.h
@@ -127,8 +109,12 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaShortcutComponent.cpp
     Source/UI/MelissaShortcutComponent.h
     Source/UI/MelissaSimpleTextButton.h
+    Source/UI/MelissaSpeedTrainingProgressComponent.cpp
+    Source/UI/MelissaSpeedTrainingProgressComponent.h
     Source/UI/MelissaStemControlComponent.cpp
     Source/UI/MelissaStemControlComponent.h
+    Source/UI/MelissaStemSeparationSelectComponent.cpp
+    Source/UI/MelissaStemSeparationSelectComponent.h
     Source/UI/MelissaTapTempoButton.cpp
     Source/UI/MelissaTapTempoButton.h
     Source/UI/MelissaTextEditorWithClearButton.cpp
@@ -140,6 +126,24 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaWaveformControlComponent.h
     Source/UI/MelissaWaveformMouseEventComponent.cpp
     Source/UI/MelissaWaveformMouseEventComponent.h
+    Submodule/soundtouch/source/SoundTouch/AAFilter.cpp
+    Submodule/soundtouch/source/SoundTouch/cpu_detect_x86.cpp
+    Submodule/soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp
+    Submodule/soundtouch/source/SoundTouch/FIRFilter.cpp
+    Submodule/soundtouch/source/SoundTouch/InterpolateCubic.cpp
+    Submodule/soundtouch/source/SoundTouch/InterpolateLinear.cpp
+    Submodule/soundtouch/source/SoundTouch/InterpolateShannon.cpp
+    Submodule/soundtouch/source/SoundTouch/mmx_optimized.cpp
+    Submodule/soundtouch/source/SoundTouch/PeakFinder.cpp
+    Submodule/soundtouch/source/SoundTouch/RateTransposer.cpp
+    Submodule/soundtouch/source/SoundTouch/SoundTouch.cpp
+    Submodule/soundtouch/source/SoundTouch/sse_optimized.cpp
+    Submodule/soundtouch/source/SoundTouch/TDStretch.cpp
+    ThirdParty/spleet/input_file.cpp
+    ThirdParty/spleet/io.cpp
+    ThirdParty/spleet/output_folder.cpp
+    ThirdParty/spleet/split.cpp
+    ThirdParty/spleet/utils.cpp
 )
 
 target_include_directories(Melissa PRIVATE
@@ -166,6 +170,7 @@ target_compile_definitions(Melissa PRIVATE
     MELISSA_FULL_VERSION
     JUCE_SILENCE_XCODE_15_LINKER_WARNING
     MELISSA_USE_STEM_SEPARATION
+    ENABLE_SPEED_TRAINING
 )
 
 target_link_libraries(Melissa PRIVATE
@@ -220,6 +225,9 @@ juce_add_binary_data(MelissaBinaryData
     Resource/Icon/speaker.svg
     Resource/Icon/trim.svg
     Resource/Icon/up.svg
+    Resource/Icon/left.svg
+    Resource/Icon/right.svg
+    Resource/Icon/home.svg
     Resource/Language/en-US.txt
     Resource/Language/ja-JP.txt
     Resource/logo.png
