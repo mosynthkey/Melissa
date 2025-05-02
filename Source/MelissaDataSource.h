@@ -167,6 +167,16 @@ public:
         float eqQ_;
         juce::String memo_;
 
+        struct BrowserState
+        {
+            juce::String url_;
+            int scrollX_;
+            int scrollY_;
+
+            BrowserState() : url_("https://google.com"), scrollX_(0), scrollY_(0) {}
+        };
+        BrowserState browserState_;
+
         struct PracticeList
         {
             juce::String name_;
@@ -325,6 +335,9 @@ public:
     MelissaDataSource &operator=(const MelissaDataSource &) = delete;
     MelissaDataSource(MelissaDataSource &&) = delete;
     MelissaDataSource &operator=(MelissaDataSource &&) = delete;
+
+    void saveBrowserState(const juce::String &url, const juce::Point<int> &scrollPosition);
+    void getBrowserState(juce::String &url, juce::Point<int> &scrollPosition) const;
 
 private:
     // Singleton

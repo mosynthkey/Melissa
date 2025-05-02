@@ -91,6 +91,8 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaAboutComponent.h
     Source/UI/MelissaBPMSettingComponent.h
     Source/UI/MelissaButtons.h
+    Source/UI/MelissaBrowserComponent.cpp
+    Source/UI/MelissaBrowserComponent.h
     Source/UI/MelissaCommandComboBox.cpp
     Source/UI/MelissaCommandComboBox.h
     Source/UI/MelissaDoubleClickEditLabel.h

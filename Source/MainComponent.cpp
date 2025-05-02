@@ -70,8 +70,8 @@ public:
     {
         const bool isDark = MelissaUISettings::isDarkMode;
 
-        const auto borderColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
-        const auto backgroundColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
+        const auto backgroundColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
+        const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
 
         g.fillAll(backgroundColour);
 
@@ -941,9 +941,7 @@ void MainComponent::createUI()
         trimButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         trimButton_->setTooltip(TRANS("trim"));
         trimButton_->setImages(iconImages_[kIcon_Trim].get(), iconHighlightedImages_[kIcon_Trim].get());
-        trimButton_->onClick = [&]()
-        {
-        };
+        trimButton_->onClick = [&]() {};
         // componentToAdd->addAndMakeVisible(trimButton_.get());
 
         exportButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
@@ -1545,6 +1543,9 @@ void MainComponent::createUI()
     memoTextEditor_->setReturnKeyStartsNewLine(true);
     listComponent_->addAndMakeVisible(memoTextEditor_.get());
 
+    browserComponent_ = make_unique<MelissaBrowserComponent>();
+    listComponent_->addAndMakeVisible(browserComponent_.get());
+
     auto createAndAddTab = [&](const String &title, ListMemoTab tab)
     {
         auto b = make_unique<ToggleButton>();
@@ -1560,6 +1561,7 @@ void MainComponent::createUI()
     practiceListToggleButton_ = createAndAddTab("Practice list", kListMemoTab_Practice);
     markerListToggleButton_ = createAndAddTab("Marker", kListMemoTab_Marker);
     memoToggleButton_ = createAndAddTab("Memo", kListMemoTab_Memo);
+    browserToggleButton_ = createAndAddTab("Browser", kListMemoTab_Browser);
     practiceListToggleButton_->setToggleState(true, dontSendNotification);
 
     addToPracticeButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
@@ -2146,6 +2148,8 @@ void MainComponent::resized_Desktop()
         addMarkerButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
         x += (tabWidth + 2);
         memoToggleButton_->setBounds(x, y, tabWidth, 30);
+        x += (tabWidth + 2);
+        browserToggleButton_->setBounds(x, y, tabWidth, 30);
 
         x = 10;
         y = 50;
@@ -2153,6 +2157,7 @@ void MainComponent::resized_Desktop()
         practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h - 40);
         markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
         memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        browserComponent_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
 
         practiceListUpButton_->setBounds(x, practiceTable_->getBottom() + 10, 30, 30);
         practiceListDownButton_->setBounds(x + 40, practiceTable_->getBottom() + 10, 30, 30);
@@ -2489,6 +2494,11 @@ void MainComponent::closeTutorial()
 
 void MainComponent::songChanged(const String &filePath, size_t bufferLength, int32_t sampleRate)
 {
+    String url;
+    Point<int> scrollPosition;
+    dataSource_->getBrowserState(url, scrollPosition);
+    browserComponent_->restoreState(url, scrollPosition);
+
     memoTextEditor_->setText(dataSource_->getMemo());
     auto parentDir = File(filePath).getParentDirectory();
     parentDir.setAsCurrentWorkingDirectory();
@@ -2751,6 +2761,7 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
     practiceListDownButton_->setVisible(tab == kListMemoTab_Practice);
     markerTable_->setVisible(tab == kListMemoTab_Marker);
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
+    browserComponent_->setVisible(tab == kListMemoTab_Browser);
 }
 
 void MainComponent::updateControlPage(ControlPage page)

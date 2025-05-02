@@ -24,6 +24,7 @@
 #include "MelissaStemProvider.h"
 #include "MelissaPopupMessageComponent.h"
 #include "MelissaStemControlComponent.h"
+#include "UI/MelissaBrowserComponent.h"
 
 #if defined(ENABLE_SPEED_TRAINING)
 #include "MelissaSpeedTrainingProgressComponent.h"
@@ -70,7 +71,9 @@ enum ListMemoTab
 {
     kListMemoTab_Practice,
     kListMemoTab_Marker,
-    kListMemoTab_Memo
+    kListMemoTab_Memo,
+    kListMemoTab_Browser,
+    kNumOfListMemoTabs
 };
 
 enum ControlPage
@@ -358,6 +361,7 @@ private:
     std::unique_ptr<juce::ToggleButton> practiceListToggleButton_;
     std::unique_ptr<juce::ToggleButton> markerListToggleButton_;
     std::unique_ptr<juce::ToggleButton> memoToggleButton_;
+    std::unique_ptr<juce::ToggleButton> browserToggleButton_;
     std::unique_ptr<juce::TextEditor> memoTextEditor_;
     std::unique_ptr<juce::DrawableButton> addToPracticeButton_;
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
@@ -525,6 +529,11 @@ private:
 
     // MelissaMarkerListener
     void markerClicked(size_t markerIndex, bool isShiftKeyDown) override;
+
+    std::unique_ptr<MelissaPracticeTableListBox> practiceList_;
+    std::unique_ptr<MelissaMarkerListBox> markerList_;
+    std::unique_ptr<MelissaMarkerMemoComponent> markerMemo_;
+    std::unique_ptr<MelissaBrowserComponent> browserComponent_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
