@@ -163,7 +163,6 @@ target_compile_definitions(Melissa PRIVATE
     _USE_MATH_DEFINES
     MELISSA_FULL_VERSION
     JUCE_SILENCE_XCODE_15_LINKER_WARNING
-    ENABLE_PRECOUNT
     MELISSA_USE_STEM_SEPARATION
 )
 
@@ -193,32 +192,34 @@ target_link_libraries(Melissa PRIVATE
 
 juce_add_binary_data(MelissaBinaryData
     SOURCES
+    Resource/icon.png
     Resource/Icon/add.svg
     Resource/Icon/arrow_left.svg
     Resource/Icon/arrow_right.svg
     Resource/Icon/clear.svg
     Resource/Icon/detail.svg
     Resource/Icon/down.svg
-    Resource/Icon/export.svg
+    Resource/Icon/dummy_icon.svg
     Resource/Icon/export_current.svg
-    Resource/Icon/export_playlist.svg
     Resource/Icon/export_playlist_practicelist.svg
+    Resource/Icon/export_playlist.svg
     Resource/Icon/export_practiceList.svg
+    Resource/Icon/export.svg
     Resource/Icon/loop_onesong.svg
     Resource/Icon/loop_playlist.svg
     Resource/Icon/next_button.svg
-    Resource/Icon/playlist_add.svg
     Resource/Icon/playlist_add_file.svg
     Resource/Icon/playlist_add_playing.svg
+    Resource/Icon/playlist_add.svg
     Resource/Icon/playlist_edit.svg
     Resource/Icon/playlist_remove.svg
     Resource/Icon/prev_button.svg
     Resource/Icon/select.svg
     Resource/Icon/speaker.svg
+    Resource/Icon/trim.svg
     Resource/Icon/up.svg
     Resource/Language/en-US.txt
     Resource/Language/ja-JP.txt
-    Resource/icon.png
     Resource/logo.png
 )
 

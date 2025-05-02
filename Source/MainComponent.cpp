@@ -70,8 +70,8 @@ public:
     {
         const bool isDark = MelissaUISettings::isDarkMode;
 
-        const auto backgroundColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
-        const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
+        const auto borderColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
+        const auto backgroundColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
 
         g.fillAll(backgroundColour);
 
@@ -832,6 +832,10 @@ void MainComponent::createUI()
         iconHighlightedImages_[kIcon_Export] = Drawable::createFromImageData(BinaryData::export_svg, BinaryData::export_svgSize);
         iconColorInfo_[kIcon_Export] = kColorInfo_None;
 
+        iconImages_[kIcon_Trim] = Drawable::createFromImageData(BinaryData::trim_svg, BinaryData::trim_svgSize);
+        iconHighlightedImages_[kIcon_Trim] = Drawable::createFromImageData(BinaryData::trim_svg, BinaryData::trim_svgSize);
+        iconColorInfo_[kIcon_Trim] = kColorInfo_None;
+
         for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
         {
             if (iconColorInfo_[iconIndex] == kColorInfo_None)
@@ -933,6 +937,14 @@ void MainComponent::createUI()
             showAudioMidiSettingsDialog();
         };
         componentToAdd->addAndMakeVisible(audioDeviceButton_.get());
+
+        trimButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        trimButton_->setTooltip(TRANS("trim"));
+        trimButton_->setImages(iconImages_[kIcon_Trim].get(), iconHighlightedImages_[kIcon_Trim].get());
+        trimButton_->onClick = [&]()
+        {
+        };
+        // componentToAdd->addAndMakeVisible(trimButton_.get());
 
         exportButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         exportButton_->setTooltip(TRANS("export"));
@@ -1916,6 +1928,7 @@ void MainComponent::resized_Desktop()
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
+        trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
     }
@@ -1923,7 +1936,7 @@ void MainComponent::resized_Desktop()
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
 
     constexpr int kOffset = 20;
-    waveformHolderComponent_->setSize(getWidth() * 2 - 30 * 2, 160 + 36);
+    waveformHolderComponent_->setSize(getWidth() - 30 * 2, 160 + 36);
     waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
     markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
 

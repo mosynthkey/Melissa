@@ -175,7 +175,7 @@ void MelissaEqualizer::setQ(float q)
 
 MelissaAudioEngine::MelissaAudioEngine() :
 model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
-aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
+aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), trimStartIndex_(0), trimEndIndex_(0), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
@@ -443,6 +443,12 @@ MelissaAudioEngine::Status MelissaAudioEngine::getStatus() const
 void MelissaAudioEngine::setStatus(Status status)
 {
     status_ = status;
+}
+
+void MelissaAudioEngine::setTrimMode(bool shouldTrim)
+{
+    shouldTrim_ = shouldTrim;
+    if (shouldTrim_) doTrim();
 }
 
 void MelissaAudioEngine::playbackStatusChanged(PlaybackStatus status)
