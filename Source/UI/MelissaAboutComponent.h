@@ -77,7 +77,7 @@ public:
         
         // Eigen
         text += "Eigen - https://eigen.tuxfamily.org/\n";
-        text += "License: MPL2 (primarily), BSD, LGPL\n\n";
+        text += "License: MPL2\n\n";
         
         // JSON for Modern C++
         text += "JSON for Modern C++ - https://github.com/nlohmann/json\n";
