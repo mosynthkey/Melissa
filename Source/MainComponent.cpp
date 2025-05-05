@@ -203,35 +203,35 @@ public:
         circleToggleLaf_.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
 
         addMenuLabel(TRANS("about"));
-        addIconMenuButton(TRANS("about_melissa"), [this]()
+        addMenuButton(TRANS("about_melissa"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_About); });
 
-        addIconMenuButton(TRANS("open_manual"), [this]()
+        addMenuButton(TRANS("open_manual"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Manual); });
-        addIconMenuButton(TRANS("website"), [this]()
+        addMenuButton(TRANS("website"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Website); });
 
-        addIconMenuButton(updateAvailable_ ? TRANS("update_exists") : TRANS("check_update"), [this]()
+        addMenuButton(updateAvailable_ ? TRANS("update_exists") : TRANS("check_update"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_VersionCheck); });
         addSeparator();
 
         addMenuLabel(TRANS("preferences"));
-        addIconMenuButton(TRANS("shortcut_settings"), [this]()
+        addMenuButton(TRANS("shortcut_settings"), [this]()
                           {
                 if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Shortcut); });
 
-        addIconMenuButton(TRANS("audio_midi_settings"), [this]()
+        addMenuButton(TRANS("audio_midi_settings"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Preferences); });
 
         addSeparator();
 
         addMenuLabel(TRANS("advanced_settings"));
-        addIconMenuButton(TRANS("reveal_settings_file"), [this]()
+        addMenuButton(TRANS("reveal_settings_file"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_RevealSettingsFile); });
         addSeparator();
@@ -437,18 +437,6 @@ private:
     MelissaLookAndFeel_MenuButton menuButtonLaf_;
     MelissaLookAndFeel_CircleToggleButton circleToggleLaf_;
     std::vector<int> separatorPositions_;
-
-    void addIconMenuButton(const String &text, std::function<void()> onClick)
-    {
-        auto menuButton = std::make_unique<MenuButtonComponent>(text, onClick);
-        addAndMakeVisible(menuButton.get());
-
-        MenuItem item;
-        item.component = std::move(menuButton);
-        item.isLabel = false;
-        item.isSubmenu = false;
-        menuItems_.push_back(std::move(item));
-    }
 
     void addSeparator()
     {
@@ -2483,11 +2471,6 @@ void MainComponent::closeTutorial()
 
 void MainComponent::songChanged(const String &filePath, size_t bufferLength, int32_t sampleRate)
 {
-    String url;
-    Point<int> scrollPosition;
-    dataSource_->getBrowserState(url, scrollPosition);
-    browserComponent_->restoreState(url, scrollPosition);
-
     memoTextEditor_->setText(dataSource_->getMemo());
     auto parentDir = File(filePath).getParentDirectory();
     parentDir.setAsCurrentWorkingDirectory();
