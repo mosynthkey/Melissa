@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(Melissa VERSION 3.5.0)
+project(Melissa VERSION 4.0.0)
 
 include(FetchContent)
 
@@ -39,7 +39,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/demucs.cpp EXCLUDE_FROM_A
 
 juce_add_gui_app(Melissa
     PRODUCT_NAME "Melissa"
-    VERSION "3.2.0"
+    VERSION "4.0.0"
     COMPANY_NAME "Melissa Audio"
     COMPANY_COPYRIGHT "Copyright(c) 2025 Masaki Ono"
     BUNDLE_ID "com.melissa-audio.melissa"
