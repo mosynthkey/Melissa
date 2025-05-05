@@ -69,7 +69,6 @@ class MainComponent::HeaderComponent : public Component
 public:
     HeaderComponent() 
     {
-        melissaHeaderSvg_ = Drawable::createFromImageData(BinaryData::melissa_header_svg, BinaryData::melissa_header_svgSize);
     }
     
     void paint(Graphics &g)
@@ -80,12 +79,6 @@ public:
         const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
 
         g.fillAll(backgroundColour);
-
-        if (melissaHeaderSvg_ != nullptr)
-        {
-            melissaHeaderSvg_->setColour(0, MelissaUISettings::getTextColour());
-            melissaHeaderSvg_->drawAt(g, 60, 0, 1.0f);
-        }
 
         g.setColour(borderColour);
 
@@ -103,7 +96,6 @@ public:
     }
     
 private:
-    std::unique_ptr<Drawable> melissaHeaderSvg_;
 };
 
 #if defined(ENABLE_SPEED_TRAINING)
@@ -1854,7 +1846,7 @@ void MainComponent::resized_Desktop()
     headerComponent_->setBounds(0, 0, getWidth(), kHeaderHeight);
 
     {
-        menuButton_->setBounds(20, (kHeaderHeight - 18) / 2 - 2, 30, 18);
+        menuButton_->setBounds(0, 0, 200, 50);
 
         int x = 230;
         int centerY = kHeaderHeight / 2;

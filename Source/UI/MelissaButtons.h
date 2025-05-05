@@ -16,38 +16,31 @@
 class MelissaMenuButton : public juce::Button
 {
 public:
-    MelissaMenuButton() : juce::Button(""), showBudge_(true) { }
+    MelissaMenuButton() : juce::Button(""), showBudge_(true)
+    {
+        menuDrawable_ = juce::Drawable::createFromImageData(BinaryData::melissa_header_svg, BinaryData::melissa_header_svgSize);
+    }
+    
     void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        constexpr int lineHeight = 2;
-        
-        const bool highlighted = shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown;
-        g.setColour(MelissaUISettings::getWaveformColour().withAlpha(highlighted ? 1.f : 0.6f));
-        
-#ifdef JUCE_IOS
-        g.fillRoundedRectangle(0,  4, 26, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, 10, 22, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, 16, 18, lineHeight, lineHeight / 2);
-#else
-        g.fillRoundedRectangle(0,  4, 26, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, 10, 22, lineHeight, lineHeight / 2);
-        g.fillRoundedRectangle(0, 16, 18, lineHeight, lineHeight / 2);
-#endif
+        menuDrawable_->drawAt(g, 0, 0, (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f);
         
         if (showBudge_)
         {
             g.setColour(juce::Colours::red);
-            g.fillEllipse(22, 0, 8, 8);
+            g.fillEllipse(12, 12, 16, 16);
         }
     }
     
-    void setBudgeVisibility(bool show) {
+    void setBudgeVisibility(bool show)
+    {
         showBudge_ = show;
         repaint();
     }
     
 private:
     bool showBudge_;
+    std::unique_ptr<juce::Drawable> menuDrawable_;
 };
 
 class MelissaAddButton : public juce::Button
@@ -79,6 +72,7 @@ public:
     MelissaPlayPauseButton(const juce::String& name = "") :
     juce::Button(name), drawPlayIcon_(true)
     {
+        playDrawable_ = juce::Drawable::createFromImageData(BinaryData::play_button_svg, BinaryData::play_button_svgSize);
         MelissaModel::getInstance()->addListener(this);
     }
     
@@ -107,12 +101,7 @@ private:
         
         if (drawPlayIcon_)
         {
-            const int x0 = (w - triW) * 4.f / 7.f;
-            const int y0 = (h - triH) / 2;
-            
-            juce::Path path;
-            path.addTriangle (x0, y0, x0, y0 + triH, x0 + triW, h / 2);
-            g.fillPath(path);
+            playDrawable_->drawAt(g, 0, 0, on ? 1.f : 0.8f);
         }
         else
         {
@@ -125,6 +114,7 @@ private:
     }
     
     bool drawPlayIcon_;
+    std::unique_ptr<juce::Drawable> playDrawable_;
 };
 
 class CloseButton : public juce::Button

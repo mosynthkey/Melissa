@@ -230,6 +230,7 @@ juce_add_binary_data(MelissaBinaryData
     Resource/Icon/right.svg
     Resource/Icon/home.svg
     Resource/Icon/go.svg
+    Resource/Icon/play_button.svg
     Resource/Language/en-US.txt
     Resource/Language/ja-JP.txt
     Resource/logo.png
