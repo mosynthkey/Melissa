@@ -480,7 +480,7 @@ StemProviderResult MelissaStemProvider::createStems()
                 auto outputFile = outputDirName.getChildFile(songName + "_" + partNames[partIndex] + ".ogg");
                 auto writer = std::unique_ptr<AudioFormatWriter>(oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, StringPairArray(), 0));
                 if (writer == nullptr) return kStemProviderResult_FailedToReadSourceFile;
-                
+                                
                 // Save current part
                 if (writer)
                 {

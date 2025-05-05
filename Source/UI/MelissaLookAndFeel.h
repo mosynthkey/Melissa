@@ -803,7 +803,7 @@ public:
     {
         if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
         {
-            g.setColour(MelissaUISettings::getSubColour().brighter(0.1f));
+            g.setColour(MelissaUISettings::getAccentColour());
             g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
         }
     }
