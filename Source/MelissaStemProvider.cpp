@@ -383,7 +383,7 @@ StemProviderResult MelissaStemProvider::createStems()
             
             // Load the Demucs model
             auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
-            auto modelPath = settingsDir.getChildFile("demucs_models").getChildFile("ggml-model-htdemucs-6s-f16.bin").getFullPathName();
+            auto modelPath = settingsDir.getChildFile("models").getChildFile("demucs").getChildFile("ggml-model-htdemucs-6s-f16.bin").getFullPathName();
             
             auto model = std::make_unique<demucscpp::demucs_model>();
             if (!demucscpp::load_demucs_model(modelPath.toStdString(), model.get()))
