@@ -243,20 +243,27 @@ void prepareFileAndVolumesFromCurrentSettings(std::vector<MelissaExporter::FileA
         if (model->getPlayPart() == kPlayPart_Custom)
         {
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["vocals"], 1.f + model->getCustomPartVolume(kCustomPartVolume_Vocal)});
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["piano"],  model->getCustomPartVolume(kCustomPartVolume_Piano)});
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["guitar"], model->getCustomPartVolume(kCustomPartVolume_Guitar)});
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["bass"],   model->getCustomPartVolume(kCustomPartVolume_Bass)});
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["drums"],  model->getCustomPartVolume(kCustomPartVolume_Drums)});
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["other"],  model->getCustomPartVolume(kCustomPartVolume_Others)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["piano"],  1.f + model->getCustomPartVolume(kCustomPartVolume_Piano)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["guitar"], 1.f + model->getCustomPartVolume(kCustomPartVolume_Guitar)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["bass"],   1.f + model->getCustomPartVolume(kCustomPartVolume_Bass)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["drums"],  1.f + model->getCustomPartVolume(kCustomPartVolume_Drums)});
+            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["other"],  1.f + model->getCustomPartVolume(kCustomPartVolume_Others)});
         }
         else
         {
             const auto playPart = model->getPlayPart();
-            File files[] = {
-                file, stemFiles["vocals"], stemFiles["piano"], stemFiles["guitar"],
-                stemFiles["bass"], stemFiles["drums"], stemFiles["other"]
-            };
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{files[playPart],  1.f});
+            if (playPart == kPlayPart_Instruments)
+            {
+                fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{file, 1.f});
+                fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["vocals"], -1.f});
+            }
+            else
+            {
+                File files[] = {
+                    file, file, stemFiles["vocals"], stemFiles["piano"], stemFiles["guitar"],
+                    stemFiles["bass"], stemFiles["drums"], stemFiles["other"]};
+                fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{files[playPart], 1.f});
+            }
         }
     }
     else
