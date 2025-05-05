@@ -345,6 +345,7 @@ StemProviderResult MelissaStemProvider::createStems()
             
             // Check if resampling is needed (Demucs requires 44.1kHz)
             bool needsResampling = reader->sampleRate != 44100.0;
+            const auto originalLengthInSamples = reader->lengthInSamples;
             
             if (needsResampling)
             {
@@ -355,25 +356,28 @@ StemProviderResult MelissaStemProvider::createStems()
                 const int numSamples = static_cast<int>(reader->lengthInSamples);
                 const int numChannels = reader->numChannels > 2 ? 2 : static_cast<int>(reader->numChannels); // Use at most 2 channels
                 
-                AudioBuffer<float> buffer(numChannels, numSamples);
-                reader->read(&buffer, 0, numSamples, 0, true, true);
-                
-                // Create a resampled output file
+                AudioBuffer<float> audioBuffer(numChannels, numSamples);
+                reader->read(&audioBuffer, 0, numSamples, 0, true, true);
+
+                MemoryAudioSource audioSource(audioBuffer, false);
+                ResamplingAudioSource resamplingAudioSource(&audioSource, false, numChannels);
+                constexpr float outputSampleRate = 44100.0;
+                resamplingAudioSource.setResamplingRatio(reader->sampleRate / outputSampleRate);
+                resamplingAudioSource.prepareToPlay(2048, outputSampleRate);
+
                 WavAudioFormat wavFormat;
-                
-                std::unique_ptr<AudioFormatWriter> writer(
-                    wavFormat.createWriterFor(new FileOutputStream(tempFile), 44100.0, numChannels, 16, {}, 0));
-                
+                auto writer = std::unique_ptr<AudioFormatWriter>(wavFormat.createWriterFor(new FileOutputStream(tempFile), outputSampleRate, numChannels, 16, StringPairArray(), 0));
                 if (writer == nullptr) return kStemProviderResult_FailedToReadSourceFile;
-                
-                // Handle resampling manually
-                writer->writeFromAudioSampleBuffer(buffer, 0, numSamples);
+                writer->writeFromAudioSource(resamplingAudioSource, reader->lengthInSamples * outputSampleRate / reader->sampleRate);
+                writer->flush();
                 
                 // Use the resampled file for processing
                 sourceFile = tempFile;
                 
                 // Re-open the reader for the resampled file
                 reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(sourceFile));
+
+                printf("resampled reader->sampleRate: %f, reader->lengthInSamples: %d\n", reader->sampleRate, reader->lengthInSamples);
                 if (!reader) return kStemProviderResult_FailedToReadSourceFile;
             }
             
@@ -466,14 +470,22 @@ StemProviderResult MelissaStemProvider::createStems()
                     }
                 }
                 
-                // Save current part
+                MemoryAudioSource audioSource(outBuffer, false);
+                ResamplingAudioSource resamplingAudioSource(&audioSource, false, numChannels);
+                constexpr float fromSampleRate = 44100.0;
+                resamplingAudioSource.setResamplingRatio(fromSampleRate / originalSampleRate);
+                resamplingAudioSource.prepareToPlay(2048, originalSampleRate);
+
+                OggVorbisAudioFormat oggFormat;
                 auto outputFile = outputDirName.getChildFile(songName + "_" + partNames[partIndex] + ".ogg");
-                std::unique_ptr<AudioFormatWriter> writer(
-                    oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, {}, 0));
+                auto writer = std::unique_ptr<AudioFormatWriter>(oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, StringPairArray(), 0));
+                if (writer == nullptr) return kStemProviderResult_FailedToReadSourceFile;
                 
+                // Save current part
                 if (writer)
                 {
-                    writer->writeFromAudioSampleBuffer(outBuffer, 0, numSamples);
+                    writer->writeFromAudioSource(resamplingAudioSource, originalLengthInSamples);
+                    writer->flush();
                 }
                 else
                 {
