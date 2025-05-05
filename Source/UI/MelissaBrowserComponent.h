@@ -7,9 +7,12 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MelissaUISettings.h"
-class MelissaBrowserComponent : public Component, 
+#include "MelissaDataSource.h"
+
+class MelissaBrowserComponent : public Component,
                                 public TextEditor::Listener,
-                                public juce::LookAndFeel_V4
+                                public juce::LookAndFeel_V4,
+                                public MelissaDataSourceListener
 {
 public:
     MelissaBrowserComponent();
@@ -28,10 +31,6 @@ public:
 
     void textEditorReturnKeyPressed(TextEditor &editor) override;
 
-    String getCurrentURL() const;
-    Point<int> getScrollPosition() const;
-    void restoreState(const String &url, const Point<int> &scrollPosition);
-
 private:
     class CustomWebBrowserComponent : public juce::WebBrowserComponent
     {
@@ -42,12 +41,15 @@ private:
         {
             owner_.urlTextEditor_.setText(url, false);
             WebBrowserComponent::pageFinishedLoading(url);
+            MelissaDataSource::getInstance()->setBrowserUrl(url);
         }
         
     private:
         MelissaBrowserComponent& owner_;
     };
-    
+
+    void songChanged(const juce::String &filePath, size_t bufferLength, int32_t sampleRate) override;
+
     std::unique_ptr<CustomWebBrowserComponent> webBrowser_;
     juce::TextEditor urlTextEditor_;
     juce::DrawableButton goButton_;

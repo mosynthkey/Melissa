@@ -247,6 +247,7 @@ void MelissaDataSource::loadSettingsFile(const File &file)
                 song.eqGain_ = obj->getProperty("eq_0_gain");
                 song.eqQ_ = obj->getProperty("eq_0_q");
                 song.memo_ = obj->getProperty("memo");
+                song.browserUrl_ = obj->getProperty("browserUrl");
                 for (auto l : *(obj->getProperty("list").getArray()))
                 {
                     Song::PracticeList list;
@@ -295,15 +296,13 @@ void MelissaDataSource::loadSettingsFile(const File &file)
                               { return lhs.position_ < rhs.position_; });
                 }
 
-                if (obj->hasProperty("browser_state"))
+                if (obj->hasProperty("browserUrl"))
                 {
-                    auto browserState = obj->getProperty("browser_state").getDynamicObject();
-                    if (browserState != nullptr)
-                    {
-                        song.browserState_.url_ = browserState->getProperty("url");
-                        song.browserState_.scrollX_ = browserState->getProperty("scroll_x");
-                        song.browserState_.scrollY_ = browserState->getProperty("scroll_y");
-                    }
+                    song.browserUrl_ = obj->getProperty("browserUrl");
+                }
+                else
+                {
+                    song.browserUrl_ = "https://google.com";
                 }
                 songs_.emplace_back(song);
             }
@@ -417,6 +416,9 @@ void MelissaDataSource::saveSettingsFile()
     Array<var> songs;
     for (auto song : songs_)
     {
+        File file(song.filePath_);
+        if (!file.existsAsFile()) continue;
+
         auto obj = new DynamicObject();
         obj->setProperty("file", song.filePath_);
         obj->setProperty("output_mode", song.outputMode_);
@@ -432,6 +434,7 @@ void MelissaDataSource::saveSettingsFile()
         obj->setProperty("eq_0_gain", song.eqGain_);
         obj->setProperty("eq_0_q", song.eqQ_);
         obj->setProperty("memo", song.memo_);
+        obj->setProperty("browserUrl", song.browserUrl_);
 
         Array<var> list;
         for (auto l : song.practiceList_)
@@ -478,11 +481,6 @@ void MelissaDataSource::saveSettingsFile()
             marker.add(obj);
         }
         obj->setProperty("marker", marker);
-        auto browserState = new DynamicObject();
-        browserState->setProperty("url", song.browserState_.url_);
-        browserState->setProperty("scroll_x", song.browserState_.scrollX_);
-        browserState->setProperty("scroll_y", song.browserState_.scrollY_);
-        obj->setProperty("browser_state", browserState);
 
         songs.add(obj);
     }
@@ -1269,6 +1267,31 @@ void MelissaDataSource::overwriteMarker(size_t index, const Song::Marker &marker
     }
 }
 
+void MelissaDataSource::setBrowserUrl(const juce::String &url)
+{
+    for (auto &&song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            song.browserUrl_ = url;
+            return;
+        }
+    }
+}
+
+juce::String MelissaDataSource::getBrowserUrl() const
+{
+    for (auto &&song : songs_)
+    {
+        if (song.filePath_ == currentSongFilePath_)
+        {
+            return song.browserUrl_;
+        }
+    }
+
+    return "https://google.com";
+}
+
 void MelissaDataSource::notifyExportStarted()
 {
     for (auto &&l : listeners_)
@@ -1424,47 +1447,4 @@ void MelissaDataSource::addToHistory(const String &filePath)
 
     for (auto &&l : listeners_)
         l->historyUpdated();
-}
-
-void MelissaDataSource::saveBrowserState(const juce::String &url, const juce::Point<int> &scrollPosition)
-{
-    if (currentSongFilePath_.isEmpty())
-        return;
-
-    for (auto &&song : songs_)
-    {
-        if (song.filePath_ == currentSongFilePath_)
-        {
-            song.browserState_.url_ = url;
-            song.browserState_.scrollX_ = scrollPosition.x;
-            song.browserState_.scrollY_ = scrollPosition.y;
-            return;
-        }
-    }
-
-    Song song;
-    song.filePath_ = currentSongFilePath_;
-    song.browserState_.url_ = url;
-    song.browserState_.scrollX_ = scrollPosition.x;
-    song.browserState_.scrollY_ = scrollPosition.y;
-    songs_.emplace_back(song);
-}
-
-void MelissaDataSource::getBrowserState(juce::String &url, juce::Point<int> &scrollPosition) const
-{
-    if (currentSongFilePath_.isEmpty())
-        return;
-
-    for (auto &&song : songs_)
-    {
-        if (song.filePath_ == currentSongFilePath_)
-        {
-            url = song.browserState_.url_;
-            scrollPosition.setXY(song.browserState_.scrollX_, song.browserState_.scrollY_);
-            return;
-        }
-    }
-
-    url = "https://google.com";
-    scrollPosition.setXY(0, 0);
 }

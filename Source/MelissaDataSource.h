@@ -168,16 +168,6 @@ public:
         float eqQ_;
         juce::String memo_;
 
-        struct BrowserState
-        {
-            juce::String url_;
-            int scrollX_;
-            int scrollY_;
-
-            BrowserState() : url_("https://google.com"), scrollX_(0), scrollY_(0) {}
-        };
-        BrowserState browserState_;
-
         struct PracticeList
         {
             juce::String name_;
@@ -227,6 +217,7 @@ public:
             juce::String memo_;
         };
         std::vector<Marker> markers_;
+        juce::String browserUrl_;
 
         Song() : filePath_(""), pitch_(0.f), outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
                  metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
@@ -323,6 +314,10 @@ public:
     void removeMarker(size_t index);
     void overwriteMarker(size_t index, const Song::Marker &marker);
 
+    // Browser
+    void setBrowserUrl(const juce::String &url);
+    juce::String getBrowserUrl() const;
+
     // Export
     void notifyExportStarted();
     void notifyExportCompleted(bool result, juce::String message);
@@ -336,9 +331,6 @@ public:
     MelissaDataSource &operator=(const MelissaDataSource &) = delete;
     MelissaDataSource(MelissaDataSource &&) = delete;
     MelissaDataSource &operator=(MelissaDataSource &&) = delete;
-
-    void saveBrowserState(const juce::String &url, const juce::Point<int> &scrollPosition);
-    void getBrowserState(juce::String &url, juce::Point<int> &scrollPosition) const;
 
 private:
     // Singleton

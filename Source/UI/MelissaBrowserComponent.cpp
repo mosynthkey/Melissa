@@ -54,6 +54,8 @@ MelissaBrowserComponent::MelissaBrowserComponent() :
     addAndMakeVisible(webBrowser_.get());
 
     goToURL(homeURL_);
+    
+    MelissaDataSource::getInstance()->addListener(this);
 }
 
 MelissaBrowserComponent::~MelissaBrowserComponent()
@@ -117,20 +119,7 @@ void MelissaBrowserComponent::goForward()
     webBrowser_->goForward();
 }
 
-String MelissaBrowserComponent::getCurrentURL() const
+void MelissaBrowserComponent::songChanged(const juce::String&, size_t, int32_t)
 {
-    return urlTextEditor_.getText();
-}
-
-Point<int> MelissaBrowserComponent::getScrollPosition() const
-{
-    return Point<int>(0, 0);
-}
-
-void MelissaBrowserComponent::restoreState(const String &url, const Point<int> &scrollPosition)
-{
-    if (url.isNotEmpty())
-    {
-        goToURL(url);
-    }
+    goToURL(MelissaDataSource::getInstance()->getBrowserUrl());
 }
