@@ -33,7 +33,22 @@ public:
     void restoreState(const String &url, const Point<int> &scrollPosition);
 
 private:
-    std::unique_ptr<juce::WebBrowserComponent> webBrowser_;
+    class CustomWebBrowserComponent : public juce::WebBrowserComponent
+    {
+    public:
+        CustomWebBrowserComponent(MelissaBrowserComponent& owner) : owner_(owner) {}
+        
+        void pageFinishedLoading(const String& url) override
+        {
+            owner_.urlTextEditor_.setText(url, false);
+            WebBrowserComponent::pageFinishedLoading(url);
+        }
+        
+    private:
+        MelissaBrowserComponent& owner_;
+    };
+    
+    std::unique_ptr<CustomWebBrowserComponent> webBrowser_;
     juce::TextEditor urlTextEditor_;
     juce::DrawableButton goButton_;
     juce::DrawableButton homeButton_;

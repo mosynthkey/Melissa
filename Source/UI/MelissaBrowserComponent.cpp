@@ -50,7 +50,7 @@ MelissaBrowserComponent::MelissaBrowserComponent() :
     forwardButton_.setImages(iconImages_[kIcon_Forward].get(), iconHighlightedImages_[kIcon_Forward].get());
     forwardButton_.onClick = [this]() { goForward(); };
 
-    webBrowser_ = std::make_unique<juce::WebBrowserComponent>();
+    webBrowser_ = std::make_unique<CustomWebBrowserComponent>(*this);
     addAndMakeVisible(webBrowser_.get());
 
     goToURL(homeURL_);
