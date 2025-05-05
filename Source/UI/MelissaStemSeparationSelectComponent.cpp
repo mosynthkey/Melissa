@@ -3,7 +3,10 @@
 //  Melissa
 //
 
+#include "MelissaDataSource.h"
 #include "MelissaStemSeparationSelectComponent.h"
+#include "MelissaStemProvider.h"
+#include "MelissaModalDialog.h"
 
 MelissaStemSeparationSelectComponent::MelissaStemSeparationSelectComponent()
 {
@@ -12,13 +15,27 @@ MelissaStemSeparationSelectComponent::MelissaStemSeparationSelectComponent()
 
     optionButtons_[kOption_Demucs] = std::make_unique<juce::TextButton>();
     optionButtons_[kOption_Demucs]->setButtonText(TRANS("separation_demucs_detail"));
+    optionButtons_[kOption_Demucs]->onClick = [this]() 
+    {
+        MelissaStemProvider::getInstance()->requestStems(MelissaDataSource::getInstance()->getCurrentSongFilePath(), kSeparatorType_Demucs);
+        MelissaModalDialog::close();
+    };
     addAndMakeVisible(optionButtons_[kOption_Demucs].get());
 
     optionButtons_[kOption_Spleeter] = std::make_unique<juce::TextButton>();
     optionButtons_[kOption_Spleeter]->setButtonText(TRANS("separation_spleeter_detail"));
+    optionButtons_[kOption_Spleeter]->onClick = [this]() 
+    {
+        MelissaStemProvider::getInstance()->requestStems(MelissaDataSource::getInstance()->getCurrentSongFilePath(), kSeparatorType_Spleeter);
+        MelissaModalDialog::close();
+    };
     addAndMakeVisible(optionButtons_[kOption_Spleeter].get());
     
     cancelButton_ = std::make_unique<juce::TextButton>("Cancel");
+    cancelButton_->onClick = [this]()
+    {
+        MelissaModalDialog::close();
+    };
     addAndMakeVisible(cancelButton_.get());
 }
 

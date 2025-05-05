@@ -12,6 +12,13 @@
 #include "MelissaUISettings.h"
 #include "MelissaHost.h"
 
+class MelissaModalDialogListener
+{
+public:
+    virtual ~MelissaModalDialogListener() {}
+    virtual void onClose() = 0;
+};
+
 class MelissaDialog : public juce::Component
 {
 public:

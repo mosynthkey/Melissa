@@ -5,6 +5,7 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include "MainComponent.h"
 #include "MelissaModalDialog.h"
 #include "MelissaDataSource.h"
 
@@ -71,6 +72,8 @@ std::unique_ptr<MelissaDialog> MelissaModalDialog::dialog_;
 
 void MelissaModalDialog::show(std::shared_ptr<Component> component, const String& title, bool closeOnClickingOutside)
 {
+    auto mainComponent = reinterpret_cast<MainComponent *>(parentComponent_);
+    if (mainComponent != nullptr) mainComponent->dialogWillOpen();
     dialog_ = std::make_unique<MelissaDialog>(component, title, closeOnClickingOutside);
     dialog_->setBounds(parentComponent_->getBounds());
     parentComponent_->addAndMakeVisible(dialog_.get());
@@ -78,6 +81,8 @@ void MelissaModalDialog::show(std::shared_ptr<Component> component, const String
 
 void MelissaModalDialog::close()
 {
+    auto mainComponent = reinterpret_cast<MainComponent *>(parentComponent_);
+    if (mainComponent != nullptr) mainComponent->dialogWillClose();
     dialog_.reset(nullptr);
 }
 

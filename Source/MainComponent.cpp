@@ -1178,7 +1178,7 @@ void MainComponent::createUI()
         speedPresetViewport_->setViewedComponent(speedPresetComponent_.get(), false);
 
 #if defined(ENABLE_SPEED_TRAINING)
-        speedIncStartButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncStartButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_speed_training_start_dec"), TRANS("tooltip_speed_training_start_inc"));
         speedIncStartButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
@@ -1192,7 +1192,7 @@ void MainComponent::createUI()
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncStartButton_.get());
 
-        speedIncPerButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncPerButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_speed_training_per_dec"), TRANS("tooltip_speed_training_per_inc"));
         speedIncPerButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
@@ -1209,11 +1209,11 @@ void MainComponent::createUI()
         slashComponent_ = make_unique<SlashComponent>();
         speedModeTrainingComponent_->addAndMakeVisible(slashComponent_.get());
 
-        speedIncValueButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncValueButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_speed_training_inc_dec"), TRANS("tooltip_speed_training_inc_inc"));
         speedIncValueButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
-            {
+            {   
             }
             else
             {
@@ -1223,7 +1223,7 @@ void MainComponent::createUI()
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncValueButton_.get());
 
-        speedIncGoalButton_ = make_unique<MelissaIncDecButton>(1, TRANS("todo"), TRANS("todo"));
+        speedIncGoalButton_ = make_unique<MelissaIncDecButton>(1, TRANS("tooltip_speed_training_goal_dec"), TRANS("tooltip_speed_training_goal_inc"));
         speedIncGoalButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
@@ -1236,6 +1236,13 @@ void MainComponent::createUI()
             }
         };
         speedModeTrainingComponent_->addAndMakeVisible(speedIncGoalButton_.get());
+
+        resetSpeedTrainingButton_ = make_unique<TextButton>();
+        resetSpeedTrainingButton_->setButtonText("Reset");
+        resetSpeedTrainingButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        resetSpeedTrainingButton_->setTooltip(TRANS("tooltip_reset_speed_training"));
+        resetSpeedTrainingButton_->onClick = [this]() { model_->resetSpeedTraining(); };
+        speedModeTrainingComponent_->addAndMakeVisible(resetSpeedTrainingButton_.get());
 
         speedProgressComponent_ = make_unique<MelissaSpeedTrainingProgressComponent>();
         speedProgressComponent_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Small));
@@ -2004,6 +2011,10 @@ void MainComponent::resized_Desktop()
         speedProgressComponent_->setBounds(speedIncValueButton_->getX(), y - 30 + 2, speedIncPerButton_->getRight() - speedIncValueButton_->getX(), 30 - 2);
 
         slashComponent_->setBounds(speedIncValueButton_->getRight(), y, speedIncPerButton_->getX() - speedIncValueButton_->getRight(), controlHeight);
+
+        const int resetButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), resetSpeedTrainingButton_->getButtonText()).first;
+        resetSpeedTrainingButton_->setSize(resetButtonWidth, 30);
+        resetSpeedTrainingButton_->setTopRightPosition(section->getWidth() - 10, 0);
 #endif
     }
 
@@ -2417,6 +2428,16 @@ void MainComponent::showTutorial()
     addAndMakeVisible(tutorialComponent_.get());
     resized();
 #endif
+}
+
+void MainComponent::dialogWillOpen()
+{
+    if (browserToggleButton_->getToggleState()) browserComponent_->setVisible(false);
+}
+
+void MainComponent::dialogWillClose()
+{
+    if (browserToggleButton_->getToggleState()) browserComponent_->setVisible(true);
 }
 
 void MainComponent::showUpdateDialog(bool showIfThereIsNoUpdate)
@@ -2927,6 +2948,7 @@ void MainComponent::stemProviderResultReported(StemProviderResult result)
 void MainComponent::speedModeChanged(SpeedMode mode)
 {
     updateSpeedModeTab((mode == kSpeedMode_Basic) ? kSpeedModeTab_Basic : kSpeedModeTab_Training);
+    resetSpeedTrainingButton_->setVisible(mode == kSpeedMode_Training);
 }
 
 void MainComponent::speedIncStartChanged(int speedIncStart)

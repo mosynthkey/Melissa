@@ -179,9 +179,10 @@ aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
-currentSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0), forcePreCountOn_(false)
+currentProcessingPlaybackSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0), forcePreCountOn_(false)
 {
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
+    speedStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<MelissaEqualizer>();
 }
 
@@ -229,7 +230,9 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
     jassert(1 <= numOfChannels && numOfChannels <= 2);
     
     mutex_.lock();
-    if (processedBufferQue_.size() <= bufferLength || !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
+    if (processedBufferQue_.size() <= bufferLength || 
+        !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength) ||
+        !speedStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
     {
         if (!shouldProcess_) status_ = kStatus_RequestingForNextSong;
         mutex_.unlock();
@@ -255,6 +258,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
         else
         {
             const float currentPlaybackPosMSec = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
+            currentPlaybackSpeed_ = static_cast<int32_t>(speedStretcher_->getNextSampleIndex());
             const bool looped = static_cast<int>(currentPlaybackPosMSec)   == static_cast<int>(model_->getLoopAPosMSec()) && static_cast<int>(previousRenderedPosMSec_) == static_cast<int>(model_->getLoopBPosMSec());
             if (enableCountIn_ && (looped || forcePreCountOn_))
             {
@@ -269,7 +273,9 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
                 if (processedBufferQue_.size() > 0)
                 {
                     previousRenderedPosMSec_ = timeIndicesMSec[sampleIndex] = playingPosMSec_ = currentPlaybackPosMSec;
+
                     sampleIndexStretcher_->getStretchedSampleIndices(1, timeQue_);
+                    speedStretcher_->getStretchedSampleIndices(1, speedQue_);
                     
                     float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
                     
@@ -315,7 +321,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
 
 void MelissaAudioEngine::process()
 {
-    if (dataSource_->getBufferLength() == 0 || sampleIndexStretcher_ == nullptr) return;
+    if (dataSource_->getBufferLength() == 0 || sampleIndexStretcher_ == nullptr || speedStretcher_ == nullptr) return;
     if (needToReset_) resetProcessedBuffer();
     
     uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
@@ -336,9 +342,9 @@ void MelissaAudioEngine::process()
                     if (speedMode_ == kSpeedMode_Training && speedIncPer_ != 0)
                     {
                         const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
-                        currentSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
-                        if (currentSpeed_ > speedIncGoal_) currentSpeed_ = speedIncGoal_;
-                        soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
+                        currentProcessingPlaybackSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
+                        if (currentProcessingPlaybackSpeed_ > speedIncGoal_) currentProcessingPlaybackSpeed_ = speedIncGoal_;
+                        soundTouch_->setTempo(fsConvPitch * currentProcessingPlaybackSpeed_ / 100.f);
                     }
 #endif
                     readIndex_ = aIndex_;
@@ -351,6 +357,7 @@ void MelissaAudioEngine::process()
             }
             mutex_.lock();
             sampleIndexStretcher_->putSampleIndex(readIndex_);
+            speedStretcher_->putSampleIndex(currentProcessingPlaybackSpeed_);
             mutex_.unlock();
             ++numSamplesToRead;
             ++readIndex_;
@@ -403,13 +410,15 @@ void MelissaAudioEngine::resetProcessedBuffer()
     soundTouch_->clear();
     soundTouch_->setChannels(2);
     soundTouch_->setSampleRate(originalSampleRate_);
-    soundTouch_->setTempo(fsConvPitch * currentSpeed_ / 100.f);
+    soundTouch_->setTempo(fsConvPitch * currentProcessingPlaybackSpeed_ / 100.f);
     soundTouch_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
-    processingSpeed_ = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (currentSpeed_ / 100.f);
+    processingSpeed_ = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (currentProcessingPlaybackSpeed_ / 100.f);
     sampleIndexStretcher_->setSpeed(processingSpeed_);
-    
+    speedStretcher_->setSpeed(processingSpeed_);
+
     processedBufferQue_.clear();
     timeQue_.clear();
+    speedQue_.clear();
     
     playingPosMSec_ = static_cast<float>(processStartIndex_) / originalSampleRate_ * 1000.f;
     if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
@@ -451,6 +460,13 @@ void MelissaAudioEngine::setTrimMode(bool shouldTrim)
     //if (shouldTrim_) doTrim();
 }
 
+void MelissaAudioEngine::resetSpeedTraining()
+{
+    count_ = 0;
+    currentProcessingPlaybackSpeed_ = speedIncStart_;
+    needToReset_ = true;
+}
+
 void MelissaAudioEngine::playbackStatusChanged(PlaybackStatus status)
 {
     playbackStatus_ = status;
@@ -482,9 +498,9 @@ void MelissaAudioEngine::speedChanged(int speed)
 {
     speed_ = speed;
 #if defined(ENABLE_SPEED_TRAINING)
-    if (speedMode_ == kSpeedMode_Basic) currentSpeed_ = speed_;
+    if (speedMode_ == kSpeedMode_Basic) currentProcessingPlaybackSpeed_ = speed_;
 #else
-    currentSpeed_ = speed_;
+    currentProcessingPlaybackSpeed_ = speed_;
 #endif
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
@@ -496,7 +512,7 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
     if (mode == kSpeedMode_Basic)
     {
         speed_ = model_->getSpeed();
-        currentSpeed_  = speed_;
+        currentProcessingPlaybackSpeed_  = speed_;
         speedIncValue_ = 1;
         speedIncPer_   = 10;
         speedIncGoal_  = speed_;
@@ -504,7 +520,7 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
     else
     {
         speed_         = model_->getSpeedIncStart();
-        currentSpeed_  = model_->getSpeedIncStart();
+        currentProcessingPlaybackSpeed_  = model_->getSpeedIncStart();
         speedIncValue_ = model_->getSpeedIncValue();
         speedIncPer_   = model_->getSpeedIncPer();
         speedIncGoal_  = model_->getSpeedIncGoal();
@@ -519,28 +535,28 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
 void MelissaAudioEngine::speedIncStartChanged(int speedIncStart)
 {
     speedIncStart_ = speedIncStart;
-    if (speedMode_ == kSpeedMode_Training) currentSpeed_  = speedIncStart_;
+    if (speedMode_ == kSpeedMode_Training) currentProcessingPlaybackSpeed_  = speedIncStart_;
     count_ = 0;
 }
 
 void MelissaAudioEngine::speedIncValueChanged(int speedIncValue)
 {
     speedIncValue_ = speedIncValue;
-    if (speedMode_ == kSpeedMode_Training) currentSpeed_  = speedIncStart_;
+    if (speedMode_ == kSpeedMode_Training) currentProcessingPlaybackSpeed_  = speedIncStart_;
     count_ = 0;
 }
 
 void MelissaAudioEngine::speedIncPerChanged(int speedIncPer)
 {
     speedIncPer_ = speedIncPer;
-    if (speedMode_ == kSpeedMode_Training) currentSpeed_  = speedIncStart_;
+    if (speedMode_ == kSpeedMode_Training) currentProcessingPlaybackSpeed_  = speedIncStart_;
     count_ = 0;
 }
 
 void MelissaAudioEngine::speedIncGoalChanged(int speedIncGoal)
 {
     speedIncGoal_ = speedIncGoal;
-    if (speedMode_ == kSpeedMode_Training) currentSpeed_ = speedIncStart_;
+    if (speedMode_ == kSpeedMode_Training) currentProcessingPlaybackSpeed_ = speedIncStart_;
     count_ = 0;
 }
 #endif

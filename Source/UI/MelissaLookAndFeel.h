@@ -274,7 +274,9 @@ public:
     
     virtual void drawTextEditorOutline(juce::Graphics& g, int width, int height, juce::TextEditor& te) override
     {
-
+        const auto &c = te.getLocalBounds();
+        g.setColour(MelissaUISettings::getMainColour());
+        g.drawRoundedRectangle(0, 0, c.getWidth(), c.getHeight(), c.getHeight() / 2, 4);
     }
      
     virtual void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& cb) override
@@ -677,27 +679,12 @@ public:
         }
         g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(tb.getButtonText(), 0, 0, tb.getWidth(), tb.getHeight(), Justification::centred);
+        g.drawText(tb.getButtonText(), 8, 0, tb.getWidth() - 8, tb.getHeight(), Justification::centredLeft);
         
         if (tb.getToggleState())
         {
-            // draw triangle
-            const float triSize = 10;
-            const float x0 = 0;
-            const float y0 = (tb.getHeight() - triSize) / 2;
-            const float x1 = triSize;
-            const float y1 = y0 + triSize / 2;
-            const float x2 = 0;
-            const float y2 = y0 + triSize;
-            
-            Path path;
-            path.startNewSubPath(x0, y0);
-            path.lineTo(x1, y1);
-            path.lineTo(x2, y2);
-            path.closeSubPath();
-            
-            g.setColour(Colour(MelissaUISettings::getAccentColour()));
-            g.fillPath(path);
+            g.setColour(MelissaUISettings::getAccentColour());
+            g.fillRoundedRectangle(0, 0, 4, tb.getHeight() - 4, 2);
         }
     }
 };

@@ -59,9 +59,7 @@ void MelissaSpeedTrainingProgressComponent::paint(Graphics& g)
 }
 
 void MelissaSpeedTrainingProgressComponent::timerCallback()
-{
-    const auto currentRatio = model_->getPlayingPosRatio();
-    if (currentRatio < prevPlayingPosRatio_) repaint();
-    prevPlayingPosRatio_ = currentRatio;
+{   
+    repaint();
 }
 

@@ -51,7 +51,7 @@ public:
     float getPlayingPosMSec() const;
     float getPlayingPosRatio() const;
 
-    int32_t getPlayingSpeed() const { return currentSpeed_; }
+    int32_t getPlayingSpeed() const { return currentPlaybackSpeed_; }
 
     void render(float *bufferToRender[], size_t numOfChannels, std::vector<float> &timeIndicesMSec, size_t bufferLength);
 
@@ -73,6 +73,7 @@ public:
     void setStatus(Status status);
 
     void setTrimMode(bool shouldTrim);
+    void resetSpeedTraining();
 
 private:
     MelissaModel *model_;
@@ -90,10 +91,12 @@ private:
 
     std::deque<float> processedBufferQue_;
     std::deque<float> timeQue_;
+    std::deque<float> speedQue_;
     int32_t outputSampleRate_;
 
     class SampleIndexStretcher;
     std::unique_ptr<SampleIndexStretcher> sampleIndexStretcher_;
+    std::unique_ptr<SampleIndexStretcher> speedStretcher_;
 
     size_t aIndex_, bIndex_, processStartIndex_;
     size_t readIndex_; // from buffer_
@@ -120,8 +123,8 @@ private:
     int32_t speedIncValue_;
     int32_t speedIncGoal_;
 #endif
-    int32_t currentSpeed_;
-
+    int32_t currentProcessingPlaybackSpeed_;
+    int32_t currentPlaybackSpeed_;
     float volumeBalance_;
     OutputMode outputMode_;
 

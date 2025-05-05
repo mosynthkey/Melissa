@@ -46,6 +46,7 @@ public:
     int getSpeedIncPer() { return speedIncPer_; }
     void setSpeedIncGoal(int speedIncGoal);
     int getSpeedIncGoal() { return speedIncGoal_; }
+    void resetSpeedTraining();
 #endif
     
     void setLoopPosRatio(float aRatio, float bRatio);

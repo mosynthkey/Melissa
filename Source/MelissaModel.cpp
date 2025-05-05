@@ -100,6 +100,11 @@ void MelissaModel::setSpeedIncGoal(int speedIncGoal)
     speedIncGoal_ = speedIncGoal;
     for (auto&& l : listeners_) l->speedIncGoalChanged(speedIncGoal);
 }
+
+void MelissaModel::resetSpeedTraining()
+{
+    audioEngine_->resetSpeedTraining();
+}
 #endif
 
 void MelissaModel::setLoopPosRatio(float aPosRatio, float bPosRatio)

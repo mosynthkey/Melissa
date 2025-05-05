@@ -212,6 +212,9 @@ public:
     void showTutorial();
     void showUpdateDialog(bool showIfThereIsNoUpdate = false);
 
+    void dialogWillOpen();
+    void dialogWillClose();
+
 private:
     std::unique_ptr<MelissaAudioEngine> audioEngine_;
     std::unique_ptr<MelissaMetronome> metronome_;
@@ -335,6 +338,7 @@ private:
     std::unique_ptr<SlashComponent> slashComponent_;
     std::unique_ptr<MelissaIncDecButton> speedIncValueButton_;
     std::unique_ptr<MelissaIncDecButton> speedIncGoalButton_;
+    std::unique_ptr<juce::TextButton> resetSpeedTrainingButton_;
 #endif
 
     std::unique_ptr<MelissaIncDecButton> pitchButton_;
