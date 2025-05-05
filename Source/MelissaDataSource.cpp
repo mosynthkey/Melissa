@@ -167,6 +167,8 @@ void MelissaDataSource::loadSettingsFile(const File &file)
             previous_.vocalVolume_ = p->getProperty("vocal_volume");
         if (p->hasProperty("piano_volume"))
             previous_.pianoVolume_ = p->getProperty("piano_volume");
+        if (p->hasProperty("guitar_volume"))
+            previous_.guitarVolume_ = p->getProperty("guitar_volume");
         if (p->hasProperty("bass_volume"))
             previous_.bassVolume_ = p->getProperty("bass_volume");
         if (p->hasProperty("drums_volume"))
@@ -380,6 +382,7 @@ void MelissaDataSource::saveSettingsFile()
     previous->setProperty("play_part", model_->getPlayPart());
     previous->setProperty("vocal_volume", model_->getCustomPartVolume(kCustomPartVolume_Vocal));
     previous->setProperty("piano_volume", model_->getCustomPartVolume(kCustomPartVolume_Piano));
+    previous->setProperty("guitar_volume", model_->getCustomPartVolume(kCustomPartVolume_Guitar));
     previous->setProperty("bass_volume", model_->getCustomPartVolume(kCustomPartVolume_Bass));
     previous->setProperty("drums_volume", model_->getCustomPartVolume(kCustomPartVolume_Drums));
     previous->setProperty("others_volume", model_->getCustomPartVolume(kCustomPartVolume_Others));
@@ -829,6 +832,7 @@ void MelissaDataSource::restorePreviousState()
         model_->setPlayPart(previous_.playPart_);
         model_->setCustomPartVolume(kCustomPartVolume_Vocal,  previous_.vocalVolume_);
         model_->setCustomPartVolume(kCustomPartVolume_Piano,  previous_.pianoVolume_);
+        model_->setCustomPartVolume(kCustomPartVolume_Guitar, previous_.guitarVolume_);
         model_->setCustomPartVolume(kCustomPartVolume_Bass,   previous_.bassVolume_);
         model_->setCustomPartVolume(kCustomPartVolume_Drums,  previous_.drumsVolume_);
         model_->setCustomPartVolume(kCustomPartVolume_Others, previous_.othersVolume_); });
