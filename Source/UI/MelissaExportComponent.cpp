@@ -138,7 +138,7 @@ MelissaExportComponent::MelissaExportComponent() : selectedTarget_(kExportTarget
 #endif
     
     exportButton_ = std::make_unique<TextButton>();
-    exportButton_->setButtonText(TRANS("save"));
+    exportButton_->setButtonText(TRANS("export"));
     exportButton_->onClick = [&]()
     {
         const auto exportFormat = static_cast<MelissaExporter::ExportFormat>(formatComboBox_->getSelectedId() - 1);
@@ -188,7 +188,7 @@ MelissaExportComponent::~MelissaExportComponent()
 void MelissaExportComponent::resized()
 {
     constexpr int labelWidth = 100;
-    constexpr int buttonWidth = 80;
+    constexpr int buttonWidth = 120;
     constexpr int margin = 10;
     const int comboboxWidth = getWidth() - labelWidth - margin * 3;
     
@@ -279,7 +279,7 @@ void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat for
     
     std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
     prepareFileAndVolumesFromCurrentSettings(fileAndVolumes);
-    exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
+    exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getPlayingSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
     exporter->setExportSettings(format, fileToExport);
     MelissaExportManager::getInstance()->regist(std::move(exporter));
 }

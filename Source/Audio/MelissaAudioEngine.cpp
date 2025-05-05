@@ -425,7 +425,8 @@ void MelissaAudioEngine::resetProcessedBuffer()
     readIndex_ = processStartIndex_;
     needToReset_ = false;
     shouldProcess_ = true;
-    
+    currentPlaybackSpeed_ = speed_;
+
     if (playbackMode_ == kPlaybackMode_LoopOneSong)
     {
         loop_ = true;
