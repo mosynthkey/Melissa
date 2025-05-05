@@ -200,6 +200,7 @@ target_link_libraries(Melissa PRIVATE
 juce_add_binary_data(MelissaBinaryData
     SOURCES
     Resource/icon.png
+    Resource/Icon/melissa_header.svg
     Resource/Icon/add.svg
     Resource/Icon/arrow_left.svg
     Resource/Icon/arrow_right.svg

@@ -67,6 +67,11 @@ enum
 class MainComponent::HeaderComponent : public Component
 {
 public:
+    HeaderComponent() 
+    {
+        melissaHeaderSvg_ = Drawable::createFromImageData(BinaryData::melissa_header_svg, BinaryData::melissa_header_svgSize);
+    }
+    
     void paint(Graphics &g)
     {
         const bool isDark = MelissaUISettings::isDarkMode;
@@ -76,19 +81,19 @@ public:
 
         g.fillAll(backgroundColour);
 
-        // Title
-        g.setColour(MelissaUISettings::getTextColour());
-        g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Large));
-        g.drawText(isFullVersion ? "Melissa" : "Melissa Lite", 60, 10, 150, 30, Justification::centredLeft);
+        if (melissaHeaderSvg_ != nullptr)
+        {
+            melissaHeaderSvg_->setColour(0, MelissaUISettings::getTextColour());
+            melissaHeaderSvg_->drawAt(g, 60, 0, 1.0f);
+        }
 
         g.setColour(borderColour);
 
         // lines
         constexpr int lineWidth = 3;
-        g.fillRect(isFullVersion ? 150 : 190, 9, lineWidth, 32);
-        g.fillRect(isFullVersion ? 340 : 380, 9, lineWidth, 32);
+        g.fillRect(210, 9, lineWidth, 32);
+        g.fillRect(210 + 190, 9, lineWidth, 32);
         g.fillRect(getWidth() - 470, 9, lineWidth, 32);
-        // g.fillRect((getWidth() - lineWidth) / 2, 9, lineWidth, 32);
 
         if (!isDark)
             g.fillRect(0, getHeight() - lineWidth, getWidth(), lineWidth);
@@ -96,6 +101,9 @@ public:
         // main volume background
         g.fillRoundedRectangle(getWidth() - 151, 15, 141, 19, 19 / 2);
     }
+    
+private:
+    std::unique_ptr<Drawable> melissaHeaderSvg_;
 };
 
 #if defined(ENABLE_SPEED_TRAINING)
@@ -1860,7 +1868,7 @@ void MainComponent::resized_Desktop()
     {
         menuButton_->setBounds(20, (kHeaderHeight - 18) / 2 - 2, 30, 18);
 
-        int x = isFullVersion ? 170 : 210;
+        int x = 230;
         int centerY = kHeaderHeight / 2;
         playbackModeButton_->setSize(28, 22);
         x += (playbackModeButton_->getWidth() / 2);
