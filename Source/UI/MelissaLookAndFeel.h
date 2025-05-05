@@ -797,13 +797,13 @@ public:
     {
     }
     
-    virtual ~MelissaLookAndFeel_MenuButton() { }
+    virtual ~MelissaLookAndFeel_MenuButton() override { }
     
     void drawButtonBackground(juce::Graphics& g, juce::Button& b, const juce::Colour &backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
         {
-            g.setColour(MelissaUISettings::getAccentColour());
+            g.setColour(MelissaUISettings::getAccentColour().withAlpha(0.8f));
             g.fillRoundedRectangle(b.getLocalBounds().toFloat(), 4);
         }
     }
