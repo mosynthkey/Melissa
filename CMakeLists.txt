@@ -169,6 +169,7 @@ target_compile_definitions(Melissa PRIVATE
     _USE_MATH_DEFINES
     MELISSA_FULL_VERSION
     JUCE_SILENCE_XCODE_15_LINKER_WARNING
+    JUCE_USE_WIN_WEBVIEW2
     MELISSA_USE_STEM_SEPARATION
     ENABLE_SPEED_TRAINING
 )
@@ -192,7 +193,6 @@ target_link_libraries(Melissa PRIVATE
     spleeter
     spleeter_common
     tensorflow
-    tensorflow_framework
     demucs.cpp.lib
     "${OPENBLAS_LIBRARIES}"
 )
@@ -277,6 +277,13 @@ target_link_options(Melissa PRIVATE
     -L${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib
     -Wl,-ld_classic
 )
+
+if(WIN32)
+    target_link_directories(Melissa PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spleeterpp/lib/Windows/$<CONFIG>
+        ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-windows-x86_64-2.8.0/lib
+    )
+endif()
 
 if(USE_OPENBLAS)
     set(BLAS_LIBRARIES "${OPENBLAS_LIBRARIES}")

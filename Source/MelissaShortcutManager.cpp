@@ -9,11 +9,11 @@
 
 using namespace juce;
 
-MelissaShortcutManager MelissaShortcutManager::instance_;
-
 MelissaShortcutManager::MelissaShortcutManager() : enable_(true)
 {
     command_ = MelissaCommand::getInstance();
+    
+    for (auto&& n : noteOnHistory) n = 0.f;
 }
 
 bool MelissaShortcutManager::processKeyboardMessage(const String& keyboardDescription)

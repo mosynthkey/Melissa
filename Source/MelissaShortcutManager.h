@@ -23,7 +23,11 @@ class MelissaShortcutManager : public juce::Timer
 {    
 public:
     // Singleton
-    static MelissaShortcutManager* getInstance() { return &instance_; }
+    static MelissaShortcutManager* getInstance() 
+    { 
+        static MelissaShortcutManager instance;
+        return &instance; 
+    }
     MelissaShortcutManager(const MelissaShortcutManager&) = delete;
     MelissaShortcutManager& operator=(const MelissaShortcutManager&) = delete;
     MelissaShortcutManager(MelissaShortcutManager&&) = delete;
@@ -40,7 +44,6 @@ private:
     // Singleton
     MelissaShortcutManager();
     ~MelissaShortcutManager() {}
-    static MelissaShortcutManager instance_;
     bool enable_;
 
     void timerCallback() override;
