@@ -296,6 +296,11 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
                         const auto lrDiff = buffer[0] - buffer[1];
                         buffer[0] = buffer[1] = lrDiff;
                     }
+                    else if (outputMode_ == kOutputMode_Mid)
+                    {
+                        const auto mid = (buffer[0] + buffer[1]) / 2.f;
+                        buffer[0] = buffer[1] = mid;
+                    }
                     
                     if (numOfChannels == 1)
                     {

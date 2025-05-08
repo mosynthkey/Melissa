@@ -1393,7 +1393,8 @@ void MainComponent::createUI()
         outputModeComboBox_->addItem("Original", kOutputMode_LR + 1);
         outputModeComboBox_->addItem("L - L", kOutputMode_LL + 1);
         outputModeComboBox_->addItem("R - R", kOutputMode_RR + 1);
-        outputModeComboBox_->addItem("Center Cancel", kOutputMode_CenterCancel + 1);
+        outputModeComboBox_->addItem("Side (CenterCancel)", kOutputMode_CenterCancel + 1);
+        outputModeComboBox_->addItem("Mid (Center)", kOutputMode_Mid + 1);
         outputModeComboBox_->onChange = [&]()
         {
             OutputMode mode = static_cast<OutputMode>(outputModeComboBox_->getSelectedId() - 1);

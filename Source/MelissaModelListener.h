@@ -55,6 +55,7 @@ enum OutputMode : int
     kOutputMode_LL,
     kOutputMode_RR,
     kOutputMode_CenterCancel,
+    kOutputMode_Mid,
     kNumOfOutputModes
 };
 

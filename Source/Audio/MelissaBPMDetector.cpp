@@ -66,8 +66,7 @@ void MelissaBPMDetector::process(bool* processFinished, float* bpm, float* beatP
             maxStrong = strengths[index];
         }
     }
-    
-    printf("%f - %f\n", beatPositions[strongBeatPosIndex], strengths[strongBeatPosIndex]);
+
     
     *bpm = std::round(bpmDetect_->getBpm());
     *beatPosMSec = beatPositions[strongBeatPosIndex] * 1000;
