@@ -265,3 +265,6 @@ countries: us
 "song_detail_menu"="Delete stems"
 "separation_demucs_detail"="With guitar separation / High quality / Low speed"
 "separation_spleeter_detail"="Without guitar separation / Standard quality / High speed"
+"format"="Format"
+"ogg_format_description"="ogg: Standard quality / Small file size"
+"wav_format_description"="wav: Highest quality / Large file size"

@@ -190,7 +190,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
         else
         {
             auto component = std::make_shared<MelissaStemSeparationSelectComponent>();
-            component->setSize(580, 240);
+            component->setSize(580, 280);
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("separation_of_music"));
         }
     };

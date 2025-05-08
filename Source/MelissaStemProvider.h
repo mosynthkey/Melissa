@@ -39,6 +39,13 @@ enum SeparatorType
     kNumSeparatorTypes
 };
 
+enum StemOutputAudioFormat
+{
+    kStemOutputAudioFormat_Ogg,
+    kStemOutputAudioFormat_Wav,
+    kNumStemOutputAudioFormats
+};
+
 class MelissaStemProviderListener
 {
 public:
@@ -53,7 +60,7 @@ public:
 class MelissaStemProvider : public juce::Thread
 {    
 public:
-    bool requestStems(const juce::File& file, SeparatorType type = kSeparatorType_Spleeter);
+    bool requestStems(const juce::File& file, SeparatorType type = kSeparatorType_Spleeter, StemOutputAudioFormat audioFormat = kStemOutputAudioFormat_Ogg);
     void getStemFiles(const juce::File& fileToOpen, juce::File& originalFile, std::map<std::string, juce::File>& stemFiles);
     
     void failedToReadPreparedStems();
@@ -90,6 +97,7 @@ private:
     StemProviderStatus status_;
     StemProviderResult result_;
     SeparatorType separatorType_;
+    StemOutputAudioFormat audioFileFormat_;
     
     juce::File songFile_;
 };

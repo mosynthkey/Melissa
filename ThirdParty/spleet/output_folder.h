@@ -15,10 +15,11 @@
 #include <vector>
 #include <JuceHeader.h>
 #include "spleeter/spleeter.h"
+#include "MelissaStemProvider.h"
 
 class OutputFolder {
 public:
-  OutputFolder(const std::string &path, const std::string &fileNamePrefix, int outputSampleRate, int bufferLength);
+  OutputFolder(const std::string &path, const std::string &fileNamePrefix, int outputSampleRate, int bufferLength, StemOutputAudioFormat audioFormat = kStemOutputAudioFormat_Ogg);
   ~OutputFolder();
 
   /// Flush the remaining data
@@ -38,6 +39,7 @@ public:
   std::string fileNamePrefix_;
   int outputSampleRate_;
   int bufferLength_;
+  StemOutputAudioFormat audioFormat_;
   
   std::map<std::string, MultiChannelFloatAudioBuffer> buffers_;
   std::map<std::string, spleeter::Waveform> previous_write_;

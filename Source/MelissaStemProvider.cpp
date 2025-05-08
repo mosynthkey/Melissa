@@ -30,7 +30,9 @@ static const String stemFileName = "stem_info.json";
 
 MelissaStemProvider::MelissaStemProvider() : Thread("MelissaStemProviderProcessThread"),
 status_(kStemProviderStatus_Ready),
-result_(kStemProviderResult_UnknownError)
+result_(kStemProviderResult_UnknownError),
+separatorType_(kSeparatorType_Spleeter),
+audioFileFormat_(kStemOutputAudioFormat_Ogg)
 {
     
 }
@@ -40,12 +42,13 @@ MelissaStemProvider::~MelissaStemProvider()
     
 }
 
-bool MelissaStemProvider::requestStems(const File& file, SeparatorType type)
+bool MelissaStemProvider::requestStems(const File& file, SeparatorType type, StemOutputAudioFormat audioFormat)
 {
     if (status_ == kStemProviderStatus_Processing || isThreadRunning()) return false;
     
-    songFile_ = file;
     separatorType_ = type;
+    audioFileFormat_ = audioFormat;
+    songFile_ = file;
     startThread();
     
     return true;
@@ -296,7 +299,7 @@ StemProviderResult MelissaStemProvider::createStems()
 
         auto sampleRate = MelissaDataSource::getInstance()->getSampleRate();
         auto bufferLength = MelissaDataSource::getInstance()->getBufferLength();
-        OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, static_cast<int>(bufferLength));
+        OutputFolder output_folder(outputDirName.getFullPathName().toStdString(), songName.toStdString(), sampleRate, static_cast<int>(bufferLength), static_cast<StemOutputAudioFormat>(audioFileFormat_));
 
         while (true)
         {
@@ -443,6 +446,7 @@ StemProviderResult MelissaStemProvider::createStems()
             
             // Save separated tracks
             OggVorbisAudioFormat oggFormat;
+            WavAudioFormat wavFormat;
             
             // Map Demucs output targets to our part names
             // Demucs output order: drums, bass, other, vocals
@@ -476,9 +480,19 @@ StemProviderResult MelissaStemProvider::createStems()
                 resamplingAudioSource.setResamplingRatio(fromSampleRate / originalSampleRate);
                 resamplingAudioSource.prepareToPlay(2048, originalSampleRate);
 
-                OggVorbisAudioFormat oggFormat;
-                auto outputFile = outputDirName.getChildFile(songName + "_" + partNames[partIndex] + ".ogg");
-                auto writer = std::unique_ptr<AudioFormatWriter>(oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, StringPairArray(), 0));
+                const String fileExtension = (audioFileFormat_ == kStemOutputAudioFormat_Wav) ? ".wav" : ".ogg";
+                auto outputFile = outputDirName.getChildFile(songName + "_" + partNames[partIndex] + fileExtension);
+                
+                std::unique_ptr<AudioFormatWriter> writer;
+                if (audioFileFormat_ == kStemOutputAudioFormat_Wav)
+                {
+                    writer.reset(wavFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, StringPairArray(), 0));
+                }
+                else // Ogg format
+                {
+                    writer.reset(oggFormat.createWriterFor(new FileOutputStream(outputFile), originalSampleRate, numChannels, 16, StringPairArray(), 0));
+                }
+                
                 if (writer == nullptr) return kStemProviderResult_FailedToReadSourceFile;
                                 
                 // Save current part
@@ -518,9 +532,12 @@ StemProviderResult MelissaStemProvider::createStems()
         using json = nlohmann::json;
         json stemSettings;
         stemSettings["original"] = songFile_.getFileName().toStdString();
+        
+        const String fileExtension = (audioFileFormat_ == kStemOutputAudioFormat_Wav) ? ".wav" : ".ogg";
+        
         for (auto& part : partNames_)
         {
-            const auto stemFileName = songName + "_" + part + ".ogg";
+            const auto stemFileName = songName + "_" + part + fileExtension;
             stemSettings[part]["file_name"] = stemFileName.toStdString();
             
             File stemFile(outputDirName.getChildFile(stemFileName));

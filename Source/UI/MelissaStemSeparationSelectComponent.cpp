@@ -17,7 +17,10 @@ MelissaStemSeparationSelectComponent::MelissaStemSeparationSelectComponent()
     optionButtons_[kOption_Demucs]->setButtonText(TRANS("separation_demucs_detail"));
     optionButtons_[kOption_Demucs]->onClick = [this]() 
     {
-        MelissaStemProvider::getInstance()->requestStems(MelissaDataSource::getInstance()->getCurrentSongFilePath(), kSeparatorType_Demucs);
+        MelissaStemProvider::getInstance()->requestStems(
+            MelissaDataSource::getInstance()->getCurrentSongFilePath(), 
+            kSeparatorType_Demucs,
+            static_cast<StemOutputAudioFormat>(formatComboBox_->getSelectedItemIndex()));
         MelissaModalDialog::close();
     };
     addAndMakeVisible(optionButtons_[kOption_Demucs].get());
@@ -26,10 +29,22 @@ MelissaStemSeparationSelectComponent::MelissaStemSeparationSelectComponent()
     optionButtons_[kOption_Spleeter]->setButtonText(TRANS("separation_spleeter_detail"));
     optionButtons_[kOption_Spleeter]->onClick = [this]() 
     {
-        MelissaStemProvider::getInstance()->requestStems(MelissaDataSource::getInstance()->getCurrentSongFilePath(), kSeparatorType_Spleeter);
+        MelissaStemProvider::getInstance()->requestStems(
+            MelissaDataSource::getInstance()->getCurrentSongFilePath(), 
+            kSeparatorType_Spleeter,
+            static_cast<StemOutputAudioFormat>(formatComboBox_->getSelectedItemIndex()));
         MelissaModalDialog::close();
     };
     addAndMakeVisible(optionButtons_[kOption_Spleeter].get());
+    
+    formatLabel_.setText(TRANS("format"), juce::dontSendNotification);
+    addAndMakeVisible(formatLabel_);
+    
+    formatComboBox_ = std::make_unique<juce::ComboBox>();
+    formatComboBox_->addItem(TRANS("ogg_format_description"), kStemOutputAudioFormat_Ogg + 1);
+    formatComboBox_->addItem(TRANS("wav_format_description"), kStemOutputAudioFormat_Wav + 1);
+    formatComboBox_->setSelectedItemIndex(kStemOutputAudioFormat_Ogg);
+    addAndMakeVisible(formatComboBox_.get());
     
     cancelButton_ = std::make_unique<juce::TextButton>("Cancel");
     cancelButton_->onClick = [this]()
@@ -45,6 +60,7 @@ MelissaStemSeparationSelectComponent::~MelissaStemSeparationSelectComponent()
     {
         optionButtons_[optionIndex]->setLookAndFeel(nullptr);
     }
+    formatComboBox_->setLookAndFeel(nullptr);
 }
 
 void MelissaStemSeparationSelectComponent::resized()
@@ -55,15 +71,24 @@ void MelissaStemSeparationSelectComponent::resized()
     const int buttonHeight = 60;
     const int cancelButtonWidth = 100;
     const int cancelButtonHeight = 30;
+    const int formatLabelWidth = 120;
+    const int formatComboBoxWidth = getWidth() - margin * 2 - formatLabelWidth;
+    const int formatControlHeight = 30;
 
     explanationLabel_.setBounds(margin, margin, getWidth() - margin * 2, explanationLabelHeight);
     
     for (int optionIndex = 0; optionIndex < kNumOptions; ++optionIndex)
     {
-        optionButtons_[optionIndex]->setBounds((getWidth() - buttonWidth) / 2, explanationLabelHeight + margin + optionIndex * (buttonHeight + margin), buttonWidth, buttonHeight);
+        optionButtons_[optionIndex]->setBounds((getWidth() - buttonWidth) / 2, 
+                                              explanationLabelHeight + margin + optionIndex * (buttonHeight + margin), 
+                                              buttonWidth, buttonHeight);
     }
     
-    cancelButton_->setBounds(getWidth() - cancelButtonWidth - margin, 
-                            getHeight() - cancelButtonHeight - margin,
-                            cancelButtonWidth, cancelButtonHeight);
+    const int formatYPos = explanationLabelHeight + margin + kNumOptions * (buttonHeight + margin);
+    formatLabel_.setBounds(margin, formatYPos, formatLabelWidth, formatControlHeight);
+    formatComboBox_->setBounds(margin + formatLabelWidth, formatYPos, formatComboBoxWidth, formatControlHeight);
+
+    cancelButton_->setBounds(getWidth() - cancelButtonWidth - margin,
+                             getHeight() - cancelButtonHeight - margin,
+                             cancelButtonWidth, cancelButtonHeight);
 }

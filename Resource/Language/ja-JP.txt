@@ -265,3 +265,6 @@ countries: ja
 "song_detail_menu"="ステム（パート分割音声）を削除"
 "separation_demucs_detail"="ギター分離あり / 高音質 / 低速"
 "separation_spleeter_detail"="ギター分離なし / 標準音質 / 高速"
+"format"="フォーマット"
+"ogg_format_description"="ogg: 標準音質 / ファイルサイズ小"
+"wav_format_description"="wav: 最高音質 / ファイルサイズ大"

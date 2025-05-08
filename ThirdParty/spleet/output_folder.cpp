@@ -31,8 +31,8 @@ void Write(SignalType signal, OutputFolder::MultiChannelFloatAudioBuffer& buffer
 
 } // namespace
 
-OutputFolder::OutputFolder(const std::string &path, const std::string &fileNamePrefix, int outputSampleRate, int bufferLength) :
-path_(path), fileNamePrefix_(fileNamePrefix), outputSampleRate_(outputSampleRate), bufferLength_(bufferLength) {}
+OutputFolder::OutputFolder(const std::string &path, const std::string &fileNamePrefix, int outputSampleRate, int bufferLength, StemOutputAudioFormat audioFormat) :
+path_(path), fileNamePrefix_(fileNamePrefix), outputSampleRate_(outputSampleRate), bufferLength_(bufferLength), audioFormat_(audioFormat) {}
 
 OutputFolder::~OutputFolder() { Flush(); }
 
@@ -70,15 +70,28 @@ void OutputFolder::Flush() {
         resamplingAudioSource.setResamplingRatio(kProcessSamplingRate / outputSampleRate_);
         resamplingAudioSource.prepareToPlay(2048, outputSampleRate_);
         
-        OggVorbisAudioFormat format;
-        
-        File output_file(::JoinPath(path_, fileNamePrefix_ + "_" + part + ".ogg"));
+        const std::string fileExtension = (audioFormat_ == kStemOutputAudioFormat_Wav) ? ".wav" : ".ogg";
+        File output_file(::JoinPath(path_, fileNamePrefix_ + "_" + part + fileExtension));
         // If file already exists, delete it
         if (output_file.existsAsFile()) output_file.deleteFile();
         
-        auto writer = std::unique_ptr<AudioFormatWriter>(format.createWriterFor(new FileOutputStream(output_file), outputSampleRate_, numChannels, 16, StringPairArray(), 0));
-        writer->writeFromAudioSource(resamplingAudioSource, bufferLength_);
-        writer->flush();
+        std::unique_ptr<AudioFormatWriter> writer;
+        if (audioFormat_ == kStemOutputAudioFormat_Wav)
+        {
+            WavAudioFormat format;
+            writer.reset(format.createWriterFor(new FileOutputStream(output_file), outputSampleRate_, numChannels, 16, StringPairArray(), 0));
+        }
+        else // Ogg format
+        {
+            OggVorbisAudioFormat format;
+            writer.reset(format.createWriterFor(new FileOutputStream(output_file), outputSampleRate_, numChannels, 16, StringPairArray(), 0));
+        }
+        
+        if (writer)
+        {
+            writer->writeFromAudioSource(resamplingAudioSource, bufferLength_);
+            writer->flush();
+        }
     }
 }
 
