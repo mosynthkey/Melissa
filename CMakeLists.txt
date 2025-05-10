@@ -4,7 +4,10 @@ if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.5" CACHE STRING "Minimum macOS deployment version")
 endif()
 
-project(Melissa VERSION 4.0.0)
+set(MELISSA_VERSION "4.0.0")
+set(MELISSA_VERSION_HEX "0x40000")
+
+project(Melissa VERSION ${MELISSA_VERSION})
 
 include(FetchContent)
 
@@ -43,7 +46,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/demucs.cpp EXCLUDE_FROM_A
 
 juce_add_gui_app(Melissa
     PRODUCT_NAME "Melissa"
-    VERSION "4.0.0"
+    VERSION ${MELISSA_VERSION}
     COMPANY_NAME "Melissa Audio"
     COMPANY_COPYRIGHT "Copyright(c) 2025 Masaki Ono"
     BUNDLE_ID "com.melissa-audio.melissa"
@@ -51,6 +54,15 @@ juce_add_gui_app(Melissa
     BLUETOOTH_PERMISSION_ENABLED TRUE
     BLUETOOTH_PERMISSION_TEXT "For Bluetooth MIDI"
     DOCUMENT_BROWSER_ENABLED TRUE
+)
+
+set_target_properties(Melissa PROPERTIES
+    JUCE_COMPANY_NAME "Melissa Audio"
+    JUCE_COMPANY_COPYRIGHT "Copyright(c) 2025 Masaki Ono"
+    JUCE_COMPANY_WEBSITE ""
+    JUCE_COMPANY_EMAIL ""
+    JUCE_VERSION "${MELISSA_VERSION}"
+    JUCE_VERSION_HEX "${MELISSA_VERSION_HEX}"
 )
 
 juce_generate_juce_header(Melissa)
