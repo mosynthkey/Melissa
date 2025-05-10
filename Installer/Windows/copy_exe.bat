@@ -1,2 +1,1 @@
-copy /Y "..\..\Melissa\Builds\VisualStudio2019\Win32\Release (32bit)\App\Melissa.exe" ".\32bit\Melissa_2.5.1_32\"
-copy /Y "..\..\Melissa\Builds\VisualStudio2019\x64\Release\App\Melissa.exe" ".\64bit\Melissa_2.5.1_64\"
+copy /Y "D:\Develop\Melissa\build\Melissa_artefacts\Melissa.exe" ".\64bit\Melissa_3.2.0_64\"

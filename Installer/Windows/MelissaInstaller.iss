@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Melissa"
-#define MyAppVersion "3.1.0"
+#define MyAppVersion "4.0.0"
 #define MyAppPublisher "Melissa Audio"
 #define MyAppURL "https://github.com/mosynthkey/Melissa"
 #define MyAppExeName "Melissa.exe"
@@ -20,11 +20,11 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Develop\Melissa\LICENSE
+LicenseFile=D:\Develop\Melissa\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Develop\Melissa\Installer\Windows
-OutputBaseFilename=Melissa_Installer_v3.1.0
+OutputDir=D:\Develop\Melissa\Installer\Windows
+OutputBaseFilename=Melissa_Installer_v4.0.0
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -39,8 +39,10 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Develop\Melissa\Melissa\Builds\VisualStudio2019\x64\Release\App\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Develop\Melissa\ThirdParty\libtensorflow-cpu-windows-x86_64-2.8.0\lib\tensorflow.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\tensorflow.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\libopenblas.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\ProgramData\Melissa\*"; DestDir: "C:\ProgramData\Melissa\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
