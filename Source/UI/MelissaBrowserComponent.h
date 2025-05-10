@@ -35,7 +35,12 @@ private:
     class CustomWebBrowserComponent : public juce::WebBrowserComponent
     {
     public:
-        CustomWebBrowserComponent(MelissaBrowserComponent& owner) : owner_(owner) {}
+        CustomWebBrowserComponent(MelissaBrowserComponent& owner) : 
+        WebBrowserComponent(juce::WebBrowserComponent::Options{}
+        .withBackend(juce::WebBrowserComponent::Options::Backend::webview2)
+        .withWinWebView2Options(juce::WebBrowserComponent::Options::WinWebView2{}.withUserDataFolder(File::getSpecialLocation(File::tempDirectory))
+                       .withStatusBarDisabled())),
+        owner_(owner) {}
         
         void pageFinishedLoading(const String& url) override
         {
