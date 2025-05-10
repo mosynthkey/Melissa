@@ -18,16 +18,22 @@
 - [日本語](https://github.com/mosynthkey/Melissa/wiki/Manual-(Japanese))
 
 ## How to build
-1. Get [Projucer](https://juce.com/discover/projucer).
+1. Get CMake
 2. Download and extract libtensorflow 2.8.0 to [ThirdParty](ThirdParty)
-- [macOS](https://drive.google.com/file/d/1RoUstBT632f8aIB4R3E0IlsGUU6H3IvA/view?usp=share_link)
+- [macOS](https://github.com/mosynthkey/libtensorflow-cpu-darwin-universal-binary/releases/tag/v2.8.0)
 - [Windows](https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow%2Dcpu%2Dwindows%2Dx86_64%2D2.8.0.zip)
 3. Install submodules
 ```
 git submodule update --init
 ```
-4. Open [Melissa/Melissa.jucer](Melissa/Melissa.jucer) with Projucer
-5. Create and open a Xcode project file or Visual Studio solution on Projucer
+4. Create project with CMake
+```
+mkdir build
+cmake -S . -B build -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+```
+
+5. Open and build with the project
+On Windows, please install "WebView" package using Nuget Package Manager
 
 To build on Windows, please get ASIO driver or disable ASIO from Projucer.
 See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
@@ -43,6 +49,8 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [nlohmann/json](https://github.com/nlohmann/json)
 - [TensorFlow for C](https://www.tensorflow.org/install/)　
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+- [demucs.cpp](https://github.com/sevagh/demucs.cpp)
+- [OpenBLAS](https://www.openblas.net/)
 
 ## License
 [LGPL-2.1 (c) 2024 Masaki Ono](LICENSE)
