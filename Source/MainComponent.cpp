@@ -515,6 +515,7 @@ MainComponent::MainComponent(const String &commandLine) : Thread("MelissaProcess
 #endif
                                                           nextFileNameShown_(false), shouldExit_(false), isLangJapanese_(false), requestedKeyboardFocusOnFirstLaunch_(false), prepareingNextSong_(false)
 {
+    songDetailPopupMenu_ = std::make_unique<PopupMenu>();
     audioEngine_ = std::make_unique<MelissaAudioEngine>();
     metronome_ = std::make_unique<MelissaMetronome>();
 
@@ -673,6 +674,8 @@ MainComponent::~MainComponent()
     volumeBalanceSlider_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     eqSwitchButton_->setLookAndFeel(nullptr);
+    
+    if (songDetailPopupMenu_ != nullptr) songDetailPopupMenu_->setLookAndFeel(nullptr);
 #if defined(ENABLE_SPEED_TRAINING)
     speedModeBasicToggleButton_->setLookAndFeel(nullptr);
     speedModeTrainingToggleButton_->setLookAndFeel(nullptr);
@@ -969,15 +972,40 @@ void MainComponent::createUI()
         songDetailButton_->setTooltip(TRANS("song_detail_menu"));
         songDetailButton_->onClick = [this]()
         {
-            const std::vector<String> confirmOptions = { TRANS("ok"), TRANS("cancel") };
-            auto confirmDialog = std::make_shared<MelissaOptionDialog>(TRANS("confirm_remove_stems"), confirmOptions, [this](size_t confirmIndex) {
-                if (confirmIndex == 0)
-                {
-                    MelissaStemProvider::getInstance()->deleteStems();
-                    dataSource_->loadFileAsync(dataSource_->getCurrentSongFilePath());
+            enum 
+            {
+                kMenu_DeleteStems = 1,
+                kMenu_RedoStemSeparation,
+            };
+            
+            songDetailPopupMenu_->clear();
+            songDetailPopupMenu_->setLookAndFeel(&laf_);
+            songDetailPopupMenu_->addItem(kMenu_DeleteStems, TRANS("delete_stems"));
+            songDetailPopupMenu_->addItem(kMenu_RedoStemSeparation, TRANS("redo_stem_separation"));
+            
+            songDetailPopupMenu_->showMenuAsync(PopupMenu::Options().withTargetComponent(songDetailButton_.get()), [this](int result) {
+                // Reset look and feel to avoid dangling pointer if component is deleted
+                songDetailPopupMenu_->setLookAndFeel(nullptr);
+                
+                if (result == kMenu_DeleteStems) {
+                    // Delete stems
+                    const std::vector<String> confirmOptions = { TRANS("ok"), TRANS("cancel") };
+                    auto confirmDialog = std::make_shared<MelissaOptionDialog>(TRANS("confirm_remove_stems"), confirmOptions, [this](size_t confirmIndex) {
+                        if (confirmIndex == 0)
+                        {
+                            MelissaStemProvider::getInstance()->deleteStems();
+                            dataSource_->loadFileAsync(dataSource_->getCurrentSongFilePath());
+                        }
+                    });
+                    MelissaModalDialog::show(confirmDialog, TRANS("confirm"));
+                }
+                else if (result == kMenu_RedoStemSeparation) {
+                    // Re-run stem separation
+                    auto component = std::make_shared<MelissaStemSeparationSelectComponent>();
+                    component->setSize(580, 280);
+                    MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("separation_of_music"));
                 }
             });
-            MelissaModalDialog::show(confirmDialog, TRANS("confirm"));
         };
         songDetailButton_->setLookAndFeel(&simpleTextButtonLaf_);
         componentToAdd->addAndMakeVisible(songDetailButton_.get());

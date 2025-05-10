@@ -58,7 +58,14 @@ public:
     
     float getNextSampleIndex()
     {
-        return que_[static_cast<size_t>(readIndex_)];
+        if (readIndex_ < que_.size())
+        {
+            return que_[static_cast<size_t>(readIndex_)];
+        }
+        else
+        {
+            return 0.f;
+        }
     }
     
     void getStretchedSampleIndices(size_t length, std::deque<float>& stretchedSampleIndex)
@@ -257,8 +264,10 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
         }
         else
         {
+            mutex_.lock();
             const float currentPlaybackPosMSec = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
             currentPlaybackSpeed_ = static_cast<int32_t>(speedStretcher_->getNextSampleIndex());
+            mutex_.unlock();
             const bool looped = static_cast<int>(currentPlaybackPosMSec)   == static_cast<int>(model_->getLoopAPosMSec()) && static_cast<int>(previousRenderedPosMSec_) == static_cast<int>(model_->getLoopBPosMSec());
             if (enableCountIn_ && (looped || forcePreCountOn_))
             {

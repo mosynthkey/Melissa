@@ -216,6 +216,7 @@ public:
     void dialogWillClose();
 
 private:
+    std::unique_ptr<juce::PopupMenu> songDetailPopupMenu_;
     std::unique_ptr<MelissaAudioEngine> audioEngine_;
     std::unique_ptr<MelissaMetronome> metronome_;
     MelissaModel *model_;

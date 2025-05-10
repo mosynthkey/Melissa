@@ -53,7 +53,44 @@ private:
     
     std::unique_ptr<juce::ToggleButton> allButton_;
     std::unique_ptr<juce::ToggleButton> stemSwitchButtons_[kNumStemSoloButtons];
-    std::unique_ptr<juce::TextButton> createStemsButton_;
+    
+    class AnimatedStemButton : public juce::Component, public juce::Timer
+    {
+    public:
+        AnimatedStemButton();
+        ~AnimatedStemButton() override;
+        
+        void paint(juce::Graphics& g) override;
+        void resized() override;
+        void mouseDown(const juce::MouseEvent& e) override;
+        void mouseUp(const juce::MouseEvent& e) override;
+        void mouseEnter(const juce::MouseEvent& e) override;
+        void mouseExit(const juce::MouseEvent& e) override;
+        
+        void timerCallback() override;
+        
+        void setButtonText(const juce::String& text);
+        void setEnabled(bool enabled);
+        
+        void setCallback(std::function<void()> callback) { onClick = callback; }
+        void startAnimation();
+        void stopAnimation();
+        
+    private:
+        juce::String buttonText_;
+        bool isMouseOver_;
+        bool isMouseDown_;
+        bool isEnabled_;
+        bool isAnimating_;
+        
+        int animationPhase_;
+        std::function<void()> onClick;
+        
+        static constexpr int kFPS = 30;
+        static constexpr float kAnimationSpeed = 2.0f;
+    };
+    
+    std::unique_ptr<AnimatedStemButton> createStemsButton_;
     std::unique_ptr<MelissaStemSeparationSelectComponent> stemSeparationSelectComponent_;
     
     enum { kNumMixKnobs = 6, };

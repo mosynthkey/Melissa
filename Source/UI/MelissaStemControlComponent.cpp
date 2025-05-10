@@ -136,6 +136,157 @@ private:
     static const inline int kSpeed = 2;
 };
 
+MelissaStemControlComponent::AnimatedStemButton::AnimatedStemButton() :
+    isMouseOver_(false),
+    isMouseDown_(false),
+    isEnabled_(true),
+    isAnimating_(false),
+    animationPhase_(0)
+{
+    startTimer(1000 / kFPS);
+}
+
+MelissaStemControlComponent::AnimatedStemButton::~AnimatedStemButton()
+{
+    stopTimer();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::paint(juce::Graphics& g)
+{
+    using namespace juce;
+    
+    // Background
+    const auto bounds = getLocalBounds().toFloat();
+    const bool isDark = MelissaUISettings::isDarkMode;
+    
+    g.setColour(juce::Colour(MelissaUISettings::getSubColour()));
+    g.fillRoundedRectangle(bounds, getHeight() / 2);
+    
+    if (!isEnabled_)
+    {
+        // When disabled
+        g.setColour(MelissaUISettings::getTextColour(0.5f));
+    }
+    else if (isMouseDown_)
+    {
+        // When pressed
+        g.setColour(MelissaUISettings::getAccentColour(0.2f));
+        g.fillRoundedRectangle(bounds, getHeight() / 2);
+        g.setColour(MelissaUISettings::getTextColour(1.0f));
+    }
+    else if (isMouseOver_)
+    {
+        // When hovered
+        g.setColour(MelissaUISettings::getAccentColour(0.1f));
+        g.fillRoundedRectangle(bounds, getHeight() / 2);
+        g.setColour(MelissaUISettings::getTextColour(0.9f));
+    }
+    else
+    {
+        // Normal state
+        g.setColour(MelissaUISettings::getTextColour(0.8f));
+    }
+    
+    // Animate when processing
+    if (isAnimating_)
+    {
+        // Create gradient animation
+        const float gradientPos = (sin(static_cast<float>(animationPhase_) / (kFPS * kAnimationSpeed) * 2.f) + 1.f) / 2.f;
+        
+        ColourGradient gradient;
+        
+        // Create moving gradient
+        gradient.point1 = Point<float>(bounds.getX() + bounds.getWidth() * (gradientPos - 0.5f), bounds.getY());
+        gradient.point2 = Point<float>(bounds.getX() + bounds.getWidth() * (gradientPos + 0.5f), bounds.getBottom());
+        
+        gradient.addColour(0.0, MelissaUISettings::getAccentColour(0.1f));
+        gradient.addColour(0.5, MelissaUISettings::getAccentColour(0.4f));
+        gradient.addColour(1.0, MelissaUISettings::getAccentColour(0.1f));
+        
+        g.setGradientFill(gradient);
+        g.fillRoundedRectangle(bounds, getHeight() / 2);
+    }
+    
+    // Draw text
+    g.setColour(MelissaUISettings::getTextColour(0.8f));
+    g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+    g.drawText(buttonText_, 0, 0, getWidth(), getHeight(), juce::Justification::centred);
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::resized()
+{
+    // Nothing to do
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::mouseDown(const juce::MouseEvent& e)
+{
+    if (!isEnabled_) return;
+    
+    isMouseDown_ = true;
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::mouseUp(const juce::MouseEvent& e)
+{
+    if (!isEnabled_) return;
+    
+    isMouseDown_ = false;
+    
+    if (isMouseOver_ && onClick != nullptr)
+    {
+        onClick();
+    }
+    
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::mouseEnter(const juce::MouseEvent& e)
+{
+    isMouseOver_ = true;
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::mouseExit(const juce::MouseEvent& e)
+{
+    isMouseOver_ = false;
+    isMouseDown_ = false;
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::timerCallback()
+{
+    if (isAnimating_)
+    {
+        ++animationPhase_;
+        repaint();
+    }
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::setButtonText(const juce::String& text)
+{
+    buttonText_ = text;
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::setEnabled(bool enabled)
+{
+    isEnabled_ = enabled;
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::startAnimation()
+{
+    isAnimating_ = true;
+    animationPhase_ = 0;
+    repaint();
+}
+
+void MelissaStemControlComponent::AnimatedStemButton::stopAnimation()
+{
+    isAnimating_ = false;
+    repaint();
+}
+
 MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems), status_(kStemProviderStatus_Ready)
 {
     auto model = MelissaModel::getInstance();
@@ -167,13 +318,9 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
     };
     addAndMakeVisible(soloButton_.get());
     
-    // Messages
-    createStemsButton_ = std::make_unique<TextButton>();
-#ifdef JUCE_WINDOWS
-    simpleTextButtonLaf_.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::FontSize::kFontSize_Sub));
-#endif
-    createStemsButton_->setLookAndFeel(&simpleTextButtonLaf_);
-    createStemsButton_->onClick = [&]()
+    // Custom animated stem button
+    createStemsButton_ = std::make_unique<AnimatedStemButton>();
+    createStemsButton_->setCallback([&]()
     {
         if (MelissaStemProvider::getInstance()->isThreadRunning())
         {
@@ -193,7 +340,7 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
             component->setSize(580, 280);
             MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("separation_of_music"));
         }
-    };
+    });
     addAndMakeVisible(createStemsButton_.get());
     
     progressBar_ = std::make_unique<ProgressBar>();
@@ -249,7 +396,6 @@ MelissaStemControlComponent::MelissaStemControlComponent() : mode_(kMode_NoStems
 
 MelissaStemControlComponent::~MelissaStemControlComponent()
 {
-    createStemsButton_->setLookAndFeel(nullptr);
     allButton_->setLookAndFeel(nullptr);
     for (auto& b : stemSwitchButtons_) b->setLookAndFeel(nullptr);
 }
@@ -307,13 +453,18 @@ void MelissaStemControlComponent::stemProviderStatusChanged(StemProviderStatus s
     status_ = status;
     updateAndArrangeControls();
     
-    if (status == kStemProviderStatus_Processing) progressBar_->startProgress();
+    if (status == kStemProviderStatus_Processing)
+    {
+        progressBar_->startProgress();
+        createStemsButton_->startAnimation();
+    }
 }
 
 void MelissaStemControlComponent::stemProviderResultReported(StemProviderResult result)
 {
     updateAndArrangeControls();
     progressBar_->reset();
+    createStemsButton_->stopAnimation();
 }
 
 void MelissaStemControlComponent::stemProviderEstimatedTimeReported(float estimatedTime)
@@ -332,17 +483,20 @@ void MelissaStemControlComponent::updateAndArrangeControls()
     {
         createStemsButton_->setButtonText(TRANS("click_to_separate"));
         createStemsButton_->setEnabled(true);
+        createStemsButton_->stopAnimation();
     }
     else if (status_ == kStemProviderStatus_NotAvailable)
     {
         auto result = MelissaStemProvider::getInstance()->getStemProviderResult();
         createStemsButton_->setButtonText(TRANS(errorMessages[result]));
         createStemsButton_->setEnabled(false);
+        createStemsButton_->stopAnimation();
     }
     else if (status_ == kStemProviderStatus_Processing)
     {
         createStemsButton_->setButtonText(TRANS("separating_click_to_cancel"));
         createStemsButton_->setEnabled(true);
+        createStemsButton_->startAnimation();
     }
     
     const bool isAvailable = (status_ == kStemProviderStatus_Available_Full || status_ == kStemProviderStatus_Available_NoGuitar);
@@ -395,7 +549,7 @@ void MelissaStemControlComponent::updateAndArrangeControls()
         }
     }
     
-    x = allButton_->getX();
+    x = kControlX;
     constexpr int kProgressBarMargin = 10;
     progressBar_->setBounds(x + kProgressBarMargin, createStemsButton_->getBottom() - 6, createButtonOrStatusWidth - kProgressBarMargin * 2, 2);
     
