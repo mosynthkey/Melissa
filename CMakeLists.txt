@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 
+if(APPLE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "13.5" CACHE STRING "Minimum macOS deployment version")
+endif()
+
 project(Melissa VERSION 4.0.0)
 
 include(FetchContent)
