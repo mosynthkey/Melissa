@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.5" CACHE STRING "Minimum macOS deployment version")
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Build universal binary")
 endif()
 
 set(MELISSA_VERSION "4.0.0")
@@ -11,29 +12,6 @@ project(Melissa VERSION ${MELISSA_VERSION})
 
 include(FetchContent)
 
-set(USE_OPENBLAS ON CACHE BOOL "Use OpenBLAS")
-set(BLA_VENDOR OpenBLAS)
-if(APPLE)
-    set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "/opt/homebrew/opt/openblas")
-    find_package(BLAS REQUIRED)
-elseif(WIN32)
-    set(OPENBLAS_VERSION "0.3.29")
-    set(OPENBLAS_URL "https://github.com/OpenMathLib/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}_x64.zip")
-    
-    FetchContent_Declare(
-        openblas
-        URL ${OPENBLAS_URL}
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-    )
-    FetchContent_MakeAvailable(openblas)
-    
-    set(OPENBLAS_ROOT "${openblas_SOURCE_DIR}")
-    set(OPENBLAS_INCLUDE_DIR "${OPENBLAS_ROOT}/include")
-    set(OPENBLAS_LIBRARIES "${OPENBLAS_ROOT}/lib/libopenblas.dll.a")
-    set(BLAS_LIBRARIES "${OPENBLAS_LIBRARIES}" CACHE PATH "Path to BLAS library")
-    set(BLAS_FOUND TRUE CACHE BOOL "BLAS found")
-endif()
-
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/JUCE)
 
 set(JUCE_BUILD_HELPER_TOOLS OFF CACHE BOOL "")
@@ -42,7 +20,15 @@ set(JUCE_BUILD_TESTS OFF CACHE BOOL "")
 
 set(BUILD_TESTING OFF CACHE BOOL "")
 set(BUILD_EXAMPLES OFF CACHE BOOL "")
+
+set(OPENMP_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/include" CACHE PATH "Path to OpenMP include directory")
+set(OPENMP_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/lib" CACHE PATH "Path to OpenMP library directory")
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/demucs.cpp EXCLUDE_FROM_ALL)
+
+set_target_properties(demucs.cpp.lib PROPERTIES
+    COMPILE_DEFINITIONS "EIGEN_DONT_PARALLELIZE"
+)
 
 juce_add_gui_app(Melissa
     PRODUCT_NAME "Melissa"
@@ -174,7 +160,6 @@ target_include_directories(Melissa PRIVATE
     ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include
     Submodule/demucs.cpp/include
     Submodule/demucs.cpp/src
-    ${OPENBLAS_INCLUDE_DIR}
     Source
     Source/Audio
     Source/Audio/soundtouch
@@ -210,7 +195,6 @@ target_link_libraries(Melissa PRIVATE
     spleeter_common
     tensorflow
     demucs.cpp.lib
-    "${OPENBLAS_LIBRARIES}"
 )
 
 juce_add_binary_data(MelissaBinaryData
@@ -263,7 +247,7 @@ if (APPLE)
         XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER ""
         XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
         XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
-        XCODE_EMBED_FRAMEWORKS "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib"
+        XCODE_EMBED_FRAMEWORKS "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/lib/libomp.dylib"
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH "@executable_path/../Frameworks"
     )
@@ -277,14 +261,9 @@ if (APPLE)
         COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib"
             "$<TARGET_BUNDLE_CONTENT_DIR:Melissa>/Frameworks/"
-    )
-endif()
-
-if(WIN32)
-    add_custom_command(TARGET Melissa POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${OPENBLAS_ROOT}/bin/libopenblas.dll"
-            $<TARGET_FILE_DIR:Melissa>
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/lib/libomp.dylib"
+            "$<TARGET_BUNDLE_CONTENT_DIR:Melissa>/Frameworks/"
     )
 endif()
 
@@ -299,9 +278,4 @@ if(WIN32)
         ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spleeterpp/lib/Windows/$<CONFIG>
         ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-windows-x86_64-2.8.0/lib
     )
-endif()
-
-if(USE_OPENBLAS)
-    set(BLAS_LIBRARIES "${OPENBLAS_LIBRARIES}")
-    set(BLAS_FOUND TRUE)
 endif()
