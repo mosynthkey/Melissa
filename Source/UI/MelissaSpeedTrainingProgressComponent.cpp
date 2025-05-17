@@ -35,7 +35,7 @@ void MelissaSpeedTrainingProgressComponent::paint(Graphics& g)
     
     const auto width = getWidth();
     
-    g.setColour(Colours::white.withAlpha(0.2f));
+    g.setColour(MelissaUISettings::getTextColour(0.2f));
     g.fillRoundedRectangle(triangleWidth / 2, 0, width - triangleWidth, lineHeight, lineHeight / 2);
     
     const auto currentRatio = std::clamp((model_->getPlayingSpeed() - model_->getSpeedIncStart()) / static_cast<float>(model_->getSpeedIncGoal() - model_->getSpeedIncStart()), 0.f, 1.f);
@@ -53,7 +53,7 @@ void MelissaSpeedTrainingProgressComponent::paint(Graphics& g)
     const auto strSize = MelissaUtility::getStringSize(font_, currentSpeedStr);
     
     auto strX = std::clamp(triangleCenter - strSize.first / 2, 0, width - strSize.first);
-    g.setColour(Colours::white.withAlpha(0.8f));
+    g.setColour(MelissaUISettings::getTextColour(0.8f));
     g.setFont(font_);
     g.drawText(currentSpeedStr, strX, triangleHeight + 2, strSize.first, strSize.second, Justification::centred);
 }

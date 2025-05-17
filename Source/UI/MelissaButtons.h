@@ -23,6 +23,7 @@ public:
     
     void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
+        menuDrawable_->replaceColour(juce::Colours::white, MelissaUISettings::getTextColour());
         menuDrawable_->drawAt(g, 0, 0, (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f);
         
         if (showBudge_)

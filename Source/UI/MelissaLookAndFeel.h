@@ -677,7 +677,7 @@ public:
         {
             alpha = 0.6f;
         }
-        g.setColour(Colour::fromFloatRGBA(1.f, 1.f, 1.f, alpha));
+        g.setColour(MelissaUISettings::getTextColour(alpha));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
         g.drawText(tb.getButtonText(), 8, 0, tb.getWidth() - 8, tb.getHeight(), Justification::centredLeft);
         
