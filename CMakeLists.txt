@@ -21,15 +21,6 @@ set(JUCE_BUILD_TESTS OFF CACHE BOOL "")
 set(BUILD_TESTING OFF CACHE BOOL "")
 set(BUILD_EXAMPLES OFF CACHE BOOL "")
 
-set(OPENMP_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/include" CACHE PATH "Path to OpenMP include directory")
-set(OPENMP_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/lib" CACHE PATH "Path to OpenMP library directory")
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/demucs.cpp EXCLUDE_FROM_ALL)
-
-set_target_properties(demucs.cpp.lib PROPERTIES
-    COMPILE_DEFINITIONS "EIGEN_DONT_PARALLELIZE"
-)
-
 juce_add_gui_app(Melissa
     PRODUCT_NAME "Melissa"
     VERSION ${MELISSA_VERSION}
@@ -146,6 +137,9 @@ target_sources(Melissa PRIVATE
     ThirdParty/spleet/output_folder.cpp
     ThirdParty/spleet/split.cpp
     ThirdParty/spleet/utils.cpp
+    Submodule/demucs.onnx/src/model_apply.cpp
+    Submodule/demucs.onnx/src/model_inference.cpp
+    Submodule/demucs.onnx/src/dsp.cpp
 )
 
 target_include_directories(Melissa PRIVATE
@@ -158,15 +152,18 @@ target_include_directories(Melissa PRIVATE
     ThirdParty/spleet
     ThirdParty/spleeterpp/include
     ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include
-    Submodule/demucs.cpp/include
-    Submodule/demucs.cpp/src
     Source
     Source/Audio
     Source/Audio/soundtouch
     Source/UI
+    Submodule/libonnxruntime/include
+    Submodule/demucs.onnx/onnx-models/model
+    Submodule/demucs.onnx/src
 )
 
 target_compile_definitions(Melissa PRIVATE
+    ONNX_ML=1
+    ONNX_NAMESPACE=onnx
     _USE_MATH_DEFINES
     MELISSA_FULL_VERSION
     JUCE_SILENCE_XCODE_15_LINKER_WARNING
@@ -176,6 +173,7 @@ target_compile_definitions(Melissa PRIVATE
 )
 
 target_link_libraries(Melissa PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime.1.19.2.dylib
     juce::juce_core
     juce::juce_data_structures
     juce::juce_events
@@ -194,7 +192,6 @@ target_link_libraries(Melissa PRIVATE
     spleeter
     spleeter_common
     tensorflow
-    demucs.cpp.lib
 )
 
 juce_add_binary_data(MelissaBinaryData
@@ -247,7 +244,7 @@ if (APPLE)
         XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER ""
         XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
         XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
-        XCODE_EMBED_FRAMEWORKS "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/lib/libomp.dylib"
+        XCODE_EMBED_FRAMEWORKS "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime.1.19.2.dylib"
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH "@executable_path/../Frameworks"
     )
@@ -262,7 +259,7 @@ if (APPLE)
             "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib"
             "$<TARGET_BUNDLE_CONTENT_DIR:Melissa>/Frameworks/"
         COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/openmp-19.1.0-darwin20-Release/lib/libomp.dylib"
+            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime.1.19.2.dylib"
             "$<TARGET_BUNDLE_CONTENT_DIR:Melissa>/Frameworks/"
     )
 endif()

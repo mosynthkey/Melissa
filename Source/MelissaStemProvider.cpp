@@ -15,8 +15,10 @@
 #include "utils.h"
 #include "split.h"
 #include "nlohmann/json.hpp"
-#include "model.hpp"
+#include "demucs.hpp"
 #include "Eigen/Dense"
+#include <fstream>
+#include <ctime>
 #endif
 
 using namespace juce;
@@ -379,20 +381,35 @@ StemProviderResult MelissaStemProvider::createStems()
                 
                 // Re-open the reader for the resampled file
                 reader = std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(sourceFile));
-
-                printf("resampled reader->sampleRate: %f, reader->lengthInSamples: %d\n", reader->sampleRate, reader->lengthInSamples);
                 if (!reader) return kStemProviderResult_FailedToReadSourceFile;
             }
             
             // Load the Demucs model
             auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
-            auto modelPath = settingsDir.getChildFile("models").getChildFile("demucs").getChildFile("ggml-model-htdemucs-6s-f16.bin").getFullPathName();
+            auto modelPath = settingsDir.getChildFile("models").getChildFile("demucs").getChildFile("htdemucs_6s.onnx").getFullPathName();
+
+            // Create Ort::SessionOptions
+            Ort::SessionOptions session_options;
+            session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
+            session_options.SetIntraOpNumThreads(4);
+            session_options.SetInterOpNumThreads(4);
+            session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+
+            // Create model struct
+            demucsonnx::demucs_model model;
             
-            auto model = std::make_unique<demucscpp::demucs_model>();
-            if (!demucscpp::load_demucs_model(modelPath.toStdString(), model.get()))
-            {
-                return kStemProviderResult_FailedToInitialize;
-            }
+            // Load model from file
+            std::ifstream file(modelPath.toStdString(), std::ios::binary | std::ios::ate);
+            if (!file) return kStemProviderResult_FailedToInitialize;
+            
+            std::streamsize size = file.tellg();
+            file.seekg(0, std::ios::beg);
+            
+            std::vector<char> file_data(size);
+            if (!file.read(file_data.data(), size)) return kStemProviderResult_FailedToInitialize;
+            
+            bool success = demucsonnx::load_model(file_data, model, session_options);
+            if (!success) return kStemProviderResult_FailedToInitialize;
             
             // Process audio with Demucs
             const int numSamples = static_cast<int>(reader->lengthInSamples);
@@ -403,22 +420,30 @@ StemProviderResult MelissaStemProvider::createStems()
             reader->read(&buffer, 0, numSamples, 0, true, true);
             
             // Convert to Eigen matrix format for Demucs
-            Eigen::MatrixXf audioData(numChannels, numSamples);
+            Eigen::MatrixXf audioData(2, numSamples);
             for (int ch = 0; ch < numChannels; ++ch)
             {
                 const float* channelData = buffer.getReadPointer(ch);
-                for (int i = 0; i < numSamples; ++i)
+                for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
                 {
-                    audioData(ch, i) = channelData[i];
+                    audioData(ch, sampleIndex) = channelData[sampleIndex];
+                }
+                
+                // If mono, duplicate to second channel
+                if (numChannels == 1 && ch == 0)
+                {
+                    for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
+                    {
+                        audioData(1, sampleIndex) = channelData[sampleIndex];
+                    }
                 }
             }
             
             // Run Demucs inference
-            
             Eigen::Tensor3dXf out_targets;
             try
             {
-                out_targets = demucscpp::demucs_inference(*model, audioData, 
+                out_targets = demucsonnx::demucs_inference(model, audioData, 
                     [this](float progress, const std::string& message) 
                 {
                     if (threadShouldExit())
@@ -449,7 +474,7 @@ StemProviderResult MelissaStemProvider::createStems()
             WavAudioFormat wavFormat;
             
             // Map Demucs output targets to our part names
-            // Demucs output order: drums, bass, other, vocals
+            // Demucs output order: drums, bass, other, vocals, guitar, piano
             constexpr int kNumParts = 6;
             const static std::string partNames[kNumParts] = {
                 "drums", "bass", "other", "vocals", "guitar", "piano"

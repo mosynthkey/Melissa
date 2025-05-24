@@ -1,7 +1,6 @@
 [submodule "Submodule/soundtouch"]
 	path = Submodule/soundtouch
 	url = https://codeberg.org/soundtouch/soundtouch.git
-
 [submodule "Submodule/json"]
 	path = Submodule/json
 	url = git@github.com:nlohmann/json.git
@@ -11,6 +10,6 @@
 [submodule "Submodule/JUCE"]
 	path = Submodule/JUCE
 	url = git@github.com:juce-framework/JUCE.git
-[submodule "Submodule/demucs.cpp"]
-	path = Submodule/demucs.cpp
-	url = git@github.com:mosynthkey/demucs.cpp.git
+[submodule "Submodule/demucs.onnx"]
+	path = Submodule/demucs.onnx
+	url = git@github.com:sevagh/demucs.onnx.git
