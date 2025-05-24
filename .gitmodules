@@ -10,6 +10,3 @@
 [submodule "Submodule/JUCE"]
 	path = Submodule/JUCE
 	url = git@github.com:juce-framework/JUCE.git
-[submodule "Submodule/demucs.onnx"]
-	path = Submodule/demucs.onnx
-	url = git@github.com:sevagh/demucs.onnx.git

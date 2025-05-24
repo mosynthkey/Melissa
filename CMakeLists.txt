@@ -137,9 +137,9 @@ target_sources(Melissa PRIVATE
     ThirdParty/spleet/output_folder.cpp
     ThirdParty/spleet/split.cpp
     ThirdParty/spleet/utils.cpp
-    Submodule/demucs.onnx/src/model_apply.cpp
-    Submodule/demucs.onnx/src/model_inference.cpp
-    Submodule/demucs.onnx/src/dsp.cpp
+    ThirdParty/demucs.onnx/src/model_apply.cpp
+    ThirdParty/demucs.onnx/src/model_inference.cpp
+    ThirdParty/demucs.onnx/src/dsp.cpp
 )
 
 target_include_directories(Melissa PRIVATE
@@ -157,8 +157,7 @@ target_include_directories(Melissa PRIVATE
     Source/Audio/soundtouch
     Source/UI
     Submodule/libonnxruntime/include
-    Submodule/demucs.onnx/onnx-models/model
-    Submodule/demucs.onnx/src
+    ThirdParty/demucs.onnx/src
 )
 
 target_compile_definitions(Melissa PRIVATE
