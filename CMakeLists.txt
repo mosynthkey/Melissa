@@ -195,8 +195,17 @@ target_link_libraries(Melissa PRIVATE
     spleeter
     spleeter_common
     tensorflow
-    onnxruntime
 )
+
+if(APPLE)
+    target_link_libraries(Melissa PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime/libs/macos-arm64_x86_64/libonnxruntime.1.19.2.dylib
+    )
+elseif(WIN32)
+    target_link_libraries(Melissa PRIVATE
+        onnxruntime
+    )
+endif()
 
 juce_add_binary_data(MelissaBinaryData
     SOURCES
@@ -255,7 +264,7 @@ if (APPLE)
         XCODE_ATTRIBUTE_PROVISIONING_PROFILE_SPECIFIER ""
         XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
         XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
-        XCODE_EMBED_FRAMEWORKS "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime.1.19.2.dylib"
+        XCODE_EMBED_FRAMEWORKS "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow.2.dylib;${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime/libs/macos-arm64_x86_64/libonnxruntime.1.19.2.dylib"
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH "@executable_path/../Frameworks"
     )
@@ -270,7 +279,7 @@ if (APPLE)
             "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib/libtensorflow_framework.2.dylib"
             "$<TARGET_BUNDLE_CONTENT_DIR:Melissa>/Frameworks/"
         COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime.1.19.2.dylib"
+            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime/libs/macos-arm64_x86_64/libonnxruntime.1.19.2.dylib"
             "$<TARGET_BUNDLE_CONTENT_DIR:Melissa>/Frameworks/"
     )
 endif()
@@ -278,7 +287,7 @@ endif()
 target_link_options(Melissa PRIVATE
     -L${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spleeterpp/lib
     -L${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/lib
-    -Wl,-ld_classic
+    -L${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty
 )
 
 if(WIN32)
