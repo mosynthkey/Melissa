@@ -1003,6 +1003,10 @@ void MainComponent::createUI()
                 }
                 else if (result == kMenu_RedoStemSeparation) {
                     // Re-run stem separation
+                    model_->setPlaybackStatus(kPlaybackStatus_Stop);
+                    model_->setPlayPart(kPlayPart_All);
+                    MelissaStemProvider::getInstance()->deleteStems();
+                    dataSource_->loadFileAsync(dataSource_->getCurrentSongFilePath());
                     auto component = std::make_shared<MelissaStemSeparationSelectComponent>();
                     component->setSize(580, 280);
                     MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("separation_of_music"));
