@@ -83,9 +83,13 @@ public:
         text += "JSON for Modern C++ - https://github.com/nlohmann/json\n";
         text += "License: MIT\n\n";
         
-        // Tensorflow
+        // TensorFlow
         text += "TensorFlow - https://www.tensorflow.org/\n";
         text += "License: Apache 2.0\n\n";
+        
+        // ONNX Runtime
+        text += "ONNX Runtime - https://github.com/microsoft/onnxruntime\n";
+        text += "License: MIT\n\n";
         
         // Demucs
         text += "Demucs - https://github.com/facebookresearch/demucs\n";
@@ -107,9 +111,6 @@ public:
         text += "Spleet - https://github.com/gvne/spleet\n";
         text += "License: MIT\n\n";
         
-        // OpenBLAS
-        text += "OpenBLAS - https://www.openblas.net/\n";
-        text += "License: BSD\n\n";
         
         // Beat and Tempo Tracking
         /*
