@@ -95,8 +95,8 @@ public:
         text += "Demucs - https://github.com/facebookresearch/demucs\n";
         text += "License: MIT\n\n";
 
-        // Demucs.cpp
-        text += "Demucs.cpp - https://github.com/sevagh/demucs.cpp\n";
+        // Demucs.onnx
+        text += "Demucs.onnx - https://github.com/sevagh/demucs.onnx\n";
         text += "License: MIT\n\n";
 
         // Spleeter
