@@ -993,6 +993,8 @@ void MainComponent::createUI()
                     auto confirmDialog = std::make_shared<MelissaOptionDialog>(TRANS("confirm_remove_stems"), confirmOptions, [this](size_t confirmIndex) {
                         if (confirmIndex == 0)
                         {
+                            model_->setPlaybackStatus(kPlaybackStatus_Stop);
+                            model_->setPlayPart(kPlayPart_All);
                             MelissaStemProvider::getInstance()->deleteStems();
                             dataSource_->loadFileAsync(dataSource_->getCurrentSongFilePath());
                         }
