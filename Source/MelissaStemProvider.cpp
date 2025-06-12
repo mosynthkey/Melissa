@@ -386,7 +386,7 @@ StemProviderResult MelissaStemProvider::createStems()
             
             // Load the Demucs model
             auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
-            auto modelPath = settingsDir.getChildFile("models").getChildFile("demucs").getChildFile("htdemucs_6s.onnx").getFullPathName();
+            auto modelPath = settingsDir.getChildFile("models").getChildFile("demucs").getChildFile("htdemucs_6s.ort").getFullPathName();
 
             // Create Ort::SessionOptions
             Ort::SessionOptions session_options;
@@ -408,7 +408,22 @@ StemProviderResult MelissaStemProvider::createStems()
             std::vector<char> file_data(size);
             if (!file.read(file_data.data(), size)) return kStemProviderResult_FailedToInitialize;
             
-            bool success = demucsonnx::load_model(file_data, model, session_options);
+            bool success = false;
+            try
+            {
+                success = demucsonnx::load_model(file_data, model, session_options);
+            }
+            catch (const Ort::Exception& e)
+            {
+                DBG("ONNX Runtime Exception during model loading: " + String(e.what()));
+                return kStemProviderResult_FailedToInitialize;
+            }
+            catch (const std::exception& e)
+            {
+                DBG("Exception during model loading: " + String(e.what()));
+                return kStemProviderResult_FailedToInitialize;
+            }
+            
             if (!success) return kStemProviderResult_FailedToInitialize;
             
             // Process audio with Demucs
@@ -462,9 +477,20 @@ StemProviderResult MelissaStemProvider::createStems()
                     });
                 });
             }
-            catch(const std::exception& e)
+            catch (const Ort::Exception& e)
             {
+                DBG("ONNX Runtime Exception during inference: " + String(e.what()));
+                return kStemProviderResult_FailedToSplit;
+            }
+            catch (const std::runtime_error& e)
+            {
+                DBG("Runtime error during inference: " + String(e.what()));
                 return kStemProviderResult_Interrupted;
+            }
+            catch (const std::exception& e)
+            {
+                DBG("Exception during inference: " + String(e.what()));
+                return kStemProviderResult_FailedToSplit;
             }
             
             if (threadShouldExit()) return kStemProviderResult_Interrupted;
@@ -541,9 +567,20 @@ StemProviderResult MelissaStemProvider::createStems()
             // Clean up temporary directory
             tempDir.deleteRecursively();
         }
+        catch (const Ort::Exception& e)
+        {
+            DBG("ONNX Runtime Exception: " + String(e.what()));
+            return kStemProviderResult_FailedToSplit;
+        }
         catch (const std::exception& e)
         {
+            DBG("Standard Exception: " + String(e.what()));
             return kStemProviderResult_FailedToSplit;
+        }
+        catch (...)
+        {
+            DBG("Unknown exception occurred during Demucs processing");
+            return kStemProviderResult_UnknownError;
         }
     }
     else

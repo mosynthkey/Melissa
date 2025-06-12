@@ -10,6 +10,11 @@ set(MELISSA_VERSION_HEX "0x40000")
 
 project(Melissa VERSION ${MELISSA_VERSION})
 
+# Set MSVC runtime library consistently
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
+
 include(FetchContent)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/JUCE)
@@ -156,7 +161,7 @@ target_include_directories(Melissa PRIVATE
     Source/Audio
     Source/Audio/soundtouch
     Source/UI
-    Submodule/libonnxruntime/include
+    ThirdParty/libonnxruntime/include
     ThirdParty/demucs.onnx/src
 )
 
@@ -172,7 +177,6 @@ target_compile_definitions(Melissa PRIVATE
 )
 
 target_link_libraries(Melissa PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime.1.19.2.dylib
     juce::juce_core
     juce::juce_data_structures
     juce::juce_events
@@ -191,6 +195,7 @@ target_link_libraries(Melissa PRIVATE
     spleeter
     spleeter_common
     tensorflow
+    onnxruntime
 )
 
 juce_add_binary_data(MelissaBinaryData
@@ -234,6 +239,13 @@ juce_add_binary_data(MelissaBinaryData
 
 target_link_libraries(Melissa PRIVATE MelissaBinaryData)
 
+# Ensure consistent runtime library usage
+if(MSVC)
+    set_target_properties(Melissa PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+    )
+endif()
+
 if (APPLE)
     set_target_properties(Melissa PROPERTIES
         MACOSX_BUNDLE TRUE
@@ -273,5 +285,13 @@ if(WIN32)
     target_link_directories(Melissa PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spleeterpp/lib/Windows/$<CONFIG>
         ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-windows-x86_64-2.8.0/lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime/libs/win-x86_64
+    )
+
+    # Copy ONNX Runtime DLL to output directory post-build
+    add_custom_command(TARGET Melissa POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime/libs/win-x86_64/onnxruntime.dll"
+            $<TARGET_FILE_DIR:Melissa>
     )
 endif()
