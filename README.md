@@ -19,9 +19,14 @@
 
 ## How to build
 1. Get CMake
-2. Download and extract libtensorflow 2.8.0 to [ThirdParty](ThirdParty)
+2. Install thirdparty libraries
+Download and extract libtensorflow 2.8.0 to [ThirdParty](ThirdParty)
 - [macOS](https://github.com/mosynthkey/libtensorflow-cpu-darwin-universal-binary/releases/tag/v2.8.0)
 - [Windows](https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow%2Dcpu%2Dwindows%2Dx86_64%2D2.8.0.zip)
+
+Download and extract libonnxruntime to [ThirdParty](ThirdParty)
+- https://github.com/mosynthkey/Melissa/releases/download/v4.0.0/libonnxruntime.zip
+
 3. Install submodules
 ```
 git submodule update --init
