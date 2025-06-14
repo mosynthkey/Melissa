@@ -41,9 +41,11 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\tensorflow.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\libopenblas.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\onnxruntime.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Develop\Melissa\build\Melissa_artefacts\Release\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\ProgramData\Melissa\*"; DestDir: "C:\ProgramData\Melissa\"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Visual C++ Redistributable
+Source: "D:\Develop\Melissa\Installer\Windows\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -51,5 +53,7 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
+; Install Visual C++ Redistributable silently
+Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/quiet /norestart"; StatusMsg: "Installing Visual C++ Redistributable..."; Flags: waituntilterminated
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
