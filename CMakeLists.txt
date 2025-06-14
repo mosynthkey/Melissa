@@ -303,4 +303,11 @@ if(WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libonnxruntime/libs/win-x86_64/onnxruntime.dll"
             $<TARGET_FILE_DIR:Melissa>
     )
+    
+    # Copy TensorFlow CPU DLL to output directory post-build
+    add_custom_command(TARGET Melissa POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/libtensorflow-cpu-windows-x86_64-2.8.0/lib/tensorflow.dll"
+            $<TARGET_FILE_DIR:Melissa>
+    )
 endif()

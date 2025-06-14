@@ -39,7 +39,7 @@ To build on Windows, please get ASIO driver or disable ASIO from Projucer.
 See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 
 ## Contact
-[Twitter](https://twitter.com/Melissa__Player)
+[Twitter](https://x.com/Melissa__Player)
 
 ## Libraries
 - [JUCE](https://juce.com) 
@@ -49,8 +49,7 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [nlohmann/json](https://github.com/nlohmann/json)
 - [TensorFlow for C](https://www.tensorflow.org/install/)　
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
-- [demucs.cpp](https://github.com/sevagh/demucs.cpp)
-- [OpenBLAS](https://www.openblas.net/)
+- [demucs.onnx](https://github.com/sevagh/demucs.onnx)
 
 ## License
 [LGPL-2.1 (c) 2024 Masaki Ono](LICENSE)
