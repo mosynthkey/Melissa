@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Melissa"
-#define MyAppVersion "4.0.0"
+#define MyAppVersion "4.0.1"
 #define MyAppPublisher "Melissa Audio"
 #define MyAppURL "https://github.com/mosynthkey/Melissa"
 #define MyAppExeName "Melissa.exe"
@@ -24,7 +24,7 @@ LicenseFile=D:\Develop\Melissa\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=D:\Develop\Melissa\Installer\Windows
-OutputBaseFilename=Melissa_Installer_v4.0.0
+OutputBaseFilename=Melissa_Installer_v4.0.1
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern

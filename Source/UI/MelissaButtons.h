@@ -102,6 +102,7 @@ private:
         
         if (drawPlayIcon_)
         {
+            playDrawable_->replaceColour(juce::Colours::white, MelissaUISettings::getTextColour());
             playDrawable_->drawAt(g, 0, 0, on ? 1.f : 0.8f);
         }
         else

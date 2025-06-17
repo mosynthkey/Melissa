@@ -8,10 +8,10 @@
 
 ## Downloads
 ### macOS
-- [Version 4.0.0](https://github.com/mosynthkey/Melissa/releases/download/v4.0.0/Melissa_4_0_0.dmg)
+- [Version 4.0.1](https://github.com/mosynthkey/Melissa/releases/download/v4.0.1/Melissa_4_0_1.dmg)
 
 ### Windows
-- [Version 4.0.0 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v4.0.0/Melissa_4.0.0_64.zip)
+- [Version 4.0.1 (64bit)](https://github.com/mosynthkey/Melissa/releases/download/v4.0.1/Melissa_4.0.1_64.zip)
 
 ## Manual
 - [English](https://github.com/mosynthkey/Melissa/wiki/Manual-(English))
@@ -25,7 +25,7 @@ Download and extract libtensorflow 2.8.0 to [ThirdParty](ThirdParty)
 - [Windows](https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow%2Dcpu%2Dwindows%2Dx86_64%2D2.8.0.zip)
 
 Download and extract libonnxruntime to [ThirdParty](ThirdParty)
-- https://github.com/mosynthkey/Melissa/releases/download/v4.0.0/libonnxruntime.zip
+- https://github.com/mosynthkey/Melissa/releases/download/v4.0.1/libonnxruntime.zip
 
 3. Install submodules
 ```

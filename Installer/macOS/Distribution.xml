@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="1">
     <pkg-ref id="com.melissa-audio.melissa"/>
-    <title>Melissa v4.0.0</title>
+    <title>Melissa v4.0.1</title>
     <options customize="never" require-scripts="false" hostArchitectures="x86_64,arm64"/>
     <choices-outline>
         <line choice="default">
@@ -12,5 +12,5 @@
     <choice id="com.melissa-audio.melissa" visible="false">
         <pkg-ref id="com.melissa-audio.melissa"/>
     </choice>
-    <pkg-ref id="com.melissa-audio.melissa" version="4.0.0" onConclusion="none">Melissa_Installer_v4.0.0.pkg</pkg-ref>
+    <pkg-ref id="com.melissa-audio.melissa" version="4.0.1" onConclusion="none">Melissa_Installer_v4.0.1.pkg</pkg-ref>
 </installer-gui-script>
