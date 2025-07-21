@@ -10,3 +10,6 @@
 [submodule "Submodule/JUCE"]
 	path = Submodule/JUCE
 	url = git@github.com:juce-framework/JUCE.git
+[submodule "Submodule/beat_this_cpp"]
+	path = Submodule/beat_this_cpp
+	url = git@github.com:mosynthkey/beat_this_cpp.git
