@@ -2524,6 +2524,34 @@ void MainComponent::songChanged(const String &filePath, size_t bufferLength, int
     fileBrowserComponent_->setRoot(parentDir);
 
     shouldInitializeBpmDetector_ = true;
+    
+    // Update beat ruler when song changes
+    if (waveformComponent_ && dataSource_->hasBeatResult())
+    {
+        waveformComponent_->setBeatResult(dataSource_->getBeatResult());
+    }
+    else if (waveformComponent_)
+    {
+        waveformComponent_->clearBeatRuler();
+    }
+}
+
+void MainComponent::beatAnalysisCompleted(const MelissaBeatResult& result, bool success)
+{
+    std::cout << "MainComponent received beat analysis completion - Success: " << success << std::endl;
+    
+    if (waveformComponent_)
+    {
+        if (success && result.isValid)
+        {
+            waveformComponent_->setBeatResult(result);
+            std::cout << "Updated waveform with beat ruler" << std::endl;
+        }
+        else
+        {
+            waveformComponent_->clearBeatRuler();
+        }
+    }
 }
 
 void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String &filePath)

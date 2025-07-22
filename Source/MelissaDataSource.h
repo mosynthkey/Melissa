@@ -11,10 +11,7 @@
 #include "MelissaAudioEngine.h"
 #include "MelissaDefinitions.h"
 #include "MelissaModel.h"
-
-// Forward declarations
-struct MelissaBeatResult;
-class MelissaBeatDetector;
+#include "Audio/BeatThis/MelissaBeatDetector.h"
 
 #define SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST
 
@@ -379,6 +376,6 @@ private:
     std::map<juce::String, juce::String> defaultShortcut_;
     
     // Beat Analysis
-    std::unique_ptr<MelissaBeatDetector> beatThisDetector_;
+    std::unique_ptr<MelissaBeatDetector> beatDetector_;
     MelissaBeatResult currentFileBeatResult_;  // Only current file's result
 };

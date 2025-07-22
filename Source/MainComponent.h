@@ -174,6 +174,7 @@ public:
     // MelissaDataSourceListener
     void songChanged(const juce::String &filePath, size_t bufferLength, int32_t sampleRate) override;
     void fileLoadStatusChanged(FileLoadStatus status, const juce::String &filePath) override;
+    void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) override;
 
     // MenuBarModel
     juce::StringArray getMenuBarNames() override;

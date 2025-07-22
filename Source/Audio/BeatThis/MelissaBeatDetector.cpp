@@ -7,6 +7,7 @@
 
 #include "MelissaBeatDetector.h"
 #include "MelissaBeatResultCache.h"
+#include "MelissaDataSource.h"
 #include <thread>
 #include <atomic>
 #include <algorithm>

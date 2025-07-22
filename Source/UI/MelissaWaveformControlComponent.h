@@ -14,6 +14,7 @@
 #include "MelissaMarkerListener.h"
 #include "MelissaModel.h"
 #include "MelissaWaveformMouseEventComponent.h"
+#include "MelissaBeatRulerComponent.h"
 
 class MelissaWaveformControlComponent : public juce::Component,
                                         public MelissaDataSourceListener,
@@ -29,6 +30,11 @@ public:
     void showTimeTooltip(float posRatio);
     void hideTimeTooltip();
     void setMarkerListener(MelissaMarkerListener* listener) { listener_ = listener; }
+    
+    // Beat ruler functionality
+    void setBeatResult(const MelissaBeatResult& result);
+    void clearBeatRuler();
+    void setBeatRulerVisible(bool visible);
     
     // MelissaDataSourceListener
     void songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate) override;
@@ -48,6 +54,7 @@ private:
     
     std::unique_ptr<MelissaLoopRangeComponent> loopRangeComponent_;
     std::unique_ptr<MelissaWaveformMouseEventComponent> mouseEventComponent_;
+    std::unique_ptr<MelissaBeatRulerComponent> beatRulerComponent_;
     
     std::vector<std::unique_ptr<juce::Label>> timeLabels_;
     void arrangeTimeLabels() const;

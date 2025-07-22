@@ -9,11 +9,13 @@
 
 #include <JuceHeader.h>
 #include "../../../Submodule/beat_this_cpp/Source/beat_this_api.h"
-#include "../MelissaDataSource.h"
 #include <functional>
 #include <memory>
 #include <vector>
 #include <string>
+
+// Forward declaration
+class MelissaDataSource;
 
 struct MelissaBeatResult
 {

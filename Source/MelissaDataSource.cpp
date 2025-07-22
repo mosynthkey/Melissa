@@ -1471,11 +1471,11 @@ void MelissaDataSource::addToHistory(const String &filePath)
 // Beat Analysis Methods
 void MelissaDataSource::startBeatAnalysis()
 {
-    if (beatThisDetector_ == nullptr)
+    if (beatDetector_ == nullptr)
     {
         // Initialize beat detector (with safe initialization)
         try {
-            beatThisDetector_ = std::make_unique<MelissaBeatDetector>();
+            beatDetector_ = std::make_unique<MelissaBeatDetector>();
             auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
             auto modelDir = settingsDir.getChildFile("models").getChildFile("beat_this");
             auto modelPath = modelDir.getChildFile("beat_this.onnx").getFullPathName().toStdString();
@@ -1486,30 +1486,30 @@ void MelissaDataSource::startBeatAnalysis()
             if (!File(modelPath).existsAsFile()) {
                 std::cout << "Beat detection model not found at: " << modelPath << std::endl;
                 std::cout << "Beat detection will be unavailable." << std::endl;
-                beatThisDetector_.reset(); // Clear the detector
+                beatDetector_.reset(); // Clear the detector
             } else {
-                bool success = beatThisDetector_->initialize(modelPath);
+                bool success = beatDetector_->initialize(modelPath);
                 if (!success) {
                     std::cout << "Failed to initialize beat detector" << std::endl;
-                    beatThisDetector_.reset(); // Clear the detector
+                    beatDetector_.reset(); // Clear the detector
                 } else {
                     std::cout << "Beat detector initialized successfully" << std::endl;
                 }
             }
         } catch (const std::exception& e) {
             std::cout << "Exception during beat detector initialization: " << e.what() << std::endl;
-            beatThisDetector_.reset(); // Clear the detector
+            beatDetector_.reset(); // Clear the detector
             for (auto &&l : listeners_) l->beatAnalysisCompleted(MelissaBeatResult{}, false);
             return;
         } catch (...) {
             std::cout << "Unknown exception during beat detector initialization" << std::endl;
-            beatThisDetector_.reset(); // Clear the detector
+            beatDetector_.reset(); // Clear the detector
             for (auto &&l : listeners_) l->beatAnalysisCompleted(MelissaBeatResult{}, false);
             return;
         }
     }
     
-    if (beatThisDetector_->isAnalysisRunning())
+    if (beatDetector_->isAnalysisRunning())
     {
         std::cout << "Beat analysis already running" << std::endl;
         return;
@@ -1527,7 +1527,7 @@ void MelissaDataSource::startBeatAnalysis()
     for (auto &&l : listeners_)
         l->beatAnalysisStarted();
     
-    beatThisDetector_->startAnalysisAsync(
+    beatDetector_->startAnalysisAsync(
         [this](float progress) {
             // Progress callback
             for (auto &&l : listeners_)
@@ -1554,14 +1554,14 @@ void MelissaDataSource::startBeatAnalysis()
 
 bool MelissaDataSource::isBeatAnalysisRunning() const
 {
-    return beatThisDetector_ && beatThisDetector_->isAnalysisRunning();
+    return beatDetector_ && beatDetector_->isAnalysisRunning();
 }
 
 void MelissaDataSource::cancelBeatAnalysis()
 {
-    if (beatThisDetector_)
+    if (beatDetector_)
     {
-        beatThisDetector_->cancelAnalysis();
+        beatDetector_->cancelAnalysis();
     }
 }
 

@@ -73,6 +73,8 @@ target_sources(Melissa PRIVATE
     Source/MelissaStemProvider.h
     Source/MelissaUpdateChecker.cpp
     Source/UI/MelissaAboutComponent.h
+    Source/UI/MelissaBeatRulerComponent.cpp
+    Source/UI/MelissaBeatRulerComponent.h
     Source/UI/MelissaBPMSettingComponent.h
     Source/UI/MelissaBrowserComponent.cpp
     Source/UI/MelissaBrowserComponent.h
@@ -170,6 +172,7 @@ target_include_directories(Melissa PRIVATE
     ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include
     Source
     Source/Audio
+    Source/Audio/BeatThis
     Source/Audio/soundtouch
     Source/UI
     ThirdParty/libonnxruntime/include

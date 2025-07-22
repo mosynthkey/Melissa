@@ -328,6 +328,9 @@ listener_(nullptr)
     loopRangeComponent_ = std::make_unique<MelissaLoopRangeComponent>();
     addAndMakeVisible(loopRangeComponent_.get());
     
+    beatRulerComponent_ = std::make_unique<MelissaBeatRulerComponent>();
+    addChildComponent(beatRulerComponent_.get()); // Initially hidden
+    
     mouseEventComponent_ = std::make_unique<MelissaWaveformMouseEventComponent>();
     mouseEventComponent_->addListener(this);
     mouseEventComponent_->addListener(waveformView_.get());
@@ -345,15 +348,23 @@ MelissaWaveformControlComponent::~MelissaWaveformControlComponent() {}
 
 void MelissaWaveformControlComponent::resized()
 {
+    constexpr int kBeatRulerHeight = 30;
+    
 #ifdef JUCE_IOS
-    waveformView_->setBounds(20, 10, getWidth() - 20 * 2, getHeight() - 28);
+    waveformView_->setBounds(20, 10, getWidth() - 20 * 2, getHeight() - 28 - kBeatRulerHeight);
 #else
-    waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40);
+    waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40 - kBeatRulerHeight);
 #endif
     markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
     
     loopRangeComponent_->setBounds(waveformView_->getBounds());
     mouseEventComponent_->setBounds(waveformView_->getBounds());
+    
+    // Position beat ruler below waveform
+    beatRulerComponent_->setBounds(waveformView_->getX(), 
+                                   waveformView_->getBottom(), 
+                                   waveformView_->getWidth(), 
+                                   kBeatRulerHeight);
     
     posTooltip_->setTopLeftPosition(0, 0);
     
@@ -490,5 +501,41 @@ void MelissaWaveformControlComponent::arrangeTimeLabels() const
         l->setVisible(show);
         if (show) prevLabelRight = l->getRight();
         ++minuteIndex;
+    }
+}
+
+void MelissaWaveformControlComponent::setBeatResult(const MelissaBeatResult& result)
+{
+    if (beatRulerComponent_)
+    {
+        beatRulerComponent_->setBeatResult(result);
+        
+        // Update audio length for proper positioning
+        auto dataSource = MelissaDataSource::getInstance();
+        if (dataSource->isFileLoaded())
+        {
+            const float lengthInSeconds = static_cast<float>(dataSource->getBufferLength()) / dataSource->getSampleRate();
+            beatRulerComponent_->setAudioLength(lengthInSeconds);
+        }
+        
+        // Show the ruler if we have valid beat data
+        setBeatRulerVisible(result.isValid && !result.beatPositions.empty());
+    }
+}
+
+void MelissaWaveformControlComponent::clearBeatRuler()
+{
+    if (beatRulerComponent_)
+    {
+        beatRulerComponent_->clearBeats();
+        setBeatRulerVisible(false);
+    }
+}
+
+void MelissaWaveformControlComponent::setBeatRulerVisible(bool visible)
+{
+    if (beatRulerComponent_)
+    {
+        beatRulerComponent_->setVisible(visible);
     }
 }
