@@ -1944,7 +1944,7 @@ void MainComponent::resized_Desktop()
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
 
     constexpr int kOffset = 20;
-    waveformHolderComponent_->setSize(getWidth() - 30 * 2, 160 + 36);
+    waveformHolderComponent_->setSize(getWidth() * 2 - 30 * 2, 160 + 36);
     waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
     markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
 

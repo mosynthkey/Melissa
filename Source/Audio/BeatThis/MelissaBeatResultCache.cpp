@@ -119,7 +119,9 @@ bool MelissaBeatResultCache::loadCachedResult(const std::string& audioFilePath, 
                 continue;
             
             // Parse beat data: position(seconds) beat_number
-            auto tokens = juce::StringArray::fromTokens(trimmedLine, true);
+            auto tokens = juce::StringArray::fromTokens(trimmedLine, " \t", "\"");
+            tokens.removeEmptyStrings(true);
+            
             if (tokens.size() >= 2)
             {
                 float position = tokens[0].getFloatValue();
@@ -171,11 +173,11 @@ void MelissaBeatResultCache::saveCachedResult(const std::string& audioFilePath, 
             
             if (i < result.beatCounts.size())
             {
-                content << "    " << result.beatCounts[i];
+                content << "\t" << result.beatCounts[i];
             }
             else
             {
-                content << "    1"; // Default to downbeat if no count available
+                content << "\t1"; // Default to downbeat if no count available
             }
             
             content << "\n";

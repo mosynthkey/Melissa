@@ -6,6 +6,7 @@
 //
 
 #include "MelissaBeatRulerComponent.h"
+#include "MelissaUISettings.h"
 
 MelissaBeatRulerComponent::MelissaBeatRulerComponent() : audioLengthSeconds_(0.0f)
 {
@@ -14,14 +15,35 @@ MelissaBeatRulerComponent::MelissaBeatRulerComponent() : audioLengthSeconds_(0.0
 
 void MelissaBeatRulerComponent::paint(juce::Graphics& g)
 {
-    // For now, just fill with red color as placeholder
-    g.fillAll(juce::Colours::red.withAlpha(0.3f));
+    auto bounds = getLocalBounds();
     
-    // Add some debug text
-    g.setColour(juce::Colours::black);
-    g.setFont(12.0f);
-    juce::String text = "Beat Ruler - Beats: " + juce::String(beatResult_.beatPositions.size());
-    g.drawText(text, getLocalBounds(), juce::Justification::centredLeft);
+    // Fill background with sub colour
+    g.fillAll(MelissaUISettings::getSubColour());
+    
+    // Draw horizontal line at bottom
+    g.setColour(MelissaUISettings::getTextColour(0.3f));
+    g.drawHorizontalLine(bounds.getBottom() - 1, 0.0f, static_cast<float>(bounds.getWidth()));
+    
+    // Draw onset/downbeat position lines (fallback to beats if no downbeats)
+    if (beatResult_.isValid && audioLengthSeconds_ > 0.0f)
+    {
+        g.setColour(MelissaUISettings::getAccentColour(0.7f));
+        
+        // Use downbeats if available, otherwise fallback to beats
+        const auto& positions = !beatResult_.downbeatPositions.empty() ? 
+                               beatResult_.downbeatPositions : beatResult_.beatPositions;
+        
+        for (const float pos : positions)
+        {
+            // Convert position (seconds) to pixel position
+            float xPos = (pos / audioLengthSeconds_) * bounds.getWidth();
+            
+            if (xPos >= 0.0f && xPos <= bounds.getWidth())
+            {
+                g.drawVerticalLine(static_cast<int>(xPos), 0.0f, static_cast<float>(bounds.getHeight()));
+            }
+        }
+    }
 }
 
 void MelissaBeatRulerComponent::resized()
