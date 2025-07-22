@@ -12,6 +12,10 @@
 #include "MelissaDefinitions.h"
 #include "MelissaModel.h"
 
+// Forward declarations
+struct MelissaBeatResult;
+class MelissaBeatDetector;
+
 #define SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST
 
 enum FileLoadStatus
@@ -37,6 +41,9 @@ public:
     virtual void fontChanged(const juce::Font &mainFont, const juce::Font &subFont, const juce::Font &miniFont) {}
     virtual void exportStarted() {}
     virtual void exportCompleted(bool result, juce::String message) {}
+    virtual void beatAnalysisStarted() {}
+    virtual void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) {}
+    virtual void beatAnalysisProgress(float progress) {}
 };
 
 class MelissaDataSource : public juce::AsyncUpdater
@@ -245,6 +252,13 @@ public:
     static juce::String getCompatibleFileExtensions();
     void loadFileAsync(const juce::File &file, std::function<void()> functionToCallAfterFileLoad = nullptr);
     void loadFileAsync(const juce::String &filePath, std::function<void()> functionToCallAfterFileLoad = nullptr) { loadFileAsync(juce::File(filePath), functionToCallAfterFileLoad); }
+    
+    // Beat Analysis
+    void startBeatAnalysis();
+    bool isBeatAnalysisRunning() const;
+    void cancelBeatAnalysis();
+    bool hasBeatResult() const;  // For current file only
+    MelissaBeatResult getBeatResult() const;  // For current file only
 
     enum Reader
     {
@@ -326,7 +340,11 @@ public:
     void handleAsyncUpdate() override;
 
     // Singleton
-    static MelissaDataSource *getInstance() { return &instance_; }
+    static MelissaDataSource *getInstance() 
+    { 
+        static MelissaDataSource instance;
+        return &instance;
+    }
     MelissaDataSource(const MelissaDataSource &) = delete;
     MelissaDataSource &operator=(const MelissaDataSource &) = delete;
     MelissaDataSource(MelissaDataSource &&) = delete;
@@ -336,7 +354,10 @@ private:
     // Singleton
     MelissaDataSource();
     ~MelissaDataSource() override;
-    static MelissaDataSource instance_;
+
+    // Beat Analysis helpers
+    void loadBeatResultForCurrentFile();
+    void saveBeatResultForCurrentFile();
 
     // History
     void addToHistory(const juce::String &filePath);
@@ -356,4 +377,8 @@ private:
 
     bool wasPlaying_;
     std::map<juce::String, juce::String> defaultShortcut_;
+    
+    // Beat Analysis
+    std::unique_ptr<MelissaBeatDetector> beatThisDetector_;
+    MelissaBeatResult currentFileBeatResult_;  // Only current file's result
 };

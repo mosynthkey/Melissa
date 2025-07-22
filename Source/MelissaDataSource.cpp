@@ -9,6 +9,9 @@
 #include "MelissaDefinitions.h"
 #include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
+#include "Audio/BeatThis/MelissaBeatDetector.h"
+#include "Audio/BeatThis/MelissaBeatResultCache.h"
+#include <iostream>
 
 using namespace juce;
 
@@ -16,8 +19,6 @@ enum
 {
     kMaxSizeOfHistoryList = 40,
 };
-
-MelissaDataSource MelissaDataSource::instance_;
 
 MelissaDataSource::MelissaDataSource() : model_(MelissaModel::getInstance()),
                                          sampleRate_(0.f),
@@ -1369,6 +1370,9 @@ void MelissaDataSource::handleAsyncUpdate()
     currentSongFilePath_ = fileToload_.getFullPathName();
     audioEngine_->updateBuffer();
 
+    // Load beat result for the new file
+    loadBeatResultForCurrentFile();
+    
     for (auto &&l : listeners_)
     {
         l->fileLoadStatusChanged(kFileLoadStatus_Success, currentSongFilePath_);
@@ -1462,4 +1466,147 @@ void MelissaDataSource::addToHistory(const String &filePath)
 
     for (auto &&l : listeners_)
         l->historyUpdated();
+}
+
+// Beat Analysis Methods
+void MelissaDataSource::startBeatAnalysis()
+{
+    if (beatThisDetector_ == nullptr)
+    {
+        // Initialize beat detector (with safe initialization)
+        try {
+            beatThisDetector_ = std::make_unique<MelissaBeatDetector>();
+            auto settingsDir = (File::getSpecialLocation(File::commonApplicationDataDirectory).getChildFile("Melissa"));
+            auto modelDir = settingsDir.getChildFile("models").getChildFile("beat_this");
+            auto modelPath = modelDir.getChildFile("beat_this.onnx").getFullPathName().toStdString();
+            
+            std::cout << "Trying to initialize beat detector with model: " << modelPath << std::endl;
+            
+            // Check if model file exists
+            if (!File(modelPath).existsAsFile()) {
+                std::cout << "Beat detection model not found at: " << modelPath << std::endl;
+                std::cout << "Beat detection will be unavailable." << std::endl;
+                beatThisDetector_.reset(); // Clear the detector
+            } else {
+                bool success = beatThisDetector_->initialize(modelPath);
+                if (!success) {
+                    std::cout << "Failed to initialize beat detector" << std::endl;
+                    beatThisDetector_.reset(); // Clear the detector
+                } else {
+                    std::cout << "Beat detector initialized successfully" << std::endl;
+                }
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Exception during beat detector initialization: " << e.what() << std::endl;
+            beatThisDetector_.reset(); // Clear the detector
+            for (auto &&l : listeners_) l->beatAnalysisCompleted(MelissaBeatResult{}, false);
+            return;
+        } catch (...) {
+            std::cout << "Unknown exception during beat detector initialization" << std::endl;
+            beatThisDetector_.reset(); // Clear the detector
+            for (auto &&l : listeners_) l->beatAnalysisCompleted(MelissaBeatResult{}, false);
+            return;
+        }
+    }
+    
+    if (beatThisDetector_->isAnalysisRunning())
+    {
+        std::cout << "Beat analysis already running" << std::endl;
+        return;
+    }
+        
+    if (!isFileLoaded())
+    {
+        std::cout << "No file loaded for beat analysis" << std::endl;
+        return;
+    }
+    
+    std::cout << "Starting beat analysis from MelissaDataSource..." << std::endl;
+    
+    // Notify listeners that analysis started
+    for (auto &&l : listeners_)
+        l->beatAnalysisStarted();
+    
+    beatThisDetector_->startAnalysisAsync(
+        [this](float progress) {
+            // Progress callback
+            for (auto &&l : listeners_)
+                l->beatAnalysisProgress(progress);
+        },
+        [this](const MelissaBeatResult& result, bool success) {
+            // Completion callback
+            std::cout << "Beat analysis completed in MelissaDataSource. Success: " << success << std::endl;
+            
+            if (success && result.isValid)
+            {
+                // Store the result for current file
+                currentFileBeatResult_ = result;
+                saveBeatResultForCurrentFile();
+                std::cout << "Saved beat result for: " << currentSongFilePath_ << std::endl;
+            }
+            
+            // Notify listeners
+            for (auto &&l : listeners_)
+                l->beatAnalysisCompleted(result, success);
+        }
+    );
+}
+
+bool MelissaDataSource::isBeatAnalysisRunning() const
+{
+    return beatThisDetector_ && beatThisDetector_->isAnalysisRunning();
+}
+
+void MelissaDataSource::cancelBeatAnalysis()
+{
+    if (beatThisDetector_)
+    {
+        beatThisDetector_->cancelAnalysis();
+    }
+}
+
+bool MelissaDataSource::hasBeatResult() const
+{
+    return currentFileBeatResult_.isValid;
+}
+
+MelissaBeatResult MelissaDataSource::getBeatResult() const
+{
+    return currentFileBeatResult_;
+}
+
+void MelissaDataSource::loadBeatResultForCurrentFile()
+{
+    if (currentSongFilePath_.isEmpty())
+    {
+        currentFileBeatResult_ = MelissaBeatResult(); // Clear result
+        return;
+    }
+    
+    auto cache = MelissaBeatResultCache::getInstance();
+    MelissaBeatResult result;
+    if (cache->loadCachedResult(currentSongFilePath_.toStdString(), result))
+    {
+        currentFileBeatResult_ = result;
+        std::cout << "Loaded cached beat result for: " << currentSongFilePath_ << std::endl;
+        
+        // Notify listeners that beat result is available
+        for (auto &&l : listeners_)
+            l->beatAnalysisCompleted(result, true);
+    }
+    else
+    {
+        currentFileBeatResult_ = MelissaBeatResult(); // Clear result
+        std::cout << "No cached beat result found for: " << currentSongFilePath_ << std::endl;
+    }
+}
+
+void MelissaDataSource::saveBeatResultForCurrentFile()
+{
+    if (currentSongFilePath_.isEmpty() || !currentFileBeatResult_.isValid)
+        return;
+    
+    auto cache = MelissaBeatResultCache::getInstance();
+    cache->saveCachedResult(currentSongFilePath_.toStdString(), currentFileBeatResult_);
+    std::cout << "Saved beat result to cache for: " << currentSongFilePath_ << std::endl;
 }

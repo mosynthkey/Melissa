@@ -55,6 +55,10 @@ target_sources(Melissa PRIVATE
     Source/Audio/MelissaBPMDetector.cpp
     Source/Audio/MelissaMetronome.cpp
     Source/Audio/soundtouch/BPMDetect_for_Melissa.cpp
+    Source/Audio/BeatThis/MelissaBeatDetector.cpp
+    Source/Audio/BeatThis/MelissaBeatDetector.h
+    Source/Audio/BeatThis/MelissaBeatResultCache.cpp
+    Source/Audio/BeatThis/MelissaBeatResultCache.h
     Source/Main.cpp
     Source/MainComponent.cpp
     Source/MelissaCommand.cpp
@@ -145,6 +149,10 @@ target_sources(Melissa PRIVATE
     ThirdParty/demucs.onnx/src/model_apply.cpp
     ThirdParty/demucs.onnx/src/model_inference.cpp
     ThirdParty/demucs.onnx/src/dsp.cpp
+    Submodule/beat_this_cpp/Source/beat_this_api.cpp
+    Submodule/beat_this_cpp/Source/InferenceProcessor.cpp
+    Submodule/beat_this_cpp/Source/MelSpectrogram.cpp
+    Submodule/beat_this_cpp/Source/Postprocessor.cpp
 )
 
 target_include_directories(Melissa PRIVATE
@@ -154,6 +162,9 @@ target_include_directories(Melissa PRIVATE
     Submodule/json/single_include
     Submodule/signalsmith-stretch
     Submodule/signalsmith-stretch/dsp
+    Submodule/beat_this_cpp/Source
+    Submodule/beat_this_cpp/Submodule/miniaudio
+    Submodule/beat_this_cpp/Submodule/pocketfft
     ThirdParty/spleet
     ThirdParty/spleeterpp/include
     ThirdParty/libtensorflow-cpu-darwin-universal-binary-2.8.0/include

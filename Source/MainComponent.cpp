@@ -6,6 +6,7 @@
 //
 
 #include <sstream>
+#include <iostream>
 #include "MainComponent.h"
 #include "MelissaAboutComponent.h"
 #include "MelissaBPMSettingComponent.h"
@@ -888,6 +889,24 @@ void MainComponent::createUI()
 
         exportProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
         componentToAdd->addChildComponent(exportProgressBar_.get());
+
+        debugButton_ = std::make_unique<TextButton>("Debug");
+        debugButton_->setTooltip("Debug beat analysis");
+        debugButton_->onClick = [&]()
+        {
+            std::cout << "Debug button clicked!" << std::endl;
+            
+            if (!dataSource_->isFileLoaded())
+            {
+                std::cout << "Please load a song file first" << std::endl;
+                return;
+            }
+            
+            // Trigger beat analysis through MelissaDataSource
+            dataSource_->startBeatAnalysis();
+        };
+        componentToAdd->addAndMakeVisible(debugButton_.get());
+
 
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
         mainVolumeSlider_->setTooltip(TRANS("volume_main"));
@@ -1915,7 +1934,8 @@ void MainComponent::resized_Desktop()
         constexpr int kAudioDeviceButtonWidth = 300;
         audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
-        exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
+        debugButton_->setBounds(audioDeviceButton_->getX() - 120, (kHeaderHeight - 30) / 2, 80, 30);
+        exportButton_->setBounds(debugButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
         trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);

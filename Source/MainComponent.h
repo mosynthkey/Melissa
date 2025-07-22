@@ -247,6 +247,7 @@ private:
     std::unique_ptr<juce::DrawableButton> trimButton_;
     std::unique_ptr<juce::DrawableButton> exportButton_;
     std::unique_ptr<MelissaProgressBarComponent> exportProgressBar_;
+    std::unique_ptr<juce::TextButton> debugButton_;
 
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
