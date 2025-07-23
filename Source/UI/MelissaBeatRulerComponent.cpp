@@ -16,31 +16,68 @@ MelissaBeatRulerComponent::MelissaBeatRulerComponent() : audioLengthSeconds_(0.0
 void MelissaBeatRulerComponent::paint(juce::Graphics& g)
 {
     auto bounds = getLocalBounds();
-    
-    // Fill background with sub colour
-    g.fillAll(MelissaUISettings::getSubColour());
+    constexpr float lineWidth = 1.0f;
     
     // Draw horizontal line at bottom
-    g.setColour(MelissaUISettings::getTextColour(0.3f));
-    g.drawHorizontalLine(bounds.getBottom() - 1, 0.0f, static_cast<float>(bounds.getWidth()));
+    g.setColour(MelissaUISettings::getAccentColour());
+    g.fillRect(0, bounds.getBottom() - 1, bounds.getWidth(), 1);
     
-    // Draw onset/downbeat position lines (fallback to beats if no downbeats)
-    if (beatResult_.isValid && audioLengthSeconds_ > 0.0f)
+    if (!beatResult_.isValid || audioLengthSeconds_ <= 0.0f)
+        return;
+    
+    // Calculate average pixel spacing between beats to determine if we should draw all beats
+    constexpr float kMinPixelSpacing = 20.0f; // Minimum spacing to draw all beats
+    bool shouldDrawAllBeats = false;
+    
+    if (!beatResult_.beatPositions.empty() && beatResult_.beatPositions.size() > 1)
     {
-        g.setColour(MelissaUISettings::getAccentColour(0.7f));
+        // Calculate average beat interval in pixels
+        float totalDuration = beatResult_.beatPositions.back() - beatResult_.beatPositions.front();
+        float avgBeatInterval = totalDuration / (beatResult_.beatPositions.size() - 1);
+        float avgPixelSpacing = (avgBeatInterval / audioLengthSeconds_) * bounds.getWidth();
         
-        // Use downbeats if available, otherwise fallback to beats
-        const auto& positions = !beatResult_.downbeatPositions.empty() ? 
-                               beatResult_.downbeatPositions : beatResult_.beatPositions;
-        
-        for (const float pos : positions)
+        shouldDrawAllBeats = avgPixelSpacing >= kMinPixelSpacing;
+    }
+    
+    if (shouldDrawAllBeats && !beatResult_.beatPositions.empty())
+    {
+        // Draw all beats with different heights for downbeats vs regular beats
+        for (size_t i = 0; i < beatResult_.beatPositions.size(); ++i)
         {
-            // Convert position (seconds) to pixel position
+            float pos = beatResult_.beatPositions[i];
             float xPos = (pos / audioLengthSeconds_) * bounds.getWidth();
             
             if (xPos >= 0.0f && xPos <= bounds.getWidth())
             {
-                g.drawVerticalLine(static_cast<int>(xPos), 0.0f, static_cast<float>(bounds.getHeight()));
+                
+                
+                // Check if this beat is a downbeat
+                bool isDownbeat = false;
+                if (i < beatResult_.beatCounts.size())
+                {
+                    isDownbeat = (beatResult_.beatCounts[i] == 1);
+                }
+                
+                // Different line heights for downbeats vs regular beats
+                float lineHeight = isDownbeat ? bounds.getHeight() * 0.8f : bounds.getHeight() * 0.5f;
+                float yStart = bounds.getHeight() - lineHeight;
+
+                g.fillRect(xPos - lineWidth / 2.f, static_cast<float>(bounds.getHeight() - lineHeight), lineWidth, lineHeight);
+            }
+        }
+    }
+    else if (!beatResult_.downbeatPositions.empty())
+    {
+        // Draw only downbeats when spacing is too tight
+        float lineHeight = bounds.getHeight() * 0.8f;
+
+        for (const float pos : beatResult_.downbeatPositions)
+        {
+            float xPos = (pos / audioLengthSeconds_) * bounds.getWidth();
+            
+            if (xPos >= 0.0f && xPos <= bounds.getWidth())
+            {
+                g.fillRect(xPos - lineWidth / 2.f, static_cast<float>(bounds.getHeight() - lineHeight), lineWidth, lineHeight);
             }
         }
     }

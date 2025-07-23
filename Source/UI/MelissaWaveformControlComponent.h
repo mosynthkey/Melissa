@@ -23,6 +23,7 @@ class MelissaWaveformControlComponent : public juce::Component,
 public:
     MelissaWaveformControlComponent();
     virtual ~MelissaWaveformControlComponent();
+    void updateWaveformImmediately();
     
     void resized() override;
     
@@ -35,6 +36,7 @@ public:
     void setBeatResult(const MelissaBeatResult& result);
     void clearBeatRuler();
     void setBeatRulerVisible(bool visible);
+    bool shouldShowBeatRuler() const;
     
     // MelissaDataSourceListener
     void songChanged(const juce::String& filePath, size_t bufferLength, int32_t sampleRate) override;

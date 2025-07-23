@@ -94,6 +94,7 @@ public:
         
         current_->setVisible(true);
         size_t strip = static_cast<float>(xRatio * getWidth() / (waveformStripWidth_ + waveformStripInterval_));
+        if (previewBuffer_.size() <= strip) return;
         const int32_t height = previewBuffer_[strip] * getHeight();
         const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * strip);
         current_->setBounds(x, getHeight() - height, waveformStripWidth_, height);
@@ -346,25 +347,41 @@ listener_(nullptr)
 
 MelissaWaveformControlComponent::~MelissaWaveformControlComponent() {}
 
+void MelissaWaveformControlComponent::updateWaveformImmediately()
+{
+    waveformView_->update(true);
+}
+
 void MelissaWaveformControlComponent::resized()
 {
-    constexpr int kBeatRulerHeight = 30;
+    constexpr int kBeatRulerHeight = 20;
+    
+    // Determine if beat ruler should occupy space
+    const bool showBeatRuler = shouldShowBeatRuler();
+    const int rulerHeightToSubtract = showBeatRuler ? kBeatRulerHeight : 0;
     
 #ifdef JUCE_IOS
-    waveformView_->setBounds(20, 10, getWidth() - 20 * 2, getHeight() - 28 - kBeatRulerHeight);
+    waveformView_->setBounds(20, 10, getWidth() - 20 * 2, getHeight() - 28 - rulerHeightToSubtract);
 #else
-    waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40 - kBeatRulerHeight);
+    waveformView_->setBounds(20, 20, getWidth() - 20 * 2, getHeight() - 40 - rulerHeightToSubtract);
 #endif
-    markerBaseComponent_->setBounds(0, 0, getWidth(), getHeight());
+    
+    // Marker base component should match waveform area (excluding ruler)
+    markerBaseComponent_->setBounds(0, 0,
+                                   getWidth(),
+                                    waveformView_->getY() + waveformView_->getHeight());
     
     loopRangeComponent_->setBounds(waveformView_->getBounds());
     mouseEventComponent_->setBounds(waveformView_->getBounds());
     
-    // Position beat ruler below waveform
-    beatRulerComponent_->setBounds(waveformView_->getX(), 
-                                   waveformView_->getBottom(), 
-                                   waveformView_->getWidth(), 
-                                   kBeatRulerHeight);
+    // Position beat ruler below waveform only if it should be shown
+    if (showBeatRuler)
+    {
+        beatRulerComponent_->setBounds(waveformView_->getX(), 
+                                       waveformView_->getBottom(), 
+                                       waveformView_->getWidth(), 
+                                       kBeatRulerHeight);
+    }
     
     posTooltip_->setTopLeftPosition(0, 0);
     
@@ -537,5 +554,11 @@ void MelissaWaveformControlComponent::setBeatRulerVisible(bool visible)
     if (beatRulerComponent_)
     {
         beatRulerComponent_->setVisible(visible);
+        resized(); // Trigger layout update when visibility changes
     }
+}
+
+bool MelissaWaveformControlComponent::shouldShowBeatRuler() const
+{
+    return beatRulerComponent_ && beatRulerComponent_->isVisible();
 }

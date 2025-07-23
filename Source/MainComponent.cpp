@@ -601,7 +601,7 @@ MainComponent::MainComponent(const String &commandLine) : Thread("MelissaProcess
     setAudioChannels(0, 2, xmlDocument.get());
     Thread::addListener(this);
     startThread();
-    startTimer(1000 / 10);
+    startTimerHz(20);
 
     addKeyListener(this);
 
@@ -918,6 +918,39 @@ void MainComponent::createUI()
             model_->setMainVolume(mainVolumeSlider_->getValue());
         };
         componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
+        
+        waveformZoomSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        waveformZoomSlider_->setTooltip(TRANS("waveform_zoom"));
+        waveformZoomSlider_->setRange(1.0f, 20.f);
+        waveformZoomSlider_->setDoubleClickReturnValue(true, 1.0f);
+        waveformZoomSlider_->setValue(1.0f);
+        waveformZoomSlider_->onValueChange = [this]()
+        {
+            resized(); // Trigger waveform resize
+            waveformComponent_->updateWaveformImmediately();
+        };
+        componentToAdd->addAndMakeVisible(waveformZoomSlider_.get());
+        
+        zoomLoopRangeButton_ = make_unique<TextButton>("Loop");
+        zoomLoopRangeButton_->setTooltip("Zoom to Loop Range");
+        zoomLoopRangeButton_->onClick = [this]()
+        {
+            zoomToLoopRange();
+        };
+        componentToAdd->addAndMakeVisible(zoomLoopRangeButton_.get());
+        
+        followPlayingPositionButton_ = make_unique<ToggleButton>("Follow");
+        followPlayingPositionButton_->setTooltip("Follow Playing Position");
+        followPlayingPositionButton_->setToggleState(false, dontSendNotification);
+        componentToAdd->addAndMakeVisible(followPlayingPositionButton_.get());
+        
+        snapLoopToDownbeatButton_ = make_unique<TextButton>("Snap");
+        snapLoopToDownbeatButton_->setTooltip("Snap Loop to Downbeats");
+        snapLoopToDownbeatButton_->onClick = [this]()
+        {
+            snapLoopToDownbeat();
+        };
+        componentToAdd->addAndMakeVisible(snapLoopToDownbeatButton_.get());
     }
 
     {
@@ -1929,10 +1962,19 @@ void MainComponent::resized_Desktop()
         timeLabel_->setBounds(getWidth() / 2 - labelWidth / 2, kHeaderHeight / 2, labelWidth, kHeaderHeight / 2);
 
         constexpr int kMainVolumeWidth = 140;
+        constexpr int kWaveformZoomWidth = 120;
+        constexpr int kZoomLoopButtonWidth = 60;
+        constexpr int kFollowButtonWidth = 70;
+        constexpr int kSnapButtonWidth = 60;
+        
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
+        waveformZoomSlider_->setBounds(mainVolumeSlider_->getX() - kWaveformZoomWidth - 10, (kHeaderHeight - 30) / 2, kWaveformZoomWidth, 30);
+        zoomLoopRangeButton_->setBounds(waveformZoomSlider_->getX() - kZoomLoopButtonWidth - 10, (kHeaderHeight - 30) / 2, kZoomLoopButtonWidth, 30);
+        followPlayingPositionButton_->setBounds(zoomLoopRangeButton_->getX() - kFollowButtonWidth - 10, (kHeaderHeight - 30) / 2, kFollowButtonWidth, 30);
+        snapLoopToDownbeatButton_->setBounds(followPlayingPositionButton_->getX() - kSnapButtonWidth - 10, (kHeaderHeight - 30) / 2, kSnapButtonWidth, 30);
 
         constexpr int kAudioDeviceButtonWidth = 300;
-        audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        audioDeviceButton_->setBounds(snapLoopToDownbeatButton_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
         debugButton_->setBounds(audioDeviceButton_->getX() - 120, (kHeaderHeight - 30) / 2, 80, 30);
         exportButton_->setBounds(debugButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
@@ -1944,7 +1986,8 @@ void MainComponent::resized_Desktop()
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
 
     constexpr int kOffset = 20;
-    waveformHolderComponent_->setSize(getWidth() * 2 - 30 * 2, 160 + 36);
+    float zoomLevel = waveformZoomSlider_->getValue();
+    waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
     waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
     markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
 
@@ -2216,7 +2259,8 @@ void MainComponent::resized_Mobile()
     {
         /*
          constexpr int kOffset = 20;
-         waveformHolderComponent_->setSize(getWidth() * 2 - 30 * 2, 160 + 36);
+         float zoomLevel = waveformZoomSlider_->getValue();
+         waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
          waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
          markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);*/
         constexpr int kWaveformOffset = 0;
@@ -2734,6 +2778,12 @@ void MainComponent::timerCallback()
 
     timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
+    
+    // Follow playing position if enabled
+    if (followPlayingPositionButton_ && followPlayingPositionButton_->getToggleState())
+    {
+        followPlayingPosition();
+    }
 
     const auto remainingTimeSec = (model_->getLengthMSec() - model_->getPlayingPosMSec()) / 1000.f;
     if (model_->getPlaybackMode() == kPlaybackMode_LoopPlaylistSongs && model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && remainingTimeSec < 10)
@@ -2862,6 +2912,174 @@ void MainComponent::next()
 void MainComponent::resetLoop()
 {
     model_->setLoopPosRatio(0.f, 1.f);
+}
+
+void MainComponent::zoomToLoopRange()
+{
+    if (!model_ || !dataSource_->isFileLoaded())
+        return;
+    
+    // Get loop range ratios
+    const float aRatio = model_->getLoopAPosRatio();
+    const float bRatio = model_->getLoopBPosRatio();
+    
+    // If no loop is set (full range), do nothing
+    if (aRatio == 0.0f && bRatio == 1.0f)
+        return;
+    
+    // Calculate loop range length
+    const float loopRangeRatio = bRatio - aRatio;
+    if (loopRangeRatio <= 0.0f)
+        return;
+    
+    // Calculate zoom level to fit loop range in viewport
+    // We want the loop range to fill about 90% of the viewport width for some padding
+    float targetZoomLevel = 1.0f / (loopRangeRatio * 0.9f);
+    
+    // Clamp zoom level to slider range
+    targetZoomLevel = juce::jlimit<float>(waveformZoomSlider_->getMinimum(),
+                                   waveformZoomSlider_->getMaximum(),
+                                   targetZoomLevel);
+    
+    // Set the zoom level
+    waveformZoomSlider_->setValue(targetZoomLevel, juce::dontSendNotification);
+    resized(); // Update waveform size
+    
+    // Calculate viewport position to center the loop range
+    float waveformWidth = waveformHolderComponent_->getWidth();
+    float viewportWidth = waveformViewport_->getWidth();
+    
+    if (waveformWidth > viewportWidth)
+    {
+        // Calculate the position to center the loop range
+        float loopCenterRatio = aRatio + loopRangeRatio * 0.5f;
+        float targetViewportX = loopCenterRatio * waveformWidth - viewportWidth * 0.5f;
+        
+        // Clamp to valid range
+        targetViewportX = juce::jlimit(0.0f, waveformWidth - viewportWidth, targetViewportX);
+        
+        // Set viewport position
+        waveformViewport_->setViewPosition(static_cast<int>(targetViewportX), 
+                                          waveformViewport_->getViewPositionY());
+    }
+    
+    // Force immediate update
+    waveformComponent_->updateWaveformImmediately();
+}
+
+void MainComponent::followPlayingPosition()
+{
+    if (!model_ || !dataSource_->isFileLoaded())
+        return;
+    
+    // Get current playing position ratio
+    float playingPosRatio = model_->getPlayingPosRatio();
+    
+    // Get waveform and viewport dimensions
+    float waveformWidth = waveformHolderComponent_->getWidth();
+    float viewportWidth = waveformViewport_->getWidth();
+    
+    // Only adjust if waveform is wider than viewport
+    if (waveformWidth <= viewportWidth)
+        return;
+    
+    // Calculate position to center the playing position in viewport
+    float playingPosX = playingPosRatio * waveformWidth;
+    float targetViewportX = playingPosX - viewportWidth * 0.5f;
+    
+    // Clamp to valid range
+    targetViewportX = juce::jlimit(0.0f, waveformWidth - viewportWidth, targetViewportX);
+    
+    // Get current viewport position to avoid unnecessary updates
+    int currentViewportX = waveformViewport_->getViewPositionX();
+    int newViewportX = static_cast<int>(targetViewportX);
+    
+    // Only update if position has changed significantly (avoid jittering)
+    if (abs(newViewportX - currentViewportX) > 2)
+    {
+        waveformViewport_->setViewPosition(newViewportX, waveformViewport_->getViewPositionY());
+    }
+}
+
+void MainComponent::snapLoopToDownbeat()
+{
+    if (!model_ || !dataSource_->isFileLoaded())
+        return;
+    
+    // Get current loop range
+    float aRatio = model_->getLoopAPosRatio();
+    float bRatio = model_->getLoopBPosRatio();
+    
+    // Get beat result from data source
+    if (!dataSource_->hasBeatResult())
+        return;
+    
+    auto beatResult = dataSource_->getBeatResult();
+    if (!beatResult.isValid || beatResult.downbeatPositions.empty())
+        return;
+    
+    // Get audio length for conversion
+    float audioLengthSec = static_cast<float>(dataSource_->getBufferLength()) / dataSource_->getSampleRate();
+    
+    // Convert current loop positions to seconds
+    float aPosSeconds = aRatio * audioLengthSec;
+    float bPosSeconds = bRatio * audioLengthSec;
+    
+    // Find nearest downbeats
+    float nearestADownbeat = aPosSeconds;
+    float nearestBDownbeat = bPosSeconds;
+    
+    // Find closest downbeat to A position
+    float minADistance = std::numeric_limits<float>::max();
+    for (float downbeatPos : beatResult.downbeatPositions)
+    {
+        float distance = std::abs(downbeatPos - aPosSeconds);
+        if (distance < minADistance)
+        {
+            minADistance = distance;
+            nearestADownbeat = downbeatPos;
+        }
+    }
+    
+    // Find closest downbeat to B position
+    float minBDistance = std::numeric_limits<float>::max();
+    for (float downbeatPos : beatResult.downbeatPositions)
+    {
+        float distance = std::abs(downbeatPos - bPosSeconds);
+        if (distance < minBDistance)
+        {
+            minBDistance = distance;
+            nearestBDownbeat = downbeatPos;
+        }
+    }
+    
+    // Ensure A comes before B
+    if (nearestADownbeat >= nearestBDownbeat)
+    {
+        // If A and B snapped to the same downbeat, find the next downbeat for B
+        for (float downbeatPos : beatResult.downbeatPositions)
+        {
+            if (downbeatPos > nearestADownbeat)
+            {
+                nearestBDownbeat = downbeatPos;
+                break;
+            }
+        }
+    }
+    
+    // Convert back to ratios
+    float newARatio = nearestADownbeat / audioLengthSec;
+    float newBRatio = nearestBDownbeat / audioLengthSec;
+    
+    // Clamp to valid range
+    newARatio = juce::jlimit(0.0f, 1.0f, newARatio);
+    newBRatio = juce::jlimit(0.0f, 1.0f, newBRatio);
+    
+    // Apply the new loop range
+    if (newARatio < newBRatio)
+    {
+        model_->setLoopPosRatio(newARatio, newBRatio);
+    }
 }
 
 void MainComponent::loadPrevSong()

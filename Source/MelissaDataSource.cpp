@@ -1547,7 +1547,10 @@ void MelissaDataSource::startBeatAnalysis()
             
             // Notify listeners
             for (auto &&l : listeners_)
-                l->beatAnalysisCompleted(result, success);
+            {
+                MessageManager::callAsync([l, result, success]() { l->beatAnalysisCompleted(result, success); });
+            }
+                
         }
     );
 }

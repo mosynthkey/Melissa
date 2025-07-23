@@ -203,6 +203,9 @@ public:
     void next();
     void resetLoop();
     void saveMemo();
+    void zoomToLoopRange();
+    void followPlayingPosition();
+    void snapLoopToDownbeat();
 
     juce::var getSongSetting(juce::String fileName);
     void showAudioMidiSettingsDialog();
@@ -252,6 +255,10 @@ private:
 
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
+    std::unique_ptr<juce::Slider> waveformZoomSlider_;
+    std::unique_ptr<juce::TextButton> zoomLoopRangeButton_;
+    std::unique_ptr<juce::ToggleButton> followPlayingPositionButton_;
+    std::unique_ptr<juce::TextButton> snapLoopToDownbeatButton_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     std::unique_ptr<juce::TextButton> songDetailButton_;
