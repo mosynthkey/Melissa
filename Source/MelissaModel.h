@@ -50,6 +50,7 @@ public:
 #endif
     
     void setLoopPosRatio(float aRatio, float bRatio);
+    void snapLoopRangeToDownbeat();
     
     void setLoopAPosRatio(float aPosRatio);
     float getLoopAPosRatio() const { return aPosRatio_; }
@@ -115,6 +116,10 @@ public:
     void setPreCountSwitch(bool preCountSwitch);
     bool getPreCountSwitch() const { return preCountSwitch_; }
     
+    // Snap to beat
+    void setSnapLoopRange(bool snapLoopRange);
+    bool getSnapLoopRange() const { return snapLoopRange_; }
+    
     // Listener
     void addListener(MelissaModelListener* listener);
     void removeListener(MelissaModelListener* listener);
@@ -129,6 +134,8 @@ public:
 private:
     MelissaModel();
     ~MelissaModel() {};
+    
+    float snapPositionToDownbeat(float positionRatio);
     
     MelissaAudioEngine* audioEngine_;
     
@@ -162,6 +169,7 @@ private:
     float customPartVolume_[kNumCustomPartVolumes];
     float mainVolume_;
     bool preCountSwitch_;
+    bool snapLoopRange_;
     
     // Singleton
     static MelissaModel instance_;

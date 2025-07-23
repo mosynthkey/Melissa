@@ -206,6 +206,7 @@ public:
     void zoomToLoopRange();
     void followPlayingPosition();
     void snapLoopToDownbeat();
+    bool isDragSnapToBeatEnabled() const;
 
     juce::var getSongSetting(juce::String fileName);
     void showAudioMidiSettingsDialog();
@@ -259,6 +260,7 @@ private:
     std::unique_ptr<juce::TextButton> zoomLoopRangeButton_;
     std::unique_ptr<juce::ToggleButton> followPlayingPositionButton_;
     std::unique_ptr<juce::TextButton> snapLoopToDownbeatButton_;
+    std::unique_ptr<juce::ToggleButton> dragSnapToBeatButton_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     std::unique_ptr<juce::TextButton> songDetailButton_;

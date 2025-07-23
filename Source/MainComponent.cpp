@@ -951,6 +951,11 @@ void MainComponent::createUI()
             snapLoopToDownbeat();
         };
         componentToAdd->addAndMakeVisible(snapLoopToDownbeatButton_.get());
+        
+        dragSnapToBeatButton_ = make_unique<ToggleButton>("DragSnap");
+        dragSnapToBeatButton_->setTooltip("Snap to Beats while Dragging");
+        dragSnapToBeatButton_->setToggleState(false, dontSendNotification);
+        componentToAdd->addAndMakeVisible(dragSnapToBeatButton_.get());
     }
 
     {
@@ -1966,15 +1971,17 @@ void MainComponent::resized_Desktop()
         constexpr int kZoomLoopButtonWidth = 60;
         constexpr int kFollowButtonWidth = 70;
         constexpr int kSnapButtonWidth = 60;
+        constexpr int kDragSnapButtonWidth = 80;
         
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
         waveformZoomSlider_->setBounds(mainVolumeSlider_->getX() - kWaveformZoomWidth - 10, (kHeaderHeight - 30) / 2, kWaveformZoomWidth, 30);
         zoomLoopRangeButton_->setBounds(waveformZoomSlider_->getX() - kZoomLoopButtonWidth - 10, (kHeaderHeight - 30) / 2, kZoomLoopButtonWidth, 30);
         followPlayingPositionButton_->setBounds(zoomLoopRangeButton_->getX() - kFollowButtonWidth - 10, (kHeaderHeight - 30) / 2, kFollowButtonWidth, 30);
         snapLoopToDownbeatButton_->setBounds(followPlayingPositionButton_->getX() - kSnapButtonWidth - 10, (kHeaderHeight - 30) / 2, kSnapButtonWidth, 30);
+        dragSnapToBeatButton_->setBounds(snapLoopToDownbeatButton_->getX() - kDragSnapButtonWidth - 10, (kHeaderHeight - 30) / 2, kDragSnapButtonWidth, 30);
 
         constexpr int kAudioDeviceButtonWidth = 300;
-        audioDeviceButton_->setBounds(snapLoopToDownbeatButton_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        audioDeviceButton_->setBounds(dragSnapToBeatButton_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
         debugButton_->setBounds(audioDeviceButton_->getX() - 120, (kHeaderHeight - 30) / 2, 80, 30);
         exportButton_->setBounds(debugButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
@@ -2784,6 +2791,12 @@ void MainComponent::timerCallback()
     {
         followPlayingPosition();
     }
+    
+    // Update snap to beat state in waveform component
+    if (waveformComponent_)
+    {
+        waveformComponent_->setSnapToBeatEnabled(isDragSnapToBeatEnabled());
+    }
 
     const auto remainingTimeSec = (model_->getLengthMSec() - model_->getPlayingPosMSec()) / 1000.f;
     if (model_->getPlaybackMode() == kPlaybackMode_LoopPlaylistSongs && model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && remainingTimeSec < 10)
@@ -3003,83 +3016,16 @@ void MainComponent::followPlayingPosition()
 
 void MainComponent::snapLoopToDownbeat()
 {
-    if (!model_ || !dataSource_->isFileLoaded())
+    if (!model_)
         return;
     
-    // Get current loop range
-    float aRatio = model_->getLoopAPosRatio();
-    float bRatio = model_->getLoopBPosRatio();
-    
-    // Get beat result from data source
-    if (!dataSource_->hasBeatResult())
-        return;
-    
-    auto beatResult = dataSource_->getBeatResult();
-    if (!beatResult.isValid || beatResult.downbeatPositions.empty())
-        return;
-    
-    // Get audio length for conversion
-    float audioLengthSec = static_cast<float>(dataSource_->getBufferLength()) / dataSource_->getSampleRate();
-    
-    // Convert current loop positions to seconds
-    float aPosSeconds = aRatio * audioLengthSec;
-    float bPosSeconds = bRatio * audioLengthSec;
-    
-    // Find nearest downbeats
-    float nearestADownbeat = aPosSeconds;
-    float nearestBDownbeat = bPosSeconds;
-    
-    // Find closest downbeat to A position
-    float minADistance = std::numeric_limits<float>::max();
-    for (float downbeatPos : beatResult.downbeatPositions)
-    {
-        float distance = std::abs(downbeatPos - aPosSeconds);
-        if (distance < minADistance)
-        {
-            minADistance = distance;
-            nearestADownbeat = downbeatPos;
-        }
-    }
-    
-    // Find closest downbeat to B position
-    float minBDistance = std::numeric_limits<float>::max();
-    for (float downbeatPos : beatResult.downbeatPositions)
-    {
-        float distance = std::abs(downbeatPos - bPosSeconds);
-        if (distance < minBDistance)
-        {
-            minBDistance = distance;
-            nearestBDownbeat = downbeatPos;
-        }
-    }
-    
-    // Ensure A comes before B
-    if (nearestADownbeat >= nearestBDownbeat)
-    {
-        // If A and B snapped to the same downbeat, find the next downbeat for B
-        for (float downbeatPos : beatResult.downbeatPositions)
-        {
-            if (downbeatPos > nearestADownbeat)
-            {
-                nearestBDownbeat = downbeatPos;
-                break;
-            }
-        }
-    }
-    
-    // Convert back to ratios
-    float newARatio = nearestADownbeat / audioLengthSec;
-    float newBRatio = nearestBDownbeat / audioLengthSec;
-    
-    // Clamp to valid range
-    newARatio = juce::jlimit(0.0f, 1.0f, newARatio);
-    newBRatio = juce::jlimit(0.0f, 1.0f, newBRatio);
-    
-    // Apply the new loop range
-    if (newARatio < newBRatio)
-    {
-        model_->setLoopPosRatio(newARatio, newBRatio);
-    }
+    // Use the new Model API for snap functionality
+    model_->snapLoopRangeToDownbeat();
+}
+
+bool MainComponent::isDragSnapToBeatEnabled() const
+{
+    return dragSnapToBeatButton_ && dragSnapToBeatButton_->getToggleState();
 }
 
 void MainComponent::loadPrevSong()
