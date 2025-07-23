@@ -955,6 +955,10 @@ void MainComponent::createUI()
         dragSnapToBeatButton_ = make_unique<ToggleButton>("DragSnap");
         dragSnapToBeatButton_->setTooltip("Snap to Beats while Dragging");
         dragSnapToBeatButton_->setToggleState(false, dontSendNotification);
+        dragSnapToBeatButton_->onClick = [this]()
+        {
+            model_->setSnapLoopRange(dragSnapToBeatButton_->getToggleState());
+        };
         componentToAdd->addAndMakeVisible(dragSnapToBeatButton_.get());
     }
 
@@ -2791,12 +2795,6 @@ void MainComponent::timerCallback()
     {
         followPlayingPosition();
     }
-    
-    // Update snap to beat state in waveform component
-    if (waveformComponent_)
-    {
-        waveformComponent_->setSnapToBeatEnabled(isDragSnapToBeatEnabled());
-    }
 
     const auto remainingTimeSec = (model_->getLengthMSec() - model_->getPlayingPosMSec()) / 1000.f;
     if (model_->getPlaybackMode() == kPlaybackMode_LoopPlaylistSongs && model_->getLoopAPosRatio() == 0.f && model_->getLoopBPosRatio() == 1.f && remainingTimeSec < 10)
@@ -2996,21 +2994,39 @@ void MainComponent::followPlayingPosition()
     if (waveformWidth <= viewportWidth)
         return;
     
-    // Calculate position to center the playing position in viewport
-    float playingPosX = playingPosRatio * waveformWidth;
-    float targetViewportX = playingPosX - viewportWidth * 0.5f;
-    
-    // Clamp to valid range
-    targetViewportX = juce::jlimit(0.0f, waveformWidth - viewportWidth, targetViewportX);
-    
-    // Get current viewport position to avoid unnecessary updates
+    // Get current viewport position
     int currentViewportX = waveformViewport_->getViewPositionX();
-    int newViewportX = static_cast<int>(targetViewportX);
     
-    // Only update if position has changed significantly (avoid jittering)
-    if (abs(newViewportX - currentViewportX) > 2)
+    // Calculate playing position in absolute pixels
+    float playingPosX = playingPosRatio * waveformWidth;
+    
+    // Calculate playing position relative to current viewport
+    float relativePlayingPosX = playingPosX - currentViewportX;
+    
+    // Check if playing position is near the right edge of viewport (within 10% from right)
+    float rightThreshold = viewportWidth * 0.9f;
+    
+    // If playing position goes beyond the right threshold, jump to left side
+    if (relativePlayingPosX > rightThreshold)
     {
-        waveformViewport_->setViewPosition(newViewportX, waveformViewport_->getViewPositionY());
+        // Position viewport so playing position appears at 10% from left edge
+        float targetViewportX = playingPosX - viewportWidth * 0.1f;
+        
+        // Clamp to valid range
+        targetViewportX = juce::jlimit(0.0f, waveformWidth - viewportWidth, targetViewportX);
+        
+        waveformViewport_->setViewPosition(static_cast<int>(targetViewportX), waveformViewport_->getViewPositionY());
+    }
+    // If playing position goes before the left edge, also adjust
+    else if (relativePlayingPosX < 0)
+    {
+        // Position viewport so playing position appears at 90% from left edge
+        float targetViewportX = playingPosX - viewportWidth * 0.9f;
+        
+        // Clamp to valid range
+        targetViewportX = juce::jlimit(0.0f, waveformWidth - viewportWidth, targetViewportX);
+        
+        waveformViewport_->setViewPosition(static_cast<int>(targetViewportX), waveformViewport_->getViewPositionY());
     }
 }
 
