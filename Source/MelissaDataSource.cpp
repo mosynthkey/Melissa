@@ -619,21 +619,27 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     }
     else if (playPart == kPlayPart_Instruments)
     {
-        // read original audio
-        originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
-
-        // read vocal stem
-        if (stemAudioReaders_[kCustomPartVolume_Vocal] != nullptr)
+        // read instruments stems and add them together
+        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
         {
-            static float vocalBuffer[2 /* Stereo */][kMaxNmSamplesToRead];
-            float *vocalBuffers[] = {vocalBuffer[0], vocalBuffer[1]};
+            destChannels[0][sampleIndex] = 0.0f;
+            destChannels[1][sampleIndex] = 0.0f;
+        }
 
-            stemAudioReaders_[kCustomPartVolume_Vocal]->read(vocalBuffers, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+        static float tempBuffer[2 /* Stereo */][kMaxNmSamplesToRead];
+        float *tempBuffers[] = {tempBuffer[0], tempBuffer[1]};
 
-            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+        // Add all non-vocal stems (Piano, Guitar, Bass, Drums, Others)
+        for (int stemIndex = kCustomPartVolume_Piano; stemIndex < kNumStemFiles; ++stemIndex)
+        {
+            if (stemAudioReaders_[stemIndex] != nullptr)
             {
-                destChannels[0][sampleIndex] -= vocalBuffers[0][sampleIndex];
-                destChannels[1][sampleIndex] -= vocalBuffers[1][sampleIndex];
+                stemAudioReaders_[stemIndex]->read(tempBuffers, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
+                for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+                {
+                    destChannels[0][sampleIndex] += tempBuffers[0][sampleIndex];
+                    destChannels[1][sampleIndex] += tempBuffers[1][sampleIndex];
+                }
             }
         }
 
@@ -654,12 +660,20 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
     }
     else if (playPart == kPlayPart_Custom)
     {
+        /*
         originalReader->read(destChannels, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
         if (numOfChs < 2)
             monoToStereo();
+         */
 
         if (kMaxNmSamplesToRead <= numSamplesToRead)
             return false;
+
+        for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+        {
+            destChannels[0][sampleIndex] = 0.f;
+            destChannels[1][sampleIndex] = 0.f;
+        }
 
         const float volumes[kNumStemFiles] = {
             model_->getCustomPartVolume(kCustomPartVolume_Vocal),
@@ -680,8 +694,9 @@ bool MelissaDataSource::readBuffer(Reader reader, size_t startIndex, int numSamp
             stemAudioReaders_[stemIndex]->read(tempBuffers, numOfChs, static_cast<int64>(startIndex), numSamplesToRead);
             for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
             {
-                destChannels[0][sampleIndex] += tempBuffer[0][sampleIndex] * volumes[stemIndex];
-                destChannels[1][sampleIndex] += tempBuffer[1][sampleIndex] * volumes[stemIndex];
+                const auto volume = volumes[stemIndex] + 1.f;
+                destChannels[0][sampleIndex] += tempBuffer[0][sampleIndex] * volume;
+                destChannels[1][sampleIndex] += tempBuffer[1][sampleIndex] * volume;
             }
         }
         if (numOfChs < 2)
