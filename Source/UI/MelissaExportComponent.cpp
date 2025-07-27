@@ -244,7 +244,10 @@ void prepareFileAndVolumesFromCurrentSettings(std::vector<MelissaExporter::FileA
         {
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["vocals"], 1.f + model->getCustomPartVolume(kCustomPartVolume_Vocal)});
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["piano"],  1.f + model->getCustomPartVolume(kCustomPartVolume_Piano)});
-            fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["guitar"], 1.f + model->getCustomPartVolume(kCustomPartVolume_Guitar)});
+            if (provider->getStemProviderStatus() != kStemProviderStatus_Available_NoGuitar)
+            {
+                fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["guitar"], 1.f + model->getCustomPartVolume(kCustomPartVolume_Guitar)});
+            }
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["bass"],   1.f + model->getCustomPartVolume(kCustomPartVolume_Bass)});
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["drums"],  1.f + model->getCustomPartVolume(kCustomPartVolume_Drums)});
             fileAndVolumes.emplace_back(MelissaExporter::FileAndVolume{stemFiles["other"],  1.f + model->getCustomPartVolume(kCustomPartVolume_Others)});
