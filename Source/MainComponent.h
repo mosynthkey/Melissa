@@ -39,6 +39,7 @@
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
+#include "UI/MelissaWaveformControlPopupComponent.h"
 #include <array>
 #include <numeric>
 
@@ -175,6 +176,9 @@ public:
     void songChanged(const juce::String &filePath, size_t bufferLength, int32_t sampleRate) override;
     void fileLoadStatusChanged(FileLoadStatus status, const juce::String &filePath) override;
     void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) override;
+    void waveformZoomChanged(float zoomValue) override;
+    void waveformFollowChanged(bool followPlayingPosition) override;
+    void waveformSnapChanged(bool snapToBeats) override;
 
     // MenuBarModel
     juce::StringArray getMenuBarNames() override;
@@ -256,11 +260,12 @@ private:
 
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
-    std::unique_ptr<juce::Slider> waveformZoomSlider_;
-    std::unique_ptr<juce::TextButton> zoomLoopRangeButton_;
-    std::unique_ptr<juce::ToggleButton> followPlayingPositionButton_;
-    std::unique_ptr<juce::TextButton> snapLoopToDownbeatButton_;
-    std::unique_ptr<juce::ToggleButton> dragSnapToBeatButton_;
+
+    std::unique_ptr<juce::DrawableButton> waveformControlButton_;
+    std::unique_ptr<juce::DrawableButton> aiBeatButton_;
+    std::unique_ptr<juce::Drawable> waveformIcon_, waveformIconHighlighted_;
+    std::unique_ptr<juce::Drawable> aiBeatIcon_, aiBeatIconHighlighted_;
+    std::unique_ptr<MelissaWaveformControlPopupComponent> waveformControlPopup_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     std::unique_ptr<juce::TextButton> songDetailButton_;

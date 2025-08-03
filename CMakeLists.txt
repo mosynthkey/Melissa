@@ -128,6 +128,8 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaUISettings.h
     Source/UI/MelissaWaveformControlComponent.cpp
     Source/UI/MelissaWaveformControlComponent.h
+    Source/UI/MelissaWaveformControlPopupComponent.cpp
+    Source/UI/MelissaWaveformControlPopupComponent.h
     Source/UI/MelissaWaveformMouseEventComponent.cpp
     Source/UI/MelissaWaveformMouseEventComponent.h
     Submodule/soundtouch/source/SoundTouch/AAFilter.cpp
@@ -255,6 +257,8 @@ juce_add_binary_data(MelissaBinaryData
     Resource/Icon/home.svg
     Resource/Icon/go.svg
     Resource/Icon/play_button.svg
+    Resource/Icon/ai_beat.svg
+    Resource/Icon/waveform.svg
     Resource/Language/en-US.txt
     Resource/Language/ja-JP.txt
     Resource/logo.png

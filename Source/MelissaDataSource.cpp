@@ -1320,6 +1320,36 @@ void MelissaDataSource::notifyExportCompleted(bool result, juce::String message)
         l->exportCompleted(result, message);
 }
 
+void MelissaDataSource::setWaveformZoom(float zoom)
+{
+    if (previous_.waveformZoom_ != zoom)
+    {
+        previous_.waveformZoom_ = zoom;
+        for (auto &&l : listeners_)
+            l->waveformZoomChanged(zoom);
+    }
+}
+
+void MelissaDataSource::setWaveformFollow(bool follow)
+{
+    if (previous_.waveformFollow_ != follow)
+    {
+        previous_.waveformFollow_ = follow;
+        for (auto &&l : listeners_)
+            l->waveformFollowChanged(follow);
+    }
+}
+
+void MelissaDataSource::setWaveformSnap(bool snap)
+{
+    if (previous_.waveformSnap_ != snap)
+    {
+        previous_.waveformSnap_ = snap;
+        for (auto &&l : listeners_)
+            l->waveformSnapChanged(snap);
+    }
+}
+
 void MelissaDataSource::handleAsyncUpdate()
 {
     // load file asynchronously

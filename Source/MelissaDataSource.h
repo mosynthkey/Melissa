@@ -41,6 +41,9 @@ public:
     virtual void beatAnalysisStarted() {}
     virtual void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) {}
     virtual void beatAnalysisProgress(float progress) {}
+    virtual void waveformZoomChanged(float zoomValue) {}
+    virtual void waveformFollowChanged(bool followPlayingPosition) {}
+    virtual void waveformSnapChanged(bool snapToBeats) {}
 };
 
 class MelissaDataSource : public juce::AsyncUpdater
@@ -115,6 +118,11 @@ public:
         float drumsVolume_;
         float othersVolume_;
 
+        // waveform settings
+        float waveformZoom_;
+        bool waveformFollow_;
+        bool waveformSnap_;
+
         // ui state
         struct UIState
         {
@@ -129,6 +137,7 @@ public:
                      /* metronomeSw_(false), */ bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
                      speedMode_(kSpeedMode_Basic), speed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
                      eqSw_(false), eqFreq_(500), eqGain_(0.f), eqQ_(1.f), playPart_(kPlayPart_All), vocalVolume_(0.f), pianoVolume_(0.f), guitarVolume_(0.f), bassVolume_(0.f), drumsVolume_(0.f), othersVolume_(0.f),
+                     waveformZoom_(1.0f), waveformFollow_(false), waveformSnap_(false),
                      uiState_({0, 0})
         {
         }
@@ -328,6 +337,14 @@ public:
     // Browser
     void setBrowserUrl(const juce::String &url);
     juce::String getBrowserUrl() const;
+
+    // Waveform settings
+    float getWaveformZoom() const { return previous_.waveformZoom_; }
+    bool getWaveformFollow() const { return previous_.waveformFollow_; }
+    bool getWaveformSnap() const { return previous_.waveformSnap_; }
+    void setWaveformZoom(float zoom);
+    void setWaveformFollow(bool follow);
+    void setWaveformSnap(bool snap);
 
     // Export
     void notifyExportStarted();

@@ -817,3 +817,45 @@ public:
         g.drawText(tb.getButtonText(), 10, 0, tb.getWidth() - 20, tb.getHeight(), Justification::left);
     }
 };
+
+class MelissaLookAndFeel_ZoomSlider : public juce::LookAndFeel_V4
+{
+public:
+    MelissaLookAndFeel_ZoomSlider() {}
+    virtual ~MelissaLookAndFeel_ZoomSlider() {}
+    
+    void drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos, float minSliderPos, float maxSliderPos, const juce::Slider::SliderStyle style, juce::Slider &s) override
+    {
+        using namespace juce;
+        
+        if (style != Slider::LinearHorizontal) return;
+        
+        const auto bounds = s.getLocalBounds().toFloat();
+        const float cornerRadius = 4.0f;
+        const float indicatorWidth = 8.0f;
+        
+        // Background - SubColor with r=4
+        g.setColour(MelissaUISettings::getSubColour());
+        g.fillRoundedRectangle(bounds, cornerRadius);
+        
+        // Fill - AccentColor with alpha 0.2, from left to indicator right edge
+        const float fillWidth = sliderPos - bounds.getX();
+        if (fillWidth > 0)
+        {
+            auto fillBounds = bounds.withWidth(fillWidth);
+            g.setColour(MelissaUISettings::getAccentColour(0.2f));
+            g.fillRoundedRectangle(fillBounds, cornerRadius);
+        }
+        
+        // Indicator - AccentColor, width=8, r=4
+        const float indicatorX = sliderPos - indicatorWidth / 2.0f;
+        auto indicatorBounds = Rectangle<float>(indicatorX, bounds.getY(), indicatorWidth, bounds.getHeight());
+        g.setColour(MelissaUISettings::getAccentColour());
+        g.fillRoundedRectangle(indicatorBounds, cornerRadius);
+    }
+    
+    void drawLinearSliderThumb(juce::Graphics&, int, int, int, int, float, float, float, const juce::Slider::SliderStyle, juce::Slider&) override
+    {
+        // No separate thumb - indicator is drawn in drawLinearSlider
+    }
+};

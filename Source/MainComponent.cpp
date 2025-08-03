@@ -890,22 +890,6 @@ void MainComponent::createUI()
         exportProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
         componentToAdd->addChildComponent(exportProgressBar_.get());
 
-        debugButton_ = std::make_unique<TextButton>("Debug");
-        debugButton_->setTooltip("Debug beat analysis");
-        debugButton_->onClick = [&]()
-        {
-            std::cout << "Debug button clicked!" << std::endl;
-            
-            if (!dataSource_->isFileLoaded())
-            {
-                std::cout << "Please load a song file first" << std::endl;
-                return;
-            }
-            
-            // Trigger beat analysis through MelissaDataSource
-            dataSource_->startBeatAnalysis();
-        };
-        componentToAdd->addAndMakeVisible(debugButton_.get());
 
 
         mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
@@ -918,48 +902,87 @@ void MainComponent::createUI()
             model_->setMainVolume(mainVolumeSlider_->getValue());
         };
         componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
+
+        // Create waveform control button with SVG icon
+        waveformIcon_ = Drawable::createFromImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize);
+        waveformIconHighlighted_ = Drawable::createFromImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize);
+        waveformIcon_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
+        waveformIconHighlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour(1.0f));
         
-        waveformZoomSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
-        waveformZoomSlider_->setTooltip(TRANS("waveform_zoom"));
-        waveformZoomSlider_->setRange(1.0f, 20.f);
-        waveformZoomSlider_->setDoubleClickReturnValue(true, 1.0f);
-        waveformZoomSlider_->setValue(1.0f);
-        waveformZoomSlider_->onValueChange = [this]()
+        waveformControlButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        waveformControlButton_->setTooltip("Waveform Controls");
+        waveformControlButton_->setImages(waveformIcon_.get(), waveformIconHighlighted_.get());
+        waveformControlButton_->onClick = [this]()
         {
-            resized(); // Trigger waveform resize
-            waveformComponent_->updateWaveformImmediately();
+            std::cout << "Waveform button clicked!" << std::endl;
+            
+            if (waveformControlPopup_ && waveformControlPopup_->isVisible())
+            {
+                std::cout << "Hiding popup" << std::endl;
+                waveformControlPopup_->hidePopup();
+            }
+            else
+            {
+                std::cout << "Showing popup" << std::endl;
+                if (waveformControlPopup_)
+                {
+                    // Sync popup with current control states
+                    // Convert button bounds to MainComponent coordinates
+                    auto buttonBounds = waveformControlButton_->getBounds();
+                    auto mainComponentButtonBounds = getLocalArea(headerComponent_.get(), buttonBounds);
+                    waveformControlPopup_->showPopup(this, mainComponentButtonBounds);
+                }
+                else
+                {
+                    std::cout << "Popup component is null!" << std::endl;
+                }
+            }
         };
-        componentToAdd->addAndMakeVisible(waveformZoomSlider_.get());
+        componentToAdd->addAndMakeVisible(waveformControlButton_.get());
+        waveformControlButton_->toFront(false);
+
+        // Create AI beat button with SVG icon
+        aiBeatIcon_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
+        aiBeatIconHighlighted_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
+        aiBeatIcon_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
+        aiBeatIconHighlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour(1.0f));
         
-        zoomLoopRangeButton_ = make_unique<TextButton>("Loop");
-        zoomLoopRangeButton_->setTooltip("Zoom to Loop Range");
-        zoomLoopRangeButton_->onClick = [this]()
+        aiBeatButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
+        aiBeatButton_->setTooltip("AI Beat Detection");
+        aiBeatButton_->setImages(aiBeatIcon_.get(), aiBeatIconHighlighted_.get());
+        aiBeatButton_->onClick = [&]()
         {
-            zoomToLoopRange();
+            std::cout << "AI Beat button clicked!" << std::endl;
+            
+            if (!dataSource_->isFileLoaded())
+            {
+                std::cout << "Please load a song file first" << std::endl;
+                return;
+            }
+            
+            // Trigger beat analysis through MelissaDataSource
+            dataSource_->startBeatAnalysis();
         };
-        componentToAdd->addAndMakeVisible(zoomLoopRangeButton_.get());
+        componentToAdd->addAndMakeVisible(aiBeatButton_.get());
+        aiBeatButton_->toFront(false);
+
+        waveformControlPopup_ = std::make_unique<MelissaWaveformControlPopupComponent>();
+        std::cout << "Waveform popup created successfully" << std::endl;
         
-        followPlayingPositionButton_ = make_unique<ToggleButton>("Follow");
-        followPlayingPositionButton_->setTooltip("Follow Playing Position");
-        followPlayingPositionButton_->setToggleState(false, dontSendNotification);
-        componentToAdd->addAndMakeVisible(followPlayingPositionButton_.get());
+        // Set LookAndFeel for toggle buttons to slide style
+        waveformControlPopup_->followToggleButton_->setLookAndFeel(&slideToggleLaf_);
+        waveformControlPopup_->autoSnapToggleButton_->setLookAndFeel(&slideToggleLaf_);
         
-        snapLoopToDownbeatButton_ = make_unique<TextButton>("Snap");
-        snapLoopToDownbeatButton_->setTooltip("Snap Loop to Downbeats");
-        snapLoopToDownbeatButton_->onClick = [this]()
+        waveformControlPopup_->onCloseClicked = [this]()
+        {
+            std::cout << "Popup close clicked" << std::endl;
+            waveformControlPopup_->hidePopup();
+        };
+        waveformControlPopup_->onLoopSnapClicked = [this]()
         {
             snapLoopToDownbeat();
         };
-        componentToAdd->addAndMakeVisible(snapLoopToDownbeatButton_.get());
-        
-        dragSnapToBeatButton_ = make_unique<ToggleButton>("DragSnap");
-        dragSnapToBeatButton_->setTooltip("Snap to Beats while Dragging");
-        dragSnapToBeatButton_->setToggleState(false, dontSendNotification);
-        dragSnapToBeatButton_->onClick = [this]()
-        {
-            model_->setSnapLoopRange(dragSnapToBeatButton_->getToggleState());
-        };
-        componentToAdd->addAndMakeVisible(dragSnapToBeatButton_.get());
+        addAndMakeVisible(waveformControlPopup_.get());
     }
 
     {
@@ -1978,18 +2001,20 @@ void MainComponent::resized_Desktop()
         constexpr int kDragSnapButtonWidth = 80;
         
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
-        waveformZoomSlider_->setBounds(mainVolumeSlider_->getX() - kWaveformZoomWidth - 10, (kHeaderHeight - 30) / 2, kWaveformZoomWidth, 30);
-        zoomLoopRangeButton_->setBounds(waveformZoomSlider_->getX() - kZoomLoopButtonWidth - 10, (kHeaderHeight - 30) / 2, kZoomLoopButtonWidth, 30);
-        followPlayingPositionButton_->setBounds(zoomLoopRangeButton_->getX() - kFollowButtonWidth - 10, (kHeaderHeight - 30) / 2, kFollowButtonWidth, 30);
-        snapLoopToDownbeatButton_->setBounds(followPlayingPositionButton_->getX() - kSnapButtonWidth - 10, (kHeaderHeight - 30) / 2, kSnapButtonWidth, 30);
-        dragSnapToBeatButton_->setBounds(snapLoopToDownbeatButton_->getX() - kDragSnapButtonWidth - 10, (kHeaderHeight - 30) / 2, kDragSnapButtonWidth, 30);
 
         constexpr int kAudioDeviceButtonWidth = 300;
-        audioDeviceButton_->setBounds(dragSnapToBeatButton_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
-        debugButton_->setBounds(audioDeviceButton_->getX() - 120, (kHeaderHeight - 30) / 2, 80, 30);
-        exportButton_->setBounds(debugButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
+        exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
         trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
+
+        // Position new SVG buttons after the second divider line (at 210 + 190 = 400px)
+        constexpr int kSvgButtonSize = 26;
+        constexpr int kButtonSpacing = 10;
+        constexpr int kSecondDividerX = 210 + 190;
+        
+        aiBeatButton_->setBounds(kSecondDividerX + kButtonSpacing, (kHeaderHeight - kSvgButtonSize) / 2, kSvgButtonSize, kSvgButtonSize);
+        waveformControlButton_->setBounds(aiBeatButton_->getRight() + kButtonSpacing, (kHeaderHeight - kSvgButtonSize) / 2, kSvgButtonSize, kSvgButtonSize);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
     }
@@ -1997,7 +2022,7 @@ void MainComponent::resized_Desktop()
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
 
     constexpr int kOffset = 20;
-    float zoomLevel = waveformZoomSlider_->getValue();
+    float zoomLevel = dataSource_->getWaveformZoom();
     waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
     waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
     markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
@@ -2270,7 +2295,7 @@ void MainComponent::resized_Mobile()
     {
         /*
          constexpr int kOffset = 20;
-         float zoomLevel = waveformZoomSlider_->getValue();
+         float zoomLevel = dataSource_->getWaveformZoom();
          waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
          waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
          markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);*/
@@ -2791,7 +2816,7 @@ void MainComponent::timerCallback()
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
     
     // Follow playing position if enabled
-    if (followPlayingPositionButton_ && followPlayingPositionButton_->getToggleState())
+    if (dataSource_->getWaveformFollow())
     {
         followPlayingPosition();
     }
@@ -2947,13 +2972,11 @@ void MainComponent::zoomToLoopRange()
     // We want the loop range to fill about 90% of the viewport width for some padding
     float targetZoomLevel = 1.0f / (loopRangeRatio * 0.9f);
     
-    // Clamp zoom level to slider range
-    targetZoomLevel = juce::jlimit<float>(waveformZoomSlider_->getMinimum(),
-                                   waveformZoomSlider_->getMaximum(),
-                                   targetZoomLevel);
+    // Clamp zoom level to valid range (1.0 to 20.0)
+    targetZoomLevel = juce::jlimit<float>(1.0f, 20.0f, targetZoomLevel);
     
     // Set the zoom level
-    waveformZoomSlider_->setValue(targetZoomLevel, juce::dontSendNotification);
+    dataSource_->setWaveformZoom(targetZoomLevel);
     resized(); // Update waveform size
     
     // Calculate viewport position to center the loop range
@@ -3041,7 +3064,7 @@ void MainComponent::snapLoopToDownbeat()
 
 bool MainComponent::isDragSnapToBeatEnabled() const
 {
-    return dragSnapToBeatButton_ && dragSnapToBeatButton_->getToggleState();
+    return dataSource_->getWaveformSnap();
 }
 
 void MainComponent::loadPrevSong()
@@ -3365,4 +3388,20 @@ void MainComponent::filesDropped(const StringArray &files, int x, int y)
             } }),
                                  TRANS("new_playlist"));
     }
+}
+
+void MainComponent::waveformZoomChanged(float zoomValue)
+{
+    resized(); // Trigger waveform resize
+    if (waveformComponent_) waveformComponent_->updateWaveformImmediately();
+}
+
+void MainComponent::waveformFollowChanged(bool followPlayingPosition)
+{
+    // Update follow mode - implementation depends on waveform component
+}
+
+void MainComponent::waveformSnapChanged(bool snapToBeats)
+{
+    model_->setSnapLoopRange(snapToBeats);
 }
