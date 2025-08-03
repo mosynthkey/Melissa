@@ -143,6 +143,7 @@ public:
     void createUI();
     void createMenu();
     void showFileChooser();
+    void applyWavefromZoom();
     void resized_Desktop();
     void resized_Mobile();
 
@@ -177,8 +178,6 @@ public:
     void fileLoadStatusChanged(FileLoadStatus status, const juce::String &filePath) override;
     void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) override;
     void waveformZoomChanged(float zoomValue) override;
-    void waveformFollowChanged(bool followPlayingPosition) override;
-    void waveformSnapChanged(bool snapToBeats) override;
 
     // MenuBarModel
     juce::StringArray getMenuBarNames() override;

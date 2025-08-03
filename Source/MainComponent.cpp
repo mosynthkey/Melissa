@@ -914,32 +914,22 @@ void MainComponent::createUI()
         waveformControlButton_->setImages(waveformIcon_.get(), waveformIconHighlighted_.get());
         waveformControlButton_->onClick = [this]()
         {
-            std::cout << "Waveform button clicked!" << std::endl;
-            
             if (waveformControlPopup_ && waveformControlPopup_->isVisible())
             {
-                std::cout << "Hiding popup" << std::endl;
                 waveformControlPopup_->hidePopup();
             }
             else
             {
-                std::cout << "Showing popup" << std::endl;
                 if (waveformControlPopup_)
                 {
-                    // Sync popup with current control states
                     // Convert button bounds to MainComponent coordinates
                     auto buttonBounds = waveformControlButton_->getBounds();
                     auto mainComponentButtonBounds = getLocalArea(headerComponent_.get(), buttonBounds);
-                    waveformControlPopup_->showPopup(this, mainComponentButtonBounds);
-                }
-                else
-                {
-                    std::cout << "Popup component is null!" << std::endl;
+                    waveformControlPopup_->showPopup(this);
                 }
             }
         };
         componentToAdd->addAndMakeVisible(waveformControlButton_.get());
-        waveformControlButton_->toFront(false);
 
         // Create AI beat button with SVG icon
         aiBeatIcon_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
@@ -952,36 +942,13 @@ void MainComponent::createUI()
         aiBeatButton_->setImages(aiBeatIcon_.get(), aiBeatIconHighlighted_.get());
         aiBeatButton_->onClick = [&]()
         {
-            std::cout << "AI Beat button clicked!" << std::endl;
-            
-            if (!dataSource_->isFileLoaded())
-            {
-                std::cout << "Please load a song file first" << std::endl;
-                return;
-            }
-            
-            // Trigger beat analysis through MelissaDataSource
+            if (!dataSource_->isFileLoaded()) return;
             dataSource_->startBeatAnalysis();
         };
         componentToAdd->addAndMakeVisible(aiBeatButton_.get());
         aiBeatButton_->toFront(false);
 
         waveformControlPopup_ = std::make_unique<MelissaWaveformControlPopupComponent>();
-        std::cout << "Waveform popup created successfully" << std::endl;
-        
-        // Set LookAndFeel for toggle buttons to slide style
-        waveformControlPopup_->followToggleButton_->setLookAndFeel(&slideToggleLaf_);
-        waveformControlPopup_->autoSnapToggleButton_->setLookAndFeel(&slideToggleLaf_);
-        
-        waveformControlPopup_->onCloseClicked = [this]()
-        {
-            std::cout << "Popup close clicked" << std::endl;
-            waveformControlPopup_->hidePopup();
-        };
-        waveformControlPopup_->onLoopSnapClicked = [this]()
-        {
-            snapLoopToDownbeat();
-        };
         addAndMakeVisible(waveformControlPopup_.get());
     }
 
@@ -1959,6 +1926,15 @@ void MainComponent::showFileChooser()
         } });
 }
 
+void MainComponent::applyWavefromZoom()
+{
+    const float zoomLevel = dataSource_->getWaveformZoom();
+    waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
+    waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
+    if (waveformComponent_)
+        waveformComponent_->updateWaveformImmediately();
+}
+
 void MainComponent::resized_Desktop()
 {
     constexpr int kHeaderHeight = 50;
@@ -2022,9 +1998,7 @@ void MainComponent::resized_Desktop()
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
 
     constexpr int kOffset = 20;
-    float zoomLevel = dataSource_->getWaveformZoom();
-    waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
-    waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
+    applyWavefromZoom();
     markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
 
     waveformViewport_->setBounds(30, headerComponent_->getBottom() + 4, getWidth() - 30 * 2, 160 + 36 + kScrollbarThichness);
@@ -2618,14 +2592,11 @@ void MainComponent::songChanged(const String &filePath, size_t bufferLength, int
 
 void MainComponent::beatAnalysisCompleted(const MelissaBeatResult& result, bool success)
 {
-    std::cout << "MainComponent received beat analysis completion - Success: " << success << std::endl;
-    
     if (waveformComponent_)
     {
         if (success && result.isValid)
         {
             waveformComponent_->setBeatResult(result);
-            std::cout << "Updated waveform with beat ruler" << std::endl;
         }
         else
         {
@@ -3053,15 +3024,6 @@ void MainComponent::followPlayingPosition()
     }
 }
 
-void MainComponent::snapLoopToDownbeat()
-{
-    if (!model_)
-        return;
-    
-    // Use the new Model API for snap functionality
-    model_->snapLoopRangeToDownbeat();
-}
-
 bool MainComponent::isDragSnapToBeatEnabled() const
 {
     return dataSource_->getWaveformSnap();
@@ -3392,16 +3354,5 @@ void MainComponent::filesDropped(const StringArray &files, int x, int y)
 
 void MainComponent::waveformZoomChanged(float zoomValue)
 {
-    resized(); // Trigger waveform resize
-    if (waveformComponent_) waveformComponent_->updateWaveformImmediately();
-}
-
-void MainComponent::waveformFollowChanged(bool followPlayingPosition)
-{
-    // Update follow mode - implementation depends on waveform component
-}
-
-void MainComponent::waveformSnapChanged(bool snapToBeats)
-{
-    model_->setSnapLoopRange(snapToBeats);
+    applyWavefromZoom();
 }
