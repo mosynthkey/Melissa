@@ -193,6 +193,20 @@ void MelissaBeatResultCache::saveCachedResult(const std::string& audioFilePath, 
     }
 }
 
+void MelissaBeatResultCache::removeCachedResult(const std::string& audioFilePath)
+{
+    auto cacheFile = getCacheFilePath(audioFilePath);
+    if (cacheFile.empty())
+        return;
+
+    juce::File file(cacheFile);
+    if (file.exists())
+    {
+        file.deleteFile();
+        DBG("Removed beat result cache: " << cacheFile);
+    }
+}
+
 void MelissaBeatResultCache::clearCache()
 {
     auto files = cacheDirectory_.findChildFiles(juce::File::findFiles, false, "*.beats");
@@ -200,25 +214,6 @@ void MelissaBeatResultCache::clearCache()
     {
         file.deleteFile();
     }
-    
-    DBG("Cleared beat result cache");
-}
 
-void MelissaBeatResultCache::cleanupOldCacheFiles()
-{
-    auto files = cacheDirectory_.findChildFiles(juce::File::findFiles, false, "*.beats");
-    auto currentTime = juce::Time::getCurrentTime();
-    
-    for (auto& file : files)
-    {
-        auto modTime = file.getLastModificationTime();
-        auto daysSinceModification = (currentTime - modTime).inDays();
-        
-        // Remove cache files older than 30 days
-        if (daysSinceModification > 30)
-        {
-            file.deleteFile();
-            DBG("Cleaned up old cache file: " << file.getFileName());
-        }
-    }
+    DBG("Cleared beat result cache");
 }

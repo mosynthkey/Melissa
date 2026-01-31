@@ -176,6 +176,7 @@ public:
     // MelissaDataSourceListener
     void songChanged(const juce::String &filePath, size_t bufferLength, int32_t sampleRate) override;
     void fileLoadStatusChanged(FileLoadStatus status, const juce::String &filePath) override;
+    void beatAnalysisStarted() override;
     void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) override;
     void waveformZoomChanged(float zoomValue) override;
 
@@ -262,6 +263,7 @@ private:
 
     std::unique_ptr<juce::DrawableButton> waveformControlButton_;
     std::unique_ptr<juce::DrawableButton> aiBeatButton_;
+    std::unique_ptr<MelissaProgressBarComponent> aiBeatProgressBar_;
     std::unique_ptr<juce::Drawable> waveformIcon_, waveformIconHighlighted_;
     std::unique_ptr<juce::Drawable> aiBeatIcon_, aiBeatIconHighlighted_;
     std::unique_ptr<MelissaWaveformControlPopupComponent> waveformControlPopup_;

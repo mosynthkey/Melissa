@@ -265,6 +265,7 @@ public:
     void cancelBeatAnalysis();
     bool hasBeatResult() const;  // For current file only
     MelissaBeatResult getBeatResult() const;  // For current file only
+    void clearBeatResult();  // Clear current file's beat result and cache
 
     enum Reader
     {

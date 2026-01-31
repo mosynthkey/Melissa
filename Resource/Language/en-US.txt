@@ -272,3 +272,8 @@ countries: us
 "format"="Format"
 "ogg_format_description"="ogg: Compressed / Small file size"
 "wav_format_description"="wav: Uncompressed / Large file size"
+"ai_beat_detection"="AI Beat Detection"
+"beat_analysis_takes_time"="AI analysis may take some time. Continue?"
+"beat_already_detected"="Beat detection result already exists."
+"beat_reanalyze"="Re-analyze"
+"beat_delete"="Delete"

@@ -943,10 +943,41 @@ void MainComponent::createUI()
         aiBeatButton_->onClick = [&]()
         {
             if (!dataSource_->isFileLoaded()) return;
-            dataSource_->startBeatAnalysis();
+
+            if (dataSource_->hasBeatResult())
+            {
+                // Beat result exists - show re-analyze or delete options
+                const std::vector<String> options = { TRANS("beat_reanalyze"), TRANS("beat_delete"), TRANS("cancel") };
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_already_detected"), options, [&](size_t index) {
+                    if (index == 0) // Re-analyze
+                    {
+                        dataSource_->startBeatAnalysis();
+                    }
+                    else if (index == 1) // Delete
+                    {
+                        dataSource_->clearBeatResult();
+                    }
+                });
+                MelissaModalDialog::show(dialog, TRANS("ai_beat_detection"));
+            }
+            else
+            {
+                // No beat result - show confirmation dialog
+                const std::vector<String> options = { TRANS("ok"), TRANS("cancel") };
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_analysis_takes_time"), options, [&](size_t index) {
+                    if (index == 0) // OK
+                    {
+                        dataSource_->startBeatAnalysis();
+                    }
+                });
+                MelissaModalDialog::show(dialog, TRANS("ai_beat_detection"));
+            }
         };
         componentToAdd->addAndMakeVisible(aiBeatButton_.get());
         aiBeatButton_->toFront(false);
+
+        aiBeatProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
+        componentToAdd->addChildComponent(aiBeatProgressBar_.get());
 
         waveformControlPopup_ = std::make_unique<MelissaWaveformControlPopupComponent>();
         addAndMakeVisible(waveformControlPopup_.get());
@@ -1993,6 +2024,7 @@ void MainComponent::resized_Desktop()
         waveformControlButton_->setBounds(aiBeatButton_->getRight() + kButtonSpacing, (kHeaderHeight - kSvgButtonSize) / 2, kSvgButtonSize, kSvgButtonSize);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
+        aiBeatProgressBar_->setBounds(aiBeatButton_->getX() + aiBeatButton_->getWidth() / 2 - kExportBarWidth / 2, aiBeatButton_->getBottom() + 2, kExportBarWidth, 4);
     }
 
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
@@ -2590,8 +2622,17 @@ void MainComponent::songChanged(const String &filePath, size_t bufferLength, int
     }
 }
 
+void MainComponent::beatAnalysisStarted()
+{
+    MessageManager::callAsync([&]()
+                              { aiBeatProgressBar_->setVisible(true); });
+}
+
 void MainComponent::beatAnalysisCompleted(const MelissaBeatResult& result, bool success)
 {
+    MessageManager::callAsync([&]()
+                              { aiBeatProgressBar_->setVisible(false); });
+
     if (waveformComponent_)
     {
         if (success && result.isValid)

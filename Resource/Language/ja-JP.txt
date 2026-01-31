@@ -271,3 +271,8 @@ countries: ja
 "format"="フォーマット"
 "ogg_format_description"="ogg: 圧縮あり / ファイルサイズ小"
 "wav_format_description"="wav: 非圧縮 / ファイルサイズ大"
+"ai_beat_detection"="AIビート検出"
+"beat_analysis_takes_time"="AI解析には時間がかかります。続行しますか？"
+"beat_already_detected"="ビート検出結果が既にあります。"
+"beat_reanalyze"="再検出"
+"beat_delete"="削除"

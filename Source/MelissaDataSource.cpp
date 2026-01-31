@@ -1638,8 +1638,25 @@ void MelissaDataSource::saveBeatResultForCurrentFile()
 {
     if (currentSongFilePath_.isEmpty() || !currentFileBeatResult_.isValid)
         return;
-    
+
     auto cache = MelissaBeatResultCache::getInstance();
     cache->saveCachedResult(currentSongFilePath_.toStdString(), currentFileBeatResult_);
     std::cout << "Saved beat result to cache for: " << currentSongFilePath_ << std::endl;
+}
+
+void MelissaDataSource::clearBeatResult()
+{
+    if (currentSongFilePath_.isEmpty())
+        return;
+
+    // Clear memory
+    currentFileBeatResult_ = MelissaBeatResult();
+
+    // Clear cache file
+    auto cache = MelissaBeatResultCache::getInstance();
+    cache->removeCachedResult(currentSongFilePath_.toStdString());
+
+    // Notify listeners
+    for (auto &&l : listeners_)
+        l->beatAnalysisCompleted(MelissaBeatResult(), false);
 }

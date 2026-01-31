@@ -20,8 +20,8 @@ public:
     bool loadCachedResult(const std::string& audioFilePath, MelissaBeatResult& result);
     void saveCachedResult(const std::string& audioFilePath, const MelissaBeatResult& result);
     bool hasCachedResult(const std::string& audioFilePath);
+    void removeCachedResult(const std::string& audioFilePath);
     void clearCache();
-    void cleanupOldCacheFiles();
     
     // File hash management
     std::string getAudioFileHash(const std::string& audioFilePath);
