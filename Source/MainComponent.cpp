@@ -79,7 +79,7 @@ public:
         const auto backgroundColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
         const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
 
-        g.fillAll(backgroundColour);
+        //g.fillAll(backgroundColour);
 
         g.setColour(borderColour);
 
@@ -903,52 +903,26 @@ void MainComponent::createUI()
         };
         componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
 
-        // Create waveform control button with SVG icon
-        waveformIcon_ = Drawable::createFromImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize);
-        waveformIconHighlighted_ = Drawable::createFromImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize);
-        waveformIcon_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
-        waveformIconHighlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour(1.0f));
-        
-        waveformControlButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        waveformControlButton_->setTooltip("Waveform Controls");
-        waveformControlButton_->setImages(waveformIcon_.get(), waveformIconHighlighted_.get());
-        waveformControlButton_->onClick = [this]()
-        {
-            if (waveformControlPopup_ && waveformControlPopup_->isVisible())
-            {
-                waveformControlPopup_->hidePopup();
-            }
-            else
-            {
-                if (waveformControlPopup_)
-                {
-                    // Convert button bounds to MainComponent coordinates
-                    auto buttonBounds = waveformControlButton_->getBounds();
-                    auto mainComponentButtonBounds = getLocalArea(headerComponent_.get(), buttonBounds);
-                    waveformControlPopup_->showPopup(this);
-                }
-            }
-        };
-        componentToAdd->addAndMakeVisible(waveformControlButton_.get());
-
         // Create AI beat button with SVG icon
         aiBeatIcon_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
         aiBeatIconHighlighted_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
         aiBeatIcon_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
         aiBeatIconHighlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour(1.0f));
-        
+
         aiBeatButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         aiBeatButton_->setTooltip("AI Beat Detection");
         aiBeatButton_->setImages(aiBeatIcon_.get(), aiBeatIconHighlighted_.get());
         aiBeatButton_->onClick = [&]()
         {
-            if (!dataSource_->isFileLoaded()) return;
+            if (!dataSource_->isFileLoaded())
+                return;
 
             if (dataSource_->hasBeatResult())
             {
                 // Beat result exists - show re-analyze or delete options
-                const std::vector<String> options = { TRANS("beat_reanalyze"), TRANS("beat_delete"), TRANS("cancel") };
-                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_already_detected"), options, [&](size_t index) {
+                const std::vector<String> options = {TRANS("beat_reanalyze"), TRANS("beat_delete"), TRANS("cancel")};
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_already_detected"), options, [&](size_t index)
+                                                                    {
                     if (index == 0) // Re-analyze
                     {
                         dataSource_->startBeatAnalysis();
@@ -979,8 +953,8 @@ void MainComponent::createUI()
         aiBeatProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
         componentToAdd->addChildComponent(aiBeatProgressBar_.get());
 
-        waveformControlPopup_ = std::make_unique<MelissaWaveformControlPopupComponent>();
-        addAndMakeVisible(waveformControlPopup_.get());
+        aiBeatProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
+        componentToAdd->addChildComponent(aiBeatProgressBar_.get());
     }
 
     {
@@ -1024,6 +998,9 @@ void MainComponent::createUI()
             componentToAdd->addAndMakeVisible(s.get());
             sectionComponents_[sectionIndex] = std::move(s);
         }
+
+        waveformToolbar_ = std::make_unique<MelissaWaveformToolbarComponent>();
+        componentToAdd->addAndMakeVisible(waveformToolbar_.get());
     }
 
     {
@@ -1367,6 +1344,31 @@ void MainComponent::createUI()
             model_->setMetronomeSwitch(on);
         };
         componentToAdd->addAndMakeVisible(metronomeOnOffButton_.get());
+
+        metronomeNormalModeButton_ = make_unique<TextButton>("Normal");
+        metronomeNormalModeButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        metronomeNormalModeButton_->onClick = [this]()
+        {
+            model_->setMetronomeMode(kMetronomeMode_Normal);
+        };
+        componentToAdd->addAndMakeVisible(metronomeNormalModeButton_.get());
+
+        metronomeAIModeButton_ = make_unique<TextButton>("AI");
+        metronomeAIModeButton_->setLookAndFeel(&simpleTextButtonLaf_);
+        metronomeAIModeButton_->onClick = [this]()
+        {
+            if (dataSource_->hasBeatResult())
+            {
+                model_->setMetronomeMode(kMetronomeMode_AI);
+            }
+        };
+        componentToAdd->addAndMakeVisible(metronomeAIModeButton_.get());
+
+        metronomeAIModeLabel_ = make_unique<Label>();
+        metronomeAIModeLabel_->setText("AI Mode", dontSendNotification);
+        metronomeAIModeLabel_->setJustificationType(Justification::centred);
+        metronomeAIModeLabel_->setVisible(false);
+        componentToAdd->addAndMakeVisible(metronomeAIModeLabel_.get());
 
         bpmButton_ = make_unique<MelissaIncDecButton>(1, TRANS("metronome_bpm_dec"), TRANS("metronome_bpm_inc"));
         bpmButton_->addFunctionButton(MelissaIncDecButton::kButtonPosition_Right, "Edit", TRANS("metronome_bpm_edit"));
@@ -2021,7 +2023,6 @@ void MainComponent::resized_Desktop()
         constexpr int kSecondDividerX = 210 + 190;
         
         aiBeatButton_->setBounds(kSecondDividerX + kButtonSpacing, (kHeaderHeight - kSvgButtonSize) / 2, kSvgButtonSize, kSvgButtonSize);
-        waveformControlButton_->setBounds(aiBeatButton_->getRight() + kButtonSpacing, (kHeaderHeight - kSvgButtonSize) / 2, kSvgButtonSize, kSvgButtonSize);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
         aiBeatProgressBar_->setBounds(aiBeatButton_->getX() + aiBeatButton_->getWidth() / 2 - kExportBarWidth / 2, aiBeatButton_->getBottom() + 2, kExportBarWidth, 4);
@@ -2035,9 +2036,16 @@ void MainComponent::resized_Desktop()
 
     waveformViewport_->setBounds(30, headerComponent_->getBottom() + 4, getWidth() - 30 * 2, 160 + 36 + kScrollbarThichness);
 
-    controlComponent_->setBounds(0, waveformViewport_->getBottom() + 10, getWidth(), 230);
+    constexpr int kWaveformToolbarHeight = 40;
+    constexpr int kSectionMargin = 10;
 
-    int y = controlComponent_->getY() + 10;
+    // Waveform toolbar - above sections, aligned with them
+    waveformToolbar_->setBounds(kSectionMargin, waveformViewport_->getBottom() + kSectionMargin, getWidth() - kSectionMargin * 2, kWaveformToolbarHeight);
+
+    // controlComponent_ is the background for toolbar and sections
+    controlComponent_->setBounds(0, waveformViewport_->getBottom() + 4, getWidth(), 230 + kWaveformToolbarHeight + kSectionMargin);
+
+    int y = waveformToolbar_->getBottom() + kSectionMargin;
 
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
@@ -2160,9 +2168,19 @@ void MainComponent::resized_Desktop()
 
         metronomeOnOffButton_->setBounds(10, 5, 40, 20);
 
+        // Mode buttons (Normal / AI) - positioned at top right
+        constexpr int modeButtonWidth = 50;
+        constexpr int modeButtonHeight = 18;
+        constexpr int modeButtonMargin = 10;
+        metronomeAIModeButton_->setBounds(section->getWidth() - modeButtonWidth - modeButtonMargin, 6, modeButtonWidth, modeButtonHeight);
+        metronomeNormalModeButton_->setBounds(metronomeAIModeButton_->getX() - modeButtonWidth - 4, 6, modeButtonWidth, modeButtonHeight);
+
         bpmButton_->setBounds(10, y, bpmAccentPosButtonWidth, controlHeight);
         accentButton_->setBounds((section->getWidth() - accentButtonWidth) / 2, y, accentButtonWidth, controlHeight);
         accentPositionButton_->setBounds(section->getWidth() - bpmAccentPosButtonWidth - 10, y, bpmAccentPosButtonWidth, controlHeight);
+
+        // AI Mode label (centered in section)
+        metronomeAIModeLabel_->setBounds(10, 30, section->getWidth() - 20, section->getHeight() - 30);
     }
 
     // EQ
@@ -2271,6 +2289,8 @@ void MainComponent::resized_Desktop()
 
     if (tutorialComponent_ != nullptr)
         tutorialComponent_->setBounds(0, 0, getWidth(), getHeight());
+
+    updateMetronomeMode();
 }
 
 void MainComponent::resized_Mobile()
@@ -2471,7 +2491,11 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics &g)
 {
-    g.fillAll(MelissaUISettings::getMainColour());
+    ColourGradient gradient(Colour(0xff121319), 0, 0,
+                            Colour(0xff131D2E), static_cast<float>(getWidth()), static_cast<float>(getHeight()),
+                            false);
+    g.setGradientFill(gradient);
+    g.fillRect(getLocalBounds());
 }
 
 void MainComponent::resized()
@@ -2610,29 +2634,42 @@ void MainComponent::songChanged(const String &filePath, size_t bufferLength, int
     fileBrowserComponent_->setRoot(parentDir);
 
     shouldInitializeBpmDetector_ = true;
-    
+
     // Update beat ruler when song changes
-    if (waveformComponent_ && dataSource_->hasBeatResult())
+    if (dataSource_->hasBeatResult())
     {
-        waveformComponent_->setBeatResult(dataSource_->getBeatResult());
+        if (waveformComponent_)
+            waveformComponent_->setBeatResult(dataSource_->getBeatResult());
+        if (metronome_)
+            metronome_->setBeatResult(dataSource_->getBeatResult());
     }
-    else if (waveformComponent_)
+    else
     {
-        waveformComponent_->clearBeatRuler();
+        if (waveformComponent_)
+            waveformComponent_->clearBeatRuler();
+        if (metronome_)
+            metronome_->clearBeatResult();
     }
+    
+    // Reset metronome mode to Normal when song changes if no beat result
+    if (!dataSource_->hasBeatResult() && model_->getMetronomeMode() == kMetronomeMode_AI)
+    {
+        model_->setMetronomeMode(kMetronomeMode_Normal);
+    }
+    
+    updateMetronomeMode();
 }
 
 void MainComponent::beatAnalysisStarted()
 {
-    MessageManager::callAsync([&]()
-                              { aiBeatProgressBar_->setVisible(true); });
+    MessageManager::callAsync([this]()
+                              {
+        if (aiBeatProgressBar_)
+            aiBeatProgressBar_->setVisible(true); });
 }
 
-void MainComponent::beatAnalysisCompleted(const MelissaBeatResult& result, bool success)
+void MainComponent::beatAnalysisCompleted(const MelissaBeatResult &result, bool success)
 {
-    MessageManager::callAsync([&]()
-                              { aiBeatProgressBar_->setVisible(false); });
-
     if (waveformComponent_)
     {
         if (success && result.isValid)
@@ -2644,6 +2681,26 @@ void MainComponent::beatAnalysisCompleted(const MelissaBeatResult& result, bool 
             waveformComponent_->clearBeatRuler();
         }
     }
+
+    // Update metronome with beat result
+    if (metronome_)
+    {
+        if (success && result.isValid)
+        {
+            metronome_->setBeatResult(result);
+        }
+        else
+        {
+            metronome_->clearBeatResult();
+        }
+    }
+
+    // Update UI to reflect new beat result availability
+    MessageManager::callAsync([this]()
+                              {
+        if (aiBeatProgressBar_)
+            aiBeatProgressBar_->setVisible(false);
+        resized(); });
 }
 
 void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String &filePath)
@@ -2876,6 +2933,26 @@ void MainComponent::updatePlayBackModeButton()
         playbackModeButton_->setTooltip(TRANS("tooltip_playback_mode_playlist"));
         nextButton_->setEnabled(true);
     }
+}
+
+void MainComponent::updateMetronomeMode()
+{
+    const bool isAIMode = model_->getMetronomeMode() == kMetronomeMode_AI;
+    const bool hasBeatResult = dataSource_->hasBeatResult();
+
+    // Update button appearance based on mode using alpha
+    metronomeNormalModeButton_->setAlpha(isAIMode ? 0.4f : 1.0f);
+    metronomeAIModeButton_->setAlpha(isAIMode ? 1.0f : (hasBeatResult ? 0.4f : 0.2f));
+    metronomeAIModeButton_->setEnabled(hasBeatResult);
+
+    // Show/hide controls and labels based on mode
+    bpmButton_->setVisible(!isAIMode);
+    accentButton_->setVisible(!isAIMode);
+    accentPositionButton_->setVisible(!isAIMode);
+    labels_[kLabel_MetronomeBpm]->setVisible(!isAIMode);
+    labels_[kLabel_MetronomeAccent]->setVisible(!isAIMode);
+    labels_[kLabel_AccentPosition]->setVisible(!isAIMode);
+    metronomeAIModeLabel_->setVisible(isAIMode);
 }
 
 void MainComponent::updateSpeedModeTab(SpeedModeTab tab)
@@ -3253,6 +3330,11 @@ void MainComponent::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSe
 void MainComponent::metronomeSwitchChanged(bool on)
 {
     metronomeOnOffButton_->setToggleState(on, dontSendNotification);
+}
+
+void MainComponent::metronomeModeChanged(MetronomeMode mode)
+{
+    updateMetronomeMode();
 }
 
 void MainComponent::bpmChanged(float bpm)

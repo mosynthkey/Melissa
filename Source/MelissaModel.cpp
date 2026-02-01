@@ -275,6 +275,12 @@ void  MelissaModel::setMetronomeSwitch(bool on)
     for (auto&& l : listeners_) l->metronomeSwitchChanged(on);
 }
 
+void MelissaModel::setMetronomeMode(MetronomeMode mode)
+{
+    metronomeMode_ = mode;
+    for (auto&& l : listeners_) l->metronomeModeChanged(mode);
+}
+
 void MelissaModel::setBpm(float bpm)
 {
     bpm_ = std::clamp<float>(bpm, kBpmMeasureFailed, kBpmMax);
@@ -444,7 +450,7 @@ MelissaModel* MelissaModel::getInstance()
 }
 
 MelissaModel::MelissaModel() :
-playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
+playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), metronomeSwitch_(false), metronomeMode_(kMetronomeMode_Normal), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
 speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
 bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f), preCountSwitch_(false), snapLoopRange_(false)
 {

@@ -128,8 +128,8 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaUISettings.h
     Source/UI/MelissaWaveformControlComponent.cpp
     Source/UI/MelissaWaveformControlComponent.h
-    Source/UI/MelissaWaveformControlPopupComponent.cpp
-    Source/UI/MelissaWaveformControlPopupComponent.h
+    Source/UI/MelissaWaveformToolbarComponent.cpp
+    Source/UI/MelissaWaveformToolbarComponent.h
     Source/UI/MelissaWaveformMouseEventComponent.cpp
     Source/UI/MelissaWaveformMouseEventComponent.h
     Submodule/soundtouch/source/SoundTouch/AAFilter.cpp

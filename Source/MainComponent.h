@@ -39,7 +39,7 @@
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
-#include "UI/MelissaWaveformControlPopupComponent.h"
+#include "UI/MelissaWaveformToolbarComponent.h"
 #include <array>
 #include <numeric>
 
@@ -198,6 +198,7 @@ public:
     void timerCallback() override;
 
     void updatePlayBackModeButton();
+    void updateMetronomeMode();
     void updateSpeedModeTab(SpeedModeTab tab);
     void updateFileChooserTab(FileChooserTab tab);
     void updateListMemoTab(ListMemoTab tab);
@@ -261,12 +262,11 @@ private:
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
 
-    std::unique_ptr<juce::DrawableButton> waveformControlButton_;
     std::unique_ptr<juce::DrawableButton> aiBeatButton_;
     std::unique_ptr<MelissaProgressBarComponent> aiBeatProgressBar_;
     std::unique_ptr<juce::Drawable> waveformIcon_, waveformIconHighlighted_;
     std::unique_ptr<juce::Drawable> aiBeatIcon_, aiBeatIconHighlighted_;
-    std::unique_ptr<MelissaWaveformControlPopupComponent> waveformControlPopup_;
+    std::unique_ptr<MelissaWaveformToolbarComponent> waveformToolbar_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     std::unique_ptr<juce::TextButton> songDetailButton_;
@@ -286,6 +286,9 @@ private:
     std::unique_ptr<RoundedComponent> listComponent_;
 
     std::unique_ptr<juce::ToggleButton> metronomeOnOffButton_;
+    std::unique_ptr<juce::TextButton> metronomeNormalModeButton_;
+    std::unique_ptr<juce::TextButton> metronomeAIModeButton_;
+    std::unique_ptr<juce::Label> metronomeAIModeLabel_;
     std::unique_ptr<MelissaIncDecButton> bpmButton_;
     std::unique_ptr<MelissaIncDecButton> accentPositionButton_;
     std::unique_ptr<MelissaIncDecButton> accentButton_;
@@ -536,6 +539,7 @@ private:
 
     void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) override;
     void metronomeSwitchChanged(bool on) override;
+    void metronomeModeChanged(MetronomeMode mode) override;
     void bpmChanged(float bpm) override;
     void beatPositionChanged(float beatPositionMSec) override;
     void accentChanged(int accent) override;

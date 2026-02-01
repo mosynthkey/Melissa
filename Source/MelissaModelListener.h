@@ -88,6 +88,7 @@ public:
     virtual void loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio) {}
     virtual void playingPosChanged(float time, float ratio) {}
     virtual void metronomeSwitchChanged(bool on) {}
+    virtual void metronomeModeChanged(MetronomeMode mode) {}
     virtual void bpmChanged(float bpm) {}
     virtual void beatPositionChanged(float beatPositionMSec) {}
     virtual void accentChanged(int accent) {}

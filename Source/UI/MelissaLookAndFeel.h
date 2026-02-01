@@ -710,12 +710,12 @@ public:
         }
         else if (highlightedOrDown)
         {
-            g.setColour(isDark ? Colours::white.withAlpha(0.2f) : Colours::black.withAlpha(0.2f));
+            g.setColour(MelissaUISettings::getAccentColour(0.4f));
             g.fillRoundedRectangle(localBounds, height / 2);
         }
         else
         {
-            g.setColour(isDark ? Colours::white.withAlpha(0.1f) : Colours::black.withAlpha(0.1f));
+            g.setColour(MelissaUISettings::getSubColour());
             g.fillRoundedRectangle(localBounds, height / 2);
         }
         

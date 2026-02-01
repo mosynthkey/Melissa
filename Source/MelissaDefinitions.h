@@ -29,6 +29,12 @@ static constexpr int kBpmMeasureFailed = kBpmShouldMeasure - 1;
 
 static constexpr int kAccentMax = 16;
 
+enum MetronomeMode : int
+{
+    kMetronomeMode_Normal,
+    kMetronomeMode_AI
+};
+
 static constexpr float kMusicVolumeMax = 2.f;
 
 enum { kNumOfSpeedPresets = 13 };

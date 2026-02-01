@@ -77,6 +77,8 @@ public:
     // Metronome
     void  setMetronomeSwitch(bool on);
     bool  getMetronomeSwitch() const { return metronomeSwitch_; }
+    void  setMetronomeMode(MetronomeMode mode);
+    MetronomeMode getMetronomeMode() const { return metronomeMode_; }
     void  setBpm(float bpm);
     float getBpm() { return bpm_; }
     void  setBeatPositionMSec(float beatPositionMSec);
@@ -142,6 +144,7 @@ private:
     PlaybackStatus playbackStatus_;
     PlaybackMode playbackMode_;
     bool metronomeSwitch_;
+    MetronomeMode metronomeMode_;
     std::vector<MelissaModelListener*> listeners_;
     float lengthMSec_;
     float musicVolume_;

@@ -1,5 +1,5 @@
 //
-//  MelissaWaveformControlPopupComponent.h
+//  MelissaWaveformToolbarComponent.h
 //  Melissa
 //
 //  Copyright(c) 2025 Masaki Ono
@@ -13,18 +13,14 @@
 #include "MelissaDataSource.h"
 #include "BinaryData.h"
 
-class MelissaWaveformControlPopupComponent : public juce::Component, public MelissaDataSourceListener
+class MelissaWaveformToolbarComponent : public juce::Component, public MelissaDataSourceListener
 {
 public:
-    MelissaWaveformControlPopupComponent();
-    ~MelissaWaveformControlPopupComponent() override;
+    MelissaWaveformToolbarComponent();
+    ~MelissaWaveformToolbarComponent() override;
 
     void paint(juce::Graphics& g) override;
     void resized() override;
-
-    void showPopup(juce::Component* parent);
-    void hidePopup();
-    bool isVisible() const { return isPopupVisible_; }
 
     // MelissaDataSourceListener
     void waveformZoomChanged(float zoomValue) override;
@@ -32,11 +28,6 @@ public:
     void waveformSnapChanged(bool snapToBeats) override;
 
 private:
-    bool isPopupVisible_;
-    
-    std::unique_ptr<juce::DrawableButton> closeButton_;
-    std::unique_ptr<juce::Drawable> closeButtonDrawable_;
-    std::unique_ptr<juce::Drawable> closeButtonHighlightedDrawable_;
     std::unique_ptr<juce::Label> waveformLabel_;
     std::unique_ptr<juce::Label> zoomLabel_;
     std::unique_ptr<juce::Label> followLabel_;
@@ -50,7 +41,6 @@ private:
     MelissaLookAndFeel laf_;
     MelissaLookAndFeel_SlideToggleButton slideToggleButtonLaf_;
     MelissaLookAndFeel_ZoomSlider zoomSliderLaf_;
-    juce::ComponentAnimator animator_;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MelissaWaveformControlPopupComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MelissaWaveformToolbarComponent)
 };
