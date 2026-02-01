@@ -19,19 +19,21 @@ using std::make_unique;
 class MelissaAudioEngine::SampleIndexStretcher
 {
 public:
+    static constexpr size_t kQueCapacity = 16384 * 10;
+
     SampleIndexStretcher() :
     readIndex_(0.f),
     speed_(1.f)
     {
     }
-    
+
     void reset()
     {
         std::lock_guard<std::mutex> lock(queMutex_);
         readIndex_ = 0;
         que_.clear();
     }
-    
+
     void setSpeed(float speed)
     {
         std::lock_guard<std::mutex> lock(queMutex_);
@@ -39,13 +41,13 @@ public:
         readIndex_ = 0;
         que_.clear();
     }
-    
+
     void putSampleIndex(size_t sampleIndex)
     {
         std::lock_guard<std::mutex> lock(queMutex_);
-        que_.push_back(sampleIndex);
+        que_.push(sampleIndex);
     }
-    
+
     bool isStretchedSampleIndicesPrepared(size_t length) //const
     {
         assert(0.f <= readIndex_);
@@ -55,42 +57,42 @@ public:
         prevQueSize_ = que_.size();
         return (readIndex_ + length * speed_) < que_.size();
     }
-    
+
     float getNextSampleIndex()
     {
         if (readIndex_ < que_.size())
         {
-            return que_[static_cast<size_t>(readIndex_)];
+            return static_cast<float>(que_[static_cast<size_t>(readIndex_)]);
         }
         else
         {
             return 0.f;
         }
     }
-    
-    void getStretchedSampleIndices(size_t length, std::deque<float>& stretchedSampleIndex)
+
+    void getStretchedSampleIndices(size_t length, MelissaRingBuffer<float, 16>& stretchedSampleIndex)
     {
         std::lock_guard<std::mutex> lock(queMutex_);
 
         stretchedSampleIndex.clear();
-        
+
         for (size_t index = 0; index < length; ++index)
         {
-            stretchedSampleIndex.push_back(que_[static_cast<size_t>(readIndex_)]);
+            stretchedSampleIndex.push(static_cast<float>(que_[static_cast<size_t>(readIndex_)]));
             readIndex_ += speed_;
         }
-        
+
         const int numOfSamplesToDelete = static_cast<int>(readIndex_) - 1;
         if (0 < numOfSamplesToDelete)
         {
-            que_.erase(que_.begin(), que_.begin() + numOfSamplesToDelete);
+            que_.erase(static_cast<size_t>(numOfSamplesToDelete));
             readIndex_ -= numOfSamplesToDelete;
         }
     }
-    
+
 private:
     std::mutex queMutex_;
-    std::deque<size_t> que_;
+    MelissaRingBuffer<size_t, kQueCapacity> que_;
     float readIndex_;
     float speed_;
 
@@ -323,7 +325,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
                         bufferToRender[1][sampleIndex] = buffer[1] * volumeBalance_;
                     }
 
-                    processedBufferQue_.erase(processedBufferQue_.begin(), processedBufferQue_.begin() + 2);
+                    processedBufferQue_.erase(2);
                 }
                 mutex_.unlock();
             }
@@ -395,7 +397,7 @@ void MelissaAudioEngine::process()
     mutex_.lock();
     for (size_t iSample = 0; iSample < receivedSampleSize * 2; ++iSample)
     {
-        processedBufferQue_.emplace_back(bufferForSoundTouch_[iSample]);
+        processedBufferQue_.push(bufferForSoundTouch_[iSample]);
     }
     mutex_.unlock();
 }

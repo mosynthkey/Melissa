@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <deque>
 #include <memory>
 #include <mutex>
 #include <vector>
 #include "MelissaBeepGenerator.h"
 #include "MelissaModelListener.h"
+#include "MelissaRingBuffer.h"
 #include "SoundTouch.h"
 
 class MelissaDataSource;
@@ -89,9 +89,9 @@ private:
     int32_t originalSampleRate_;
     size_t originalBufferLength_;
 
-    std::deque<float> processedBufferQue_;
-    std::deque<float> timeQue_;
-    std::deque<float> speedQue_;
+    MelissaRingBuffer<float, queLength_ * 2> processedBufferQue_;
+    MelissaRingBuffer<float, 16> timeQue_;
+    MelissaRingBuffer<float, 16> speedQue_;
     int32_t outputSampleRate_;
 
     class SampleIndexStretcher;
