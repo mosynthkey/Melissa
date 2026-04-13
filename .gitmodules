@@ -3,10 +3,10 @@
 	url = https://codeberg.org/soundtouch/soundtouch.git
 [submodule "Submodule/json"]
 	path = Submodule/json
-	url = git@github.com:nlohmann/json.git
+	url = https://github.com/nlohmann/json.git
 [submodule "Submodule/eigen"]
 	path = Submodule/eigen
 	url = https://gitlab.com/libeigen/eigen.git
 [submodule "Submodule/JUCE"]
 	path = Submodule/JUCE
-	url = git@github.com:juce-framework/JUCE.git
+	url = https://github.com/juce-framework/JUCE.git
