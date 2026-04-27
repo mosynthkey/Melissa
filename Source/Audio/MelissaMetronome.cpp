@@ -5,6 +5,7 @@
 //  Copyright(c) 2020 Masaki Ono
 //
 
+#include <cstdint>
 #include <cmath>
 #include "MelissaDefinitions.h"
 #include "MelissaMetronome.h"
