@@ -859,6 +859,8 @@ void MainComponent::createUI()
         fileNameLabel_ = make_unique<Label>();
         fileNameLabel_->setJustificationType(Justification::centred);
         fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Large));
+        fileNameLabel_->setInterceptsMouseClicks(true, false);
+        fileNameLabel_->addMouseListener(this, false);
         componentToAdd->addAndMakeVisible(fileNameLabel_.get());
 
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
@@ -2344,31 +2346,16 @@ void MainComponent::resized_Desktop()
         metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
     }
 
-    // File component (Browser / Playlist / History)
+    // List component (Practice / Marker / Memo / Browser) - full width
+    // File browser moved to overlay
     {
         int y = controlComponent_->getBottom() + kGradationHeight - 10;
         int h = (getHeight() - 10) - y;
-        fileComponent_->setBounds(10, y, songWidth, h);
-        int x = fileComponent_->getRight() + 10;
-        listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
-        const int kTabMargin = 2;
-        int tabWidth = (fileComponent_->getWidth() - 20 - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
+        fileComponent_->setVisible(false);
+        listComponent_->setBounds(10, y, getWidth() - 20, h);
 
-        x = 10;
-        browseToggleButton_->setBounds(x, 10, tabWidth, 30);
-        x += (tabWidth + kTabMargin);
-        playlistToggleButton_->setBounds(x, 10, tabWidth, 30);
-        x += (tabWidth + kTabMargin);
-        historyToggleButton_->setBounds(x, 10, tabWidth, 30);
-
-        tabWidth = 200;
-        int w = fileComponent_->getWidth() - 20;
-        h = fileComponent_->getHeight() - 60;
-        fileBrowserComponent_->setBounds(10, 50, w, h);
-        playlistComponent_->setBounds(10, 50, w, h);
-        historyTable_->setBounds(10, 50, w, h);
-
-        x = 10;
+        constexpr int tabWidth = 200;
+        int x = 10;
         y = 10;
         practiceListToggleButton_->setBounds(x, y, tabWidth, 30);
         addToPracticeButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
@@ -2382,7 +2369,7 @@ void MainComponent::resized_Desktop()
 
         x = 10;
         y = 50;
-        h = fileComponent_->getHeight() - 60;
+        h = listComponent_->getHeight() - 60;
         practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h - 40);
         markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
         memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
@@ -2610,6 +2597,14 @@ void MainComponent::paint(Graphics &g)
     g.fillRect(getLocalBounds());
 }
 
+void MainComponent::mouseDown(const MouseEvent &event)
+{
+    if (event.eventComponent == fileNameLabel_.get())
+    {
+        showFileBrowserOverlay();
+    }
+}
+
 void MainComponent::resized()
 {
     if (isDesktop)
@@ -2670,6 +2665,16 @@ void MainComponent::showAboutDialog()
 {
     auto component = std::make_shared<MelissaAboutComponent>();
     MelissaModalDialog::show(std::dynamic_pointer_cast<Component>(component), TRANS("about_melissa"));
+}
+
+void MainComponent::showFileBrowserOverlay()
+{
+    auto component = std::make_shared<MelissaFileBrowserOverlayComponent>();
+    component->onFileSelected = []()
+    {
+        MelissaModalDialog::close();
+    };
+    MelissaModalDialog::showWithSizeRatio(std::dynamic_pointer_cast<Component>(component), TRANS("select_file"), 0.9f, 0.9f);
 }
 
 void MainComponent::showBPMSettingDialog()

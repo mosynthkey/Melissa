@@ -277,3 +277,6 @@ countries: us
 "beat_already_detected"="Beat detection result already exists."
 "beat_reanalyze"="Re-analyze"
 "beat_delete"="Delete"
+"select_file"="Select File"
+"browser"="Browser"
+"history"="History"

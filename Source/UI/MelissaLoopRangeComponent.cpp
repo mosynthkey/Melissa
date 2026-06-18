@@ -96,7 +96,7 @@ void MelissaLoopRangeComponent::mouseMove(float xRatio)
 void MelissaLoopRangeComponent::mouseDrag(float xRatio)
 {
     const auto mousePosRatio = std::clamp(xRatio, 0.f, 1.f);
-    
+
     if (mouseStatus_ == kMouseStatus_Range)
     {
         if (draggingLoopStart_)

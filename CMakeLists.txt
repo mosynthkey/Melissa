@@ -76,6 +76,8 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaBeatRulerComponent.cpp
     Source/UI/MelissaBeatRulerComponent.h
     Source/UI/MelissaBPMSettingComponent.h
+    Source/UI/MelissaButtonWithProgressBar.cpp
+    Source/UI/MelissaButtonWithProgressBar.h
     Source/UI/MelissaBrowserComponent.cpp
     Source/UI/MelissaBrowserComponent.h
     Source/UI/MelissaButtons.h
@@ -84,6 +86,8 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaDoubleClickEditLabel.h
     Source/UI/MelissaExportComponent.cpp
     Source/UI/MelissaExportComponent.h
+    Source/UI/MelissaFileBrowserOverlayComponent.cpp
+    Source/UI/MelissaFileBrowserOverlayComponent.h
     Source/UI/MelissaFileListBox.h
     Source/UI/MelissaIncDecButton.h
     Source/UI/MelissaInputDialog.h
@@ -128,8 +132,8 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaUISettings.h
     Source/UI/MelissaWaveformControlComponent.cpp
     Source/UI/MelissaWaveformControlComponent.h
-    Source/UI/MelissaWaveformToolbarComponent.cpp
-    Source/UI/MelissaWaveformToolbarComponent.h
+    Source/UI/MelissaToolbarComponent.cpp
+    Source/UI/MelissaToolbarComponent.h
     Source/UI/MelissaWaveformMouseEventComponent.cpp
     Source/UI/MelissaWaveformMouseEventComponent.h
     Submodule/soundtouch/source/SoundTouch/AAFilter.cpp

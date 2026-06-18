@@ -276,3 +276,6 @@ countries: ja
 "beat_already_detected"="ビート検出結果が既にあります。"
 "beat_reanalyze"="再検出"
 "beat_delete"="削除"
+"select_file"="ファイルを選択"
+"browser"="ブラウザ"
+"history"="履歴"

@@ -25,6 +25,7 @@
 #include "MelissaModalDialog.h"
 #include "MelissaModel.h"
 #include "MelissaPlaylistComponent.h"
+#include "MelissaFileBrowserOverlayComponent.h"
 #include "MelissaPopupMessageComponent.h"
 #include "MelissaPracticeTableListBox.h"
 #include "MelissaPreCountSettingComponent.h"
@@ -154,6 +155,7 @@ public:
     void releaseResources() override;
     void paint(juce::Graphics &g) override;
     void resized() override;
+    void mouseDown(const juce::MouseEvent &event) override;
 
     // ChangeListener
     void changeListenerCallback(juce::ChangeBroadcaster *source) override;
@@ -225,6 +227,7 @@ public:
 
     void showTutorial();
     void showUpdateDialog(bool showIfThereIsNoUpdate = false);
+    void showFileBrowserOverlay();
 
     void dialogWillOpen();
     void dialogWillClose();

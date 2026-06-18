@@ -36,7 +36,7 @@ private:
     
     juce::Rectangle<float> getLoopStartEdgeRect() const;
     juce::Rectangle<float> getLoopEndEdgeRect() const;
-    
+
     MelissaModel* model_;
     float aRatio_, bRatio_;
     float mouseClickXRatio_;

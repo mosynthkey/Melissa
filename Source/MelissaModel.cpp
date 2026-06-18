@@ -111,6 +111,10 @@ void MelissaModel::resetSpeedTraining()
 
 void MelissaModel::setLoopPosRatio(float aPosRatio, float bPosRatio)
 {
+    // Apply snap to nearest beat if enabled
+    aPosRatio = snapPositionToDownbeat(aPosRatio);
+    bPosRatio = snapPositionToDownbeat(bPosRatio);
+
     if (0 < lengthMSec_ && 0.f <= aPosRatio && aPosRatio < bPosRatio && bPosRatio <= 1.f)
     {
         aPosRatio_ = aPosRatio;
@@ -389,11 +393,13 @@ void MelissaModel::setSnapLoopRange(bool snapLoopRange)
 
 float MelissaModel::snapPositionToDownbeat(float positionRatio)
 {
-    if (!snapLoopRange_)
-        return positionRatio;
-    
     auto dataSource = MelissaDataSource::getInstance();
-    if (!dataSource || !dataSource->isFileLoaded() || !dataSource->hasBeatResult())
+
+    // Check if snap is enabled (use MelissaDataSource's waveformSnap setting from UI)
+    if (!dataSource || !dataSource->getWaveformSnap())
+        return positionRatio;
+
+    if (!dataSource->isFileLoaded() || !dataSource->hasBeatResult())
         return positionRatio;
     
     auto beatResult = dataSource->getBeatResult();

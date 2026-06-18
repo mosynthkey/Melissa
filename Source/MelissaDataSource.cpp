@@ -1310,8 +1310,7 @@ juce::String MelissaDataSource::getBrowserUrl() const
 
 void MelissaDataSource::notifyExportStarted()
 {
-    for (auto &&l : listeners_)
-        l->exportStarted();
+    for (auto &&l : listeners_)          l->exportStarted();
 }
 
 void MelissaDataSource::notifyExportCompleted(bool result, juce::String message)
