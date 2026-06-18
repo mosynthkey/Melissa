@@ -79,7 +79,7 @@ public:
         const auto backgroundColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
         const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
 
-        //g.fillAll(backgroundColour);
+        g.fillAll(backgroundColour);
 
         g.setColour(borderColour);
 
@@ -2590,10 +2590,17 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics &g)
 {
-    ColourGradient gradient(Colour(0xff121319), 0, 0,
-                            Colour(0xff131D2E), static_cast<float>(getWidth()), static_cast<float>(getHeight()),
-                            false);
-    g.setGradientFill(gradient);
+    if (MelissaUISettings::isDarkMode)
+    {
+        ColourGradient gradient(Colour(0xff121319), 0, 0,
+                                Colour(0xff131D2E), static_cast<float>(getWidth()), static_cast<float>(getHeight()),
+                                false);
+        g.setGradientFill(gradient);
+    }
+    else
+    {
+        g.setColour(MelissaUISettings::getSubColour());
+    }
     g.fillRect(getLocalBounds());
 }
 
