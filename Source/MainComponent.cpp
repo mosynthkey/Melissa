@@ -13,6 +13,7 @@
 #include "MelissaInputDialog.h"
 #include "MelissaMobileSupport.h"
 #include "MelissaOptionDialog.h"
+#include "MelissaSoundEngineDialog.h"
 #include "MelissaShortcutComponent.h"
 #include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
@@ -59,6 +60,7 @@ enum
     kMenuID_UITheme_Dark,
     kMenuID_UITheme_Light,
     kMenuID_RevealSettingsFile,
+    kMenuID_SoundEngine,
     kMenuID_Tutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
@@ -219,6 +221,10 @@ public:
         addMenuButton(TRANS("audio_midi_settings"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Preferences); });
+
+        addMenuButton(TRANS("sound_engine_settings"), [this]()
+                          {
+            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_SoundEngine); });
 
         addSeparator();
 
@@ -2586,6 +2592,11 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
         showAudioMidiSettingsDialog();
     else if (menuItemID == kMenuID_Shortcut)
         showShortcutDialog();
+    else if (menuItemID == kMenuID_SoundEngine)
+    {
+        auto dialog = std::make_shared<MelissaSoundEngineDialog>();
+        MelissaModalDialog::show(dialog, TRANS("sound_engine_settings"));
+    }
     else if (menuItemID == kMenuID_UITheme_Dark || menuItemID == kMenuID_UITheme_Light)
     {
         const std::vector<String> options = {TRANS("ok")};

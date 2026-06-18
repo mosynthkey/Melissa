@@ -111,6 +111,10 @@ public:
     void setMainVolume(float mainVolume);
     float getMainVolume() const { return mainVolume_; }
     
+    // Stretcher
+    void setStretcherType(StretcherType type);
+    StretcherType getStretcherType() const { return stretcherType_; }
+
     // Pre Count
     void setPreCountSwitch(bool preCountSwitch);
     bool getPreCountSwitch() const { return preCountSwitch_; }
@@ -162,6 +166,8 @@ private:
     float customPartVolume_[kNumCustomPartVolumes];
     float mainVolume_;
     bool preCountSwitch_;
+    bool snapLoopRange_;
+    StretcherType stretcherType_;
     
     // Singleton
     static MelissaModel instance_;

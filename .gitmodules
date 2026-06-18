@@ -10,3 +10,9 @@
 [submodule "Submodule/JUCE"]
 	path = Submodule/JUCE
 	url = https://github.com/juce-framework/JUCE.git
+[submodule "Submodule/beat_this_cpp"]
+	path = Submodule/beat_this_cpp
+	url = https://github.com/mosynthkey/beat_this_cpp.git
+[submodule "Submodule/bungee"]
+	path = Submodule/bungee
+	url = https://github.com/bungee-audio-stretch/bungee.git

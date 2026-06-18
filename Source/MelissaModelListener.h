@@ -102,5 +102,6 @@ public:
     virtual void customPartVolumeChanged(CustomPartVolume part, float volume) {}
     virtual void mainVolumeChanged(float mainVolume) {}
     virtual void preCountSwitchChanged(bool preCountSwitch) {}
+    virtual void stretcherTypeChanged(StretcherType type) {}
 };
 

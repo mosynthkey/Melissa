@@ -46,3 +46,9 @@ enum StemFile : int
 };
 
 enum { kNumStemSoloButtons = kNumStemFiles + 1 };
+
+enum StretcherType : int
+{
+    kStretcher_SoundTouch,
+    kStretcher_Bungee,
+};

@@ -125,21 +125,21 @@ void MelissaEqualizer::updateCoefs()
     const float omega = 2.f * M_PI *  freq_ / sampleRate_;
     const float alpha = sin(omega) * sinh(log(2.f) / 2.f * q_ * omega / sin(omega));
     const float A     = pow(10.f, (gain / 40.f) );
-     
+
     a[0] =  1.0f + alpha / A;
     a[1] = -2.0f * cos(omega);
     a[2] =  1.0f - alpha / A ;
     b[0] =  1.0f + alpha * A ;
     b[1] = -2.0f * cos(omega);
     b[2] =  1.0f - alpha * A ;
-    
+
     shouldUpdateCoefs_ = false;
 }
 
 void MelissaEqualizer::process(float* inBuffer, float* outBuffer)
 {
     if (shouldUpdateCoefs_) updateCoefs();
-    
+
     for (size_t chIndex = 0; chIndex < 2; ++chIndex)
     {
         const float signalIn = inBuffer[chIndex];
@@ -148,7 +148,7 @@ void MelissaEqualizer::process(float* inBuffer, float* outBuffer)
                            + (b[2] / a[0]) * z_[chIndex][1]
                            - (a[1] / a[0]) * z_[chIndex][2]
                            - (a[2] / a[0]) * z_[chIndex][3];
-        
+
         z_[chIndex][1] = z_[chIndex][0];
         z_[chIndex][0] = signalIn;
         z_[chIndex][3] = z_[chIndex][2];
@@ -181,13 +181,17 @@ void MelissaEqualizer::setQ(float q)
 }
 
 MelissaAudioEngine::MelissaAudioEngine() :
-model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), soundTouch_(make_unique<soundtouch::SoundTouch>()), playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
+model_(MelissaModel::getInstance()), dataSource_(MelissaDataSource::getInstance()), playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), originalSampleRate_(48000), originalBufferLength_(0), outputSampleRate_(48000),
 aIndex_(0), bIndex_(0), processStartIndex_(0), readIndex_(0), playingPosMSec_(0.f), trimStartIndex_(0), trimEndIndex_(0), speed_(100), processingSpeed_(1.f), semitone_(0), volume_(1.f), needToReset_(true), loop_(true), shouldProcess_(true),
 #if defined(ENABLE_SPEED_TRAINING)
 count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), speedIncValue_(1), speedIncGoal_(100),
 #endif
 currentProcessingPlaybackSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0), forcePreCountOn_(false)
 {
+    soundTouchStretcher_ = std::make_unique<SoundTouchStretcher>();
+    bungeeStretcher_     = std::make_unique<BungeeStretcher>();
+    stretcher_           = bungeeStretcher_.get();   // default: Bungee
+
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     speedStretcher_ = std::make_unique<SampleIndexStretcher>();
     eq_ = std::make_unique<MelissaEqualizer>();
@@ -198,23 +202,23 @@ MelissaAudioEngine::~MelissaAudioEngine() {}
 void MelissaAudioEngine::updateBuffer()
 {
     reset();
-    
+
     originalSampleRate_ = dataSource_->getSampleRate();
     originalBufferLength_ = dataSource_->getBufferLength();
-    
+
     processStartIndex_ = 0;
-    
+
     model_->setLoopPosRatio(0.f, 1.f);
     model_->setPitch(0);
     model_->setSpeed(100);
-   
+
     needToReset_ = true;
 }
 
 void MelissaAudioEngine::setOutputSampleRate(int32_t sampleRate)
 {
     if (outputSampleRate_ == sampleRate) return;
-    
+
     outputSampleRate_ = sampleRate;
     eq_->setSampleRate(sampleRate);
     beepGen_.setOutputSampleRate(sampleRate);
@@ -235,9 +239,9 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
 {
     if (status_ != kStatus_Playing) return;
     jassert(1 <= numOfChannels && numOfChannels <= 2);
-    
+
     mutex_.lock();
-    if (processedBufferQue_.size() <= bufferLength || 
+    if (processedBufferQue_.size() <= bufferLength ||
         !sampleIndexStretcher_->isStretchedSampleIndicesPrepared(bufferLength) ||
         !speedStretcher_->isStretchedSampleIndicesPrepared(bufferLength))
     {
@@ -246,14 +250,14 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
         return;
     }
     mutex_.unlock();
-    
+
     for (int sampleIndex = 0; sampleIndex < bufferLength; ++sampleIndex)
     {
         if (enableCountIn_ && 0 < countInSampleIndex_)
         {
             // Pre-count metronome
             if (countInSampleIndex_ % static_cast<int>(60.f / model_->getBpm() * outputSampleRate_) == 0) beepGen_.trigger(880);
-            
+
             bufferToRender[0][sampleIndex] = beepGen_.render();
             if (1 < numOfChannels) bufferToRender[1][sampleIndex] = bufferToRender[0][sampleIndex];
             countInSampleIndex_--;
@@ -264,10 +268,20 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
         }
         else
         {
+            // Prefer the stretcher's own accurate position (Bungee tracks
+            // per-grain source positions); fall back to SampleIndexStretcher
+            // for SoundTouch which doesn't implement popSourcePositions.
             mutex_.lock();
-            const float currentPlaybackPosMSec = static_cast<float>(sampleIndexStretcher_->getNextSampleIndex()) / originalSampleRate_ * 1000.f;
+            float stretcherSourceFrame = 0.f;
+            const bool hasAccuratePos =
+                stretcher_->popSourcePositions(&stretcherSourceFrame, 1);
+            const float currentPlaybackPosMSec = hasAccuratePos
+                ? stretcherSourceFrame / originalSampleRate_ * 1000.f
+                : static_cast<float>(sampleIndexStretcher_->getNextSampleIndex())
+                      / originalSampleRate_ * 1000.f;
             currentPlaybackSpeed_ = static_cast<int32_t>(speedStretcher_->getNextSampleIndex());
             mutex_.unlock();
+
             const bool looped = static_cast<int>(currentPlaybackPosMSec)   == static_cast<int>(model_->getLoopAPosMSec()) && static_cast<int>(previousRenderedPosMSec_) == static_cast<int>(model_->getLoopBPosMSec());
             if (enableCountIn_ && (looped || forcePreCountOn_))
             {
@@ -285,13 +299,13 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
 
                     sampleIndexStretcher_->getStretchedSampleIndices(1, timeQue_);
                     speedStretcher_->getStretchedSampleIndices(1, speedQue_);
-                    
+
                     float buffer[] = { processedBufferQue_[0], processedBufferQue_[1] };
-                    
+
                     if (eqSwitch_) eq_->process(buffer, buffer);
                     buffer[0] *= volume_;
                     buffer[1] *= volume_;
-                    
+
                     if (outputMode_ == kOutputMode_LL)
                     {
                         buffer[1] = buffer[0];
@@ -310,7 +324,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
                         const auto mid = (buffer[0] + buffer[1]) / 2.f;
                         buffer[0] = buffer[1] = mid;
                     }
-                    
+
                     if (numOfChannels == 1)
                     {
                         // mono
@@ -329,7 +343,7 @@ void MelissaAudioEngine::render(float* bufferToRender[], size_t numOfChannels, s
             }
         }
     }
-    
+
     model_->updatePlayingPosMSecFromDsp(playingPosMSec_);
 }
 
@@ -337,12 +351,12 @@ void MelissaAudioEngine::process()
 {
     if (dataSource_->getBufferLength() == 0 || sampleIndexStretcher_ == nullptr || speedStretcher_ == nullptr) return;
     if (needToReset_) resetProcessedBuffer();
-    
-    uint32_t receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
+
+    uint32_t receivedSampleSize = stretcher_->receiveSamples(bufferForSoundTouch_, processLength_);
     while (receivedSampleSize == 0)
     {
         int numSamplesToRead = 0;
-        
+
         const size_t readStartIndex = readIndex_;
         for (size_t iSample = 0; iSample < processLength_; ++iSample)
         {
@@ -352,13 +366,13 @@ void MelissaAudioEngine::process()
                 {
 #if defined(ENABLE_SPEED_TRAINING)
                     ++count_;
-                    
+
                     if (speedMode_ == kSpeedMode_Training && speedIncPer_ != 0)
                     {
                         const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
                         currentProcessingPlaybackSpeed_ = speed_ + (count_ / speedIncPer_) * speedIncValue_;
                         if (currentProcessingPlaybackSpeed_ > speedIncGoal_) currentProcessingPlaybackSpeed_ = speedIncGoal_;
-                        soundTouch_->setTempo(fsConvPitch * currentProcessingPlaybackSpeed_ / 100.f);
+                        stretcher_->setTempo(fsConvPitch * currentProcessingPlaybackSpeed_ / 100.f);
                     }
 #endif
                     readIndex_ = aIndex_;
@@ -376,22 +390,23 @@ void MelissaAudioEngine::process()
             ++numSamplesToRead;
             ++readIndex_;
         }
-        
+
         float lCh[processLength_];
         float rCh[processLength_];
         float* readAudio[] = { lCh, rCh };
         if (shouldProcess_) dataSource_->readBuffer(MelissaDataSource::kReader_Playback, readStartIndex, numSamplesToRead, playPart_, readAudio);
-        
+
         for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
         {
             bufferForSoundTouch_[sampleIndex * 2 + 0] = lCh[sampleIndex];
             bufferForSoundTouch_[sampleIndex * 2 + 1] = rCh[sampleIndex];
         }
-        
-        soundTouch_->putSamples(bufferForSoundTouch_, numSamplesToRead);
-        receivedSampleSize = soundTouch_->receiveSamples(bufferForSoundTouch_, processLength_);
+
+        stretcher_->notifyInputStart(static_cast<int64_t>(readStartIndex));
+        stretcher_->putSamples(bufferForSoundTouch_, numSamplesToRead);
+        receivedSampleSize = stretcher_->receiveSamples(bufferForSoundTouch_, processLength_);
     }
-    
+
     mutex_.lock();
     for (size_t iSample = 0; iSample < receivedSampleSize * 2; ++iSample)
     {
@@ -419,13 +434,22 @@ void MelissaAudioEngine::resetProcessedBuffer()
 {
     mutex_.lock();
 
+    // Apply any pending stretcher type change before touching the stretcher.
+    // This is the only safe place to swap: process() is not running since
+    // resetProcessedBuffer() is called from process() before any stretcher use.
+    const auto pending = static_cast<StretcherType>(
+        pendingStretcherType_.load(std::memory_order_relaxed));
+    stretcher_ = (pending == kStretcher_SoundTouch)
+               ? static_cast<IMelissaStretcher*>(soundTouchStretcher_.get())
+               : static_cast<IMelissaStretcher*>(bungeeStretcher_.get());
+
     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
-    
-    soundTouch_->clear();
-    soundTouch_->setChannels(2);
-    soundTouch_->setSampleRate(originalSampleRate_);
-    soundTouch_->setTempo(fsConvPitch * currentProcessingPlaybackSpeed_ / 100.f);
-    soundTouch_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
+
+    stretcher_->clear();
+    stretcher_->setChannels(2);
+    stretcher_->setSampleRate(originalSampleRate_);
+    stretcher_->setTempo(fsConvPitch * currentProcessingPlaybackSpeed_ / 100.f);
+    stretcher_->setPitch(fsConvPitch * exp(0.69314718056 * semitone_ / 12.f));
     processingSpeed_ = static_cast<float>(originalSampleRate_) / outputSampleRate_ * (currentProcessingPlaybackSpeed_ / 100.f);
     sampleIndexStretcher_->setSpeed(processingSpeed_);
     speedStretcher_->setSpeed(processingSpeed_);
@@ -433,7 +457,7 @@ void MelissaAudioEngine::resetProcessedBuffer()
     processedBufferQue_.clear();
     timeQue_.clear();
     speedQue_.clear();
-    
+
     playingPosMSec_ = static_cast<float>(processStartIndex_) / originalSampleRate_ * 1000.f;
     if (processStartIndex_ < aIndex_ || bIndex_ < processStartIndex_) processStartIndex_ = aIndex_;
     readIndex_ = processStartIndex_;
@@ -451,7 +475,7 @@ void MelissaAudioEngine::resetProcessedBuffer()
         loop_ = !loopRangeWholeSong;
     }
     status_ = kStatus_Playing;
-    
+
 #if defined(ENABLE_SPEED_TRAINING)
     count_ = 0;
 #endif
@@ -492,7 +516,7 @@ void MelissaAudioEngine::playbackModeChanged(PlaybackMode mode)
 {
     if (playbackMode_ == mode) return;
     playbackMode_ = mode;
-    
+
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
     needToReset_ = true;
 }
@@ -540,7 +564,7 @@ void MelissaAudioEngine::speedModeChanged(SpeedMode mode)
         speedIncPer_   = model_->getSpeedIncPer();
         speedIncGoal_  = model_->getSpeedIncGoal();
     }
-    
+
     speedMode_ = mode;
     count_ = 0;
     processStartIndex_ =  playingPosMSec_ * originalSampleRate_ / 1000.f;
@@ -579,7 +603,7 @@ void MelissaAudioEngine::speedIncGoalChanged(int speedIncGoal)
 void MelissaAudioEngine::loopPosChanged(float aTimeMSec, float aRatio, float bTimeMSec, float bRatio)
 {
     if (!(0 <= aRatio && aRatio < bRatio && bRatio <= 1.f)) return;
-    
+
     aIndex_ = static_cast<int32_t>(aRatio * originalBufferLength_);
     bIndex_ = static_cast<int32_t>(bRatio * originalBufferLength_);
     if (readIndex_ < aIndex_ || bIndex_ < readIndex_)
@@ -648,6 +672,15 @@ void MelissaAudioEngine::preCountSwitchChanged(bool preCountSwitch)
 #if defined(ENABLE_PRECOUNT)
     enableCountIn_ = preCountSwitch;
 #endif
+}
+
+void MelissaAudioEngine::stretcherTypeChanged(StretcherType type)
+{
+    // Only record the requested type; the actual pointer swap happens in
+    // resetProcessedBuffer() so process() is never mid-flight without
+    // mutex protection when the active stretcher changes.
+    pendingStretcherType_.store(type, std::memory_order_relaxed);
+    needToReset_ = true;
 }
 
 void MelissaAudioEngine::updateLoopParameters()
