@@ -92,7 +92,11 @@ public:
     void listBoxItemDoubleClicked(int row, const juce::MouseEvent& e) override
     {
         dataSource_->loadFileAsync(list_[row]);
+        if (onFileSelected)
+            onFileSelected();
     }
+
+    std::function<void()> onFileSelected;
     
     void paintListBoxItem(int rowNumber, juce::Graphics &g, int width, int height, bool rowIsSelected) override
     {

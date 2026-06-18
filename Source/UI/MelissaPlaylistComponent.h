@@ -34,7 +34,9 @@ public:
     
     // MelissaDataSourceListener
     void playlistUpdated(size_t index) override;
-    
+
+    std::function<void()> onFileSelected;
+
 private:
     MelissaDataSource* dataSource_;
     MelissaDataSource::FilePathList list_;

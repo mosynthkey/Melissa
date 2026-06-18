@@ -167,6 +167,11 @@ void MelissaPlaylistComponent::createUI()
     addAndMakeVisible(addPlayingButton_.get());
     
     listBox_ = std::make_unique<MelissaFileListBox>();
+    listBox_->onFileSelected = [this]()
+    {
+        if (onFileSelected)
+            onFileSelected();
+    };
     addAndMakeVisible(listBox_.get());
 }
 
