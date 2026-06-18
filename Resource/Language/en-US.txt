@@ -280,3 +280,6 @@ countries: us
 "select_file"="Select File"
 "browser"="Browser"
 "history"="History"
+"sound_engine_settings"="Sound Engine"
+"sound_engine_bungee"="Bungee (High Quality)"
+"sound_engine_soundtouch"="SoundTouch (Classic)"

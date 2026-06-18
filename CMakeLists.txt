@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.5" CACHE STRING "Minimum macOS deployment version")
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Build universal binary")
@@ -129,6 +132,7 @@ target_sources(Melissa PRIVATE
     Source/UI/MelissaTextEditorWithClearButton.h
     Source/UI/MelissaTutorialComponent.cpp
     Source/UI/MelissaTutorialComponent.h
+    Source/UI/MelissaSoundEngineDialog.h
     Source/UI/MelissaUISettings.h
     Source/UI/MelissaWaveformControlComponent.cpp
     Source/UI/MelissaWaveformControlComponent.h
@@ -161,11 +165,29 @@ target_sources(Melissa PRIVATE
     Submodule/beat_this_cpp/Source/InferenceProcessor.cpp
     Submodule/beat_this_cpp/Source/MelSpectrogram.cpp
     Submodule/beat_this_cpp/Source/Postprocessor.cpp
+    Submodule/bungee/src/Assert.cpp
+    Submodule/bungee/src/Fourier.cpp
+    Submodule/bungee/src/Grain.cpp
+    Submodule/bungee/src/Grains.cpp
+    Submodule/bungee/src/Input.cpp
+    Submodule/bungee/src/Instrumentation.cpp
+    Submodule/bungee/src/Output.cpp
+    Submodule/bungee/src/Partials.cpp
+    Submodule/bungee/src/Stretch.cpp
+    Submodule/bungee/src/Stretcher.cpp
+    Submodule/bungee/src/Synthesis.cpp
+    Submodule/bungee/src/Timing.cpp
+    Submodule/bungee/src/Window.cpp
+    Submodule/bungee/src/version.cpp
+    Submodule/bungee/submodules/pffft/pffft.c
+    Submodule/bungee/submodules/pffft/fftpack.c
 )
 
 target_include_directories(Melissa PRIVATE
     Submodule/soundtouch/include
     Submodule/soundtouch/source/SoundTouch
+    Submodule/bungee
+    Submodule/bungee/submodules
     Submodule/eigen
     Submodule/json/single_include
     Submodule/signalsmith-stretch
@@ -194,7 +216,53 @@ target_compile_definitions(Melissa PRIVATE
     JUCE_USE_WIN_WEBVIEW2
     MELISSA_USE_STEM_SEPARATION
     ENABLE_SPEED_TRAINING
+    BUNGEE_VISIBILITY=
 )
+
+# bungee src files need eigen_assert remapped to their own assert macro,
+# and EIGEN_DONT_PARALLELIZE to avoid threading issues
+set(BUNGEE_SRC_FILES
+    Submodule/bungee/src/Assert.cpp
+    Submodule/bungee/src/Fourier.cpp
+    Submodule/bungee/src/Grain.cpp
+    Submodule/bungee/src/Grains.cpp
+    Submodule/bungee/src/Input.cpp
+    Submodule/bungee/src/Instrumentation.cpp
+    Submodule/bungee/src/Output.cpp
+    Submodule/bungee/src/Partials.cpp
+    Submodule/bungee/src/Stretch.cpp
+    Submodule/bungee/src/Stretcher.cpp
+    Submodule/bungee/src/Synthesis.cpp
+    Submodule/bungee/src/Timing.cpp
+    Submodule/bungee/src/Window.cpp
+)
+if(NOT MSVC)
+    set_source_files_properties(${BUNGEE_SRC_FILES} PROPERTIES
+        COMPILE_DEFINITIONS "eigen_assert=BUNGEE_ASSERT1;EIGEN_DONT_PARALLELIZE=1"
+        COMPILE_OPTIONS "-fwrapv"
+    )
+    # version.cpp needs BUNGEE_VERSION plus the bungee-specific definitions
+    set_source_files_properties(Submodule/bungee/src/version.cpp PROPERTIES
+        COMPILE_DEFINITIONS "BUNGEE_VERSION=\"0.0.0\";eigen_assert=BUNGEE_ASSERT1;EIGEN_DONT_PARALLELIZE=1"
+        COMPILE_OPTIONS "-fwrapv"
+    )
+else()
+    set_source_files_properties(${BUNGEE_SRC_FILES} PROPERTIES
+        COMPILE_DEFINITIONS "eigen_assert=BUNGEE_ASSERT1;EIGEN_DONT_PARALLELIZE=1"
+    )
+    set_source_files_properties(Submodule/bungee/src/version.cpp PROPERTIES
+        COMPILE_DEFINITIONS "BUNGEE_VERSION=\"0.0.0\";eigen_assert=BUNGEE_ASSERT1;EIGEN_DONT_PARALLELIZE=1"
+    )
+endif()
+
+# pffft needs fast-math but not finite-math-only
+if(NOT MSVC)
+    set_source_files_properties(
+        Submodule/bungee/submodules/pffft/pffft.c
+        Submodule/bungee/submodules/pffft/fftpack.c
+        PROPERTIES COMPILE_OPTIONS "-ffast-math;-fno-finite-math-only;-fno-exceptions"
+    )
+endif()
 
 target_link_libraries(Melissa PRIVATE
     juce::juce_core

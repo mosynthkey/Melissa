@@ -13,3 +13,6 @@
 [submodule "Submodule/beat_this_cpp"]
 	path = Submodule/beat_this_cpp
 	url = git@github.com:mosynthkey/beat_this_cpp.git
+[submodule "Submodule/bungee"]
+	path = Submodule/bungee
+	url = git@github.com:bungee-audio-stretch/bungee.git

@@ -7,13 +7,16 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <vector>
 #include "MelissaBeepGenerator.h"
 #include "MelissaModelListener.h"
 #include "MelissaRingBuffer.h"
-#include "SoundTouch.h"
+#include "MelissaStretcher.h"
+#include "BungeeStretcher.h"
+#include "SoundTouchStretcher.h"
 
 class MelissaDataSource;
 class MelissaModel;
@@ -81,7 +84,14 @@ private:
     static constexpr size_t processLength_ = 4096;
     static constexpr size_t queLength_ = 10 * processLength_ * 2 /* Stereo */;
 
-    std::unique_ptr<soundtouch::SoundTouch> soundTouch_;
+    // Both stretchers are pre-allocated at construction.
+    // stretcher_ is a non-owning pointer to whichever is active.
+    // Switching is deferred to resetProcessedBuffer() so it never
+    // happens while process() is mid-flight without mutex protection.
+    std::unique_ptr<SoundTouchStretcher> soundTouchStretcher_;
+    std::unique_ptr<BungeeStretcher>     bungeeStretcher_;
+    IMelissaStretcher*                   stretcher_ = nullptr;
+    std::atomic<int>                     pendingStretcherType_{kStretcher_Bungee};
 
     PlaybackStatus playbackStatus_;
     PlaybackMode playbackMode_;
@@ -92,6 +102,7 @@ private:
     MelissaRingBuffer<float, queLength_ * 2> processedBufferQue_;
     MelissaRingBuffer<float, 16> timeQue_;
     MelissaRingBuffer<float, 16> speedQue_;
+
     int32_t outputSampleRate_;
 
     class SampleIndexStretcher;
@@ -164,6 +175,7 @@ private:
     void eqQChanged(size_t band, float q) override;
     void playPartChanged(PlayPart playPart) override;
     void preCountSwitchChanged(bool preCountSwitch) override;
+    void stretcherTypeChanged(StretcherType type) override;
 
     void updateLoopParameters();
     void setupPreCountIfNeeded();

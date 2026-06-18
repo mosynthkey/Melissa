@@ -279,3 +279,6 @@ countries: ja
 "select_file"="ファイルを選択"
 "browser"="ブラウザ"
 "history"="履歴"
+"sound_engine_settings"="サウンドエンジン"
+"sound_engine_bungee"="Bungee（高音質）"
+"sound_engine_soundtouch"="SoundTouch（クラシック）"

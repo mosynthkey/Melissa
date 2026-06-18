@@ -391,6 +391,12 @@ void MelissaModel::setSnapLoopRange(bool snapLoopRange)
     snapLoopRange_ = snapLoopRange;
 }
 
+void MelissaModel::setStretcherType(StretcherType type)
+{
+    stretcherType_ = type;
+    for (auto&& l : listeners_) l->stretcherTypeChanged(type);
+}
+
 float MelissaModel::snapPositionToDownbeat(float positionRatio)
 {
     auto dataSource = MelissaDataSource::getInstance();
@@ -458,6 +464,6 @@ MelissaModel* MelissaModel::getInstance()
 MelissaModel::MelissaModel() :
 playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), metronomeSwitch_(false), metronomeMode_(kMetronomeMode_Normal), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
 speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
-bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f), preCountSwitch_(false), snapLoopRange_(false)
+bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f), preCountSwitch_(false), snapLoopRange_(false), stretcherType_(kStretcher_Bungee)
 {
 }
