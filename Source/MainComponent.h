@@ -12,6 +12,7 @@
 #include "MelissaBPMDetector.h"
 #include "MelissaBrowserComponent.h"
 #include "MelissaButtons.h"
+#include "MelissaButtonWithProgressBar.h"
 #include "MelissaDataSource.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
@@ -39,7 +40,7 @@
 #include "MelissaUpdateChecker.h"
 #include "MelissaUtility.h"
 #include "MelissaWaveformControlComponent.h"
-#include "UI/MelissaWaveformToolbarComponent.h"
+#include "UI/MelissaToolbarComponent.h"
 #include <array>
 #include <numeric>
 
@@ -177,8 +178,11 @@ public:
     void songChanged(const juce::String &filePath, size_t bufferLength, int32_t sampleRate) override;
     void fileLoadStatusChanged(FileLoadStatus status, const juce::String &filePath) override;
     void beatAnalysisStarted() override;
+    void beatAnalysisProgress(float progress) override;
     void beatAnalysisCompleted(const MelissaBeatResult& result, bool success) override;
     void waveformZoomChanged(float zoomValue) override;
+    void waveformFollowChanged(bool followPlayingPosition) override;
+    void waveformSnapChanged(bool snapToBeats) override;
 
     // MenuBarModel
     juce::StringArray getMenuBarNames() override;
@@ -262,11 +266,27 @@ private:
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
 
-    std::unique_ptr<juce::DrawableButton> aiBeatButton_;
-    std::unique_ptr<MelissaProgressBarComponent> aiBeatProgressBar_;
     std::unique_ptr<juce::Drawable> waveformIcon_, waveformIconHighlighted_;
-    std::unique_ptr<juce::Drawable> aiBeatIcon_, aiBeatIconHighlighted_;
-    std::unique_ptr<MelissaWaveformToolbarComponent> waveformToolbar_;
+    std::unique_ptr<MelissaButtonWithProgressBar> aiBeatButton_;
+
+    // Toolbars (Time, Waveform, Beat)
+    std::unique_ptr<MelissaToolbarComponent> timeToolbar_;
+    std::unique_ptr<MelissaToolbarComponent> waveformToolbar_;
+    std::unique_ptr<MelissaToolbarComponent> beatToolbar_;
+
+    // Time toolbar components
+    std::unique_ptr<juce::Label> toolbarTimeLabel_;
+    std::unique_ptr<juce::Label> toolbarFollowLabel_;
+    std::unique_ptr<juce::ToggleButton> toolbarFollowToggle_;
+
+    // Waveform toolbar components
+    std::unique_ptr<juce::TextButton> toolbarZoomResetButton_;
+    std::unique_ptr<juce::Slider> toolbarZoomSlider_;
+
+    // Beat toolbar components
+    std::unique_ptr<juce::TextButton> toolbarSnapButton_;
+    std::unique_ptr<juce::Label> toolbarAutoSnapLabel_;
+    std::unique_ptr<juce::ToggleButton> toolbarAutoSnapToggle_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     std::unique_ptr<juce::TextButton> songDetailButton_;
@@ -496,6 +516,7 @@ private:
     MelissaLookAndFeel_CrossFader crossFaderLaf_;
     MelissaLookAndFeel_SimpleTextButton simpleTextButtonLaf_;
     MelissaLookAndFeel_SimpleTextEditor simpleTextEditorLaf_;
+    MelissaLookAndFeel_ZoomSlider zoomSliderLaf_;
     std::vector<Component *> lafList_;
 
     juce::String fileName_, fileFullPath_;

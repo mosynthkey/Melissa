@@ -903,58 +903,6 @@ void MainComponent::createUI()
         };
         componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
 
-        // Create AI beat button with SVG icon
-        aiBeatIcon_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
-        aiBeatIconHighlighted_ = Drawable::createFromImageData(BinaryData::ai_beat_svg, BinaryData::ai_beat_svgSize);
-        aiBeatIcon_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
-        aiBeatIconHighlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour(1.0f));
-
-        aiBeatButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        aiBeatButton_->setTooltip("AI Beat Detection");
-        aiBeatButton_->setImages(aiBeatIcon_.get(), aiBeatIconHighlighted_.get());
-        aiBeatButton_->onClick = [&]()
-        {
-            if (!dataSource_->isFileLoaded())
-                return;
-
-            if (dataSource_->hasBeatResult())
-            {
-                // Beat result exists - show re-analyze or delete options
-                const std::vector<String> options = {TRANS("beat_reanalyze"), TRANS("beat_delete"), TRANS("cancel")};
-                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_already_detected"), options, [&](size_t index)
-                                                                    {
-                    if (index == 0) // Re-analyze
-                    {
-                        dataSource_->startBeatAnalysis();
-                    }
-                    else if (index == 1) // Delete
-                    {
-                        dataSource_->clearBeatResult();
-                    }
-                });
-                MelissaModalDialog::show(dialog, TRANS("ai_beat_detection"));
-            }
-            else
-            {
-                // No beat result - show confirmation dialog
-                const std::vector<String> options = { TRANS("ok"), TRANS("cancel") };
-                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_analysis_takes_time"), options, [&](size_t index) {
-                    if (index == 0) // OK
-                    {
-                        dataSource_->startBeatAnalysis();
-                    }
-                });
-                MelissaModalDialog::show(dialog, TRANS("ai_beat_detection"));
-            }
-        };
-        componentToAdd->addAndMakeVisible(aiBeatButton_.get());
-        aiBeatButton_->toFront(false);
-
-        aiBeatProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
-        componentToAdd->addChildComponent(aiBeatProgressBar_.get());
-
-        aiBeatProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
-        componentToAdd->addChildComponent(aiBeatProgressBar_.get());
     }
 
     {
@@ -999,8 +947,112 @@ void MainComponent::createUI()
             sectionComponents_[sectionIndex] = std::move(s);
         }
 
-        waveformToolbar_ = std::make_unique<MelissaWaveformToolbarComponent>();
+        // Time Toolbar
+        timeToolbar_ = std::make_unique<MelissaToolbarComponent>("Time");
+        componentToAdd->addAndMakeVisible(timeToolbar_.get());
+
+        toolbarTimeLabel_ = std::make_unique<Label>("", "0:00.0");
+        toolbarTimeLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Main));
+        toolbarTimeLabel_->setJustificationType(Justification::centredLeft);
+        timeToolbar_->addAndMakeVisible(toolbarTimeLabel_.get());
+
+        toolbarFollowToggle_ = std::make_unique<ToggleButton>("");
+        toolbarFollowToggle_->setTooltip("Follow Playing Position");
+        toolbarFollowToggle_->setToggleState(dataSource_->getWaveformFollow(), dontSendNotification);
+        toolbarFollowToggle_->setLookAndFeel(&slideToggleLaf_);
+        toolbarFollowToggle_->onClick = [this]()
+        {
+            dataSource_->setWaveformFollow(toolbarFollowToggle_->getToggleState());
+        };
+        timeToolbar_->addAndMakeVisible(toolbarFollowToggle_.get());
+
+        toolbarFollowLabel_ = std::make_unique<Label>("", "Follow");
+        toolbarFollowLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        toolbarFollowLabel_->setJustificationType(Justification::centredLeft);
+        timeToolbar_->addAndMakeVisible(toolbarFollowLabel_.get());
+
+        // Waveform Toolbar
+        waveformToolbar_ = std::make_unique<MelissaToolbarComponent>("Waveform");
         componentToAdd->addAndMakeVisible(waveformToolbar_.get());
+
+        toolbarZoomResetButton_ = std::make_unique<TextButton>("1x");
+        toolbarZoomResetButton_->setTooltip("Reset Zoom to 1x");
+        toolbarZoomResetButton_->onClick = [this]()
+        {
+            dataSource_->setWaveformZoom(1.0f);
+        };
+        waveformToolbar_->addAndMakeVisible(toolbarZoomResetButton_.get());
+
+        toolbarZoomSlider_ = std::make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        toolbarZoomSlider_->setRange(1.0f, 20.0f);
+        toolbarZoomSlider_->setDoubleClickReturnValue(true, 1.0f);
+        toolbarZoomSlider_->setValue(dataSource_->getWaveformZoom(), dontSendNotification);
+        toolbarZoomSlider_->setLookAndFeel(&zoomSliderLaf_);
+        toolbarZoomSlider_->onValueChange = [this]()
+        {
+            dataSource_->setWaveformZoom(static_cast<float>(toolbarZoomSlider_->getValue()));
+        };
+        waveformToolbar_->addAndMakeVisible(toolbarZoomSlider_.get());
+
+        // Beat Toolbar
+        beatToolbar_ = std::make_unique<MelissaToolbarComponent>("Beat");
+        componentToAdd->addAndMakeVisible(beatToolbar_.get());
+
+        // AI Beat Detection button with integrated progress bar
+        aiBeatButton_ = std::make_unique<MelissaButtonWithProgressBar>(TRANS("ai_beat_detection"));
+        aiBeatButton_->setTooltip(TRANS("ai_beat_detection"));
+        aiBeatButton_->setCallback([this]()
+        {
+            if (!dataSource_->isFileLoaded())
+                return;
+
+            if (dataSource_->hasBeatResult())
+            {
+                const std::vector<String> options = {TRANS("beat_reanalyze"), TRANS("beat_delete"), TRANS("cancel")};
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_already_detected"), options, [this](size_t index)
+                {
+                    if (index == 0)
+                        dataSource_->startBeatAnalysis();
+                    else if (index == 1)
+                        dataSource_->clearBeatResult();
+                });
+                MelissaModalDialog::show(dialog, TRANS("ai_beat_detection"));
+            }
+            else
+            {
+                const std::vector<String> options = {TRANS("ok"), TRANS("cancel")};
+                auto dialog = std::make_shared<MelissaOptionDialog>(TRANS("beat_analysis_takes_time"), options, [this](size_t index)
+                {
+                    if (index == 0)
+                        dataSource_->startBeatAnalysis();
+                });
+                MelissaModalDialog::show(dialog, TRANS("ai_beat_detection"));
+            }
+        });
+        beatToolbar_->addAndMakeVisible(aiBeatButton_.get());
+
+        toolbarSnapButton_ = std::make_unique<TextButton>("Snap");
+        toolbarSnapButton_->setTooltip("Snap Loop to Downbeats");
+        toolbarSnapButton_->onClick = [this]()
+        {
+            model_->snapLoopRangeToDownbeat();
+        };
+        beatToolbar_->addAndMakeVisible(toolbarSnapButton_.get());
+
+        toolbarAutoSnapToggle_ = std::make_unique<ToggleButton>("");
+        toolbarAutoSnapToggle_->setTooltip("Snap to Beats while Dragging");
+        toolbarAutoSnapToggle_->setToggleState(dataSource_->getWaveformSnap(), dontSendNotification);
+        toolbarAutoSnapToggle_->setLookAndFeel(&slideToggleLaf_);
+        toolbarAutoSnapToggle_->onClick = [this]()
+        {
+            dataSource_->setWaveformSnap(toolbarAutoSnapToggle_->getToggleState());
+        };
+        beatToolbar_->addAndMakeVisible(toolbarAutoSnapToggle_.get());
+
+        toolbarAutoSnapLabel_ = std::make_unique<Label>("", "Auto Snap");
+        toolbarAutoSnapLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
+        toolbarAutoSnapLabel_->setJustificationType(Justification::centredLeft);
+        beatToolbar_->addAndMakeVisible(toolbarAutoSnapLabel_.get());
     }
 
     {
@@ -1961,9 +2013,41 @@ void MainComponent::showFileChooser()
 
 void MainComponent::applyWavefromZoom()
 {
+    // Get current playback position ratio before resizing
+    float playingPosRatio = 0.5f;
+    if (model_ && dataSource_->isFileLoaded())
+        playingPosRatio = model_->getPlayingPosRatio();
+
+    // Get viewport dimensions and current scroll position before resizing
+    const float viewportWidth = static_cast<float>(waveformViewport_->getWidth());
+    const float oldWaveformWidth = static_cast<float>(waveformHolderComponent_->getWidth());
+    const float oldViewportX = static_cast<float>(waveformViewport_->getViewPositionX());
+
+    // Calculate where playback position is relative to viewport (in pixels from left edge)
+    float oldPlayPosInWaveform = playingPosRatio * oldWaveformWidth;
+    float playPosRelativeToViewport = oldPlayPosInWaveform - oldViewportX;
+
+    // Apply zoom - resize waveform
     const float zoomLevel = dataSource_->getWaveformZoom();
-    waveformHolderComponent_->setSize(getWidth() * zoomLevel - 30 * 2, 160 + 36);
+    const int newWaveformWidth = static_cast<int>(getWidth() * zoomLevel - 30 * 2);
+    waveformHolderComponent_->setSize(newWaveformWidth, 160 + 36);
     waveformComponent_->setBounds(0, 36, waveformHolderComponent_->getWidth(), 160);
+
+    constexpr int kOffset = 20;
+    markerMemoComponent_->setBounds(kOffset, 0, waveformHolderComponent_->getWidth() - kOffset * 2, 30);
+
+    // Calculate new viewport position to keep playback position at the same relative location
+    if (newWaveformWidth > viewportWidth)
+    {
+        float newPlayPosInWaveform = playingPosRatio * newWaveformWidth;
+        float newViewportX = newPlayPosInWaveform - playPosRelativeToViewport;
+
+        // Clamp to valid range
+        newViewportX = juce::jlimit(0.0f, static_cast<float>(newWaveformWidth) - viewportWidth, newViewportX);
+
+        waveformViewport_->setViewPosition(static_cast<int>(newViewportX), waveformViewport_->getViewPositionY());
+    }
+
     if (waveformComponent_)
         waveformComponent_->updateWaveformImmediately();
 }
@@ -1999,16 +2083,10 @@ void MainComponent::resized_Desktop()
         x = nextButton_->getRight() + 10;
 
         const int labelWidth = getWidth() / 2 - (nextButton_->getRight() + 40);
-        fileNameLabel_->setBounds(getWidth() / 2 - labelWidth / 2, 0, labelWidth, kHeaderHeight / 2);
-        timeLabel_->setBounds(getWidth() / 2 - labelWidth / 2, kHeaderHeight / 2, labelWidth, kHeaderHeight / 2);
+        fileNameLabel_->setBounds(getWidth() / 2 - labelWidth / 2, 0, labelWidth, kHeaderHeight);
+        timeLabel_->setVisible(false);  // Time is now shown in Time toolbar
 
         constexpr int kMainVolumeWidth = 140;
-        constexpr int kWaveformZoomWidth = 120;
-        constexpr int kZoomLoopButtonWidth = 60;
-        constexpr int kFollowButtonWidth = 70;
-        constexpr int kSnapButtonWidth = 60;
-        constexpr int kDragSnapButtonWidth = 80;
-        
         mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
 
         constexpr int kAudioDeviceButtonWidth = 300;
@@ -2017,15 +2095,8 @@ void MainComponent::resized_Desktop()
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
         trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
 
-        // Position new SVG buttons after the second divider line (at 210 + 190 = 400px)
-        constexpr int kSvgButtonSize = 26;
-        constexpr int kButtonSpacing = 10;
-        constexpr int kSecondDividerX = 210 + 190;
-        
-        aiBeatButton_->setBounds(kSecondDividerX + kButtonSpacing, (kHeaderHeight - kSvgButtonSize) / 2, kSvgButtonSize, kSvgButtonSize);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
-        aiBeatProgressBar_->setBounds(aiBeatButton_->getX() + aiBeatButton_->getWidth() / 2 - kExportBarWidth / 2, aiBeatButton_->getBottom() + 2, kExportBarWidth, 4);
     }
 
     popupMessage_->setBounds(0, 10 + kHeaderHeight, getWidth(), 30);
@@ -2036,16 +2107,8 @@ void MainComponent::resized_Desktop()
 
     waveformViewport_->setBounds(30, headerComponent_->getBottom() + 4, getWidth() - 30 * 2, 160 + 36 + kScrollbarThichness);
 
-    constexpr int kWaveformToolbarHeight = 40;
+    constexpr int kToolbarHeight = 46;
     constexpr int kSectionMargin = 10;
-
-    // Waveform toolbar - above sections, aligned with them
-    waveformToolbar_->setBounds(kSectionMargin, waveformViewport_->getBottom() + kSectionMargin, getWidth() - kSectionMargin * 2, kWaveformToolbarHeight);
-
-    // controlComponent_ is the background for toolbar and sections
-    controlComponent_->setBounds(0, waveformViewport_->getBottom() + 4, getWidth(), 230 + kWaveformToolbarHeight + kSectionMargin);
-
-    int y = waveformToolbar_->getBottom() + kSectionMargin;
 
     const int sectionMarginX = 10;
     const int sectionMarginY = 10;
@@ -2062,6 +2125,55 @@ void MainComponent::resized_Desktop()
     const int metronomeWidth = songWidth;
     const int eqWidth = loopWidth;
     const int mixerWidth = speedWidth;
+
+    // Three toolbars - aligned with sections below
+    const int toolbarY = waveformViewport_->getBottom() + kSectionMargin;
+    timeToolbar_->setBounds(sectionMarginX, toolbarY, songWidth, kToolbarHeight);
+    waveformToolbar_->setBounds(timeToolbar_->getRight() + sectionMarginX, toolbarY, loopWidth, kToolbarHeight);
+    beatToolbar_->setBounds(waveformToolbar_->getRight() + sectionMarginX, toolbarY, speedWidth, kToolbarHeight);
+
+    // Layout Time toolbar content
+    {
+        auto contentBounds = timeToolbar_->getContentBounds();
+        int x = contentBounds.getX();
+        toolbarTimeLabel_->setBounds(x, 0, 60, kToolbarHeight);
+        x += 70;
+        toolbarFollowToggle_->setBounds(x, (kToolbarHeight - 20) / 2, 40, 20);
+        x += 50;
+        toolbarFollowLabel_->setBounds(x, 0, 50, kToolbarHeight);
+    }
+
+    // Layout Waveform toolbar content
+    {
+        auto contentBounds = waveformToolbar_->getContentBounds();
+        int x = contentBounds.getX();
+        toolbarZoomResetButton_->setBounds(x, (kToolbarHeight - 30) / 2, 40, 30);
+        x += 50;
+        toolbarZoomSlider_->setBounds(x, (kToolbarHeight - 30) / 2, contentBounds.getWidth() - (x - contentBounds.getX()) - 10, 30);
+    }
+
+    // Layout Beat toolbar content
+    {
+        auto contentBounds = beatToolbar_->getContentBounds();
+        int x = contentBounds.getX();
+        constexpr int buttonHeight = 30;
+
+        // AI Beat button - leftmost position with integrated progress bar
+        const int aiBeatButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), aiBeatButton_->getButtonText()).first + 24;
+        aiBeatButton_->setBounds(x, (kToolbarHeight - buttonHeight) / 2, aiBeatButtonWidth, buttonHeight);
+        x += aiBeatButtonWidth + 10;
+
+        toolbarSnapButton_->setBounds(x, (kToolbarHeight - buttonHeight) / 2, 50, buttonHeight);
+        x += 60;
+        toolbarAutoSnapToggle_->setBounds(x, (kToolbarHeight - 20) / 2, 40, 20);
+        x += 50;
+        toolbarAutoSnapLabel_->setBounds(x, 0, 70, kToolbarHeight);
+    }
+
+    // controlComponent_ is the background for toolbar and sections
+    controlComponent_->setBounds(0, waveformViewport_->getBottom() + 4, getWidth(), 230 + kToolbarHeight + kSectionMargin);
+
+    int y = timeToolbar_->getBottom() + kSectionMargin;
     constexpr int controlHeight = 30;
     constexpr int controlAWidthMin = 120; // incDecButton etc..
     constexpr int controlBWidthMin = controlAWidthMin + 20;
@@ -2080,7 +2192,7 @@ void MainComponent::resized_Desktop()
 
         const int stemControlWidth = songWidth - 10 * 3 - pitchButton_->getWidth();
         stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y - controlHeight, stemControlWidth, controlHeight * 2);
-        
+
         const int songDetailButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), songDetailButton_->getButtonText()).first;
         songDetailButton_->setSize(songDetailButtonWidth, 30);
         songDetailButton_->setTopRightPosition(section->getWidth() - 10, 0);
@@ -2663,9 +2775,25 @@ void MainComponent::songChanged(const String &filePath, size_t bufferLength, int
 void MainComponent::beatAnalysisStarted()
 {
     MessageManager::callAsync([this]()
-                              {
-        if (aiBeatProgressBar_)
-            aiBeatProgressBar_->setVisible(true); });
+    {
+        if (aiBeatButton_)
+        {
+            aiBeatButton_->showProgressBar(true);
+            aiBeatButton_->startAnimation();
+            aiBeatButton_->setProgress(0.0f);
+        }
+    });
+}
+
+void MainComponent::beatAnalysisProgress(float progress)
+{
+    MessageManager::callAsync([this, progress]()
+    {
+        if (aiBeatButton_)
+        {
+            aiBeatButton_->setProgress(progress);
+        }
+    });
 }
 
 void MainComponent::beatAnalysisCompleted(const MelissaBeatResult &result, bool success)
@@ -2697,10 +2825,14 @@ void MainComponent::beatAnalysisCompleted(const MelissaBeatResult &result, bool 
 
     // Update UI to reflect new beat result availability
     MessageManager::callAsync([this]()
-                              {
-        if (aiBeatProgressBar_)
-            aiBeatProgressBar_->setVisible(false);
-        resized(); });
+    {
+        if (aiBeatButton_)
+        {
+            aiBeatButton_->stopAnimation();
+            aiBeatButton_->showProgressBar(false);
+        }
+        resized();
+    });
 }
 
 void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String &filePath)
@@ -2881,7 +3013,9 @@ void MainComponent::timerCallback()
         requestedKeyboardFocusOnFirstLaunch_ = true;
     }
 
-    timeLabel_->setText(MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec()), dontSendNotification);
+    const auto formattedTime = MelissaUtility::getFormattedTimeMSec(model_->getPlayingPosMSec());
+    timeLabel_->setText(formattedTime, dontSendNotification);
+    toolbarTimeLabel_->setText(formattedTime, dontSendNotification);
     waveformComponent_->setPlayPosition(model_->getPlayingPosRatio());
     
     // Follow playing position if enabled
@@ -3478,4 +3612,15 @@ void MainComponent::filesDropped(const StringArray &files, int x, int y)
 void MainComponent::waveformZoomChanged(float zoomValue)
 {
     applyWavefromZoom();
+    toolbarZoomSlider_->setValue(zoomValue, dontSendNotification);
+}
+
+void MainComponent::waveformFollowChanged(bool followPlayingPosition)
+{
+    toolbarFollowToggle_->setToggleState(followPlayingPosition, dontSendNotification);
+}
+
+void MainComponent::waveformSnapChanged(bool snapToBeats)
+{
+    toolbarAutoSnapToggle_->setToggleState(snapToBeats, dontSendNotification);
 }
