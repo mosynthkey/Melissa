@@ -79,7 +79,7 @@ public:
         const auto backgroundColour = isDark ? MelissaUISettings::getSubColour() : MelissaUISettings::getMainColour();
         const auto borderColour = isDark ? MelissaUISettings::getMainColour() : MelissaUISettings::getSubColour();
 
-        g.fillAll(backgroundColour);
+        //g.fillAll(backgroundColour);
 
         g.setColour(borderColour);
 
