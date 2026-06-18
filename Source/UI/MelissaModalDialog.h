@@ -22,16 +22,19 @@ public:
 class MelissaDialog : public juce::Component
 {
 public:
-    MelissaDialog(std::shared_ptr<Component> contentComponent, const juce::String& title, bool closeOnClickingOutside);
+    MelissaDialog(std::shared_ptr<Component> contentComponent, const juce::String& title, bool closeOnClickingOutside, float widthRatio = 0.f, float heightRatio = 0.f);
     void paint(juce::Graphics& g) override;
     void resized() override;
-    
+    void updateContentSize();
+
 private:
     std::unique_ptr<BackgroundButton> backgroundButton_;
     std::unique_ptr<CloseButton> closeButton_;
     std::unique_ptr<juce::Label> titleLabel_;
     std::shared_ptr<Component> contentComponent_;
     bool closeOnClickingOutside_;
+    float widthRatio_;
+    float heightRatio_;
 };
 
 class MelissaModalDialog
@@ -41,6 +44,7 @@ public:
     
     static void setParentComponent(juce::Component* parentComponent) { parentComponent_ = parentComponent; }
     static void show(std::shared_ptr<juce::Component> component, const juce::String& title, bool closeOnClickingOutside = true);
+    static void showWithSizeRatio(std::shared_ptr<juce::Component> component, const juce::String& title, float widthRatio, float heightRatio, bool closeOnClickingOutside = true);
     static void close();
     static void resize();
     

@@ -17,9 +17,11 @@ enum
     kCloseButtonSize = 20,
 };
 
-MelissaDialog::MelissaDialog(std::shared_ptr<Component> contentComponent, const String& title, bool closeOnClickingOutside) :
+MelissaDialog::MelissaDialog(std::shared_ptr<Component> contentComponent, const String& title, bool closeOnClickingOutside, float widthRatio, float heightRatio) :
 contentComponent_(contentComponent),
-closeOnClickingOutside_(closeOnClickingOutside)
+closeOnClickingOutside_(closeOnClickingOutside),
+widthRatio_(widthRatio),
+heightRatio_(heightRatio)
 {
     backgroundButton_ = std::make_unique<BackgroundButton>();
     backgroundButton_->onClick = [&]() { if (closeOnClickingOutside_) MelissaModalDialog::close(); };
@@ -55,16 +57,27 @@ void MelissaDialog::paint(Graphics& g)
 
 void MelissaDialog::resized()
 {
+    updateContentSize();
+
     const int dialogWidth  = kMargin + contentComponent_->getWidth()  + kMargin;
     const int dialogHeight = kMargin + kCloseButtonSize + kMargin + contentComponent_->getHeight() + kMargin;
-    
+
     const int x = (getWidth() - dialogWidth) / 2;
     const int y = (getHeight() - dialogHeight) / 2;
-    
+
     backgroundButton_->setBounds(0, 0, getWidth(), getHeight());
     closeButton_->setBounds(x + kMargin, y + kMargin, kCloseButtonSize, kCloseButtonSize);
     titleLabel_->setBounds(x + kMargin, y + kMargin, dialogWidth - kMargin * 2, kCloseButtonSize);
     contentComponent_->setTopLeftPosition(closeButton_->getX(), closeButton_->getBottom() + kMargin);
+}
+
+void MelissaDialog::updateContentSize()
+{
+    if (widthRatio_ > 0.f && heightRatio_ > 0.f)
+    {
+        contentComponent_->setSize(static_cast<int>(getWidth() * widthRatio_),
+                                   static_cast<int>(getHeight() * heightRatio_));
+    }
 }
 
 Component* MelissaModalDialog::parentComponent_ = nullptr;
@@ -76,6 +89,16 @@ void MelissaModalDialog::show(std::shared_ptr<Component> component, const String
     if (mainComponent != nullptr) mainComponent->dialogWillOpen();
     dialog_ = std::make_unique<MelissaDialog>(component, title, closeOnClickingOutside);
     dialog_->setBounds(parentComponent_->getBounds());
+    parentComponent_->addAndMakeVisible(dialog_.get());
+}
+
+void MelissaModalDialog::showWithSizeRatio(std::shared_ptr<Component> component, const String& title, float widthRatio, float heightRatio, bool closeOnClickingOutside)
+{
+    auto mainComponent = reinterpret_cast<MainComponent *>(parentComponent_);
+    if (mainComponent != nullptr) mainComponent->dialogWillOpen();
+    dialog_ = std::make_unique<MelissaDialog>(component, title, closeOnClickingOutside, widthRatio, heightRatio);
+    dialog_->setBounds(parentComponent_->getBounds());
+    dialog_->resized();  // Trigger initial content size calculation
     parentComponent_->addAndMakeVisible(dialog_.get());
 }
 
