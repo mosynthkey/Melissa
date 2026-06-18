@@ -13,8 +13,7 @@ using namespace juce;
 
 class MelissaWaveformControlComponent::WaveformView : public Component,
                                                       public MelissaModelListener,
-                                                      public MelissaWaveformMouseEventListener,
-                                                      public Timer
+                                                      public MelissaWaveformMouseEventListener
 {
 public:
     WaveformView(MelissaWaveformControlComponent* parent) :
@@ -99,93 +98,100 @@ public:
         const int32_t x = static_cast<int32_t>((waveformStripWidth_ + waveformStripInterval_) * strip);
         current_->setBounds(x, getHeight() - height, waveformStripWidth_, height);
     }
-    
-    void timerCallback() override
-    {
-        stopTimer();
-        update_();
-    }
-    
+
     void loadWaveform()
     {
         auto dataSource = MelissaDataSource::getInstance();
         const size_t bufferLength = dataSource->getBufferLength();
-        
+
         if (bufferLength == 0) return;
-        
-        float preview, previewMax = 0.f;
-        
-        const int64 stripSize =  bufferLength / kNumStrips;
-        
+
+        // Calculate max strips needed at maximum zoom (20x)
+        // Base width estimate: assume typical screen width ~2000px
+        // At 20x zoom: 2000 * 20 = 40000 pixels
+        // Strips = pixels / (stripWidth + interval) = 40000 / 4 = 10000 strips
+        // Use a reasonable max to balance quality and memory
+        constexpr size_t kMaxZoom = 20;
+        constexpr size_t kBaseWidthEstimate = 2000;
+        const size_t maxStripsNeeded = (kBaseWidthEstimate * kMaxZoom) / (waveformStripWidth_ + waveformStripInterval_);
+
+        // Limit to reasonable maximum (also limited by audio buffer resolution)
+        const size_t maxPossibleStrips = bufferLength / 64; // At least 64 samples per strip for meaningful RMS
+        cachedNumStrips_ = std::min(maxStripsNeeded, std::max(maxPossibleStrips, static_cast<size_t>(1000)));
+
+        cachedStrips_.resize(cachedNumStrips_);
+
+        float previewMax = 0.f;
+        const size_t stripSize = bufferLength / cachedNumStrips_;
+
         auto lCh = std::make_unique<float[]>(stripSize + 1);
         auto rCh = std::make_unique<float[]>(stripSize + 1);
         float* audioData[] = { lCh.get(), rCh.get() };
-        
-        for (int32_t iStrip = 0; iStrip < kNumStrips; ++iStrip)
+
+        for (size_t iStrip = 0; iStrip < cachedNumStrips_; ++iStrip)
         {
-            preview = 0.f;
-            
+            float preview = 0.f;
+
             const size_t startIndex = iStrip * stripSize;
             const size_t endIndex = std::min<size_t>(startIndex + stripSize - 1, bufferLength - 1);
             const size_t numSamplesToRead = endIndex - startIndex + 1;
-            
+
             dataSource->readBuffer(MelissaDataSource::kReader_Waveform, startIndex, static_cast<int>(numSamplesToRead), kPlayPart_All, audioData);
-            for (int sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
+            for (size_t sampleIndex = 0; sampleIndex < numSamplesToRead; ++sampleIndex)
             {
                 preview += (lCh[sampleIndex] * lCh[sampleIndex] + rCh[sampleIndex] * rCh[sampleIndex]);
             }
             preview /= numSamplesToRead;
             if (preview >= 1.f) preview = 1.f;
             if (previewMax < preview) previewMax = preview;
-            strips_[iStrip] = preview;
+            cachedStrips_[iStrip] = preview;
         }
-        
-        // normalize
-        for (int stripIndex = 0; stripIndex < kNumStrips; ++stripIndex) strips_[stripIndex] /= previewMax;
-         
+
+        // Normalize
+        if (previewMax > 0.f)
+        {
+            for (size_t i = 0; i < cachedNumStrips_; ++i)
+            {
+                cachedStrips_[i] /= previewMax;
+            }
+        }
+
         isWaveformLoad_ = true;
     }
-    
+
     void update(bool immediately = false)
     {
-        stopTimer();
-        
-        numOfStrip_ = static_cast<float>(getWidth() / (waveformStripWidth_ + waveformStripInterval_));
+        numOfStrip_ = static_cast<size_t>(getWidth() / (waveformStripWidth_ + waveformStripInterval_));
         previewBuffer_.resize(numOfStrip_);
         loopAStripIndex_ = loopAPosRatio_ * numOfStrip_;
         loopBStripIndex_ = loopBPosRatio_ * numOfStrip_;
-        
-        if (immediately)
-        {
-            stopTimer();
-            update_();
-        }
-        else
-        {
-            startTimer(1000); // 1 sec delay
-        }
+
+        // Always use interpolation from pre-computed cache (no audio buffer read)
+        updateFromCache_();
     }
-    
-    void update_()
+
+    // Interpolate from pre-computed high-resolution cache
+    void updateFromCache_()
     {
         if (!isWaveformLoad_) return;
-        if (numOfStrip_ <= 0) return;
-        
-        float maxPreviewBuffer = 0.f;
-        for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
+        if (numOfStrip_ <= 0 || cachedNumStrips_ <= 0) return;
+
+        for (size_t previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
         {
-            const float floatIndex = previewIndex / static_cast<float>(numOfStrip_) * (kNumStrips - 1);
-            const int intIndex = static_cast<int>(floatIndex);
+            const float floatIndex = previewIndex / static_cast<float>(numOfStrip_) * (cachedNumStrips_ - 1);
+            const size_t intIndex = static_cast<size_t>(floatIndex);
             const float interpolation = floatIndex - intIndex;
-            previewBuffer_[previewIndex] = strips_[intIndex] * (1.f - interpolation) + strips_[intIndex + 1] * interpolation;
-            if (maxPreviewBuffer < previewBuffer_[previewIndex]) maxPreviewBuffer = previewBuffer_[previewIndex];
+
+            if (intIndex + 1 < cachedNumStrips_)
+            {
+                previewBuffer_[previewIndex] = cachedStrips_[intIndex] * (1.f - interpolation) + cachedStrips_[intIndex + 1] * interpolation;
+            }
+            else
+            {
+                previewBuffer_[previewIndex] = cachedStrips_[intIndex];
+            }
         }
-        
-        for (int previewIndex = 0; previewIndex < numOfStrip_; ++previewIndex)
-        {
-            previewBuffer_[previewIndex] /= maxPreviewBuffer;
-        }
-        
+
         repaint();
     }
     
@@ -227,8 +233,11 @@ private:
     std::shared_ptr<Label> current_;
     const int32_t waveformStripWidth_ = 3, waveformStripInterval_ = 1;
     size_t numOfStrip_;
-    static constexpr int kNumStrips = 1000;
-    float strips_[kNumStrips];
+
+    // Pre-computed waveform data at max zoom resolution
+    std::vector<float> cachedStrips_;
+    size_t cachedNumStrips_ = 0;
+
     int32_t clickedStripIndex_, loopAStripIndex_, loopBStripIndex_;
     int32_t currentMouseOnStripIndex_;
     float playingPosRatio_, loopAPosRatio_, loopBPosRatio_;
