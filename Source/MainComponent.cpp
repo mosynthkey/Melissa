@@ -867,6 +867,8 @@ void MainComponent::createUI()
         fileNameLabel_->setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Large));
         fileNameLabel_->setInterceptsMouseClicks(true, false);
         fileNameLabel_->addMouseListener(this, false);
+        if (dataSource_->getCurrentSongFilePath().isEmpty())
+            fileNameLabel_->setText(TRANS("click_to_open_file"), dontSendNotification);
         componentToAdd->addAndMakeVisible(fileNameLabel_.get());
 
         audioDeviceButton_ = make_unique<MelissaAudioDeviceButton>();
@@ -2861,7 +2863,10 @@ void MainComponent::fileLoadStatusChanged(FileLoadStatus status, const String &f
     }
     else if (status == kFileLoadStatus_Failed)
     {
-        fileNameLabel_->setText(File(dataSource_->getCurrentSongFilePath()).getFileNameWithoutExtension(), dontSendNotification);
+        const auto prevPath = dataSource_->getCurrentSongFilePath();
+        fileNameLabel_->setText(prevPath.isEmpty()
+            ? TRANS("click_to_open_file")
+            : File(prevPath).getFileNameWithoutExtension(), dontSendNotification);
         const std::vector<String> options = {TRANS("ok")};
         MelissaModalDialog::show(std::make_shared<MelissaOptionDialog>(TRANS("load_failed") + "\n" + filePath, options, [&](size_t) {}), "Melissa", false);
     }

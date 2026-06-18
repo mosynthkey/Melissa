@@ -279,6 +279,7 @@ countries: ja
 "select_file"="ファイルを選択"
 "browser"="ブラウザ"
 "history"="履歴"
+"click_to_open_file"="クリックしてファイルを開く"
 "sound_engine_settings"="サウンドエンジン"
 "sound_engine_bungee"="Bungee（高音質）"
 "sound_engine_soundtouch"="SoundTouch（クラシック）"
