@@ -2365,7 +2365,26 @@ void MainComponent::releaseResources()
 
 void MainComponent::paint(Graphics &g)
 {
-    g.fillAll(MelissaUISettings::getMainColour());
+    if (MelissaUISettings::isDarkMode)
+    {
+        ColourGradient gradient(Colour(0xff121319), 0, 0,
+                                Colour(0xff131D2E), static_cast<float>(getWidth()), static_cast<float>(getHeight()),
+                                false);
+        g.setGradientFill(gradient);
+    }
+    else
+    {
+        g.setColour(MelissaUISettings::getSubColour());
+    }
+    g.fillRect(getLocalBounds());
+}
+
+void MainComponent::mouseDown(const MouseEvent &event)
+{
+    if (event.eventComponent == fileNameLabel_.get())
+    {
+        showFileBrowserOverlay();
+    }
 }
 
 void MainComponent::resized()
