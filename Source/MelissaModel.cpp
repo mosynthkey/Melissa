@@ -300,54 +300,11 @@ void MelissaModel::setPreCountSwitch(bool preCountSwitch)
 #endif
 }
 
-void MelissaModel::setSnapLoopRange(bool snapLoopRange)
-{
-    snapLoopRange_ = snapLoopRange;
-}
-
 void MelissaModel::setStretcherType(StretcherType type)
 {
     stretcherType_ = type;
     for (auto&& l : listeners_) l->stretcherTypeChanged(type);
 }
-
-float MelissaModel::snapPositionToDownbeat(float positionRatio)
-{
-    auto dataSource = MelissaDataSource::getInstance();
-
-    // Check if snap is enabled (use MelissaDataSource's waveformSnap setting from UI)
-    if (!dataSource || !dataSource->getWaveformSnap())
-        return positionRatio;
-
-    if (!dataSource->isFileLoaded() || !dataSource->hasBeatResult())
-        return positionRatio;
-
-    auto beatResult = dataSource->getBeatResult();
-    if (!beatResult.isValid || beatResult.downbeatPositions.empty())
-        return positionRatio;
-
-    // Convert position to seconds
-    float audioLengthSec = static_cast<float>(dataSource->getBufferLength()) / dataSource->getSampleRate();
-    float positionSeconds = positionRatio * audioLengthSec;
-
-    // Find closest downbeat position
-    float closestDownbeatPos = positionSeconds;
-    float minDistance = std::numeric_limits<float>::max();
-
-    for (float downbeatPos : beatResult.downbeatPositions)
-    {
-        float distance = std::abs(downbeatPos - positionSeconds);
-        if (distance < minDistance)
-        {
-            minDistance = distance;
-            closestDownbeatPos = downbeatPos;
-        }
-    }
-
-    // Convert back to ratio
-    return closestDownbeatPos / audioLengthSec;
-}
-
 
 void MelissaModel::addListener(MelissaModelListener* listener)
 {
@@ -379,6 +336,6 @@ MelissaModel* MelissaModel::getInstance()
 MelissaModel::MelissaModel() :
 playbackStatus_(kPlaybackStatus_Stop), playbackMode_(kPlaybackMode_LoopOneSong), metronomeSwitch_(false), lengthMSec_(-1), musicVolume_(1.f), metronomeVolume_(1.f), musicMetronomeBalance_(0.5f), semitone_(0),
 speed_(100), currentSpeed_(100), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100), aPosRatio_(0.f), bPosRatio_(1.f), playingPosRatio_(0.f),
-bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f), preCountSwitch_(false), snapLoopRange_(false), stretcherType_(kStretcher_Bungee)
+bpm_(-1), beatPositionMSec_(0.f), accent_(4), filePath_(""), outputMode_(kOutputMode_LR), eqSwitch_(false), eqFreq_(500), eqGain_(0.f), eqQ_(0.f), preCountSwitch_(false), stretcherType_(kStretcher_Bungee)
 {
 }

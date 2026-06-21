@@ -166,7 +166,6 @@ private:
     float customPartVolume_[kNumCustomPartVolumes];
     float mainVolume_;
     bool preCountSwitch_;
-    bool snapLoopRange_;
     StretcherType stretcherType_;
     
     // Singleton
