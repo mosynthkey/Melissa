@@ -149,10 +149,6 @@ target_sources(Melissa PRIVATE
     ThirdParty/demucs.onnx/src/model_apply.cpp
     ThirdParty/demucs.onnx/src/model_inference.cpp
     ThirdParty/demucs.onnx/src/dsp.cpp
-    Submodule/beat_this_cpp/Source/beat_this_api.cpp
-    Submodule/beat_this_cpp/Source/InferenceProcessor.cpp
-    Submodule/beat_this_cpp/Source/MelSpectrogram.cpp
-    Submodule/beat_this_cpp/Source/Postprocessor.cpp
     Submodule/bungee/src/Assert.cpp
     Submodule/bungee/src/Fourier.cpp
     Submodule/bungee/src/Grain.cpp

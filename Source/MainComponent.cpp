@@ -2385,14 +2385,6 @@ void MainComponent::paint(Graphics &g)
     g.fillRect(getLocalBounds());
 }
 
-void MainComponent::mouseDown(const MouseEvent &event)
-{
-    if (event.eventComponent == fileNameLabel_.get())
-    {
-        showFileBrowserOverlay();
-    }
-}
-
 void MainComponent::resized()
 {
     if (isDesktop)
