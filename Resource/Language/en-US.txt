@@ -283,3 +283,4 @@ countries: us
 "sound_engine_settings"="Sound Engine"
 "sound_engine_bungee"="Bungee"
 "sound_engine_soundtouch"="SoundTouch"
+"sound_engine_signalsmith"="Signalsmith"

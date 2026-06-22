@@ -11,6 +11,7 @@
 #include "MelissaAudioEngine.h"
 #include "MelissaExporter.h"
 #include "Audio/BungeeStretcher.h"
+#include "Audio/SignalSmithStretcher.h"
 #include "Audio/SoundTouchStretcher.h"
 
 using namespace juce;
@@ -128,6 +129,8 @@ void MelissaExporter::exportToFile()
         std::unique_ptr<IMelissaStretcher> stretcher;
         if (stretcherType_ == kStretcher_Bungee)
             stretcher = std::make_unique<BungeeStretcher>();
+        else if (stretcherType_ == kStretcher_SignalSmith)
+            stretcher = std::make_unique<SignalSmithStretcher>();
         else
             stretcher = std::make_unique<SoundTouchStretcher>();
         stretcher->setChannels(kNumChannels);

@@ -61,6 +61,7 @@ enum
     kMenuID_RevealSettingsFile,
     kMenuID_Stretcher_Bungee,
     kMenuID_Stretcher_SoundTouch,
+    kMenuID_Stretcher_SignalSmith,
     kMenuID_Tutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
@@ -439,6 +440,7 @@ private:
             if (bungeeButton_->getToggleState())
             {
                 soundTouchButton_->setToggleState(false, dontSendNotification);
+                signalSmithButton_->setToggleState(false, dontSendNotification);
                 if (onMenuItemSelected != nullptr)
                     onMenuItemSelected(kMenuID_Stretcher_Bungee);
             }
@@ -458,6 +460,7 @@ private:
             if (soundTouchButton_->getToggleState())
             {
                 bungeeButton_->setToggleState(false, dontSendNotification);
+                signalSmithButton_->setToggleState(false, dontSendNotification);
                 if (onMenuItemSelected != nullptr)
                     onMenuItemSelected(kMenuID_Stretcher_SoundTouch);
             }
@@ -470,7 +473,27 @@ private:
         soundTouchButton_->setLookAndFeel(&circleToggleLaf_);
         row->addAndMakeVisible(soundTouchButton_.get());
 
-        row->setSize(getWidth(), 60);
+        signalSmithButton_ = std::make_unique<ToggleButton>(TRANS("sound_engine_signalsmith"));
+        signalSmithButton_->setToggleState(currentStretcher_ == kStretcher_SignalSmith, dontSendNotification);
+        signalSmithButton_->onClick = [this]()
+        {
+            if (signalSmithButton_->getToggleState())
+            {
+                bungeeButton_->setToggleState(false, dontSendNotification);
+                soundTouchButton_->setToggleState(false, dontSendNotification);
+                if (onMenuItemSelected != nullptr)
+                    onMenuItemSelected(kMenuID_Stretcher_SignalSmith);
+            }
+            else
+            {
+                signalSmithButton_->setToggleState(true, dontSendNotification);
+            }
+        };
+        signalSmithButton_->setBounds(10, 60, 200, 30);
+        signalSmithButton_->setLookAndFeel(&circleToggleLaf_);
+        row->addAndMakeVisible(signalSmithButton_.get());
+
+        row->setSize(getWidth(), 90);
         addAndMakeVisible(row.get());
 
         MenuItem item;
@@ -486,6 +509,7 @@ private:
     std::unique_ptr<ToggleButton> darkButton_;
     std::unique_ptr<ToggleButton> bungeeButton_;
     std::unique_ptr<ToggleButton> soundTouchButton_;
+    std::unique_ptr<ToggleButton> signalSmithButton_;
     bool updateAvailable_;
     StretcherType currentStretcher_;
     MelissaLookAndFeel_MenuButton menuButtonLaf_;
@@ -2644,9 +2668,11 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
         showAudioMidiSettingsDialog();
     else if (menuItemID == kMenuID_Shortcut)
         showShortcutDialog();
-    else if (menuItemID == kMenuID_Stretcher_Bungee || menuItemID == kMenuID_Stretcher_SoundTouch)
+    else if (menuItemID == kMenuID_Stretcher_Bungee || menuItemID == kMenuID_Stretcher_SoundTouch || menuItemID == kMenuID_Stretcher_SignalSmith)
     {
-        const auto type = (menuItemID == kMenuID_Stretcher_Bungee) ? kStretcher_Bungee : kStretcher_SoundTouch;
+        StretcherType type = kStretcher_Bungee;
+        if (menuItemID == kMenuID_Stretcher_SoundTouch) type = kStretcher_SoundTouch;
+        else if (menuItemID == kMenuID_Stretcher_SignalSmith) type = kStretcher_SignalSmith;
         MelissaModel::getInstance()->setStretcherType(type);
         dataSource_->setStretcherTypePersisted(static_cast<int>(type));
     }

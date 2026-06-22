@@ -16,6 +16,7 @@
 #include "MelissaRingBuffer.h"
 #include "MelissaStretcher.h"
 #include "BungeeStretcher.h"
+#include "SignalSmithStretcher.h"
 #include "SoundTouchStretcher.h"
 
 class MelissaDataSource;
@@ -88,8 +89,9 @@ private:
     // stretcher_ is a non-owning pointer to whichever is active.
     // Switching is deferred to resetProcessedBuffer() so it never
     // happens while process() is mid-flight without mutex protection.
-    std::unique_ptr<SoundTouchStretcher> soundTouchStretcher_;
-    std::unique_ptr<BungeeStretcher>     bungeeStretcher_;
+    std::unique_ptr<SoundTouchStretcher>   soundTouchStretcher_;
+    std::unique_ptr<BungeeStretcher>       bungeeStretcher_;
+    std::unique_ptr<SignalSmithStretcher>  signalSmithStretcher_;
     IMelissaStretcher*                   stretcher_ = nullptr;
     std::atomic<int>                     pendingStretcherType_{kStretcher_Bungee};
 

@@ -21,6 +21,8 @@ endif()
 include(FetchContent)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/JUCE)
+set(SIGNALSMITH_USE_ACCELERATE OFF CACHE BOOL "" FORCE)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/signalsmith-stretch)
 
 set(JUCE_BUILD_HELPER_TOOLS OFF CACHE BOOL "")
 set(JUCE_BUILD_EXAMPLES OFF CACHE BOOL "")
@@ -266,6 +268,7 @@ target_link_libraries(Melissa PRIVATE
     spleeter
     spleeter_common
     tensorflow
+    signalsmith-stretch
 )
 
 if(APPLE)

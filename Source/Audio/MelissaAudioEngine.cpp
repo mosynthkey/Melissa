@@ -190,9 +190,10 @@ count_(0), speedMode_(kSpeedMode_Basic), speedIncStart_(100), speedIncPer_(10), 
 #endif
 currentProcessingPlaybackSpeed_(100), volumeBalance_(0.5f), eqSwitch_(false), playPart_(kPlayPart_All), enableCountIn_(false), previousRenderedPosMSec_(0.f), countInSampleIndex_(0), forcePreCountOn_(false)
 {
-    soundTouchStretcher_ = std::make_unique<SoundTouchStretcher>();
-    bungeeStretcher_     = std::make_unique<BungeeStretcher>();
-    stretcher_           = bungeeStretcher_.get();   // default: Bungee
+    soundTouchStretcher_  = std::make_unique<SoundTouchStretcher>();
+    bungeeStretcher_      = std::make_unique<BungeeStretcher>();
+    signalSmithStretcher_ = std::make_unique<SignalSmithStretcher>();
+    stretcher_            = bungeeStretcher_.get();   // default: Bungee
 
     sampleIndexStretcher_ = std::make_unique<SampleIndexStretcher>();
     speedStretcher_ = std::make_unique<SampleIndexStretcher>();
@@ -441,9 +442,12 @@ void MelissaAudioEngine::resetProcessedBuffer()
     // resetProcessedBuffer() is called from process() before any stretcher use.
     const auto pending = static_cast<StretcherType>(
         pendingStretcherType_.load(std::memory_order_relaxed));
-    stretcher_ = (pending == kStretcher_SoundTouch)
-               ? static_cast<IMelissaStretcher*>(soundTouchStretcher_.get())
-               : static_cast<IMelissaStretcher*>(bungeeStretcher_.get());
+    if (pending == kStretcher_SoundTouch)
+        stretcher_ = soundTouchStretcher_.get();
+    else if (pending == kStretcher_SignalSmith)
+        stretcher_ = signalSmithStretcher_.get();
+    else
+        stretcher_ = bungeeStretcher_.get();
 
     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
 

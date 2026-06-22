@@ -51,4 +51,5 @@ enum StretcherType : int
 {
     kStretcher_SoundTouch,
     kStretcher_Bungee,
+    kStretcher_SignalSmith,
 };
