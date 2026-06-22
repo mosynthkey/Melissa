@@ -24,6 +24,10 @@ public:
 
     virtual void clear() = 0;
 
+    // Flush any remaining buffered input to produce final output frames.
+    // SoundTouch needs an explicit flush; grain-based stretchers are no-op.
+    virtual void flush() {}
+
     // Called by the engine just before putSamples() to inform the stretcher
     // which source frame index this batch starts at. Grain-based stretchers
     // (Bungee) use this to build an accurate per-output-frame position map.

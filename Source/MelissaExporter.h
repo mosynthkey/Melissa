@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SoundTouch.h"
+#include "MelissaDefinitions.h"
 
 class MelissaExporter
 {
@@ -31,6 +31,7 @@ public:
     
     void addInputFile(std::vector<FileAndVolume> fileAndVolumes_, float pitch, float speed, float startRatio, float endRatio, bool eqSwitch, float eqFreq, float eqGain, float eqQ, uint32_t gapMSec, uint32_t fadeInMSec = 0, uint32_t fadeOutMSec = 0);
     void setExportSettings(ExportFormat format, juce::File filePathToExport) { format_ = format; filePathToExport_ = filePathToExport; }
+    void setStretcherType(StretcherType type) { stretcherType_ = type; }
     void exportToFile();
     
 private:
@@ -56,4 +57,5 @@ private:
     std::vector<std::unique_ptr<Input>> inputs_;
     ExportFormat format_;
     juce::File filePathToExport_;
+    StretcherType stretcherType_ = kStretcher_SoundTouch;
 };

@@ -279,11 +279,12 @@ void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat for
 {
     auto exporter = std::make_unique<MelissaExporter>();
     auto model = MelissaModel::getInstance();
-    
+
     std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
     prepareFileAndVolumesFromCurrentSettings(fileAndVolumes);
     exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getPlayingSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
     exporter->setExportSettings(format, fileToExport);
+    exporter->setStretcherType(model->getStretcherType());
     MelissaExportManager::getInstance()->regist(std::move(exporter));
 }
 
@@ -307,6 +308,7 @@ void MelissaExportComponent::exportCurrentSongPracticelist(MelissaExporter::Expo
     }
     
     exporter->setExportSettings(format, fileToExport);
+    exporter->setStretcherType(model->getStretcherType());
     MelissaExportManager::getInstance()->regist(std::move(exporter));
 }
 
@@ -314,6 +316,7 @@ void MelissaExportComponent::exportPlaylist(int practiceListIndex, MelissaExport
 {
     auto exporter = std::make_unique<MelissaExporter>();
     exporter->setExportSettings(format, fileToExport);
+    exporter->setStretcherType(MelissaModel::getInstance()->getStretcherType());
     
     auto dataSource = MelissaDataSource::getInstance();
     

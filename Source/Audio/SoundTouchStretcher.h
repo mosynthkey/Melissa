@@ -54,6 +54,11 @@ public:
         soundTouch_->clear();
     }
 
+    void flush() override
+    {
+        soundTouch_->flush();
+    }
+
 private:
     std::unique_ptr<soundtouch::SoundTouch> soundTouch_;
 };

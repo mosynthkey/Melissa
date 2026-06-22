@@ -10,6 +10,8 @@
 
 #include "MelissaAudioEngine.h"
 #include "MelissaExporter.h"
+#include "Audio/BungeeStretcher.h"
+#include "Audio/SoundTouchStretcher.h"
 
 using namespace juce;
 
@@ -121,13 +123,17 @@ void MelissaExporter::exportToFile()
     for (auto&& input : inputs_)
     {
         const int inputSampleRate = input->readerAndVolumes[0].first->sampleRate;
-        
+
         const auto fsConvPitch = inputSampleRate / static_cast<float>(outputSampleRate);
-        auto soundTouch = std::make_unique<soundtouch::SoundTouch>();
-        soundTouch->setChannels(kNumChannels);
-        soundTouch->setSampleRate(inputSampleRate);
-        soundTouch->setTempo(fsConvPitch * input->speed / 100.f);
-        soundTouch->setPitch(fsConvPitch * exp(0.69314718056 * input->pitch / 12.f));
+        std::unique_ptr<IMelissaStretcher> stretcher;
+        if (stretcherType_ == kStretcher_Bungee)
+            stretcher = std::make_unique<BungeeStretcher>();
+        else
+            stretcher = std::make_unique<SoundTouchStretcher>();
+        stretcher->setChannels(kNumChannels);
+        stretcher->setSampleRate(inputSampleRate);
+        stretcher->setTempo(fsConvPitch * input->speed / 100.f);
+        stretcher->setPitch(fsConvPitch * exp(0.69314718056 * input->pitch / 12.f));
         
         const auto startIndex = input->startSampleIndex - input->fadeInNumSamples;
         const auto endIndex = input->endSampleIndex + input->fadeOutNumSamples;
@@ -182,9 +188,9 @@ void MelissaExporter::exportToFile()
                 }
                 readIndex += numReadSamples;
                 
-                soundTouch->putSamples(bufferForSoundTouch, static_cast<int>(numReadSamples));
+                stretcher->putSamples(bufferForSoundTouch, static_cast<int>(numReadSamples));
             }
-            int numReceivedSamples = soundTouch->receiveSamples(bufferForSoundTouch, kProcessBufferLength);
+            int numReceivedSamples = stretcher->receiveSamples(bufferForSoundTouch, kProcessBufferLength);
             if (numReadSamples == 0 && numReceivedSamples == 0)
             {
                 if (isFlushed)
@@ -193,9 +199,9 @@ void MelissaExporter::exportToFile()
                 }
                 else
                 {
-                    soundTouch->flush();
+                    stretcher->flush();
                     isFlushed = true;
-                    numReceivedSamples = soundTouch->receiveSamples(bufferForSoundTouch, kProcessBufferLength);
+                    numReceivedSamples = stretcher->receiveSamples(bufferForSoundTouch, kProcessBufferLength);
                 }
             }
             
