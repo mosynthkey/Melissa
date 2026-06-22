@@ -306,8 +306,9 @@ public:
             }
             else
             {
-                item.component->setBounds(10, y, menuWidth, buttonHeight);
-                y += buttonHeight + buttonMargin;
+                const int h = item.component->getHeight() > 0 ? item.component->getHeight() : buttonHeight;
+                item.component->setBounds(10, y, menuWidth, h);
+                y += h + buttonMargin;
             }
         }
 
