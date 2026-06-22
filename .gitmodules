@@ -13,3 +13,6 @@
 [submodule "Submodule/bungee"]
 	path = Submodule/bungee
 	url = https://github.com/bungee-audio-stretch/bungee.git
+[submodule "Submodule/signalsmith-stretch"]
+	path = Submodule/signalsmith-stretch
+	url = https://github.com/Signalsmith-Audio/signalsmith-stretch.git
