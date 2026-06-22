@@ -280,5 +280,5 @@ countries: ja
 "browser"="ブラウザ"
 "history"="履歴"
 "sound_engine_settings"="サウンドエンジン"
-"sound_engine_bungee"="Bungee（高音質）"
-"sound_engine_soundtouch"="SoundTouch（クラシック）"
+"sound_engine_bungee"="Bungee"
+"sound_engine_soundtouch"="SoundTouch"

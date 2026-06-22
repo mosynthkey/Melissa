@@ -281,5 +281,5 @@ countries: us
 "browser"="Browser"
 "history"="History"
 "sound_engine_settings"="Sound Engine"
-"sound_engine_bungee"="Bungee (High Quality)"
-"sound_engine_soundtouch"="SoundTouch (Classic)"
+"sound_engine_bungee"="Bungee"
+"sound_engine_soundtouch"="SoundTouch"
