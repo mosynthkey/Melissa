@@ -227,11 +227,14 @@ if(NOT MSVC)
         COMPILE_OPTIONS "-fwrapv"
     )
 else()
+    set(MSVC_COMPAT_FI "/FI${CMAKE_CURRENT_SOURCE_DIR}/Source/msvc_compat.h")
     set_source_files_properties(${BUNGEE_SRC_FILES} PROPERTIES
         COMPILE_DEFINITIONS "eigen_assert=BUNGEE_ASSERT1;EIGEN_DONT_PARALLELIZE=1"
+        COMPILE_OPTIONS "${MSVC_COMPAT_FI}"
     )
     set_source_files_properties(Submodule/bungee/src/version.cpp PROPERTIES
         COMPILE_DEFINITIONS "BUNGEE_VERSION=\"0.0.0\";eigen_assert=BUNGEE_ASSERT1;EIGEN_DONT_PARALLELIZE=1"
+        COMPILE_OPTIONS "${MSVC_COMPAT_FI}"
     )
 endif()
 

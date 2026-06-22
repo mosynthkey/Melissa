@@ -9,11 +9,17 @@
 
 #include "MelissaRingBuffer.h"
 #include "MelissaStretcher.h"
-#include <bungee/Bungee.h>
-#include <bungee/Stream.h>
 #include <algorithm>
 #include <cmath>
 #include <memory>
+// MSVC does not support GCC/Clang __attribute__((...)) syntax used in bungee headers.
+#ifdef _MSC_VER
+#  ifndef __attribute__
+#    define __attribute__(x)
+#  endif
+#endif
+#include <bungee/Bungee.h>
+#include <bungee/Stream.h>
 
 class BungeeStretcher : public IMelissaStretcher
 {
