@@ -8,8 +8,8 @@ if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Build universal binary")
 endif()
 
-set(MELISSA_VERSION "4.0.2")
-set(MELISSA_VERSION_HEX "0x40002")
+set(MELISSA_VERSION "4.5.0")
+set(MELISSA_VERSION_HEX "0x40500")
 
 project(Melissa VERSION ${MELISSA_VERSION})
 
