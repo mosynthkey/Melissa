@@ -13,7 +13,6 @@
 #include "MelissaInputDialog.h"
 #include "MelissaMobileSupport.h"
 #include "MelissaOptionDialog.h"
-#include "MelissaSoundEngineDialog.h"
 #include "MelissaShortcutComponent.h"
 #include "MelissaStemProvider.h"
 #include "MelissaUISettings.h"
@@ -60,7 +59,8 @@ enum
     kMenuID_UITheme_Dark,
     kMenuID_UITheme_Light,
     kMenuID_RevealSettingsFile,
-    kMenuID_SoundEngine,
+    kMenuID_Stretcher_Bungee,
+    kMenuID_Stretcher_SoundTouch,
     kMenuID_Tutorial,
     kMenuID_TwitterShare,
     kMenuID_FileOpen = 2000,
@@ -192,7 +192,8 @@ public:
         MelissaLookAndFeel_MenuButton menuButtonLaf_;
     };
 
-    MenuComponent(bool updateAvailable) : updateAvailable_(updateAvailable)
+    MenuComponent(bool updateAvailable, StretcherType currentStretcher)
+        : updateAvailable_(updateAvailable), currentStretcher_(currentStretcher)
     {
         circleToggleLaf_.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
 
@@ -222,9 +223,8 @@ public:
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Preferences); });
 
-        addMenuButton(TRANS("sound_engine_settings"), [this]()
-                          {
-            if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_SoundEngine); });
+        addMenuLabel(TRANS("sound_engine_settings"));
+        addStretcherToggleButtons();
 
         addSeparator();
 
@@ -427,11 +427,66 @@ private:
         menuItems_.push_back(std::move(item));
     }
 
+    void addStretcherToggleButtons()
+    {
+        auto row = std::make_unique<Component>();
+
+        bungeeButton_ = std::make_unique<ToggleButton>(TRANS("sound_engine_bungee"));
+        bungeeButton_->setToggleState(currentStretcher_ == kStretcher_Bungee, dontSendNotification);
+        bungeeButton_->onClick = [this]()
+        {
+            if (bungeeButton_->getToggleState())
+            {
+                soundTouchButton_->setToggleState(false, dontSendNotification);
+                if (onMenuItemSelected != nullptr)
+                    onMenuItemSelected(kMenuID_Stretcher_Bungee);
+            }
+            else
+            {
+                bungeeButton_->setToggleState(true, dontSendNotification);
+            }
+        };
+        bungeeButton_->setBounds(10, 0, 80, 30);
+        bungeeButton_->setLookAndFeel(&circleToggleLaf_);
+        row->addAndMakeVisible(bungeeButton_.get());
+
+        soundTouchButton_ = std::make_unique<ToggleButton>(TRANS("sound_engine_soundtouch"));
+        soundTouchButton_->setToggleState(currentStretcher_ == kStretcher_SoundTouch, dontSendNotification);
+        soundTouchButton_->onClick = [this]()
+        {
+            if (soundTouchButton_->getToggleState())
+            {
+                bungeeButton_->setToggleState(false, dontSendNotification);
+                if (onMenuItemSelected != nullptr)
+                    onMenuItemSelected(kMenuID_Stretcher_SoundTouch);
+            }
+            else
+            {
+                soundTouchButton_->setToggleState(true, dontSendNotification);
+            }
+        };
+        soundTouchButton_->setBounds(100, 0, 100, 30);
+        soundTouchButton_->setLookAndFeel(&circleToggleLaf_);
+        row->addAndMakeVisible(soundTouchButton_.get());
+
+        row->setSize(getWidth(), 40);
+        addAndMakeVisible(row.get());
+
+        MenuItem item;
+        item.component = std::move(row);
+        item.isLabel = false;
+        item.isSubmenu = false;
+        menuItems_.push_back(std::move(item));
+    }
+
     std::vector<MenuItem> menuItems_;
     std::unique_ptr<Label> versionLabel_;
     std::unique_ptr<ToggleButton> lightButton_;
     std::unique_ptr<ToggleButton> darkButton_;
+    std::unique_ptr<ToggleButton> bungeeButton_;
+    std::unique_ptr<ToggleButton> soundTouchButton_;
     bool updateAvailable_;
+    StretcherType currentStretcher_;
     MelissaLookAndFeel_MenuButton menuButtonLaf_;
     MelissaLookAndFeel_CircleToggleButton circleToggleLaf_;
     std::vector<int> separatorPositions_;
@@ -451,7 +506,9 @@ MenuOverlayComponent::MenuOverlayComponent() : menuVisible_(false), menuPosX_(-3
 {
     setVisible(false);
 
-    menuComponent_ = std::make_unique<MenuComponent>(MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists);
+    menuComponent_ = std::make_unique<MenuComponent>(
+        MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists,
+        MelissaModel::getInstance()->getStretcherType());
     menuComponent_->onMenuItemSelected = [this](int menuId)
     {
         if (onMenuItemSelected != nullptr)
@@ -562,6 +619,8 @@ MainComponent::MainComponent(const String &commandLine) : Thread("MelissaProcess
     shouldUpdateBpm_ = false;
 
     MelissaUISettings::isDarkMode = dataSource_->getUITheme() == "System_Dark";
+    MelissaModel::getInstance()->setStretcherType(
+        static_cast<StretcherType>(dataSource_->getStretcherTypePersisted()));
 
     simpleTextButtonLaf_.setFont(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub));
     laf_.updateColour();
@@ -2584,10 +2643,11 @@ void MainComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
         showAudioMidiSettingsDialog();
     else if (menuItemID == kMenuID_Shortcut)
         showShortcutDialog();
-    else if (menuItemID == kMenuID_SoundEngine)
+    else if (menuItemID == kMenuID_Stretcher_Bungee || menuItemID == kMenuID_Stretcher_SoundTouch)
     {
-        auto dialog = std::make_shared<MelissaSoundEngineDialog>();
-        MelissaModalDialog::show(dialog, TRANS("sound_engine_settings"));
+        const auto type = (menuItemID == kMenuID_Stretcher_Bungee) ? kStretcher_Bungee : kStretcher_SoundTouch;
+        MelissaModel::getInstance()->setStretcherType(type);
+        dataSource_->setStretcherTypePersisted(static_cast<int>(type));
     }
     else if (menuItemID == kMenuID_UITheme_Dark || menuItemID == kMenuID_UITheme_Light)
     {

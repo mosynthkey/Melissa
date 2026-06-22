@@ -55,6 +55,7 @@ public:
         std::map<juce::String, juce::String> shortcut_;
         juce::String uiTheme_;
         juce::String fontName_;
+        int stretcherType_;
         enum FontSize
         {
             kFontSize_Large,
@@ -65,7 +66,7 @@ public:
             kNumFontSizes
         };
 
-        Global() : version_(ProjectInfo::versionString), width_(1400), height_(860), uiTheme_("System_Dark")
+        Global() : version_(ProjectInfo::versionString), width_(1400), height_(860), uiTheme_("System_Dark"), stretcherType_(0)
         {
             rootDir_ = juce::File::getSpecialLocation(juce::File::userMusicDirectory).getFullPathName();
         }
@@ -271,6 +272,10 @@ public:
     // UI Theme
     juce::String getUITheme() const;
     void setUITheme(const juce::String &uiTheme_);
+
+    // Stretcher
+    int getStretcherTypePersisted() const { return global_.stretcherType_; }
+    void setStretcherTypePersisted(int type) { global_.stretcherType_ = type; }
 
     // Previous
     void restorePreviousState();

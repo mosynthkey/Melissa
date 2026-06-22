@@ -101,6 +101,8 @@ void MelissaDataSource::loadSettingsFile(const File &file)
 
         if (g->hasProperty("ui_theme"))
             global_.uiTheme_ = g->getProperty("ui_theme");
+        if (g->hasProperty("stretcher_type"))
+            global_.stretcherType_ = static_cast<int>(g->getProperty("stretcher_type"));
         initFontSettings(g->hasProperty("font_name") ? g->getProperty("font_name") : "");
     }
 
@@ -343,6 +345,7 @@ void MelissaDataSource::saveSettingsFile()
     }
     global->setProperty("shortcut", shortcut);
     global->setProperty("ui_theme", global_.uiTheme_);
+    global->setProperty("stretcher_type", global_.stretcherType_);
     global->setProperty("font_name", global_.fontName_);
     settings->setProperty("global", global);
 
