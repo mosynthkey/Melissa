@@ -446,7 +446,7 @@ private:
                 bungeeButton_->setToggleState(true, dontSendNotification);
             }
         };
-        bungeeButton_->setBounds(10, 0, 80, 30);
+        bungeeButton_->setBounds(10, 0, 200, 30);
         bungeeButton_->setLookAndFeel(&circleToggleLaf_);
         row->addAndMakeVisible(bungeeButton_.get());
 
@@ -465,11 +465,11 @@ private:
                 soundTouchButton_->setToggleState(true, dontSendNotification);
             }
         };
-        soundTouchButton_->setBounds(100, 0, 100, 30);
+        soundTouchButton_->setBounds(10, 30, 200, 30);
         soundTouchButton_->setLookAndFeel(&circleToggleLaf_);
         row->addAndMakeVisible(soundTouchButton_.get());
 
-        row->setSize(getWidth(), 40);
+        row->setSize(getWidth(), 60);
         addAndMakeVisible(row.get());
 
         MenuItem item;
