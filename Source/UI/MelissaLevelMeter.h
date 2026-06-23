@@ -61,9 +61,12 @@ public:
     void paint(juce::Graphics& g) override
     {
         using namespace juce;
-        const float w = static_cast<float>(getWidth());
-        const float h = static_cast<float>(getHeight());
-        const float barH   = (h - kGap) / 2.f;
+        const float w      = static_cast<float>(getWidth());
+        const float h      = static_cast<float>(getHeight());
+        // bars occupy the centre, leaving kBarMargin top and bottom for the thumb
+        const float barTop = kBarMargin;
+        const float barArea= h - kBarMargin * 2.f;
+        const float barH   = (barArea - kGap) / 2.f;
         const float cornerR = barH / 2.f;
         const auto accent   = MelissaUISettings::getAccentColour();
 
@@ -92,12 +95,12 @@ public:
             }
         };
 
-        drawBar(displayL_, peakL_, 0.f);
-        drawBar(displayR_, peakR_, barH + kGap);
+        drawBar(displayL_, peakL_, barTop);
+        drawBar(displayR_, peakR_, barTop + barH + kGap);
 
-        // Volume thumb — bright vertical line at value_ position
+        // Volume thumb — full-height vertical line (extends above/below bars)
         const float tx = value_ * w;
-        g.setColour(accent.brighter(0.3f));
+        g.setColour(accent.brighter(0.4f));
         g.fillRect(tx - 1.5f, 0.f, 3.f, h);
     }
 
@@ -124,7 +127,8 @@ public:
     }
 
 private:
-    static constexpr float kGap = 2.f;
+    static constexpr float kGap       = 2.f;
+    static constexpr float kBarMargin = 5.f;  // thumb extends this far above/below bars
     static constexpr int kPeakHoldFrames = 60;
 
     std::atomic<float> levelL_{0.f}, levelR_{0.f};

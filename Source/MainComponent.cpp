@@ -2073,8 +2073,9 @@ void MainComponent::resized_Desktop()
         mainVolumeSlider_->setBounds(-200, 0, 40, 40);
 
         constexpr int kMeterW = 120;
-        constexpr int kMeterH = 20;
-        levelMeter_->setBounds(getWidth() - kMeterW - 10, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
+        constexpr int kMeterH = 30;
+        constexpr int kRightMargin = 10;
+        levelMeter_->setBounds(getWidth() - kMeterW - kRightMargin, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
 
         constexpr int kAudioDeviceButtonWidth = 220;
         audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight);
