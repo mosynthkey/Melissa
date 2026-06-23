@@ -316,14 +316,8 @@ public:
         const int footerHeight = 20;
         versionLabel_->setBounds(10, getHeight() - footerHeight - 10, menuWidth, footerHeight);
 
-        // Place stats label directly below the last non-separator item
-        if (stretcherStatsLabel_ != nullptr && !menuItems_.empty())
-        {
-            // find the last real item (stats placeholder)
-            auto& last = menuItems_.back();
-            if (last.component != nullptr)
-                stretcherStatsLabel_->setBounds(last.component->getBounds().withLeft(14));
-        }
+        if (stretcherStatsLabel_ != nullptr && stretcherStatsPlaceholder_ != nullptr)
+            stretcherStatsLabel_->setBounds(stretcherStatsPlaceholder_->getBounds().withLeft(14));
     }
 
     std::function<void(int)> onMenuItemSelected;
@@ -518,12 +512,15 @@ private:
         stretcherStatsLabel_->setJustificationType(Justification::centredLeft);
         addAndMakeVisible(stretcherStatsLabel_.get());
 
+        auto statsPlaceholder = std::make_unique<Component>();
+        statsPlaceholder->setSize(getWidth(), 24);
+        addAndMakeVisible(statsPlaceholder.get());
+        stretcherStatsPlaceholder_ = statsPlaceholder.get();  // keep raw ptr for resized()
+
         MenuItem statsItem;
-        statsItem.component = std::make_unique<Component>();  // placeholder for layout
+        statsItem.component = std::move(statsPlaceholder);
         statsItem.isLabel = false;
         statsItem.isSubmenu = false;
-        statsItem.component->setSize(getWidth(), 24);
-        addAndMakeVisible(statsItem.component.get());
         menuItems_.push_back(std::move(statsItem));
 
         startTimerHz(10);
@@ -541,6 +538,7 @@ private:
     std::vector<MenuItem> menuItems_;
     std::unique_ptr<Label> versionLabel_;
     std::unique_ptr<Label> stretcherStatsLabel_;
+    Component* stretcherStatsPlaceholder_ = nullptr;
     std::unique_ptr<ToggleButton> lightButton_;
     std::unique_ptr<ToggleButton> darkButton_;
     std::unique_ptr<ToggleButton> bungeeButton_;
