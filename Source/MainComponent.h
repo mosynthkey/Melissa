@@ -248,13 +248,11 @@ private:
 
     std::unique_ptr<MelissaMenuButton> menuButton_;
 
-    std::unique_ptr<juce::DrawableButton> trimButton_;
     std::unique_ptr<juce::DrawableButton> exportButton_;
     std::unique_ptr<MelissaProgressBarComponent> exportProgressBar_;
 
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
     std::unique_ptr<MelissaLevelMeter> levelMeter_;
-    std::unique_ptr<juce::Slider> mainVolumeSlider_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
     std::unique_ptr<juce::TextButton> songDetailButton_;
@@ -307,7 +305,7 @@ private:
         kIcon_Select,
         kIcon_Export,
         kIcon_Trim,
-        kIcon_Import,
+        kIcon_OverwriteList,
         kNumOfIcons
     };
 

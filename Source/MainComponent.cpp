@@ -70,10 +70,10 @@ enum
 class MainComponent::HeaderComponent : public Component
 {
 public:
-    HeaderComponent() 
+    HeaderComponent()
     {
     }
-    
+
     void paint(Graphics &g)
     {
         const bool isDark = MelissaUISettings::isDarkMode;
@@ -94,10 +94,8 @@ public:
         if (!isDark)
             g.fillRect(0, getHeight() - lineWidth, getWidth(), lineWidth);
 
-        // main volume background
-        g.fillRoundedRectangle(getWidth() - 151, 15, 141, 19, 19 / 2);
     }
-    
+
 private:
 };
 
@@ -817,7 +815,7 @@ MainComponent::~MainComponent()
     volumeBalanceSlider_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     eqSwitchButton_->setLookAndFeel(nullptr);
-    
+
     if (songDetailPopupMenu_ != nullptr) songDetailPopupMenu_->setLookAndFeel(nullptr);
 #if defined(ENABLE_SPEED_TRAINING)
     speedModeBasicToggleButton_->setLookAndFeel(nullptr);
@@ -909,9 +907,9 @@ void MainComponent::createUI()
         iconHighlightedImages_[kIcon_Trim] = Drawable::createFromImageData(BinaryData::trim_svg, BinaryData::trim_svgSize);
         iconColorInfo_[kIcon_Trim] = kColorInfo_None;
 
-        iconImages_[kIcon_Import] = Drawable::createFromImageData(BinaryData::import_svg, BinaryData::import_svgSize);
-        iconHighlightedImages_[kIcon_Import] = Drawable::createFromImageData(BinaryData::import_svg, BinaryData::import_svgSize);
-        iconColorInfo_[kIcon_Import] = kColorInfo_WhiteToMain;
+        iconImages_[kIcon_OverwriteList] = Drawable::createFromImageData(BinaryData::overwrite_list_svg, BinaryData::overwrite_list_svgSize);
+        iconHighlightedImages_[kIcon_OverwriteList] = Drawable::createFromImageData(BinaryData::overwrite_list_svg, BinaryData::overwrite_list_svgSize);
+        iconColorInfo_[kIcon_OverwriteList] = kColorInfo_WhiteToMain;
 
         for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
         {
@@ -1018,16 +1016,9 @@ void MainComponent::createUI()
         levelMeter_ = make_unique<MelissaLevelMeter>();
         levelMeter_->onValueChanged = [this](float v)
         {
-            mainVolumeSlider_->setValue(v, dontSendNotification);
             model_->setMainVolume(v);
         };
         componentToAdd->addAndMakeVisible(levelMeter_.get());
-
-        trimButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
-        trimButton_->setTooltip(TRANS("trim"));
-        trimButton_->setImages(iconImages_[kIcon_Trim].get(), iconHighlightedImages_[kIcon_Trim].get());
-        trimButton_->onClick = [&]() {};
-        // componentToAdd->addAndMakeVisible(trimButton_.get());
 
         exportButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         exportButton_->setTooltip(TRANS("export"));
@@ -1045,19 +1036,6 @@ void MainComponent::createUI()
         exportProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
         componentToAdd->addChildComponent(exportProgressBar_.get());
 
-        mainVolumeSlider_ = make_unique<Slider>(Slider::RotaryVerticalDrag, Slider::NoTextBox);
-        mainVolumeSlider_->setTooltip(TRANS("volume_main"));
-        mainVolumeSlider_->setRange(0.01f, 1.0f);
-        mainVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
-        mainVolumeSlider_->setValue(1.f);
-        mainVolumeSlider_->onValueChange = [this]()
-        {
-            const float v = static_cast<float>(mainVolumeSlider_->getValue());
-            model_->setMainVolume(v);
-            if (levelMeter_ != nullptr)
-                levelMeter_->setValue(v, false);
-        };
-        componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
     }
 
     {
@@ -1131,21 +1109,21 @@ void MainComponent::createUI()
         songDetailButton_->setTooltip(TRANS("song_detail_menu"));
         songDetailButton_->onClick = [this]()
         {
-            enum 
+            enum
             {
                 kMenu_DeleteStems = 1,
                 kMenu_RedoStemSeparation,
             };
-            
+
             songDetailPopupMenu_->clear();
             songDetailPopupMenu_->setLookAndFeel(&laf_);
             songDetailPopupMenu_->addItem(kMenu_DeleteStems, TRANS("delete_stems"));
             songDetailPopupMenu_->addItem(kMenu_RedoStemSeparation, TRANS("redo_stem_separation"));
-            
+
             songDetailPopupMenu_->showMenuAsync(PopupMenu::Options().withTargetComponent(songDetailButton_.get()), [this](int result) {
                 // Reset look and feel to avoid dangling pointer if component is deleted
                 songDetailPopupMenu_->setLookAndFeel(nullptr);
-                
+
                 if (result == kMenu_DeleteStems) {
                     // Delete stems
                     const std::vector<String> confirmOptions = { TRANS("ok"), TRANS("cancel") };
@@ -1394,7 +1372,7 @@ void MainComponent::createUI()
         speedIncValueButton_->onClick_ = [this](MelissaIncDecButton::Event event, bool b)
         {
             if (event == MelissaIncDecButton::kEvent_Double)
-            {   
+            {
             }
             else
             {
@@ -1721,7 +1699,7 @@ void MainComponent::createUI()
                                                            {
             String name(text);
             if (name.isEmpty()) name = defaultName;
-            
+
             dataSource_->addPracticeList(name); }, std::vector<String>{
                                                                     "Guitar",
                                                                     "Bass",
@@ -1765,7 +1743,7 @@ void MainComponent::createUI()
     practiceListOverwriteButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     practiceListOverwriteButton_->setTooltip(TRANS("overwrite_practice_list"));
     practiceListOverwriteButton_->setLookAndFeel(&laf_);
-    practiceListOverwriteButton_->setImages(iconImages_[kIcon_Import].get(), iconHighlightedImages_[kIcon_Import].get());
+    practiceListOverwriteButton_->setImages(iconImages_[kIcon_OverwriteList].get(), iconHighlightedImages_[kIcon_OverwriteList].get());
     practiceListOverwriteButton_->onClick = [this]()
     {
         practiceTable_->overwriteSelected();
@@ -2079,19 +2057,16 @@ void MainComponent::resized_Desktop()
         fileNameLabel_->setBounds(getWidth() / 2 - labelWidth / 2, 0, labelWidth, kHeaderHeight / 2);
         timeLabel_->setBounds(getWidth() / 2 - labelWidth / 2, kHeaderHeight / 2, labelWidth, kHeaderHeight / 2);
 
-        // knob hidden — volume is controlled via levelMeter_ drag
-        mainVolumeSlider_->setBounds(-200, 0, 40, 40);
-
-        constexpr int kMeterW = 120;
+        constexpr int kMeterW = 160;
         constexpr int kMeterH = 30;
-        constexpr int kRightMargin = 10;
-        levelMeter_->setBounds(getWidth() - kMeterW - kRightMargin, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
+        constexpr int kMargin = 10;
+        levelMeter_->setBounds(getWidth() - kMeterW - kMargin, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
 
-        constexpr int kAudioDeviceButtonWidth = 220;
-        audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        constexpr int kAudioDeviceButtonWidth = 230;
+        audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - kMargin, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
-        exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
-        trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
+        constexpr int kExportWidth = 26;
+        exportButton_->setBounds(audioDeviceButton_->getX() - kExportWidth - kMargin, (kHeaderHeight - 26) / 2, kExportWidth, 26);
         constexpr int kExportBarWidth = 32;
         exportProgressBar_->setBounds(exportButton_->getX() + exportButton_->getWidth() / 2 - kExportBarWidth / 2, exportButton_->getBottom() + 2, kExportBarWidth, 4);
     }
@@ -2142,7 +2117,7 @@ void MainComponent::resized_Desktop()
 
         const int stemControlWidth = songWidth - 10 * 3 - pitchButton_->getWidth();
         stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y - controlHeight, stemControlWidth, controlHeight * 2);
-        
+
         const int songDetailButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), songDetailButton_->getButtonText()).first;
         songDetailButton_->setSize(songDetailButtonWidth, 30);
         songDetailButton_->setTopRightPosition(section->getWidth() - 10, 0);
@@ -3270,7 +3245,6 @@ void MainComponent::eqQChanged(size_t band, float q)
 void MainComponent::mainVolumeChanged(float mainVolume)
 {
     mainVolume_ = mainVolume;
-    mainVolumeSlider_->setValue(mainVolume, dontSendNotification);
     if (levelMeter_ != nullptr)
         levelMeter_->setValue(static_cast<float>(mainVolume), false);
 }
