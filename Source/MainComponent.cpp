@@ -836,6 +836,7 @@ MainComponent::~MainComponent()
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
     practiceTable_->setLookAndFeel(nullptr);
+    practiceListOverwriteButton_->setLookAndFeel(nullptr);
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
@@ -1763,6 +1764,7 @@ void MainComponent::createUI()
 
     practiceListOverwriteButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     practiceListOverwriteButton_->setTooltip(TRANS("overwrite_practice_list"));
+    practiceListOverwriteButton_->setLookAndFeel(&laf_);
     practiceListOverwriteButton_->setImages(iconImages_[kIcon_Import].get(), iconHighlightedImages_[kIcon_Import].get());
     practiceListOverwriteButton_->onClick = [this]()
     {
