@@ -957,6 +957,9 @@ void MainComponent::createUI()
         };
         componentToAdd->addAndMakeVisible(audioDeviceButton_.get());
 
+        levelMeter_ = make_unique<MelissaLevelMeter>();
+        componentToAdd->addAndMakeVisible(levelMeter_.get());
+
         trimButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
         trimButton_->setTooltip(TRANS("trim"));
         trimButton_->setImages(iconImages_[kIcon_Trim].get(), iconHighlightedImages_[kIcon_Trim].get());
@@ -979,7 +982,7 @@ void MainComponent::createUI()
         exportProgressBar_ = std::make_unique<MelissaProgressBarComponent>();
         componentToAdd->addChildComponent(exportProgressBar_.get());
 
-        mainVolumeSlider_ = make_unique<Slider>(Slider::LinearHorizontal, Slider::NoTextBox);
+        mainVolumeSlider_ = make_unique<Slider>(Slider::RotaryVerticalDrag, Slider::NoTextBox);
         mainVolumeSlider_->setTooltip(TRANS("volume_main"));
         mainVolumeSlider_->setRange(0.01f, 1.0f);
         mainVolumeSlider_->setDoubleClickReturnValue(true, 1.f);
@@ -2007,11 +2010,15 @@ void MainComponent::resized_Desktop()
         fileNameLabel_->setBounds(getWidth() / 2 - labelWidth / 2, 0, labelWidth, kHeaderHeight / 2);
         timeLabel_->setBounds(getWidth() / 2 - labelWidth / 2, kHeaderHeight / 2, labelWidth, kHeaderHeight / 2);
 
-        constexpr int kMainVolumeWidth = 140;
-        mainVolumeSlider_->setBounds(getWidth() - kMainVolumeWidth - 10, (kHeaderHeight - 30) / 2, kMainVolumeWidth, 30);
+        constexpr int kKnobSize = 40;
+        mainVolumeSlider_->setBounds(getWidth() - kKnobSize - 8, (kHeaderHeight - kKnobSize) / 2, kKnobSize, kKnobSize);
 
-        constexpr int kAudioDeviceButtonWidth = 300;
-        audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 10, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        constexpr int kMeterW = 20;
+        constexpr int kMeterH = 34;
+        levelMeter_->setBounds(mainVolumeSlider_->getX() - kMeterW - 6, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
+
+        constexpr int kAudioDeviceButtonWidth = 260;
+        audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
         trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
@@ -2447,6 +2454,8 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill
             buffer[0][sampleIndex] *= mainVolume_;
             buffer[1][sampleIndex] *= mainVolume_;
         }
+        if (levelMeter_ != nullptr)
+            levelMeter_->pushSamples(buffer[0], buffer[1], numSamples);
     }
     else
     {

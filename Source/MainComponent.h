@@ -12,6 +12,7 @@
 #include "MelissaBPMDetector.h"
 #include "MelissaBrowserComponent.h"
 #include "MelissaButtons.h"
+#include "MelissaLevelMeter.h"
 #include "MelissaDataSource.h"
 #include "MelissaFileListBox.h"
 #include "MelissaHost.h"
@@ -249,6 +250,7 @@ private:
     std::unique_ptr<MelissaProgressBarComponent> exportProgressBar_;
 
     std::unique_ptr<MelissaAudioDeviceButton> audioDeviceButton_;
+    std::unique_ptr<MelissaLevelMeter> levelMeter_;
     std::unique_ptr<juce::Slider> mainVolumeSlider_;
 
     std::unique_ptr<MelissaStemControlComponent> stemControlComponent_;
