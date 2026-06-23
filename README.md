@@ -47,14 +47,17 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 [Twitter](https://x.com/Melissa__Player)
 
 ## Libraries
-- [JUCE](https://juce.com) 
+- [JUCE](https://juce.com)
 - [SoundTouch](https://www.surina.net/soundtouch/)
+- [Bungee](https://github.com/bungee-audio-stretch/bungee)
+- [Signalsmith Stretch](https://github.com/Signalsmith-Audio/signalsmith-stretch)
 - [spleeterpp](https://github.com/gvne/spleeterpp)
-- [speet](https://github.com/gvne/spleet)
+- [spleet](https://github.com/gvne/spleet)
 - [nlohmann/json](https://github.com/nlohmann/json)
-- [TensorFlow for C](https://www.tensorflow.org/install/)　
+- [TensorFlow for C](https://www.tensorflow.org/install/)
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [demucs.onnx](https://github.com/sevagh/demucs.onnx)
+- [ONNX Runtime](https://onnxruntime.ai)
 
 ## License
-[LGPL-2.1 (c) 2024 Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2025 Masaki Ono](LICENSE)
