@@ -832,7 +832,7 @@ MainComponent::~MainComponent()
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
     practiceTable_->setLookAndFeel(nullptr);
-    practiceListOverwriteButton_->setLookAndFeel(nullptr);
+    if (practiceListOverwriteButton_ != nullptr) practiceListOverwriteButton_->setLookAndFeel(nullptr);
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
@@ -1748,7 +1748,7 @@ void MainComponent::createUI()
 
     practiceListOverwriteButton_ = std::make_unique<TextButton>(TRANS("overwrite"));
     practiceListOverwriteButton_->setTooltip(TRANS("overwrite_practice_list"));
-    practiceListOverwriteButton_->setLookAndFeel(&simpleTextButtonLaf_);
+    practiceListOverwriteButton_->setLookAndFeel(&laf_);
     practiceListOverwriteButton_->onClick = [this]()
     {
         practiceTable_->overwriteSelected();
@@ -2065,11 +2065,12 @@ void MainComponent::resized_Desktop()
         constexpr int kKnobSize = 40;
         mainVolumeSlider_->setBounds(getWidth() - kKnobSize - 8, (kHeaderHeight - kKnobSize) / 2, kKnobSize, kKnobSize);
 
-        constexpr int kAudioDeviceButtonWidth = 200;
-        audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight / 2);
+        constexpr int kMeterW = 80;
+        constexpr int kMeterH = 20;
+        levelMeter_->setBounds(mainVolumeSlider_->getX() - kMeterW - 6, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
 
-        constexpr int kMeterH = 14;
-        levelMeter_->setBounds(audioDeviceButton_->getX(), kHeaderHeight / 2 + (kHeaderHeight / 2 - kMeterH) / 2, kAudioDeviceButtonWidth, kMeterH);
+        constexpr int kAudioDeviceButtonWidth = 220;
+        audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight);
 
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
         trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
