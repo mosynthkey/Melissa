@@ -531,7 +531,8 @@ private:
         if (audioEngine_ == nullptr || stretcherStatsLabel_ == nullptr) return;
         const auto stats = audioEngine_->getStretcherStats();
         stretcherStatsLabel_->setText(
-            String::formatted("%.1f \xc2\xb5s  /  %.1f %%", stats.avgMicros, stats.budgetPct),
+            String(stats.avgMicros, 1) + " " + String::fromUTF8("\xc2\xb5") + "s  /  "
+            + String(stats.budgetPct, 1) + " %",
             dontSendNotification);
     }
 
@@ -1006,6 +1007,11 @@ void MainComponent::createUI()
         componentToAdd->addAndMakeVisible(audioDeviceButton_.get());
 
         levelMeter_ = make_unique<MelissaLevelMeter>();
+        levelMeter_->onValueChanged = [this](float v)
+        {
+            mainVolumeSlider_->setValue(v, dontSendNotification);
+            model_->setMainVolume(v);
+        };
         componentToAdd->addAndMakeVisible(levelMeter_.get());
 
         trimButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
@@ -1037,7 +1043,10 @@ void MainComponent::createUI()
         mainVolumeSlider_->setValue(1.f);
         mainVolumeSlider_->onValueChange = [this]()
         {
-            model_->setMainVolume(mainVolumeSlider_->getValue());
+            const float v = static_cast<float>(mainVolumeSlider_->getValue());
+            model_->setMainVolume(v);
+            if (levelMeter_ != nullptr)
+                levelMeter_->setValue(v, false);
         };
         componentToAdd->addAndMakeVisible(mainVolumeSlider_.get());
     }
@@ -2060,12 +2069,12 @@ void MainComponent::resized_Desktop()
         fileNameLabel_->setBounds(getWidth() / 2 - labelWidth / 2, 0, labelWidth, kHeaderHeight / 2);
         timeLabel_->setBounds(getWidth() / 2 - labelWidth / 2, kHeaderHeight / 2, labelWidth, kHeaderHeight / 2);
 
-        constexpr int kKnobSize = 40;
-        mainVolumeSlider_->setBounds(getWidth() - kKnobSize - 8, (kHeaderHeight - kKnobSize) / 2, kKnobSize, kKnobSize);
+        // knob hidden — volume is controlled via levelMeter_ drag
+        mainVolumeSlider_->setBounds(-200, 0, 40, 40);
 
-        constexpr int kMeterW = 80;
+        constexpr int kMeterW = 120;
         constexpr int kMeterH = 20;
-        levelMeter_->setBounds(mainVolumeSlider_->getX() - kMeterW - 6, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
+        levelMeter_->setBounds(getWidth() - kMeterW - 10, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
 
         constexpr int kAudioDeviceButtonWidth = 220;
         audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight);
@@ -3251,6 +3260,8 @@ void MainComponent::mainVolumeChanged(float mainVolume)
 {
     mainVolume_ = mainVolume;
     mainVolumeSlider_->setValue(mainVolume, dontSendNotification);
+    if (levelMeter_ != nullptr)
+        levelMeter_->setValue(static_cast<float>(mainVolume), false);
 }
 
 void MainComponent::exportStarted()

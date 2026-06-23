@@ -8,23 +8,36 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "MelissaUISettings.h"
 #include <atomic>
 #include <cmath>
+#include <functional>
 
-// Stereo level meter: two horizontal rounded bars (L top / R bottom) with peak hold.
+// Combined stereo level meter + horizontal volume slider.
+// - Two horizontal bars (L top / R bottom) show RMS level in accent colour.
+// - A vertical thumb line shows the current volume value (0..1).
+// - Drag left/right to change volume; double-click to reset to 1.0.
 class MelissaLevelMeter : public juce::Component, private juce::Timer
 {
 public:
+    std::function<void(float)> onValueChanged;
+
     MelissaLevelMeter()
     {
         levelL_.store(0.f);
         levelR_.store(0.f);
-        peakL_ = peakR_ = 0.f;
-        peakHoldL_ = peakHoldR_ = 0;
         startTimerHz(30);
     }
 
     ~MelissaLevelMeter() override { stopTimer(); }
+
+    void setValue(float v, bool notify = false)
+    {
+        value_ = juce::jlimit(0.01f, 1.f, v);
+        if (notify && onValueChanged) onValueChanged(value_);
+        repaint();
+    }
+    float getValue() const { return value_; }
 
     // Call from audio thread — lock-free
     void pushSamples(const float* left, const float* right, int numSamples)
@@ -52,50 +65,79 @@ public:
         const float h = static_cast<float>(getHeight());
         const float barH   = (h - kGap) / 2.f;
         const float cornerR = barH / 2.f;
+        const auto accent   = MelissaUISettings::getAccentColour();
 
         auto drawBar = [&](float level, float peak, float y)
         {
-            // background track
             g.setColour(Colour(0xff2a2a3a));
             g.fillRoundedRectangle(0.f, y, w, barH, cornerR);
 
-            // level fill (left → right)
             const float fillW = level * w;
             if (fillW > 0.f)
             {
-                auto col = level < 0.7f ? Colour(0xff4cd96a)
-                         : level < 0.9f ? Colour(0xfff5c842)
-                                        : Colour(0xffff4444);
-                g.setColour(col);
-                juce::Path clip;
+                Path clip;
                 clip.addRoundedRectangle(0.f, y, w, barH, cornerR);
                 g.saveState();
                 g.reduceClipRegion(clip);
+                g.setColour(accent.withAlpha(0.75f));
                 g.fillRect(0.f, y, fillW, barH);
                 g.restoreState();
             }
 
-            // peak indicator (vertical line)
             if (peak > 0.01f)
             {
                 const float px = peak * w - 1.f;
-                g.setColour(Colour(0xccffffff));
+                g.setColour(Colour(0x99ffffff));
                 g.fillRect(px, y, 2.f, barH);
             }
         };
 
         drawBar(displayL_, peakL_, 0.f);
         drawBar(displayR_, peakR_, barH + kGap);
+
+        // Volume thumb — bright vertical line at value_ position
+        const float tx = value_ * w;
+        g.setColour(accent.brighter(0.3f));
+        g.fillRect(tx - 1.5f, 0.f, 3.f, h);
+    }
+
+    void mouseDown(const juce::MouseEvent& e) override
+    {
+        if (e.mods.isLeftButtonDown())
+            setValueFromX(e.x);
+    }
+
+    void mouseDrag(const juce::MouseEvent& e) override
+    {
+        if (e.mods.isLeftButtonDown())
+            setValueFromX(e.x);
+    }
+
+    void mouseDoubleClick(const juce::MouseEvent&) override
+    {
+        setValue(1.f, true);
+    }
+
+    void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel) override
+    {
+        setValue(juce::jlimit(0.01f, 1.f, value_ + wheel.deltaY * 0.05f), true);
     }
 
 private:
     static constexpr float kGap = 2.f;
     static constexpr int kPeakHoldFrames = 60;
 
-    std::atomic<float> levelL_, levelR_;
+    std::atomic<float> levelL_{0.f}, levelR_{0.f};
     float displayL_ = 0.f, displayR_ = 0.f;
     float peakL_    = 0.f, peakR_    = 0.f;
     int   peakHoldL_ = 0,  peakHoldR_ = 0;
+    float value_ = 1.f;
+
+    void setValueFromX(int x)
+    {
+        const float v = juce::jlimit(0.01f, 1.f, static_cast<float>(x) / getWidth());
+        setValue(v, true);
+    }
 
     void timerCallback() override
     {
