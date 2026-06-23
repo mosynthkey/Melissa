@@ -60,4 +60,4 @@ See [this](ThirdParty/asio/how%20to%20get%20asio%20sdk.md) for the detail.
 - [ONNX Runtime](https://onnxruntime.ai)
 
 ## License
-[LGPL-2.1 (c) 2025 Masaki Ono](LICENSE)
+[LGPL-2.1 (c) 2026 Masaki Ono](LICENSE)
