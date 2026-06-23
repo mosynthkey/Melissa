@@ -208,44 +208,24 @@ private:
 class MelissaAudioDeviceButton : public juce::Button
 {
 public:
-    MelissaAudioDeviceButton() : juce::Button(""), name_()
-    {
-        using namespace juce;
-        normal_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
-        normal_->replaceColour(Colours::white, MelissaUISettings::getTextColour(0.8f));
-        
-        highlighted_ = Drawable::createFromImageData(BinaryData::speaker_svg, BinaryData::speaker_svgSize);
-        highlighted_->replaceColour(Colours::white, MelissaUISettings::getTextColour());
-    }
-    
+    MelissaAudioDeviceButton() : juce::Button(""), name_() {}
     ~MelissaAudioDeviceButton() { }
-    
+
     void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
-        {
-            highlighted_->drawAt(g, 10, 10, 1.f);
-        }
-        else
-        {
-            normal_->drawAt(g, 10, 10, 1.f);
-        }
-        
         g.setColour(MelissaUISettings::getTextColour((shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown) ? 1.f : 0.8f));
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Main));
-        g.drawText(name_, 30, 0, getWidth() - 30, getHeight(), juce::Justification::centred, false);
+        g.drawText(name_, 0, 0, getWidth(), getHeight(), juce::Justification::centredRight, false);
     }
-    
+
     void setAudioDeviceName(const juce::String& name)
     {
         name_ = name;
         repaint();
     }
-    
+
 private:
     juce::String name_;
-    std::unique_ptr<juce::Drawable> normal_;
-    std::unique_ptr<juce::Drawable> highlighted_;
 };
 
 class MelissaIconTextButton : public juce::Button

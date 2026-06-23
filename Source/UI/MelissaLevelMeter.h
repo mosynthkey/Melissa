@@ -70,26 +70,30 @@ public:
         const float cornerR = barH / 2.f;
         const auto accent   = MelissaUISettings::getAccentColour();
 
+        // bars inset by kBarMargin on all sides; thumb uses the full component rect
+        const float barX = kBarMargin;
+        const float barW = w - kBarMargin * 2.f;
+
         auto drawBar = [&](float level, float peak, float y)
         {
             g.setColour(Colour(0xff2a2a3a));
-            g.fillRoundedRectangle(0.f, y, w, barH, cornerR);
+            g.fillRoundedRectangle(barX, y, barW, barH, cornerR);
 
-            const float fillW = level * w;
+            const float fillW = level * barW;
             if (fillW > 0.f)
             {
                 Path clip;
-                clip.addRoundedRectangle(0.f, y, w, barH, cornerR);
+                clip.addRoundedRectangle(barX, y, barW, barH, cornerR);
                 g.saveState();
                 g.reduceClipRegion(clip);
                 g.setColour(accent.withAlpha(0.75f));
-                g.fillRect(0.f, y, fillW, barH);
+                g.fillRect(barX, y, fillW, barH);
                 g.restoreState();
             }
 
             if (peak > 0.01f)
             {
-                const float px = peak * w - 1.f;
+                const float px = barX + peak * barW - 1.f;
                 g.setColour(Colour(0x99ffffff));
                 g.fillRect(px, y, 2.f, barH);
             }
@@ -98,8 +102,8 @@ public:
         drawBar(displayL_, peakL_, barTop);
         drawBar(displayR_, peakR_, barTop + barH + kGap);
 
-        // Volume thumb — full-height vertical line (extends above/below bars)
-        const float tx = value_ * w;
+        // Volume thumb — full component height, mapped within bar range
+        const float tx = kBarMargin + value_ * barW;
         g.setColour(accent.brighter(0.4f));
         g.fillRect(tx - 1.5f, 0.f, 3.f, h);
     }
@@ -139,7 +143,8 @@ private:
 
     void setValueFromX(int x)
     {
-        const float v = juce::jlimit(0.01f, 1.f, static_cast<float>(x) / getWidth());
+        const float barW = getWidth() - kBarMargin * 2.f;
+        const float v = juce::jlimit(0.01f, 1.f, (static_cast<float>(x) - kBarMargin) / barW);
         setValue(v, true);
     }
 
