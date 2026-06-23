@@ -836,7 +836,6 @@ MainComponent::~MainComponent()
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
     practiceTable_->setLookAndFeel(nullptr);
-    if (practiceListOverwriteButton_ != nullptr) practiceListOverwriteButton_->setLookAndFeel(nullptr);
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
@@ -908,6 +907,10 @@ void MainComponent::createUI()
         iconImages_[kIcon_Trim] = Drawable::createFromImageData(BinaryData::trim_svg, BinaryData::trim_svgSize);
         iconHighlightedImages_[kIcon_Trim] = Drawable::createFromImageData(BinaryData::trim_svg, BinaryData::trim_svgSize);
         iconColorInfo_[kIcon_Trim] = kColorInfo_None;
+
+        iconImages_[kIcon_Import] = Drawable::createFromImageData(BinaryData::import_svg, BinaryData::import_svgSize);
+        iconHighlightedImages_[kIcon_Import] = Drawable::createFromImageData(BinaryData::import_svg, BinaryData::import_svgSize);
+        iconColorInfo_[kIcon_Import] = kColorInfo_WhiteToMain;
 
         for (int iconIndex = 0; iconIndex < kNumOfIcons; ++iconIndex)
         {
@@ -1758,9 +1761,9 @@ void MainComponent::createUI()
     };
     listComponent_->addAndMakeVisible(practiceListDownButton_.get());
 
-    practiceListOverwriteButton_ = std::make_unique<TextButton>(TRANS("overwrite"));
+    practiceListOverwriteButton_ = std::make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     practiceListOverwriteButton_->setTooltip(TRANS("overwrite_practice_list"));
-    practiceListOverwriteButton_->setLookAndFeel(&laf_);
+    practiceListOverwriteButton_->setImages(iconImages_[kIcon_Import].get(), iconHighlightedImages_[kIcon_Import].get());
     practiceListOverwriteButton_->onClick = [this]()
     {
         practiceTable_->overwriteSelected();
@@ -2325,7 +2328,7 @@ void MainComponent::resized_Desktop()
 
         practiceListUpButton_->setBounds(x, practiceTable_->getBottom() + 10, 30, 30);
         practiceListDownButton_->setBounds(x + 40, practiceTable_->getBottom() + 10, 30, 30);
-        practiceListOverwriteButton_->setBounds(x + 90, practiceTable_->getBottom() + 10, 80, 30);
+        practiceListOverwriteButton_->setBounds(x + 80, practiceTable_->getBottom() + 10, 30, 30);
     }
 
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
