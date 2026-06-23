@@ -315,6 +315,15 @@ public:
 
         const int footerHeight = 20;
         versionLabel_->setBounds(10, getHeight() - footerHeight - 10, menuWidth, footerHeight);
+
+        // Place stats label directly below the last non-separator item
+        if (stretcherStatsLabel_ != nullptr && !menuItems_.empty())
+        {
+            // find the last real item (stats placeholder)
+            auto& last = menuItems_.back();
+            if (last.component != nullptr)
+                stretcherStatsLabel_->setBounds(last.component->getBounds().withLeft(14));
+        }
     }
 
     std::function<void(int)> onMenuItemSelected;
@@ -525,15 +534,8 @@ private:
         if (audioEngine_ == nullptr || stretcherStatsLabel_ == nullptr) return;
         const auto stats = audioEngine_->getStretcherStats();
         stretcherStatsLabel_->setText(
-            String::formatted("%.1f µs  /  %.1f %%", stats.avgMicros, stats.budgetPct),
+            String::formatted("%.1f \xc2\xb5s  /  %.1f %%", stats.avgMicros, stats.budgetPct),
             dontSendNotification);
-        // position the label over the placeholder item (last in list before separator)
-        if (!menuItems_.empty())
-        {
-            auto* placeholder = menuItems_.back().component.get();
-            if (placeholder != nullptr)
-                stretcherStatsLabel_->setBounds(placeholder->getBounds().withLeft(20));
-        }
     }
 
     std::vector<MenuItem> menuItems_;
@@ -830,6 +832,7 @@ MainComponent::~MainComponent()
     memoToggleButton_->setLookAndFeel(nullptr);
     memoTextEditor_->setLookAndFeel(nullptr);
     practiceTable_->setLookAndFeel(nullptr);
+    practiceListOverwriteButton_->setLookAndFeel(nullptr);
     tooltipWindow_->setLookAndFeel(nullptr);
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
@@ -1745,6 +1748,7 @@ void MainComponent::createUI()
 
     practiceListOverwriteButton_ = std::make_unique<TextButton>(TRANS("overwrite"));
     practiceListOverwriteButton_->setTooltip(TRANS("overwrite_practice_list"));
+    practiceListOverwriteButton_->setLookAndFeel(&simpleTextButtonLaf_);
     practiceListOverwriteButton_->onClick = [this]()
     {
         practiceTable_->overwriteSelected();
@@ -2061,12 +2065,11 @@ void MainComponent::resized_Desktop()
         constexpr int kKnobSize = 40;
         mainVolumeSlider_->setBounds(getWidth() - kKnobSize - 8, (kHeaderHeight - kKnobSize) / 2, kKnobSize, kKnobSize);
 
-        constexpr int kMeterW = 20;
-        constexpr int kMeterH = 34;
-        levelMeter_->setBounds(mainVolumeSlider_->getX() - kMeterW - 6, (kHeaderHeight - kMeterH) / 2, kMeterW, kMeterH);
+        constexpr int kAudioDeviceButtonWidth = 200;
+        audioDeviceButton_->setBounds(mainVolumeSlider_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight / 2);
 
-        constexpr int kAudioDeviceButtonWidth = 260;
-        audioDeviceButton_->setBounds(levelMeter_->getX() - kAudioDeviceButtonWidth - 6, 0, kAudioDeviceButtonWidth, kHeaderHeight);
+        constexpr int kMeterH = 14;
+        levelMeter_->setBounds(audioDeviceButton_->getX(), kHeaderHeight / 2 + (kHeaderHeight / 2 - kMeterH) / 2, kAudioDeviceButtonWidth, kMeterH);
 
         exportButton_->setBounds(audioDeviceButton_->getX() - 50, (kHeaderHeight - 26) / 2, 26, 26);
         trimButton_->setBounds(exportButton_->getX() - 36, (kHeaderHeight - 26) / 2, 26, 26);
