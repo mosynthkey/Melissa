@@ -373,6 +373,7 @@ private:
     std::unique_ptr<MelissaPracticeTableListBox> practiceTable_;
     std::unique_ptr<juce::DrawableButton> practiceListUpButton_;
     std::unique_ptr<juce::DrawableButton> practiceListDownButton_;
+    std::unique_ptr<juce::TextButton> practiceListOverwriteButton_;
     std::unique_ptr<juce::DrawableButton> addMarkerButton_;
     std::unique_ptr<MelissaMarkerListBox> markerTable_;
 

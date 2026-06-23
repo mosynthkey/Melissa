@@ -196,16 +196,20 @@ public:
             int speedIncGoal_;
 #endif
 
+            PlayPart playPart_;
+            float customPartVolume_[kNumCustomPartVolumes];
+
             PracticeList() : name_(""), aRatio_(0.f), bRatio_(1.f),
 #if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
                              outputMode_(kOutputMode_LR), musicVolume_(1.f), metronomeVolume_(1.f), volumeBalance_(0.5f),
                              metronomeSw_(false), bpm_(kBpmShouldMeasure), accent_(4), beatPositionMSec_(0.f),
 #endif
-                             speed_(100)
+                             speed_(100),
 #if defined(ENABLE_SPEED_TRAINING)
-                             ,
-                             speedMode_(kSpeedMode_Basic), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100)
+                             speedMode_(kSpeedMode_Basic), speedIncStart_(70), speedIncValue_(1), speedIncPer_(10), speedIncGoal_(100),
 #endif
+                             playPart_(kPlayPart_All),
+                             customPartVolume_{0.f, 0.f, 0.f, 0.f, 0.f, 0.f}
             {
             }
         };

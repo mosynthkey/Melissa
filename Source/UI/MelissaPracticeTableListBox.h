@@ -51,6 +51,7 @@ public:
     void labelTextChanged(juce::Label* label) override;
     
     void moveSelected(int direction);
+    void overwriteSelected();
     
 private:
     MelissaLookAndFeel_SimpleTextEditor laf_;

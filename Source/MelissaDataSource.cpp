@@ -280,6 +280,10 @@ void MelissaDataSource::loadSettingsFile(const File &file)
                     list.speedIncGoal_ = l.getProperty("speed_inc_goal", 100);
 #endif
 
+                    list.playPart_ = static_cast<PlayPart>(static_cast<int>(l.getProperty("play_part", kPlayPart_All)));
+                    for (int pi = 0; pi < kNumCustomPartVolumes; ++pi)
+                        list.customPartVolume_[pi] = l.getProperty("custom_vol_" + String(pi), 0.f);
+
                     song.practiceList_.emplace_back(list);
                 }
                 if (obj->hasProperty("marker"))
@@ -448,7 +452,7 @@ void MelissaDataSource::saveSettingsFile()
             obj->setProperty("b", l.bRatio_);
 
 #if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
-            obj->setProperty("output", l.outputMode_);
+            obj->setProperty("output_mode", l.outputMode_);
             obj->setProperty("volume", l.musicVolume_);
             obj->setProperty("metronome_volume", l.metronomeVolume_);
             obj->setProperty("volume_balance", l.volumeBalance_);
@@ -466,6 +470,9 @@ void MelissaDataSource::saveSettingsFile()
             obj->setProperty("speed_inc_per", l.speedIncPer_);
             obj->setProperty("speed_inc_goal", l.speedIncGoal_);
 #endif
+            obj->setProperty("play_part", l.playPart_);
+            for (int pi = 0; pi < kNumCustomPartVolumes; ++pi)
+                obj->setProperty("custom_vol_" + String(pi), l.customPartVolume_[pi]);
 
             list.add(obj);
         }
@@ -1144,6 +1151,9 @@ void MelissaDataSource::overwritePracticeList(size_t index, const String &name)
                 song.practiceList_[index].speedIncPer_ = model_->getSpeedIncPer();
                 song.practiceList_[index].speedIncGoal_ = model_->getSpeedIncGoal();
 #endif
+                song.practiceList_[index].playPart_ = model_->getPlayPart();
+                for (int pi = 0; pi < kNumCustomPartVolumes; ++pi)
+                    song.practiceList_[index].customPartVolume_[pi] = model_->getCustomPartVolume(static_cast<CustomPartVolume>(pi));
 
                 for (auto &&l : listeners_)
                     l->practiceListUpdated();

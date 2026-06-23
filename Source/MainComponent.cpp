@@ -1693,6 +1693,14 @@ void MainComponent::createUI()
     };
     listComponent_->addAndMakeVisible(practiceListDownButton_.get());
 
+    practiceListOverwriteButton_ = std::make_unique<TextButton>(TRANS("overwrite"));
+    practiceListOverwriteButton_->setTooltip(TRANS("overwrite_practice_list"));
+    practiceListOverwriteButton_->onClick = [this]()
+    {
+        practiceTable_->overwriteSelected();
+    };
+    listComponent_->addAndMakeVisible(practiceListOverwriteButton_.get());
+
     addMarkerButton_ = make_unique<DrawableButton>("", DrawableButton::ImageRaw);
     addMarkerButton_->setTooltip(TRANS("add_marker"));
     addMarkerButton_->setImages(iconImages_[kIcon_Add].get(), iconImages_[kIcon_Add].get());
@@ -2245,6 +2253,7 @@ void MainComponent::resized_Desktop()
 
         practiceListUpButton_->setBounds(x, practiceTable_->getBottom() + 10, 30, 30);
         practiceListDownButton_->setBounds(x + 40, practiceTable_->getBottom() + 10, 30, 30);
+        practiceListOverwriteButton_->setBounds(x + 90, practiceTable_->getBottom() + 10, 80, 30);
     }
 
     for (size_t label_i = 0; label_i < kNumOfLabels; ++label_i)
@@ -2869,6 +2878,7 @@ void MainComponent::updateListMemoTab(ListMemoTab tab)
     practiceTable_->setVisible(tab == kListMemoTab_Practice);
     practiceListUpButton_->setVisible(tab == kListMemoTab_Practice);
     practiceListDownButton_->setVisible(tab == kListMemoTab_Practice);
+    practiceListOverwriteButton_->setVisible(tab == kListMemoTab_Practice);
     markerTable_->setVisible(tab == kListMemoTab_Marker);
     memoTextEditor_->setVisible(tab == kListMemoTab_Memo);
     browserComponent_->setVisible(tab == kListMemoTab_Browser);

@@ -212,17 +212,32 @@ void MelissaPracticeTableListBox::cellDoubleClicked(int rowNumber, int columnId,
 {
     auto prac = practiceList_[rowNumber];
     auto model = MelissaModel::getInstance();
-    
+
     model->setLoopPosRatio(prac.aRatio_, prac.bRatio_);
-    
     model->setSpeed(prac.speed_);
+
 #if defined(ENABLE_SPEED_TRAINING)
+    model->setSpeedMode(prac.speedMode_);
     model->setSpeedIncStart(prac.speedIncStart_);
     model->setSpeedIncValue(prac.speedIncValue_);
     model->setSpeedIncPer(prac.speedIncPer_);
     model->setSpeedIncGoal(prac.speedIncGoal_);
-    model->setSpeedMode(prac.speedMode_);
 #endif
+
+#if !defined(SAVE_ONLY_LOOP_AND_SPEED_IN_PRACTICE_LIST)
+    model->setOutputMode(prac.outputMode_);
+    model->setMusicVolume(prac.musicVolume_);
+    model->setMetronomeVolume(prac.metronomeVolume_);
+    model->setMusicMetronomeBalance(prac.volumeBalance_);
+    model->setMetronomeSwitch(prac.metronomeSw_);
+    model->setBpm(prac.bpm_);
+    model->setAccent(prac.accent_);
+    model->setBeatPositionMSec(prac.beatPositionMSec_);
+#endif
+
+    model->setPlayPart(prac.playPart_);
+    for (int pi = 0; pi < kNumCustomPartVolumes; ++pi)
+        model->setCustomPartVolume(static_cast<CustomPartVolume>(pi), prac.customPartVolume_[pi]);
 }
 
 void MelissaPracticeTableListBox::selectedRowsChanged(int row)
@@ -257,6 +272,12 @@ void MelissaPracticeTableListBox::labelTextChanged(Label* label)
         if (kSpeedMin <= speed && speed <= kSpeedMax) practiceList_[rowIndex].speed_ = speed;
     }
     dataSource_->overwritePracticeList(rowIndex, practiceList_[rowIndex]);
+}
+
+void MelissaPracticeTableListBox::overwriteSelected()
+{
+    if (selectedRow_ < 0 || selectedRow_ >= static_cast<int>(practiceList_.size())) return;
+    dataSource_->overwritePracticeList(selectedRow_, practiceList_[selectedRow_].name_);
 }
 
 void MelissaPracticeTableListBox::moveSelected(int direction)
