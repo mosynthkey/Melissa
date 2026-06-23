@@ -21,7 +21,6 @@ endif()
 include(FetchContent)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/JUCE)
-set(SIGNALSMITH_USE_ACCELERATE OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Submodule/signalsmith-stretch)
 
 set(JUCE_BUILD_HELPER_TOOLS OFF CACHE BOOL "")
@@ -56,6 +55,7 @@ juce_generate_juce_header(Melissa)
 
 target_sources(Melissa PRIVATE
     Source/Audio/MelissaAudioEngine.cpp
+    Source/Audio/SignalSmithStretcher.cpp
     Source/Audio/MelissaBeepGenerator.cpp
     Source/Audio/MelissaBPMDetector.cpp
     Source/Audio/MelissaMetronome.cpp
