@@ -8,6 +8,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -79,6 +80,23 @@ public:
     void setTrimMode(bool shouldTrim);
     void resetSpeedTraining();
 
+    // Stretcher load measurement — readable from any thread
+    struct StretcherStats
+    {
+        float avgMicros  = 0.f;  // EMA of per-block processing time (µs)
+        float budgetPct  = 0.f;  // % of block time budget consumed
+    };
+    StretcherStats getStretcherStats() const
+    {
+        return { stretcherAvgMicros_.load(std::memory_order_relaxed),
+                 stretcherBudgetPct_.load(std::memory_order_relaxed) };
+    }
+    void resetStretcherStats()
+    {
+        stretcherAvgMicros_.store(0.f, std::memory_order_relaxed);
+        stretcherBudgetPct_.store(0.f, std::memory_order_relaxed);
+    }
+
 private:
     MelissaModel *model_;
     MelissaDataSource *dataSource_;
@@ -94,6 +112,13 @@ private:
     std::unique_ptr<SignalSmithStretcher>  signalSmithStretcher_;
     IMelissaStretcher*                   stretcher_ = nullptr;
     std::atomic<int>                     pendingStretcherType_{kStretcher_Bungee};
+
+    // Per-block timing stats (written from audio thread, read from UI thread)
+    std::atomic<float> stretcherAvgMicros_{0.f};
+    std::atomic<float> stretcherBudgetPct_{0.f};
+    // Block time budget = processLength_ samples / outputSampleRate_ (µs)
+    static constexpr float kBlockBudgetMicros =
+        static_cast<float>(processLength_) / 48000.f * 1'000'000.f;
 
     PlaybackStatus playbackStatus_;
     PlaybackMode playbackMode_;

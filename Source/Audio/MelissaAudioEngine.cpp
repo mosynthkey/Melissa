@@ -406,8 +406,19 @@ void MelissaAudioEngine::process()
         }
 
         stretcher_->notifyInputStart(static_cast<int64_t>(readStartIndex));
-        stretcher_->putSamples(bufferForSoundTouch_, numSamplesToRead);
-        receivedSampleSize = stretcher_->receiveSamples(bufferForSoundTouch_, processLength_);
+        {
+            using Clock = std::chrono::steady_clock;
+            const auto t0 = Clock::now();
+            stretcher_->putSamples(bufferForSoundTouch_, numSamplesToRead);
+            receivedSampleSize = stretcher_->receiveSamples(bufferForSoundTouch_, processLength_);
+            const float elapsed = std::chrono::duration<float, std::micro>(Clock::now() - t0).count();
+            // EMA with α=0.1
+            const float prev = stretcherAvgMicros_.load(std::memory_order_relaxed);
+            stretcherAvgMicros_.store(prev * 0.9f + elapsed * 0.1f, std::memory_order_relaxed);
+            stretcherBudgetPct_.store(
+                stretcherAvgMicros_.load(std::memory_order_relaxed) / kBlockBudgetMicros * 100.f,
+                std::memory_order_relaxed);
+        }
     }
 
     mutex_.lock();
@@ -448,6 +459,8 @@ void MelissaAudioEngine::resetProcessedBuffer()
         stretcher_ = signalSmithStretcher_.get();
     else
         stretcher_ = bungeeStretcher_.get();
+
+    resetStretcherStats();
 
     const auto fsConvPitch = static_cast<float>(originalSampleRate_) / outputSampleRate_;
 

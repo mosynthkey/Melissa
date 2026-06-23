@@ -160,7 +160,7 @@ private:
     Colour colour_;
 };
 
-class MenuOverlayComponent::MenuComponent : public Component
+class MenuOverlayComponent::MenuComponent : public Component, private Timer
 {
 public:
     class MenuButtonComponent : public Component
@@ -193,8 +193,8 @@ public:
         MelissaLookAndFeel_MenuButton menuButtonLaf_;
     };
 
-    MenuComponent(bool updateAvailable, StretcherType currentStretcher)
-        : updateAvailable_(updateAvailable), currentStretcher_(currentStretcher)
+    MenuComponent(bool updateAvailable, StretcherType currentStretcher, MelissaAudioEngine* audioEngine)
+        : updateAvailable_(updateAvailable), currentStretcher_(currentStretcher), audioEngine_(audioEngine)
     {
         circleToggleLaf_.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
 
@@ -501,10 +501,44 @@ private:
         item.isLabel = false;
         item.isSubmenu = false;
         menuItems_.push_back(std::move(item));
+
+        // Stats label — updated by Timer
+        stretcherStatsLabel_ = std::make_unique<Label>();
+        stretcherStatsLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
+        stretcherStatsLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour(0.6f));
+        stretcherStatsLabel_->setJustificationType(Justification::centredLeft);
+        addAndMakeVisible(stretcherStatsLabel_.get());
+
+        MenuItem statsItem;
+        statsItem.component = std::make_unique<Component>();  // placeholder for layout
+        statsItem.isLabel = false;
+        statsItem.isSubmenu = false;
+        statsItem.component->setSize(getWidth(), 24);
+        addAndMakeVisible(statsItem.component.get());
+        menuItems_.push_back(std::move(statsItem));
+
+        startTimerHz(10);
+    }
+
+    void timerCallback() override
+    {
+        if (audioEngine_ == nullptr || stretcherStatsLabel_ == nullptr) return;
+        const auto stats = audioEngine_->getStretcherStats();
+        stretcherStatsLabel_->setText(
+            String::formatted("%.1f µs  /  %.1f %%", stats.avgMicros, stats.budgetPct),
+            dontSendNotification);
+        // position the label over the placeholder item (last in list before separator)
+        if (!menuItems_.empty())
+        {
+            auto* placeholder = menuItems_.back().component.get();
+            if (placeholder != nullptr)
+                stretcherStatsLabel_->setBounds(placeholder->getBounds().withLeft(20));
+        }
     }
 
     std::vector<MenuItem> menuItems_;
     std::unique_ptr<Label> versionLabel_;
+    std::unique_ptr<Label> stretcherStatsLabel_;
     std::unique_ptr<ToggleButton> lightButton_;
     std::unique_ptr<ToggleButton> darkButton_;
     std::unique_ptr<ToggleButton> bungeeButton_;
@@ -512,6 +546,12 @@ private:
     std::unique_ptr<ToggleButton> signalSmithButton_;
     bool updateAvailable_;
     StretcherType currentStretcher_;
+    MelissaAudioEngine* audioEngine_ = nullptr;
+
+public:
+    void setAudioEngine(MelissaAudioEngine* e) { audioEngine_ = e; }
+
+private:
     MelissaLookAndFeel_MenuButton menuButtonLaf_;
     MelissaLookAndFeel_CircleToggleButton circleToggleLaf_;
     std::vector<int> separatorPositions_;
@@ -533,7 +573,8 @@ MenuOverlayComponent::MenuOverlayComponent() : menuVisible_(false), menuPosX_(-3
 
     menuComponent_ = std::make_unique<MenuComponent>(
         MelissaUpdateChecker::getUpdateStatus() == MelissaUpdateChecker::kUpdateStatus_UpdateExists,
-        MelissaModel::getInstance()->getStretcherType());
+        MelissaModel::getInstance()->getStretcherType(),
+        nullptr);  // audioEngine set later via setAudioEngine()
     menuComponent_->onMenuItemSelected = [this](int menuId)
     {
         if (onMenuItemSelected != nullptr)
@@ -548,6 +589,12 @@ MenuOverlayComponent::MenuOverlayComponent() : menuVisible_(false), menuPosX_(-3
 MenuOverlayComponent::~MenuOverlayComponent()
 {
     stopTimer();
+}
+
+void MenuOverlayComponent::setAudioEngine(MelissaAudioEngine* engine)
+{
+    if (menuComponent_ != nullptr)
+        menuComponent_->setAudioEngine(engine);
 }
 
 void MenuOverlayComponent::paint(Graphics &g)
@@ -1936,6 +1983,7 @@ void MainComponent::createUI()
         stemControlComponent_->setVisible(false);
 
     menuOverlay_ = std::make_unique<MenuOverlayComponent>();
+    menuOverlay_->setAudioEngine(audioEngine_.get());
     menuOverlay_->onMenuItemSelected = [this](int menuItemID)
     {
         this->menuItemSelected(menuItemID, 0);

@@ -91,6 +91,8 @@ enum ControlPage
     kNumControlPages
 };
 
+class MelissaAudioEngine;
+
 class MenuOverlayComponent : public juce::Component, public juce::Timer
 {
 public:
@@ -104,6 +106,7 @@ public:
 
     void showMenu(bool show);
     bool isMenuVisible() const { return isVisible() && menuVisible_; }
+    void setAudioEngine(MelissaAudioEngine* engine);
 
     std::function<void()> onMenuClosed;
     std::function<void(int)> onMenuItemSelected;
