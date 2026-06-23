@@ -580,7 +580,12 @@ MenuOverlayComponent::MenuOverlayComponent() : menuVisible_(false), menuPosX_(-3
     {
         if (onMenuItemSelected != nullptr)
             onMenuItemSelected(menuId);
-        showMenu(false);
+        // Keep menu open when switching the sound engine (toggle buttons inside menu)
+        const bool keepOpen = (menuId == kMenuID_Stretcher_Bungee
+                            || menuId == kMenuID_Stretcher_SoundTouch
+                            || menuId == kMenuID_Stretcher_SignalSmith);
+        if (!keepOpen)
+            showMenu(false);
     };
     addAndMakeVisible(menuComponent_.get());
 
