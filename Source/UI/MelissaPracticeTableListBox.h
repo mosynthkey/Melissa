@@ -23,6 +23,7 @@ public:
         kColumn_Name,
         kColumn_LoopRange,
         kColumn_Speed,
+        kColumn_Misc,
         kNumOfColumn
     };
     

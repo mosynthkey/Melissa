@@ -11,6 +11,22 @@
 
 using namespace juce;
 
+static String makeMiscText(const MelissaDataSource::Song::PracticeList& prac)
+{
+    if (prac.playPart_ == kPlayPart_Custom)
+    {
+        static const char* labels[] = { "Vocal", "Piano", "Guitar", "Bass", "Drums", "Others" };
+        String result;
+        for (int i = 0; i < kNumCustomPartVolumes; ++i)
+            if (prac.customPartVolume_[i] > 0.f)
+                result += (result.isEmpty() ? "" : " + ") + String(labels[i]);
+        return result.isEmpty() ? "Custom" : result;
+    }
+
+    static const char* partNames[] = { "", "Inst", "Vocal Solo", "Piano Solo", "Guitar Solo", "Bass Solo", "Drums Solo", "Others Solo", "Custom" };
+    return partNames[static_cast<int>(prac.playPart_)];
+}
+
 class LoopRangeComponent : public Component
 {
 public:
@@ -57,7 +73,7 @@ selectedRow_(-1)
     
     dataSource_->addListener(this);
     
-    String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed" };
+    String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed", "Misc" };
     for (int i = 0; i < kNumOfColumn; ++i)
     {
         getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -169,12 +185,33 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
     }
         
     
+    else if (columnId == kColumn_Misc + 1)
+    {
+        auto prac = practiceList_[rowNumber];
+        const auto text = makeMiscText(prac);
+        if (existingComponentToUpdate == nullptr)
+        {
+            auto l = new Label();
+            l->setText(text, dontSendNotification);
+            l->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
+            l->setColour(Label::textColourId, MelissaUISettings::getTextColour(0.7f));
+            l->setInterceptsMouseClicks(false, false);
+            return dynamic_cast<Component*>(l);
+        }
+        else
+        {
+            auto l = dynamic_cast<Label*>(existingComponentToUpdate);
+            l->setText(text, dontSendNotification);
+            return existingComponentToUpdate;
+        }
+    }
+
     return nullptr;
 }
 
 int MelissaPracticeTableListBox::getColumnAutoSizeWidth(int columnId)
 {
-    const std::vector<int> widthRatio = { 3, 5, 3 };
+    const std::vector<int> widthRatio = { 3, 4, 2, 3 };
     const float sum = std::accumulate(widthRatio.begin(), widthRatio.end(), 0);
     return widthRatio[columnId - 1] / sum * (getWidth() - 2);
 }
