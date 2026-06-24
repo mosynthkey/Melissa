@@ -76,7 +76,7 @@ public:
 
         auto drawBar = [&](float level, float peak, float y)
         {
-            g.setColour(Colour(0xff2a2a3a));
+            g.setColour(Colour(MelissaUISettings::getSubColour()));
             g.fillRoundedRectangle(barX, y, barW, barH, cornerR);
 
             const float fillW = level * barW;
@@ -102,10 +102,11 @@ public:
         drawBar(displayL_, peakL_, barTop);
         drawBar(displayR_, peakR_, barTop + barH + kGap);
 
-        // Volume thumb — full component height, mapped within bar range
+        // Volume thumb
         const float tx = kBarMargin + value_ * barW;
+        constexpr float thumbWidth = 8.f;
         g.setColour(accent.brighter(0.4f));
-        g.fillRect(tx - 1.5f, 0.f, 3.f, h);
+        g.fillRoundedRectangle(tx - thumbWidth / 2, 0.f, thumbWidth, h, thumbWidth / 2.f);
     }
 
     void mouseDown(const juce::MouseEvent& e) override
