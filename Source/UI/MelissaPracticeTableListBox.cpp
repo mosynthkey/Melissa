@@ -73,7 +73,7 @@ selectedRow_(-1)
     
     dataSource_->addListener(this);
     
-    String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed", "Misc" };
+    String headerTitles[kNumOfColumn] = { "Name", "Loop range", "Speed", "Part" };
     for (int i = 0; i < kNumOfColumn; ++i)
     {
         getHeader().addColumn(headerTitles[i], i + 1, 50);
@@ -185,7 +185,7 @@ Component* MelissaPracticeTableListBox::refreshComponentForCell(int rowNumber, i
     }
         
     
-    else if (columnId == kColumn_Misc + 1)
+    else if (columnId == kColumn_Part + 1)
     {
         auto prac = practiceList_[rowNumber];
         const auto text = makeMiscText(prac);
