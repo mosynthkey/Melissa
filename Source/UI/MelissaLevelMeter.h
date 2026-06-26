@@ -61,7 +61,6 @@ public:
     void paint(juce::Graphics& g) override
     {
         using namespace juce;
-        g.fillAll(MelissaUISettings::getMainColour());
 
         const float w      = static_cast<float>(getWidth());
         const float h      = static_cast<float>(getHeight());
@@ -78,7 +77,7 @@ public:
 
         auto drawBar = [&](float level, float peak, float y)
         {
-            g.setColour(Colour(MelissaUISettings::getSubColour()));
+            g.setColour(Colour(MelissaUISettings::getMainColour()));
             g.fillRoundedRectangle(barX, y, barW, barH, cornerR);
 
             const float fillW = level * barW;
