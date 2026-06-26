@@ -746,9 +746,17 @@ MainComponent::MainComponent(const String &commandLine) : Thread("MelissaProcess
 
     addKeyListener(this);
 
-    auto rootDir = File(dataSource_->global_.rootDir_);
-    rootDir.setAsCurrentWorkingDirectory();
-    fileBrowserComponent_->setRoot(rootDir);
+    {
+        auto rootDirPath = dataSource_->global_.rootDir_;
+        MessageManager::callAsync([this, rootDirPath]()
+        {
+            auto rootDir = File(rootDirPath);
+            rootDir.setAsCurrentWorkingDirectory();
+            fileBrowserComponent_->setRoot(rootDir);
+#ifdef DEBUG
+#endif
+        });
+    }
 
     auto width = dataSource_->global_.width_;
     auto height = dataSource_->global_.height_;
