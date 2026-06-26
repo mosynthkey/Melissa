@@ -213,6 +213,11 @@ public:
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_VersionCheck); });
         addSeparator();
 
+        addMenuLabel(TRANS("sound_engine_settings"));
+        addStretcherToggleButtons();
+
+        addSeparator();
+
         addMenuLabel(TRANS("preferences"));
         addMenuButton(TRANS("shortcut_settings"), [this]()
                           {
@@ -221,9 +226,6 @@ public:
         addMenuButton(TRANS("audio_midi_settings"), [this]()
                           {
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_Preferences); });
-
-        addMenuLabel(TRANS("sound_engine_settings"));
-        addStretcherToggleButtons();
 
         addSeparator();
 
@@ -529,8 +531,7 @@ private:
         if (audioEngine_ == nullptr || stretcherStatsLabel_ == nullptr) return;
         const auto stats = audioEngine_->getStretcherStats();
         stretcherStatsLabel_->setText(
-            String(stats.avgMicros, 1) + " " + String::fromUTF8("\xc2\xb5") + "s  /  "
-            + String(stats.budgetPct, 1) + " %",
+            String(stats.budgetPct, 1) + " %",
             dontSendNotification);
     }
 
