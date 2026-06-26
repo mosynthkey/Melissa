@@ -61,6 +61,8 @@ public:
     void paint(juce::Graphics& g) override
     {
         using namespace juce;
+        g.fillAll(MelissaUISettings::getMainColour());
+
         const float w      = static_cast<float>(getWidth());
         const float h      = static_cast<float>(getHeight());
         // bars occupy the centre, leaving kBarMargin top and bottom for the thumb
@@ -94,7 +96,7 @@ public:
             if (peak > 0.01f)
             {
                 const float px = barX + peak * barW - 1.f;
-                g.setColour(Colour(0x99ffffff));
+                g.setColour(MelissaUISettings::getTextColour(0.6f));
                 g.fillRect(px, y, 2.f, barH);
             }
         };
