@@ -47,3 +47,9 @@ ThirdParty/GoogleMobileAdsSdkiOS-10.4.0/*
 
 # CMake
 Build/*
+
+# VSCode
+.vscode/*
+
+# Claude
+.claude/
