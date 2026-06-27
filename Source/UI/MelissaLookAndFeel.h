@@ -352,10 +352,16 @@ public:
     {
         using namespace juce;
 
-        int w, h;
-        std::tie(w, h) = MelissaUtility::getStringSize(Font(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub)), tipText);
-        w += 10;
-        h = 30;
+        const auto font = MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub);
+        const int padding = 10;
+        const int lineHeight = 20;
+        const auto lines = StringArray::fromLines(tipText);
+
+        int w = 0;
+        for (const auto& line : lines)
+            w = jmax(w, (int)font.getStringWidth(line));
+        w += padding * 2;
+        const int h = lineHeight * lines.size() + padding;
 
         return Rectangle<int> (screenPos.x > parentArea.getCentreX() ? screenPos.x - (w + 12) : screenPos.x + 24,
                                screenPos.y > parentArea.getCentreY() ? screenPos.y - (h + 6)  : screenPos.y + 6,
@@ -375,9 +381,13 @@ public:
         g.fillRect(bounds.reduced(2, 2));
 
         g.setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Sub));
-
         g.setColour(MelissaUISettings::getTextColour());
-        g.drawText(text, 0, 0, width, height, Justification::centred);
+
+        const int padding = 10;
+        const int lineHeight = 20;
+        const auto lines = StringArray::fromLines(text);
+        for (int i = 0; i < lines.size(); ++i)
+            g.drawText(lines[i], padding, i * lineHeight + padding / 2, width - padding * 2, lineHeight, Justification::centredLeft);
     }
 
 private:

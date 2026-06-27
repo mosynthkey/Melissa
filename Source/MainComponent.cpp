@@ -213,7 +213,7 @@ public:
             if (onMenuItemSelected != nullptr) onMenuItemSelected(kMenuID_VersionCheck); });
         addSeparator();
 
-        addMenuLabel(TRANS("sound_engine_settings"));
+        addMenuLabel(TRANS("sound_engine_settings"), TRANS("sound_engine_help"));
         addStretcherToggleButtons();
 
         addSeparator();
@@ -345,13 +345,15 @@ private:
         menuItems_.push_back(std::move(item));
     }
 
-    void addMenuLabel(const String &text)
+    void addMenuLabel(const String &text, const String &tooltip = {})
     {
         auto label = std::make_unique<Label>();
         label->setText(text, dontSendNotification);
         label->setFont(Font(16.f).boldened());
         label->setColour(Label::textColourId, MelissaUISettings::getTextColour());
         label->setJustificationType(Justification::left);
+        if (tooltip.isNotEmpty())
+            label->setTooltip(tooltip);
         addAndMakeVisible(label.get());
 
         MenuItem item;
@@ -456,26 +458,6 @@ private:
         bungeeButton_->setLookAndFeel(&circleToggleLaf_);
         row->addAndMakeVisible(bungeeButton_.get());
 
-        soundTouchButton_ = std::make_unique<ToggleButton>(TRANS("sound_engine_soundtouch"));
-        soundTouchButton_->setToggleState(currentStretcher_ == kStretcher_SoundTouch, dontSendNotification);
-        soundTouchButton_->onClick = [this]()
-        {
-            if (soundTouchButton_->getToggleState())
-            {
-                bungeeButton_->setToggleState(false, dontSendNotification);
-                signalSmithButton_->setToggleState(false, dontSendNotification);
-                if (onMenuItemSelected != nullptr)
-                    onMenuItemSelected(kMenuID_Stretcher_SoundTouch);
-            }
-            else
-            {
-                soundTouchButton_->setToggleState(true, dontSendNotification);
-            }
-        };
-        soundTouchButton_->setBounds(10, 30, 200, 30);
-        soundTouchButton_->setLookAndFeel(&circleToggleLaf_);
-        row->addAndMakeVisible(soundTouchButton_.get());
-
         signalSmithButton_ = std::make_unique<ToggleButton>(TRANS("sound_engine_signalsmith"));
         signalSmithButton_->setToggleState(currentStretcher_ == kStretcher_SignalSmith, dontSendNotification);
         signalSmithButton_->onClick = [this]()
@@ -492,9 +474,29 @@ private:
                 signalSmithButton_->setToggleState(true, dontSendNotification);
             }
         };
-        signalSmithButton_->setBounds(10, 60, 200, 30);
+        signalSmithButton_->setBounds(10, 30, 200, 30);
         signalSmithButton_->setLookAndFeel(&circleToggleLaf_);
         row->addAndMakeVisible(signalSmithButton_.get());
+
+        soundTouchButton_ = std::make_unique<ToggleButton>(TRANS("sound_engine_soundtouch"));
+        soundTouchButton_->setToggleState(currentStretcher_ == kStretcher_SoundTouch, dontSendNotification);
+        soundTouchButton_->onClick = [this]()
+        {
+            if (soundTouchButton_->getToggleState())
+            {
+                bungeeButton_->setToggleState(false, dontSendNotification);
+                signalSmithButton_->setToggleState(false, dontSendNotification);
+                if (onMenuItemSelected != nullptr)
+                    onMenuItemSelected(kMenuID_Stretcher_SoundTouch);
+            }
+            else
+            {
+                soundTouchButton_->setToggleState(true, dontSendNotification);
+            }
+        };
+        soundTouchButton_->setBounds(10, 60, 200, 30);
+        soundTouchButton_->setLookAndFeel(&circleToggleLaf_);
+        row->addAndMakeVisible(soundTouchButton_.get());
 
         row->setSize(getWidth(), 90);
         addAndMakeVisible(row.get());
@@ -3096,6 +3098,12 @@ String MainComponent::getNextSongFilePath()
     }
 
     return File(nextFilePathToLoad).existsAsFile() ? nextFilePathToLoad : "";
+}
+
+void MainComponent::playbackStatusChanged(PlaybackStatus status)
+{
+    if (levelMeter_ != nullptr)
+        levelMeter_->setPlaying(status == kPlaybackStatus_Playing);
 }
 
 void MainComponent::musicVolumeChanged(float volume)

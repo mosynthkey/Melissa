@@ -506,6 +506,7 @@ private:
     void speedChanged(int speed) override;
     void playPartChanged(PlayPart playPart) override;
     void preCountSwitchChanged(bool preCountSwitch) override;
+    void playbackStatusChanged(PlaybackStatus status) override;
 
     // MelissaShortcutListener
     void controlMessageReceived(const juce::String &controlMessage) override;

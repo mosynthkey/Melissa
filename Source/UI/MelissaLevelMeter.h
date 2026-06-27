@@ -31,6 +31,27 @@ public:
 
     ~MelissaLevelMeter() override { stopTimer(); }
 
+    void setPlaying(bool playing)
+    {
+        if (playing)
+        {
+            startTimerHz(30);
+        }
+        else
+        {
+            stopTimer();
+            levelL_.store(0.f, std::memory_order_relaxed);
+            levelR_.store(0.f, std::memory_order_relaxed);
+            displayL_ = 0.f;
+            displayR_ = 0.f;
+            peakL_    = 0.f;
+            peakR_    = 0.f;
+            peakHoldL_ = 0;
+            peakHoldR_ = 0;
+            repaint();
+        }
+    }
+
     void setValue(float v, bool notify = false)
     {
         value_ = juce::jlimit(0.01f, 1.f, v);

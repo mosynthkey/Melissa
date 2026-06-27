@@ -17,6 +17,7 @@ countries: ja
 "remove" = "削除"
 "reveal" = "ファイルの場所を表示"
 "overwrite" = "上書き"
+"overwrite_practice_list" = "現在の設定で上書き"
 "detect_multifiles_drop" = "複数のファイルがドロップされました。プレイリストを作りますか?"
 "new_playlist" = "新規プレイリスト"
 "cancel" = "キャンセル"
@@ -283,3 +284,4 @@ countries: ja
 "sound_engine_bungee"="Bungee"
 "sound_engine_soundtouch"="SoundTouch"
 "sound_engine_signalsmith"="Signalsmith"
+"sound_engine_help"="サウンドエンジンを切り替えると、再生速度や音程を変更したときの\n音質が変わります。エンジンによって負荷が変わります。\n聴き比べてお好みのものをお使いください。\nSoundTouchがv4.0.2までの標準のエンジンです。"

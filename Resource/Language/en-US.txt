@@ -17,6 +17,7 @@ countries: us
 "remove" = "Remove"
 "reveal" = "Reveal"
 "overwrite" = "Overwrite"
+"overwrite_practice_list" = "Overwrite with current settings"
 "detect_multifiles_drop" = " Multiple files were dropped. Do you want to make a playlist with these files?"
 "new_playlist" = "Create a new playlist"
 "cancel" = "Cancel"
@@ -284,3 +285,4 @@ countries: us
 "sound_engine_bungee"="Bungee"
 "sound_engine_soundtouch"="SoundTouch"
 "sound_engine_signalsmith"="Signalsmith"
+"sound_engine_help"="Switching the sound engine changes the audio quality\nwhen adjusting playback speed or pitch.\nCPU load also varies by engine.\nTry each one and use whichever sounds best to you.\nSoundTouch is the default engine through v4.0.2."
