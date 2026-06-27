@@ -282,7 +282,7 @@ void MelissaExportComponent::exportCurrentSong(MelissaExporter::ExportFormat for
 
     std::vector<MelissaExporter::FileAndVolume> fileAndVolumes;
     prepareFileAndVolumesFromCurrentSettings(fileAndVolumes);
-    exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getPlayingSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
+    exporter->addInputFile(fileAndVolumes, model->getPitch(), model->getSpeed(), model->getLoopAPosRatio(), model->getLoopBPosRatio(), model->getEqSwitch(), model->getEqFreq(0), model->getEqGain(0), model->getEqQ(0), 0);
     exporter->setExportSettings(format, fileToExport);
     exporter->setStretcherType(model->getStretcherType());
     MelissaExportManager::getInstance()->regist(std::move(exporter));

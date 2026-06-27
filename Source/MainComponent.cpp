@@ -2309,10 +2309,10 @@ void MainComponent::resized_Desktop()
         x = 10;
         iy = 50;
         h = fileComponent_->getHeight() - 60;
-        practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h - 40);
-        markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
-        memoTextEditor_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
-        browserComponent_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);
+        practiceTable_->setBounds(x, iy, listComponent_->getWidth() - x - 20, h - 40);
+        markerTable_->setBounds(x, iy, listComponent_->getWidth() - x - 20, h);
+        memoTextEditor_->setBounds(x, iy, listComponent_->getWidth() - x - 20, h);
+        browserComponent_->setBounds(x, iy, listComponent_->getWidth() - x - 20, h);
 
         practiceListUpButton_->setBounds(x, practiceTable_->getBottom() + 10, 30, 30);
         practiceListDownButton_->setBounds(x + 40, practiceTable_->getBottom() + 10, 30, 30);
