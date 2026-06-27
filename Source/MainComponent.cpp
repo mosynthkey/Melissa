@@ -106,7 +106,7 @@ public:
     void paint(Graphics &g)
     {
         g.setColour(Colours::white.withAlpha(0.4f));
-        g.drawLine(getWidth() - 4, 4, 4, getHeight() - 4, 2);
+        g.drawLine(static_cast<float>(getWidth()) - 4.f, 4.f, 4.f, static_cast<float>(getHeight()) - 4.f, 2.f);
     }
 };
 #endif
@@ -119,21 +119,21 @@ public:
     void paint(Graphics &g)
     {
         const auto lineWidth = 2.f;
-        const auto w = getWidth();
-        const auto h = getHeight();
-        const int sinStartX = w * (1 - ratio_) / 2;
-        const int sinWidth = w * ratio_;
+        const float w = static_cast<float>(getWidth());
+        const float h = static_cast<float>(getHeight());
+        const float sinStartX = w * (1.f - ratio_) / 2.f;
+        const float sinWidth  = w * ratio_;
 
         Path path;
-        path.startNewSubPath(0, h - lineWidth / 2);
-        path.lineTo(sinStartX, h - lineWidth / 2);
-        for (float rad = 0; rad < 2 * M_PI; rad += 0.01f)
+        path.startNewSubPath(0.f, h - lineWidth / 2.f);
+        path.lineTo(sinStartX, h - lineWidth / 2.f);
+        for (float rad = 0.f; rad < 2.f * MathConstants<float>::pi; rad += 0.01f)
         {
-            auto x = sinStartX + rad / (2 * M_PI) * sinWidth;
-            auto y = (1.f + cos(rad)) / 2.f * (h - lineWidth) + lineWidth / 2;
+            auto x = sinStartX + rad / (2.f * MathConstants<float>::pi) * sinWidth;
+            auto y = (1.f + std::cos(rad)) / 2.f * (h - lineWidth) + lineWidth / 2.f;
             path.lineTo(x, y);
         }
-        path.lineTo(w, h - lineWidth / 2);
+        path.lineTo(w, h - lineWidth / 2.f);
 
         g.setColour(MelissaUISettings::getTextColour(0.4f));
         g.strokePath(path, juce::PathStrokeType(lineWidth));
@@ -152,7 +152,7 @@ private:
     void paint(Graphics &g)
     {
         g.setColour(colour_);
-        g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), 6);
+        g.fillRoundedRectangle(0.f, 0.f, static_cast<float>(getWidth()), static_cast<float>(getHeight()), 6.f);
     }
 
     Colour colour_;
@@ -178,7 +178,7 @@ public:
             button_->setLookAndFeel(nullptr);
         }
 
-        void paint(Graphics &g) override {}
+        void paint(Graphics&) override {}
 
         void resized() override
         {
@@ -240,7 +240,7 @@ public:
 
         versionLabel_ = std::make_unique<Label>();
         versionLabel_->setText("Melissa ver " + JUCEApplication::getInstance()->getApplicationVersion(), dontSendNotification);
-        versionLabel_->setFont(Font(16.f));
+        versionLabel_->setFont(Font(juce::FontOptions().withHeight(16.f)));
         versionLabel_->setColour(Label::textColourId, Colours::white);
         versionLabel_->setJustificationType(Justification::centredRight);
         addAndMakeVisible(versionLabel_.get());
@@ -281,7 +281,7 @@ public:
         const int buttonMargin = 10;
         const int menuWidth = getWidth() - 20;
         const int submenuIndent = 20;
-        const int separatorHeight = 1;
+        [[maybe_unused]] const int separatorHeight = 1;
         const int separatorMargin = 15;
 
         separatorPositions_.clear();
@@ -1106,7 +1106,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setPitch(model_->getPitch() + sign * (b ? 0.1 : 1));
+                model_->setPitch(model_->getPitch() + static_cast<float>(sign) * (b ? 0.1f : 1.f));
             }
         };
         componentToAdd->addAndMakeVisible(pitchButton_.get());
@@ -1184,7 +1184,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + sign * (b ? 100 : 1000));
+                model_->setLoopAPosMSec(model_->getLoopAPosMSec() + static_cast<float>(sign * (b ? 100 : 1000)));
             }
         };
         componentToAdd->addAndMakeVisible(aButton_.get());
@@ -1205,7 +1205,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + sign * (b ? 100 : 1000));
+                model_->setLoopBPosMSec(model_->getLoopBPosMSec() + static_cast<float>(sign * (b ? 100 : 1000)));
             }
         };
         componentToAdd->addAndMakeVisible(bButton_.get());
@@ -1450,7 +1450,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setBpm(std::clamp<int>(model_->getBpm() + sign, kBpmMin, kBpmMax));
+                model_->setBpm(static_cast<float>(std::clamp(static_cast<int>(model_->getBpm()) + sign, kBpmMin, kBpmMax)));
             }
         };
         componentToAdd->addAndMakeVisible(bpmButton_.get());
@@ -1469,7 +1469,7 @@ void MainComponent::createUI()
             else
             {
                 const int sign = (event == MelissaIncDecButton::kEvent_Inc) ? 1 : -1;
-                model_->setBeatPositionMSec(model_->getBeatPositionMSec() + sign * 100);
+                model_->setBeatPositionMSec(model_->getBeatPositionMSec() + static_cast<float>(sign * 100));
             }
         };
         componentToAdd->addAndMakeVisible(accentPositionButton_.get());
@@ -1513,7 +1513,7 @@ void MainComponent::createUI()
             freqKnob->onValueChange = [&, bandIndex]()
             {
                 auto value = eqFreqKnobs_[bandIndex]->getValue();
-                model_->setEqFreq(0, 20 * std::pow(1000, value));
+                model_->setEqFreq(0, static_cast<float>(20.0 * std::pow(1000.0, value)));
             };
             componentToAdd->addAndMakeVisible(freqKnob.get());
             eqFreqKnobs_[bandIndex] = std::move(freqKnob);
@@ -1526,7 +1526,7 @@ void MainComponent::createUI()
             qKnob->onValueChange = [&, bandIndex]()
             {
                 auto value = eqQKnobs_[bandIndex]->getValue();
-                model_->setEqQ(0, value);
+                model_->setEqQ(0, static_cast<float>(value));
             };
             componentToAdd->addAndMakeVisible(qKnob.get());
             eqQKnobs_[bandIndex] = std::move(qKnob);
@@ -1539,7 +1539,7 @@ void MainComponent::createUI()
             gainKnob->onValueChange = [&, bandIndex]()
             {
                 auto value = eqGainKnobs_[bandIndex]->getValue();
-                model_->setEqGain(0, value);
+                model_->setEqGain(0, static_cast<float>(value));
             };
             componentToAdd->addAndMakeVisible(gainKnob.get());
             eqGainKnobs_[bandIndex] = std::move(gainKnob);
@@ -1561,7 +1561,7 @@ void MainComponent::createUI()
 
         for (size_t qIconIndex = 0; qIconIndex < 2; ++qIconIndex)
         {
-            qIconComponents_[qIconIndex] = std::make_unique<QIconComponent>(0.25 + 0.5 * qIconIndex);
+            qIconComponents_[qIconIndex] = std::make_unique<QIconComponent>(0.25f + 0.5f * static_cast<float>(qIconIndex));
             componentToAdd->addAndMakeVisible(qIconComponents_[qIconIndex].get());
         }
     }
@@ -1593,7 +1593,7 @@ void MainComponent::createUI()
         musicVolumeSlider_->setValue(1.f);
         musicVolumeSlider_->onValueChange = [this]()
         {
-            model_->setMusicVolume(musicVolumeSlider_->getValue());
+            model_->setMusicVolume(static_cast<float>(musicVolumeSlider_->getValue()));
         };
         componentToAdd->addAndMakeVisible(musicVolumeSlider_.get());
 
@@ -1605,7 +1605,7 @@ void MainComponent::createUI()
         volumeBalanceSlider_->setLookAndFeel(&crossFaderLaf_);
         volumeBalanceSlider_->onValueChange = [this]()
         {
-            model_->setMusicMetronomeBalance(volumeBalanceSlider_->getValue());
+            model_->setMusicMetronomeBalance(static_cast<float>(volumeBalanceSlider_->getValue()));
         };
         componentToAdd->addAndMakeVisible(volumeBalanceSlider_.get());
 
@@ -1616,7 +1616,7 @@ void MainComponent::createUI()
         metronomeVolumeSlider_->setValue(1.f);
         metronomeVolumeSlider_->onValueChange = [this]()
         {
-            model_->setMetronomeVolume(metronomeVolumeSlider_->getValue());
+            model_->setMetronomeVolume(static_cast<float>(metronomeVolumeSlider_->getValue()));
         };
         componentToAdd->addAndMakeVisible(metronomeVolumeSlider_.get());
     }
@@ -2122,12 +2122,12 @@ void MainComponent::resized_Desktop()
         auto section = sectionComponents_[kSection_Song].get();
         section->setBounds(10, y, songWidth, 100);
 
-        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        const int iy = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
 
-        pitchButton_->setBounds(isFullVersion ? 10 : ((section->getWidth() - pitchWidth) / 2), y, pitchWidth, controlHeight);
+        pitchButton_->setBounds(isFullVersion ? 10 : ((section->getWidth() - pitchWidth) / 2), iy, pitchWidth, controlHeight);
 
         const int stemControlWidth = songWidth - 10 * 3 - pitchButton_->getWidth();
-        stemControlComponent_->setBounds(pitchButton_->getRight() + 10, y - controlHeight, stemControlWidth, controlHeight * 2);
+        stemControlComponent_->setBounds(pitchButton_->getRight() + 10, iy - controlHeight, stemControlWidth, controlHeight * 2);
 
         const int songDetailButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), songDetailButton_->getButtonText()).first;
         songDetailButton_->setSize(songDetailButtonWidth, 30);
@@ -2140,10 +2140,10 @@ void MainComponent::resized_Desktop()
         section->setBounds(sectionComponents_[kSection_Song]->getRight() + sectionMarginX, y, loopWidth, 100);
 
         const int buttonWidth = std::clamp((section->getWidth() - 10 - 10 - 10) / 2, controlBWidthMin, controlBWidthMax);
-        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        const int iy = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
 
-        aButton_->setBounds(10, y, buttonWidth, controlHeight);
-        bButton_->setBounds(section->getWidth() - 10 - buttonWidth, y, buttonWidth, controlHeight);
+        aButton_->setBounds(10, iy, buttonWidth, controlHeight);
+        bButton_->setBounds(section->getWidth() - 10 - buttonWidth, iy, buttonWidth, controlHeight);
 
         aResetButton_->setBounds(aButton_->getX() + 10, aButton_->getY() - 24 + 2, 20, 14);
         bResetButton_->setBounds(bButton_->getRight() - 20 - 10, bButton_->getY() - 24 + 2, 20, 14);
@@ -2151,8 +2151,8 @@ void MainComponent::resized_Desktop()
         preCountOnOffButton_->setBounds(10, 5, 40, 20);
 
         {
-            const int buttonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), preCountSettingButton_->getButtonText()).first;
-            preCountSettingButton_->setSize(buttonWidth, 30);
+            const int preCountBtnW = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), preCountSettingButton_->getButtonText()).first;
+            preCountSettingButton_->setSize(preCountBtnW, 30);
             preCountSettingButton_->setTopLeftPosition(preCountOnOffButton_->getRight() + 4, 0);
         }
 
@@ -2171,30 +2171,30 @@ void MainComponent::resized_Desktop()
 #endif
 
         int x = 10;
-        int y = 30 + (section->getHeight() - 30) / 2;
+        int iy = 30 + (section->getHeight() - 30) / 2;
 #if defined(ENABLE_SPEED_TRAINING)
-        speedModeBasicToggleButton_->setBounds(x, y - 30, 100, controlHeight);
-        speedModeTrainingToggleButton_->setBounds(x, y, 100, controlHeight);
+        speedModeBasicToggleButton_->setBounds(x, iy - 30, 100, controlHeight);
+        speedModeTrainingToggleButton_->setBounds(x, iy, 100, controlHeight);
 
         x = speedModeBasicToggleButton_->getRight() + 10;
 #endif
-        y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
-        speedButton_->setBounds(x, y, speedOutputWidth, controlHeight);
+        iy = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        speedButton_->setBounds(x, iy, speedOutputWidth, controlHeight);
 
         const int viewportWidth = std::clamp((section->getWidth() - 10) - (speedButton_->getRight() + 10), controlAWidthMin, speedPresetComponent_->getWidth());
         x = (speedButton_->getRight() + 10) + ((section->getWidth() - 10) - (speedButton_->getRight() + 10)) / 2 - viewportWidth / 2;
-        speedPresetViewport_->setBounds(x, y, viewportWidth, controlHeight);
+        speedPresetViewport_->setBounds(x, iy, viewportWidth, controlHeight);
 
 #if defined(ENABLE_SPEED_TRAINING)
         x = speedModeBasicToggleButton_->getRight() + 10;
         const int buttonWidth = ((section->getWidth() - 20) - x - 20 * 3) / 4;
-        speedIncStartButton_->setBounds(x, y, buttonWidth, controlHeight);
-        speedIncValueButton_->setBounds(speedIncStartButton_->getRight() + 20, y, buttonWidth, controlHeight);
-        speedIncPerButton_->setBounds(speedIncValueButton_->getRight() + 20, y, buttonWidth, controlHeight);
-        speedIncGoalButton_->setBounds(speedIncPerButton_->getRight() + 20, y, buttonWidth, controlHeight);
-        speedProgressComponent_->setBounds(speedIncValueButton_->getX(), y - 30 + 2, speedIncPerButton_->getRight() - speedIncValueButton_->getX(), 30 - 2);
+        speedIncStartButton_->setBounds(x, iy, buttonWidth, controlHeight);
+        speedIncValueButton_->setBounds(speedIncStartButton_->getRight() + 20, iy, buttonWidth, controlHeight);
+        speedIncPerButton_->setBounds(speedIncValueButton_->getRight() + 20, iy, buttonWidth, controlHeight);
+        speedIncGoalButton_->setBounds(speedIncPerButton_->getRight() + 20, iy, buttonWidth, controlHeight);
+        speedProgressComponent_->setBounds(speedIncValueButton_->getX(), iy - 30 + 2, speedIncPerButton_->getRight() - speedIncValueButton_->getX(), 30 - 2);
 
-        slashComponent_->setBounds(speedIncValueButton_->getRight(), y, speedIncPerButton_->getX() - speedIncValueButton_->getRight(), controlHeight);
+        slashComponent_->setBounds(speedIncValueButton_->getRight(), iy, speedIncPerButton_->getX() - speedIncValueButton_->getRight(), controlHeight);
 
         const int resetButtonWidth = MelissaUtility::getStringSize(dataSource_->getFont(MelissaDataSource::Global::kFontSize_Sub), resetSpeedTrainingButton_->getButtonText()).first;
         resetSpeedTrainingButton_->setSize(resetButtonWidth, 30);
@@ -2212,13 +2212,13 @@ void MainComponent::resized_Desktop()
         const int totalControlWidth = (section->getWidth() - 10 - 10 - 10 - 10);
         const int bpmAccentPosButtonWidth = totalControlWidth / (7 + 5 + 7) * 7;
         const int accentButtonWidth = totalControlWidth / (7 + 5 + 7) * 5;
-        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        const int iy = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
 
         metronomeOnOffButton_->setBounds(10, 5, 40, 20);
 
-        bpmButton_->setBounds(10, y, bpmAccentPosButtonWidth, controlHeight);
-        accentButton_->setBounds((section->getWidth() - accentButtonWidth) / 2, y, accentButtonWidth, controlHeight);
-        accentPositionButton_->setBounds(section->getWidth() - bpmAccentPosButtonWidth - 10, y, bpmAccentPosButtonWidth, controlHeight);
+        bpmButton_->setBounds(10, iy, bpmAccentPosButtonWidth, controlHeight);
+        accentButton_->setBounds((section->getWidth() - accentButtonWidth) / 2, iy, accentButtonWidth, controlHeight);
+        accentPositionButton_->setBounds(section->getWidth() - bpmAccentPosButtonWidth - 10, iy, bpmAccentPosButtonWidth, controlHeight);
     }
 
     // EQ
@@ -2229,23 +2229,23 @@ void MainComponent::resized_Desktop()
         eqSwitchButton_->setBounds(10, 5, 40, 20);
 
         constexpr int knobSize = 42;
-        const int y = 30 + (section->getHeight() - 30) / 2 - knobSize / 2 - 8;
+        const int iy = 30 + (section->getHeight() - 30) / 2 - knobSize / 2 - 8;
         const int interval = (section->getWidth() - knobSize * kNumOfEqBands * 3) / (kNumOfEqBands * 3 + 1);
 
         int x = interval;
         const int expandWidth = 40;
         for (size_t bandIndex = 0; bandIndex < kNumOfEqBands; ++bandIndex)
         {
-            eqFreqKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
-            knobLabels_[bandIndex * 3 + 0]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
+            eqFreqKnobs_[bandIndex]->setBounds(x, iy, knobSize, knobSize);
+            knobLabels_[bandIndex * 3 + 0]->setBounds(x - expandWidth / 2, iy + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
 
-            eqGainKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
-            knobLabels_[bandIndex * 3 + 1]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
+            eqGainKnobs_[bandIndex]->setBounds(x, iy, knobSize, knobSize);
+            knobLabels_[bandIndex * 3 + 1]->setBounds(x - expandWidth / 2, iy + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
 
-            eqQKnobs_[bandIndex]->setBounds(x, y, knobSize, knobSize);
-            knobLabels_[bandIndex * 3 + 2]->setBounds(x - expandWidth / 2, y + knobSize - 8, knobSize + expandWidth, 30);
+            eqQKnobs_[bandIndex]->setBounds(x, iy, knobSize, knobSize);
+            knobLabels_[bandIndex * 3 + 2]->setBounds(x - expandWidth / 2, iy + knobSize - 8, knobSize + expandWidth, 30);
             x += knobSize + interval;
         }
 
@@ -2262,21 +2262,21 @@ void MainComponent::resized_Desktop()
         section->setBounds(sectionComponents_[kSection_Eq]->getRight() + sectionMarginX, y, mixerWidth, 100);
 
         const int controlWidth = (section->getWidth() - speedOutputWidth - 10 * 5) / 3;
-        const int y = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
+        const int iy = 30 + (section->getHeight() - 30) / 2 - controlHeight / 2 + 14;
 
-        outputModeComboBox_->setBounds(10, y, speedOutputWidth, controlHeight);
-        musicVolumeSlider_->setBounds(outputModeComboBox_->getRight() + 10, y, controlWidth, controlHeight);
-        volumeBalanceSlider_->setBounds(musicVolumeSlider_->getRight() + 10, y, controlWidth, controlHeight);
-        metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, y, controlWidth, controlHeight);
+        outputModeComboBox_->setBounds(10, iy, speedOutputWidth, controlHeight);
+        musicVolumeSlider_->setBounds(outputModeComboBox_->getRight() + 10, iy, controlWidth, controlHeight);
+        volumeBalanceSlider_->setBounds(musicVolumeSlider_->getRight() + 10, iy, controlWidth, controlHeight);
+        metronomeVolumeSlider_->setBounds(volumeBalanceSlider_->getRight() + 10, iy, controlWidth, controlHeight);
     }
 
     // File component (Browser / Playlist / History)
     {
-        int y = controlComponent_->getBottom() + kGradationHeight - 10;
-        int h = (getHeight() - 10) - y;
-        fileComponent_->setBounds(10, y, songWidth, h);
+        int iy = controlComponent_->getBottom() + kGradationHeight - 10;
+        int h = (getHeight() - 10) - iy;
+        fileComponent_->setBounds(10, iy, songWidth, h);
         int x = fileComponent_->getRight() + 10;
-        listComponent_->setBounds(x, y, (getWidth() - 10) - x, h);
+        listComponent_->setBounds(x, iy, (getWidth() - 10) - x, h);
         const int kTabMargin = 2;
         int tabWidth = (fileComponent_->getWidth() - 20 - kTabMargin * (kNumOfFileChooserTabs - 1)) / kNumOfFileChooserTabs;
 
@@ -2295,19 +2295,19 @@ void MainComponent::resized_Desktop()
         historyTable_->setBounds(10, 50, w, h);
 
         x = 10;
-        y = 10;
-        practiceListToggleButton_->setBounds(x, y, tabWidth, 30);
-        addToPracticeButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
+        iy = 10;
+        practiceListToggleButton_->setBounds(x, iy, tabWidth, 30);
+        addToPracticeButton_->setBounds(x + tabWidth - 30, iy + 6, 18, 18);
         x += (tabWidth + 2);
-        markerListToggleButton_->setBounds(x, y, tabWidth, 30);
-        addMarkerButton_->setBounds(x + tabWidth - 30, y + 6, 18, 18);
+        markerListToggleButton_->setBounds(x, iy, tabWidth, 30);
+        addMarkerButton_->setBounds(x + tabWidth - 30, iy + 6, 18, 18);
         x += (tabWidth + 2);
-        memoToggleButton_->setBounds(x, y, tabWidth, 30);
+        memoToggleButton_->setBounds(x, iy, tabWidth, 30);
         x += (tabWidth + 2);
-        browserToggleButton_->setBounds(x, y, tabWidth, 30);
+        browserToggleButton_->setBounds(x, iy, tabWidth, 30);
 
         x = 10;
-        y = 50;
+        iy = 50;
         h = fileComponent_->getHeight() - 60;
         practiceTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h - 40);
         markerTable_->setBounds(x, y, listComponent_->getWidth() - x - 20, h);

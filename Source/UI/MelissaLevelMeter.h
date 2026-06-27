@@ -69,8 +69,8 @@ public:
             rmsL += left[i]  * left[i];
             rmsR += right[i] * right[i];
         }
-        rmsL = std::sqrt(rmsL / numSamples);
-        rmsR = std::sqrt(rmsR / numSamples);
+        rmsL = std::sqrt(rmsL / static_cast<float>(numSamples));
+        rmsR = std::sqrt(rmsR / static_cast<float>(numSamples));
 
         auto blend = [](float cur, float next) {
             return next > cur ? next : cur * 0.85f + next * 0.15f;
@@ -166,7 +166,7 @@ private:
 
     void setValueFromX(int x)
     {
-        const float barW = getWidth() - kBarMargin * 2.f;
+        const float barW = static_cast<float>(getWidth()) - kBarMargin * 2.f;
         const float v = juce::jlimit(0.01f, 1.f, (static_cast<float>(x) - kBarMargin) / barW);
         setValue(v, true);
     }
