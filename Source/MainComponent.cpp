@@ -850,6 +850,10 @@ MainComponent::~MainComponent()
     metronomeOnOffButton_->setLookAndFeel(nullptr);
     volumeBalanceSlider_->setLookAndFeel(nullptr);
     fileBrowserComponent_->setLookAndFeel(nullptr);
+    preCountSettingButton_->setLookAndFeel(nullptr);
+#if defined(ENABLE_SPEED_TRAINING)
+    resetSpeedTrainingButton_->setLookAndFeel(nullptr);
+#endif
 
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(nullptr);
