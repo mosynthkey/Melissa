@@ -23,15 +23,15 @@ MelissaExporter::MelissaExporter()
 
 MelissaExporter::~MelissaExporter()
 {
-    
+
 }
 
 void MelissaExporter::addInputFile(std::vector<FileAndVolume> fileAndVolumes_, float pitch, float speed, float startRatio, float endRatio, bool eqSwitch, float eqFreq, float eqGain, float eqQ, uint32_t gapMSec, uint32_t fadeInMSec, uint32_t fadeOutMSec)
 {
     auto input = std::make_unique<Input>();
-    
+
     if (fileAndVolumes_.empty()) throw("No input files");
-    
+
     for (auto&& fileAndVolume : fileAndVolumes_)
     {
         Input::ReaderAndVolume readerAndVolume;
@@ -40,7 +40,7 @@ void MelissaExporter::addInputFile(std::vector<FileAndVolume> fileAndVolumes_, f
         readerAndVolume.second = fileAndVolume.second;
         input->readerAndVolumes.emplace_back(std::move(readerAndVolume));
     }
-    
+
     const auto& numOfSamples = input->readerAndVolumes[0].first->lengthInSamples;
     const auto& sampleRate   = input->readerAndVolumes[0].first->sampleRate;
     input->pitch = pitch;
@@ -54,32 +54,32 @@ void MelissaExporter::addInputFile(std::vector<FileAndVolume> fileAndVolumes_, f
     input->fadeInNumSamples  = fadeInMSec * sampleRate / 1000;
     input->fadeOutNumSamples = fadeOutMSec * sampleRate / 1000;
     input->gapMSec = gapMSec;
-    
+
     if ((input->startSampleIndex - input->fadeInNumSamples) < 0) input->fadeInNumSamples = input->startSampleIndex;
     if (numOfSamples <= (input->endSampleIndex + input->fadeOutNumSamples)) input->fadeOutNumSamples = (numOfSamples - 1) - input->endSampleIndex;
-    
+
     inputs_.emplace_back(std::move(input));
 }
 
 void MelissaExporter::exportToFile()
 {
     if (inputs_.size() == 0) throw(TRANS("No input files"));
-    
+
     constexpr int kNumChannels = 2;
     constexpr int kProcessBufferLength = 4096;
-    
+
     float outputSampleRate = 48000;
     int outputBitsPerSample = 24;
-    
+
     WavAudioFormat wavFormat;
     OggVorbisAudioFormat oggFormat;
     std::unique_ptr<AudioFormatWriter> writer;
-    
+
     if (filePathToExport_.existsAsFile())
     {
         filePathToExport_.deleteFile();
     }
-    
+
     switch (format_)
     {
         case kExportFormat_wav48000_24:
@@ -102,7 +102,7 @@ void MelissaExporter::exportToFile()
             throw("Invalid file format");
             return;
     };
-    
+
     if (format_ == kExportFormat_wav48000_24 || format_ == kExportFormat_wav44100_16)
     {
         writer.reset(wavFormat.createWriterFor(new FileOutputStream(filePathToExport_), outputSampleRate, kNumChannels, outputBitsPerSample, {}, 0));
@@ -111,16 +111,16 @@ void MelissaExporter::exportToFile()
     {
         writer.reset(oggFormat.createWriterFor(new FileOutputStream(filePathToExport_), outputSampleRate, kNumChannels, outputBitsPerSample, {}, 0));
     }
-    
+
     if (writer == nullptr) throw("Cannot write to this file");
-    
+
     float bufferForSoundTouch[kNumChannels * kProcessBufferLength];
     float volume[kProcessBufferLength];
     AudioBuffer<float> tempAudioBuffer(kNumChannels, kProcessBufferLength);
     AudioBuffer<float> stemAudioBuffer(kNumChannels, kProcessBufferLength);
     const float* readPointers[] = { tempAudioBuffer.getReadPointer(0), tempAudioBuffer.getReadPointer(1) };
     float* writePointers[] = { tempAudioBuffer.getWritePointer(0), tempAudioBuffer.getWritePointer(1) };
-    
+
     for (auto&& input : inputs_)
     {
         const int inputSampleRate = input->readerAndVolumes[0].first->sampleRate;
@@ -137,25 +137,26 @@ void MelissaExporter::exportToFile()
         stretcher->setSampleRate(inputSampleRate);
         stretcher->setTempo(fsConvPitch * input->speed / 100.f);
         stretcher->setPitch(fsConvPitch * exp(0.69314718056 * input->pitch / 12.f));
-        
+        stretcher->setPositionTrackingEnabled(false);
+
         const auto startIndex = input->startSampleIndex - input->fadeInNumSamples;
         const auto endIndex = input->endSampleIndex + input->fadeOutNumSamples;
         int64 readIndex = startIndex;
         bool isFlushed = false;
-        
+
         MelissaEqualizer eq;
         eq.setSampleRate(outputSampleRate);
         eq.setFreq(input->eqFreq);
         eq.setGain(input->eqGain);
         eq.setQ(input->eqQ);
         eq.reset();
-        
+
         while (true)
         {
             // read
             int64 numReadSamples = kProcessBufferLength;
             if (endIndex < (readIndex + numReadSamples)) numReadSamples = endIndex - readIndex;
-            
+
             for (int index = 0; index < numReadSamples; ++index)
             {
                 const int64 volumeIndex = readIndex + index;
@@ -174,8 +175,8 @@ void MelissaExporter::exportToFile()
                     volume[index] = 1.f - (volumeIndex - input->endSampleIndex) / static_cast<float>(input->fadeOutNumSamples);
                 }
             }
-            
-            // put to soundtouch
+
+            // put to stretcher
             if (numReadSamples != 0)
             {
                 std::fill(bufferForSoundTouch, bufferForSoundTouch + (kNumChannels * kProcessBufferLength), 0.f);
@@ -190,10 +191,31 @@ void MelissaExporter::exportToFile()
                     }
                 }
                 readIndex += numReadSamples;
-                
+
                 stretcher->putSamples(bufferForSoundTouch, static_cast<int>(numReadSamples));
             }
-            int numReceivedSamples = stretcher->receiveSamples(bufferForSoundTouch, kProcessBufferLength);
+
+            // Drain ALL available output before the next putSamples call.
+            // Bungee and SignalSmith produce the entire stretched batch at once
+            // (up to inputFrames/tempo frames), so we must fully consume the
+            // output buffer before feeding more input to avoid overflow.
+            int numReceivedSamples = 0;
+            auto drainAndWrite = [&]()
+            {
+                while ((numReceivedSamples = stretcher->receiveSamples(bufferForSoundTouch, kProcessBufferLength)) > 0)
+                {
+                    for (int index = 0; index < numReceivedSamples; ++index)
+                    {
+                        float eqBuffer[] = { bufferForSoundTouch[index * kNumChannels + 0], bufferForSoundTouch[index * kNumChannels + 1] };
+                        if (input->eqSwitch) eq.process(eqBuffer, eqBuffer);
+                        writePointers[0][index] = eqBuffer[0];
+                        writePointers[1][index] = eqBuffer[1];
+                    }
+                    writer->writeFromAudioSampleBuffer(tempAudioBuffer, 0, numReceivedSamples);
+                }
+            };
+            drainAndWrite();
+
             if (numReadSamples == 0 && numReceivedSamples == 0)
             {
                 if (isFlushed)
@@ -204,20 +226,11 @@ void MelissaExporter::exportToFile()
                 {
                     stretcher->flush();
                     isFlushed = true;
-                    numReceivedSamples = stretcher->receiveSamples(bufferForSoundTouch, kProcessBufferLength);
+                    drainAndWrite();
                 }
             }
-            
-            for (int index = 0; index < numReceivedSamples; ++index)
-            {
-                float eqBuffer[] = { bufferForSoundTouch[index * kNumChannels + 0], bufferForSoundTouch[index * kNumChannels + 1] };
-                if (input->eqSwitch) eq.process(eqBuffer, eqBuffer);
-                writePointers[0][index] = eqBuffer[0];
-                writePointers[1][index] = eqBuffer[1];
-            }
-            writer->writeFromAudioSampleBuffer(tempAudioBuffer, 0, numReceivedSamples);
         }
-        
+
         {
             // add gap
             const auto numGapSamples = input->gapMSec * outputSampleRate / 1000;
@@ -226,6 +239,6 @@ void MelissaExporter::exportToFile()
             writer->writeFromAudioSampleBuffer(blankAudioBuffer, 0, numGapSamples);
         }
     }
-    
+
     writer->flush();
 }

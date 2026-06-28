@@ -33,6 +33,12 @@ public:
     // (Bungee) use this to build an accurate per-output-frame position map.
     virtual void notifyInputStart(int64_t sourceFrameIndex) {}
 
+    // Disable per-output-frame source position tracking. Call with false when
+    // the caller (e.g. the exporter) never consumes position data via
+    // popSourcePositions(), so internal position buffers are not populated.
+    // Default is true (tracking on) to preserve engine behaviour.
+    virtual void setPositionTrackingEnabled(bool) {}
+
     // Optional accurate per-frame source positions. If the stretcher can
     // provide them (grain-based), it fills positions[] and returns true.
     // The engine then uses these instead of SampleIndexStretcher estimates.

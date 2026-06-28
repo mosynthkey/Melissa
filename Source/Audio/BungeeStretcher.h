@@ -59,6 +59,8 @@ public:
     void setTempo(float tempo) override { tempo_ = tempo; }
     void setPitch(float pitch) override { pitch_ = pitch; }
 
+    void setPositionTrackingEnabled(bool enabled) override { trackPositions_ = enabled; }
+
     // Engine calls this just before putSamples() to register the starting
     // source frame index of the next input batch.
     void notifyInputStart(int64_t sourceFrameIndex) override
@@ -148,9 +150,12 @@ private:
             for (int c = 0; c < numChannels_; ++c)
                 outputBuffer_.push(outputCh_[c][i]);
 
-            const float pos = static_cast<float>(
-                std::max(0.0, currentInputStart_ + i * posStep - latency));
-            positionBuffer_.push(pos);
+            if (trackPositions_)
+            {
+                const float pos = static_cast<float>(
+                    std::max(0.0, currentInputStart_ + i * posStep - latency));
+                positionBuffer_.push(pos);
+            }
         }
 
         currentInputStart_ += inputFrames;
@@ -168,6 +173,8 @@ private:
         // 8192 gives headroom for both the current batch and grain overlap.
         stream_    = std::make_unique<Bungee::Stream<Bungee::Basic>>(*stretcher_, 8192, numChannels_);
     }
+
+    bool trackPositions_ = true;
 
     int32_t sampleRate_;
     int32_t numChannels_;
