@@ -316,8 +316,6 @@ public:
         const int footerHeight = 20;
         versionLabel_->setBounds(10, getHeight() - footerHeight - 10, menuWidth, footerHeight);
 
-        if (stretcherStatsLabel_ != nullptr && stretcherStatsPlaceholder_ != nullptr)
-            stretcherStatsLabel_->setBounds(stretcherStatsPlaceholder_->getBounds().withLeft(14));
     }
 
     std::function<void(int)> onMenuItemSelected;
@@ -507,40 +505,10 @@ private:
         item.isSubmenu = false;
         menuItems_.push_back(std::move(item));
 
-        // Stats label — updated by Timer
-        stretcherStatsLabel_ = std::make_unique<Label>();
-        stretcherStatsLabel_->setFont(MelissaDataSource::getInstance()->getFont(MelissaDataSource::Global::kFontSize_Small));
-        stretcherStatsLabel_->setColour(Label::textColourId, MelissaUISettings::getTextColour(0.6f));
-        stretcherStatsLabel_->setJustificationType(Justification::centredLeft);
-        addAndMakeVisible(stretcherStatsLabel_.get());
-
-        auto statsPlaceholder = std::make_unique<Component>();
-        statsPlaceholder->setSize(getWidth(), 24);
-        addAndMakeVisible(statsPlaceholder.get());
-        stretcherStatsPlaceholder_ = statsPlaceholder.get();  // keep raw ptr for resized()
-
-        MenuItem statsItem;
-        statsItem.component = std::move(statsPlaceholder);
-        statsItem.isLabel = false;
-        statsItem.isSubmenu = false;
-        menuItems_.push_back(std::move(statsItem));
-
-        startTimerHz(10);
-    }
-
-    void timerCallback() override
-    {
-        if (audioEngine_ == nullptr || stretcherStatsLabel_ == nullptr) return;
-        const auto stats = audioEngine_->getStretcherStats();
-        stretcherStatsLabel_->setText(
-            String(stats.budgetPct, 1) + " %",
-            dontSendNotification);
     }
 
     std::vector<MenuItem> menuItems_;
     std::unique_ptr<Label> versionLabel_;
-    std::unique_ptr<Label> stretcherStatsLabel_;
-    Component* stretcherStatsPlaceholder_ = nullptr;
     std::unique_ptr<ToggleButton> lightButton_;
     std::unique_ptr<ToggleButton> darkButton_;
     std::unique_ptr<ToggleButton> bungeeButton_;
