@@ -158,7 +158,7 @@ private:
     Colour colour_;
 };
 
-class MenuOverlayComponent::MenuComponent : public Component, private Timer
+class MenuOverlayComponent::MenuComponent : public Component
 {
 public:
     class MenuButtonComponent : public Component
